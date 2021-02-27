@@ -60,11 +60,11 @@ namespace Xbim.IDS
             foreach (var sub in elem.Elements())
             {
                 IFacet t = null;
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "property")
+                if (sub.Name == "property")
                 {
                     t = GetProperty(sub);
                 }
-                else if (sub.NodeType == XmlNodeType.Element && sub.Name == "classification")
+                else if (sub.Name == "classification")
                 {
                     // t = GetClassification(elem);
                 }
@@ -86,15 +86,15 @@ namespace Xbim.IDS
             HasProperty ret = new HasProperty();
             foreach (var sub in elem.Elements())
             {
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "propertyset")
+                if (sub.Name == "propertyset")
                 {
                     ret.PropertySetName = sub.Value;
                 }
-                else if (sub.NodeType == XmlNodeType.Element && sub.Name == "property")
+                else if (sub.Name == "property")
                 {
                     ret.PropertyName = sub.Value;
                 }
-                else if (sub.NodeType == XmlNodeType.Element && sub.Name == "value")
+                else if (sub.Name == "value")
                 {
                     ret.PropertyConstraint = GetConstraint(sub);
                 }
@@ -132,7 +132,7 @@ namespace Xbim.IDS
             IValueConstraint ret = null; 
             foreach (var sub in restriction.Elements())
             {
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "enumeration")
+                if (sub.Name == "enumeration")
                 {
                     if (!(ret is OneOfConstraint))
                         ret = new OneOfConstraint();
@@ -170,11 +170,11 @@ namespace Xbim.IDS
             foreach (var sub in elem.Elements())
             {
                 IFilter t = null;
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "entity")
+                if (sub.Name == "entity")
                 {
                     t = GetEntity(sub);
                 }
-                else if (sub.NodeType == XmlNodeType.Element && sub.Name == "classification")
+                else if (sub.Name == "classification")
                 {
                     t = GetClassification(sub);
                 }
@@ -196,13 +196,13 @@ namespace Xbim.IDS
             IfcClassificationQuery ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "system")
+                if (sub.Name == "system")
                 {
                     if (ret == null)
                         ret = new IfcClassificationQuery();
                     ret.ClassificationSystem = sub.Value;
                 }
-                else if (sub.NodeType == XmlNodeType.Element && sub.Name == "value")
+                else if (sub.Name == "value")
                 {
                     if (ret == null)
                         ret = new IfcClassificationQuery();
@@ -216,7 +216,7 @@ namespace Xbim.IDS
 		{
             foreach (var sub in elem.Elements())
             {
-                if (sub.NodeType == XmlNodeType.Element && sub.Name == "name")
+                if (sub.Name == "name")
                 {
                     var ret = new IfcTypeQuery();
                     ret.IfcType = sub.Value;
