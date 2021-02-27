@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<specification name="vaste wand, othername">
+	<applicability>
+		<entity>
+			<name>IfcWall</name>
+		</entity>
+		<classification>
+			<system>NL-Sfb</system>
+			<value>21.22</value>
+		</classification>
+	</applicability>
+	<requirements>
+		<property>
+			<propertyset>AedesUVIP</propertyset>
+			<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">Firerating</property>
+			<value>
+				<restriction base="string">
+					<enumeration value="30" />
+					<enumeration value="60" />
+					<enumeration value="90" />
+				</restriction>
+			</value>
+		</property>
+	</requirements>
+</specification>
