@@ -11,6 +11,10 @@ namespace Xbim.IDS.Tests
 		public void CanLoadBuildingSmartIdsFormat()
 		{
 			var s = Ids.FromBuildingSmartIDS(@"Files\bS\Example01.xml");
+			// Ids.ToBuildingSmartIDS("out.xml");
+
+			s = Ids.FromBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
+			// Ids.ToBuildingSmartIDS("out.xml");
 		}
 	}
 }

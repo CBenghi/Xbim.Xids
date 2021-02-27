@@ -7,7 +7,7 @@ Information delivery specifications for projects.
 - [ ] Persistence
 	- [ ] Native
 	- [ ] bS IDS
-		- [ ] Read
+		- [x] Read
 		- [ ] Write
 - [ ] Engine
 	- [ ] Reporting

@@ -1,7 +1,7 @@
 namespace Xbim.IDS
 {
-    public partial class HasQuantity
-    {
+    public partial class HasQuantity : IFacet
+	{
 		public string PropertySetName { get; set; }
 
 		public string QuantityName { get; set; }

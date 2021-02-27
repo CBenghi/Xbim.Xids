@@ -4,7 +4,7 @@ namespace Xbim.IDS
 {
 	public partial class Expectation
 	{
-		public ObservableCollection<IFacet> Facets { get; set; }
+		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
 		public string Reference { get; set; }
 

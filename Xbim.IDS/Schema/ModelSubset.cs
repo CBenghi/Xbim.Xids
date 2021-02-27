@@ -6,7 +6,7 @@ namespace Xbim.IDS
 {
 	public partial class ModelPart 
     {
-		public ObservableCollection<IFilter> Items { get; set; }
+		public ObservableCollection<IFilter> Items { get; set; } = new ObservableCollection<IFilter>();
 
 		public string Name { get; set; }
 

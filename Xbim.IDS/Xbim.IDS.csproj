@@ -73,6 +73,9 @@
     <Compile Include="Schema\Project.cs" />
     <Compile Include="Schema\Stakeholder.cs" />
     <Compile Include="Schema\Expectation.cs" />
+    <Compile Include="Schema\Values\OneOfConstraint.cs" />
+    <Compile Include="Schema\Values\ValueConstraint.cs" />
+    <Compile Include="Schema\Values\IValueConstraint.cs" />
     <Compile Include="UI\VM\ModelPartViewModel.cs" />
     <Compile Include="UI\VM\ReqList.cs" />
     <Page Include="MainWindow.xaml">

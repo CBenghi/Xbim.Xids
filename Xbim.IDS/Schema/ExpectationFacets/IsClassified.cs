@@ -1,6 +1,6 @@
 namespace Xbim.IDS
 {
-    public partial class IsClassified
+    public partial class IsClassified : IFacet
     {
 		public string ClassificationName { get; set; }
 
