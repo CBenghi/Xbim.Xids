@@ -1,3 +1,5 @@
+using System;
+
 namespace Xbim.IDS
 {
     public enum IfcPropertyQueryPropertyFormat
@@ -9,7 +11,7 @@ namespace Xbim.IDS
     }
 
 
-    public partial class IfcPropertyQuery : IFilter
+    public partial class IfcPropertyQuery : IFilter, IEquatable<IfcPropertyQuery>
     {
 		public string PropertySetName { get; set; }
 
@@ -23,5 +25,31 @@ namespace Xbim.IDS
         {
             return ToString();
         }
-	}
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as IfcPropertyQuery);
+        }
+
+        public override int GetHashCode()
+        {
+            return $"{PropertySetName}{PropertyName}{PropertyValue}{PropertyFormat}".GetHashCode();
+        }
+
+        public bool Equals(IfcPropertyQuery other)
+        {
+            if (other == null)
+                return false;
+
+            if (PropertySetName.ToLowerInvariant() != other.PropertySetName.ToLowerInvariant())
+                return false;
+            if (PropertyName.ToLowerInvariant() != other.PropertyName.ToLowerInvariant())
+                return false;
+            if (PropertyValue.ToLowerInvariant() != other.PropertyValue.ToLowerInvariant())
+                return false;
+            if (PropertyFormat != other.PropertyFormat)
+                return false;
+            return true;
+        }
+    }
 }

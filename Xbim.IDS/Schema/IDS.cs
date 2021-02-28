@@ -31,5 +31,20 @@ namespace Xbim.IDS
 		{
 			return ExpectationsRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
 		}
+
+		internal Expectation GetExpectation(List<ExpectationFacet> fs)
+		{
+			return ExpectationsRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
+		}
+
+		internal ModelPart GetModel(string guid)
+		{
+			return ModelSetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
+		}
+
+		internal ModelPart GetModel(List<IFilter> fs)
+		{
+			return ModelSetRepository.FirstOrDefault(x => x.Items.FilterMatch(fs));
+		}
 	}
 }

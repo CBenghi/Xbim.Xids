@@ -9,9 +9,7 @@ namespace Xbim.IDS
 	public partial class Expectation
 	{
 		public Expectation()
-		{
-
-		}
+		{ }
 
 		public Expectation(Ids ids)
 		{
@@ -24,17 +22,7 @@ namespace Xbim.IDS
 
 		private List<string> unresolvedIds;
 
-		private IEnumerable<string> FacetIds
-		{
-			get
-			{
-				return Facets.Select(x => x.Guid.ToString());
-			}
-			set
-			{
-				unresolvedIds = value.ToList();
-			}
-		}
+	
 
 
 		public string Reference { get; set; }

@@ -1,18 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Xbim.IDS
 {
-	public class OneOfConstraint : IValueConstraint
+	public class OneOfConstraint : IValueConstraint, IEquatable<OneOfConstraint>
 	{
-		private List<IValueConstraint> constraints;
+		public List<IValueConstraint> List { get; set; }
+
+		public bool Equals(OneOfConstraint other)
+		{
+			if (other == null)
+				return false;
+			var comp = new Tools.MultiSetComparer<IValueConstraint>();
+			return comp.Equals(this.List, other.List);
+		}
+
+		public override bool Equals(object obj)
+		{
+			return this.Equals(obj as OneOfConstraint);
+		}
+
+		public override int GetHashCode()
+		{
+			return ToString().GetHashCode();
+		}
 
 		public bool IsValid(object testObject)
 		{
-			foreach (var item in constraints)
+			foreach (var item in List)
 			{
 				if (item.IsValid(testObject))
 					return true;
@@ -24,10 +41,15 @@ namespace Xbim.IDS
 		{
 			if (tVal != null)
 			{
-				if (constraints == null)
-					constraints = new List<IValueConstraint>();
-				constraints.Add(tVal);
+				if (List == null)
+					List = new List<IValueConstraint>();
+				List.Add(tVal);
 			}
+		}
+
+		public override string ToString()
+		{
+			return string.Join("-", List);
 		}
 	}
 }

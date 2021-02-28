@@ -23,7 +23,7 @@ namespace Xbim.IDS
 				return null;
             var main = XElement.Parse(File.ReadAllText(fileName));
 
-            if (main.Name == "specifications")
+            if (main.Name.LocalName == "ids")
             {
                 var ret = new Ids();
                 var grp = new RequirementsCollection();
@@ -31,27 +31,17 @@ namespace Xbim.IDS
 
                 foreach (var sub in main.Elements())
                 {
-                    if (sub.Name == "specification")
+                    if (sub.Name.LocalName == "specification")
                     {
-                        AddSpecfication(ret, grp, sub);
+                        AddSpecification(ret, grp, sub);
                     }
                 }
-
-                AddSpecfication(ret, grp, main);
-                return ret;
-            }
-            else if (main.Name == "specification")
-			{
-                var ret = new Ids();
-                var grp = new RequirementsCollection();
-                ret.RequirementGroups.Add(grp);
-                AddSpecfication(ret, grp, main);
                 return ret;
             }
             return null;
         }
 
-        private static void AddSpecfication(Ids ids, RequirementsCollection destGroup, XElement spec)
+        private static void AddSpecification(Ids ids, RequirementsCollection destGroup, XElement spec)
         {
             var req = new Requirement(ids);
             destGroup.Requirements.Add(req);
@@ -60,53 +50,29 @@ namespace Xbim.IDS
                 req.Name = nm.Value;
 			foreach (var elem in spec.Elements())
 			{
-                if (elem.Name == "applicability")
+                if (elem.Name.LocalName == "applicability")
                 {
-                    AddSelection(req, elem);
+                    AddApplicability(req, elem);
                 }
-                else if (elem.Name == "requirements")
+                else if (elem.Name.LocalName == "requirements")
                 {
-                    AddExpectation(req, elem);
+                    AddRequirements(req, elem);
                 }
             }
         }
 
-        private static void AddExpectation(Requirement req, XElement elem)
-        {
-            List<ExpectationFacet> fs = new List<ExpectationFacet>();
-            foreach (var sub in elem.Elements())
-            {
-                ExpectationFacet t = null;
-                if (sub.Name == "property")
-                {
-                    t = GetProperty(sub);
-                }
-                else if (sub.Name == "classification")
-                {
-                    // t = GetClassification(elem);
-                }
-                if (t != null)
-                {
-                    if (t.Validate())
-                        fs.Add(t);
-                }
-            }
-            if (fs.Any())
-            {
-                req.AddExpectations(fs);
-            }
-        }
+       
 
 		private static ExpectationFacet GetProperty(XElement elem)
 		{
             HasProperty ret = new HasProperty();
             foreach (var sub in elem.Elements())
             {
-                if (sub.Name == "propertyset")
+                if (sub.Name.LocalName == "propertyset")
                 {
                     ret.PropertySetName = sub.Value;
                 }
-                else if (sub.Name == "property")
+                else if (sub.Name.LocalName == "property")
                 {
                     ret.PropertyName = sub.Value;
                     var href = sub.Attribute("href");
@@ -115,7 +81,7 @@ namespace Xbim.IDS
                         ret.Uri = new Uri(href.Value);
 					}
                 }
-                else if (sub.Name == "value")
+                else if (sub.Name.LocalName == "value")
                 {
                     ret.PropertyConstraint = GetConstraint(sub);
                 }
@@ -125,26 +91,27 @@ namespace Xbim.IDS
 
 		private static IValueConstraint GetConstraint(XElement elem)
 		{
-            var restriction = elem.Element("restriction");
+            XNamespace ns = "http://www.w3.org/2001/XMLSchema";
+            var restriction = elem.Element(ns + "restriction");
             if (restriction == null)
                 return null;
             Type t = null;
             var bse = restriction.Attribute("base");
             if (bse != null && bse.Value != null)
             {
-                if (bse.Value == "string")
+                if (bse.Value == "xs:string")
                     t = typeof(string);
-                else if (bse.Value == "integer")
+                else if (bse.Value == "xs:integer")
                     t = typeof(int);
-                else if (bse.Value == "boolean")
+                else if (bse.Value == "xs:boolean")
                     t = typeof(bool);
-                else if (bse.Value == "double")
+                else if (bse.Value == "xs:double")
                     t = typeof(double);
-                else if (bse.Value == "date")
+                else if (bse.Value == "xs:date")
                     t = typeof(DateTime);
-                else if (bse.Value == "time")
+                else if (bse.Value == "xs:time")
                     t = typeof(DateTime);
-                else if (bse.Value == "anyURI")
+                else if (bse.Value == "xs:anyURI")
                     t = typeof(string);
                 // todo: 2021: evaluate more types?
                 // see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
@@ -153,7 +120,7 @@ namespace Xbim.IDS
             IValueConstraint ret = null; 
             foreach (var sub in restriction.Elements())
             {
-                if (sub.Name == "enumeration")
+                if (sub.Name.LocalName == "enumeration")
                 {
                     if (!(ret is OneOfConstraint))
                         ret = new OneOfConstraint();
@@ -167,7 +134,7 @@ namespace Xbim.IDS
                     }
                 }
             }
-            return null;
+            return ret;
 		}
 
 		private static IValueConstraint GetValue(string value, Type t)
@@ -185,17 +152,43 @@ namespace Xbim.IDS
             return null;
         }
 
-		private static void AddSelection(Requirement e, XElement elem)
+        private static void AddRequirements(Requirement req, XElement elem)
+        {
+            List<ExpectationFacet> fs = new List<ExpectationFacet>();
+            foreach (var sub in elem.Elements())
+            {
+                ExpectationFacet t = null;
+                if (sub.Name.LocalName == "property")
+                {
+                    t = GetProperty(sub);
+                }
+                else if (sub.Name.LocalName == "classification")
+                {
+                    // t = GetClassification(elem);
+                }
+                if (t != null)
+                {
+                    if (t.Validate())
+                        fs.Add(t);
+                }
+            }
+            if (fs.Any())
+            {
+                req.SetExpectations(fs);
+            }
+        }
+
+        private static void AddApplicability(Requirement e, XElement elem)
 		{
             List<IFilter> fs = new List<IFilter>();
             foreach (var sub in elem.Elements())
             {
                 IFilter t = null;
-                if (sub.Name == "entity")
+                if (sub.Name.LocalName == "entity")
                 {
                     t = GetEntity(sub);
                 }
-                else if (sub.Name == "classification")
+                else if (sub.Name.LocalName == "classification")
                 {
                     t = GetClassification(sub);
                 }
@@ -204,11 +197,7 @@ namespace Xbim.IDS
             }
             if (fs.Any())
 			{
-                e.ModelSubset = new ModelPart();
-				foreach (var item in fs)
-				{
-                    e.ModelSubset.Items.Add(item);
-                }
+                e.SetFilters(fs);
 			}
         }
 
@@ -217,13 +206,13 @@ namespace Xbim.IDS
             IfcClassificationQuery ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (sub.Name == "system")
+                if (sub.Name.LocalName == "system")
                 {
                     if (ret == null)
                         ret = new IfcClassificationQuery();
                     ret.ClassificationSystem = sub.Value;
                 }
-                else if (sub.Name == "value")
+                else if (sub.Name.LocalName == "value")
                 {
                     if (ret == null)
                         ret = new IfcClassificationQuery();
@@ -237,7 +226,7 @@ namespace Xbim.IDS
 		{
             foreach (var sub in elem.Elements())
             {
-                if (sub.Name == "name")
+                if (sub.Name.LocalName == "name")
                 {
 					return new IfcTypeQuery
 					{

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,7 @@ namespace Xbim.IDS
 				NullValueHandling = NullValueHandling.Ignore,
 				TypeNameHandling = TypeNameHandling.Auto
 			};
+			serializer.Converters.Add(new StringEnumConverter());
 #if DEBUG
 			serializer.Formatting = Formatting.Indented;
 #endif 
@@ -36,8 +38,9 @@ namespace Xbim.IDS
 				var serializer = new JsonSerializer
 				{
 					NullValueHandling = NullValueHandling.Ignore,
-					TypeNameHandling = TypeNameHandling.Auto
+					TypeNameHandling = TypeNameHandling.Auto,			
 				};
+				serializer.Converters.Add(new StringEnumConverter());
 				Ids unpersisted = (Ids)serializer.Deserialize(file, typeof(Ids));
 				foreach (var req in unpersisted.AllRequirements())
 				{

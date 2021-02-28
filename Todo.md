@@ -5,7 +5,7 @@ Information delivery specifications for projects.
 - [ ] Structure
 	- [x] Classes
 - [ ] Persistence
-	- [ ] Native
+	- [x] Native
 	- [ ] bS IDS
 		- [x] Read
 		- [ ] Write

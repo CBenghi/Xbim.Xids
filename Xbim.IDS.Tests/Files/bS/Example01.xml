@@ -1,25 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<specification name="vaste wand, othername">
-	<applicability>
-		<entity>
-			<name>IfcWall</name>
-		</entity>
-		<classification>
-			<system>NL-Sfb</system>
-			<value>21.22</value>
-		</classification>
-	</applicability>
-	<requirements>
-		<property>
-			<propertyset>AedesUVIP</propertyset>
-			<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">Firerating</property>
-			<value>
-				<restriction base="string">
-					<enumeration value="30" />
-					<enumeration value="60" />
-					<enumeration value="90" />
-				</restriction>
-			</value>
-		</property>
-	</requirements>
-</specification>
+<ids xmlns="http://standards.buildingsmart.org/IDS/todo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<specification name="vaste wand, othername">
+		<applicability>
+			<entity>
+				<name>IfcWall</name>
+			</entity>
+			<classification>
+				<system>NL-Sfb</system>
+				<value>21.22</value>
+			</classification>
+		</applicability>
+		<requirements>
+			<property>
+				<propertyset>AedesUVIP</propertyset>
+				<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">Firerating</property>
+				<value>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="30" />
+						<xs:enumeration value="60" />
+						<xs:enumeration value="90" />
+					</xs:restriction>
+				</value>
+			</property>
+		</requirements>
+	</specification>
+	<specification name="vaste wand, othername">
+		<applicability>
+			<entity>
+				<name>IfcSpace</name>
+			</entity>
+		</applicability>
+		<requirements>
+			<property>
+				<propertyset>PSet_Revit_Identity Data</propertyset>
+				<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">Name</property>
+				<value>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Living Room" />
+						<xs:enumeration value="Kitchen" />
+					</xs:restriction>
+				</value>
+			</property>
+		</requirements>
+	</specification>
+</ids>

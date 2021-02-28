@@ -59,7 +59,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Io\Ids.Io.json.cs" />
-    <Compile Include="Schema\ExpectationFacets\ITest.cs" />
+    <Compile Include="Schema\ExpectationFacets\ExpectationFacet.cs" />
     <Compile Include="Io\Ids.Io.xml.cs" />
     <Compile Include="Schema\SelectionFacets\IFilter.cs" />
     <Compile Include="Schema\ExpectationFacets\HasDocumentReference.cs" />
@@ -78,8 +78,10 @@
     <Compile Include="Schema\Stakeholder.cs" />
     <Compile Include="Schema\Expectation.cs" />
     <Compile Include="Schema\Values\OneOfConstraint.cs" />
+    <Compile Include="Schema\Values\TypeNames.cs" />
     <Compile Include="Schema\Values\ValueConstraint.cs" />
     <Compile Include="Schema\Values\IValueConstraint.cs" />
+    <Compile Include="Tools\MultiSetComparer.cs" />
     <Compile Include="UI\VM\ModelPartViewModel.cs" />
     <Compile Include="UI\VM\ReqList.cs" />
     <Page Include="MainWindow.xaml">

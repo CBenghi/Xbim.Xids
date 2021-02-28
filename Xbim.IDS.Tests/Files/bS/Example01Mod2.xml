@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<specifications>
+<ids xmlns="http://standards.buildingsmart.org/IDS/todo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<specification name="vaste wand, othername">
+		<!-- Same applicabilty than 'othername 2' -->
 		<applicability>
 			<entity>
 				<name>IfcWall</name>
@@ -15,19 +16,43 @@
 				<propertyset>AedesUVIP</propertyset>
 				<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">Firerating</property>
 				<value>
-					<restriction base="string">
-						<enumeration value="30" />
-						<enumeration value="60" />
-						<enumeration value="90" />
-					</restriction>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="30" />
+						<xs:enumeration value="60" />
+						<xs:enumeration value="90" />
+					</xs:restriction>
 				</value>
 			</property>
 		</requirements>
 	</specification>
-	<specification name="vaste wand, othername">
+	<specification name="othername 2">
 		<applicability>
 			<entity>
 				<name>IfcWall</name>
+			</entity>
+			<classification>
+				<system>NL-Sfb</system>
+				<value>21.22</value>
+			</classification>
+		</applicability>
+		<requirements>
+			<!-- Same property than othername 3-->
+			<property>
+				<propertyset>AedesUVIP2</propertyset>
+				<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">FireRating</property>
+				<value>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="60" />
+						<xs:enumeration value="90" />
+					</xs:restriction>
+				</value>
+			</property>
+		</requirements>
+	</specification>
+	<specification name="othername 3">
+		<applicability>
+			<entity>
+				<name>IfcWallStandardCase</name>
 			</entity>
 			<classification>
 				<system>NL-Sfb</system>
@@ -39,12 +64,12 @@
 				<propertyset>AedesUVIP2</propertyset>
 				<property href="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/FireRating">FireRating</property>
 				<value>
-					<restriction base="string">
-						<enumeration value="60" />
-						<enumeration value="90" />
-					</restriction>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="60" />
+						<xs:enumeration value="90" />
+					</xs:restriction>
 				</value>
 			</property>
 		</requirements>
 	</specification>
-</specifications>
+</ids>

@@ -6,6 +6,15 @@ namespace Xbim.IDS
 {
 	public partial class ModelPart 
     {
+		public ModelPart()
+		{ }
+
+		public ModelPart(Ids ids)
+		{
+			ids.ModelSetRepository.Add(this);
+			Guid = System.Guid.NewGuid().ToString();
+		}
+
 		public ObservableCollection<IFilter> Items { get; set; } = new ObservableCollection<IFilter>();
 
 		public string Name { get; set; }
