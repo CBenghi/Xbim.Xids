@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Xbim.IDS
 {
-	public interface IFacet
+	abstract public class ExpectationFacet
 	{
+		public Uri Uri { get; set; }
+		public Guid Guid { get; set; }
+		public abstract bool Validate();
+
+		
 	}
 }

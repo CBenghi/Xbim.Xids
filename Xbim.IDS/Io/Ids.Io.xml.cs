@@ -21,9 +21,26 @@ namespace Xbim.IDS
 		{
 			if (!File.Exists(fileName))
 				return null;
-
             var main = XElement.Parse(File.ReadAllText(fileName));
-            if (main.Name == "specification")
+
+            if (main.Name == "specifications")
+            {
+                var ret = new Ids();
+                var grp = new RequirementsCollection();
+                ret.RequirementGroups.Add(grp);
+
+                foreach (var sub in main.Elements())
+                {
+                    if (sub.Name == "specification")
+                    {
+                        AddSpecfication(ret, grp, sub);
+                    }
+                }
+
+                AddSpecfication(ret, grp, main);
+                return ret;
+            }
+            else if (main.Name == "specification")
 			{
                 var ret = new Ids();
                 var grp = new RequirementsCollection();
@@ -36,7 +53,7 @@ namespace Xbim.IDS
 
         private static void AddSpecfication(Ids ids, RequirementsCollection destGroup, XElement spec)
         {
-            var req = new Requirement();
+            var req = new Requirement(ids);
             destGroup.Requirements.Add(req);
             var nm = spec.Attribute("name");
             if (nm != null)
@@ -56,10 +73,10 @@ namespace Xbim.IDS
 
         private static void AddExpectation(Requirement req, XElement elem)
         {
-            List<IFacet> fs = new List<IFacet>();
+            List<ExpectationFacet> fs = new List<ExpectationFacet>();
             foreach (var sub in elem.Elements())
             {
-                IFacet t = null;
+                ExpectationFacet t = null;
                 if (sub.Name == "property")
                 {
                     t = GetProperty(sub);
@@ -69,19 +86,18 @@ namespace Xbim.IDS
                     // t = GetClassification(elem);
                 }
                 if (t != null)
-                    fs.Add(t);
+                {
+                    if (t.Validate())
+                        fs.Add(t);
+                }
             }
             if (fs.Any())
             {
-                req.Need = new Expectation();
-                foreach (var item in fs)
-                {
-                    req.Need.Facets.Add(item);
-                }
+                req.AddExpectations(fs);
             }
         }
 
-		private static IFacet GetProperty(XElement elem)
+		private static ExpectationFacet GetProperty(XElement elem)
 		{
             HasProperty ret = new HasProperty();
             foreach (var sub in elem.Elements())
@@ -93,6 +109,11 @@ namespace Xbim.IDS
                 else if (sub.Name == "property")
                 {
                     ret.PropertyName = sub.Value;
+                    var href = sub.Attribute("href");
+                    if (href != null)
+					{
+                        ret.Uri = new Uri(href.Value);
+					}
                 }
                 else if (sub.Name == "value")
                 {
@@ -218,10 +239,12 @@ namespace Xbim.IDS
             {
                 if (sub.Name == "name")
                 {
-                    var ret = new IfcTypeQuery();
-                    ret.IfcType = sub.Value;
-                    ret.IncludeSubtypes = false;
-                    return ret;
+					return new IfcTypeQuery
+					{
+						IfcType = sub.Value,
+						IncludeSubtypes = false
+					};
+					
                 }
             }
             return null;
