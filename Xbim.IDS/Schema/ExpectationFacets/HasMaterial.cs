@@ -5,6 +5,10 @@ namespace Xbim.IDS
 	{
 		public string MaterialName { get; set; }
 
+		public override string Short()
+		{
+			return ToString();
+		}
 		public bool Equals(HasMaterial other)
 		{
 			if (other == null)

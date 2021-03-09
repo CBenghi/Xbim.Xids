@@ -30,6 +30,10 @@ namespace Xbim.IDS
 			return base.Equals(other as ExpectationFacet);
 		}
 
+		public override string Short()
+		{
+			return ToString();
+		}
 		public override bool Equals(object obj)
 		{
 			return this.Equals(obj as HasProperty);

@@ -4,6 +4,10 @@ namespace Xbim.IDS
 {
     public partial class IsClassified : ExpectationFacet, IEquatable<IsClassified>
 	{
+		public override string Short()
+		{
+			return ToString();
+		}
 		public string ClassificationName { get; set; }
 
 		public string ClassificationValue { get; set; }

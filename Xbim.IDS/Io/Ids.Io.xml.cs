@@ -10,14 +10,14 @@ using System.Xml.Linq;
 
 namespace Xbim.IDS
 {
-	public partial class Ids
+	public partial class IDS
 	{
         public static void ToBuildingSmartIDS(string fileName)
 		{
 
 		}
 
-        public static Ids FromBuildingSmartIDS(string fileName)
+        public static IDS FromBuildingSmartIDS(string fileName)
 		{
 			if (!File.Exists(fileName))
 				return null;
@@ -25,7 +25,7 @@ namespace Xbim.IDS
 
             if (main.Name.LocalName == "ids")
             {
-                var ret = new Ids();
+                var ret = new IDS();
                 var grp = new RequirementsCollection();
                 ret.RequirementGroups.Add(grp);
 
@@ -41,7 +41,7 @@ namespace Xbim.IDS
             return null;
         }
 
-        private static void AddSpecification(Ids ids, RequirementsCollection destGroup, XElement spec)
+        private static void AddSpecification(IDS ids, RequirementsCollection destGroup, XElement spec)
         {
             var req = new Requirement(ids);
             destGroup.Requirements.Add(req);
@@ -72,7 +72,11 @@ namespace Xbim.IDS
                 {
                     ret.PropertySetName = sub.Value;
                 }
-                else if (sub.Name.LocalName == "property")
+                else if (
+                    sub.Name.LocalName == "name"
+                    ||
+                    sub.Name.LocalName == "property"
+                    )
                 {
                     ret.PropertyName = sub.Value;
                     var href = sub.Attribute("href");

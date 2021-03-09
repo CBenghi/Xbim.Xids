@@ -3,11 +3,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Xbim.IDS.Schema.Collections;
 
 namespace Xbim.IDS
 {
-    public partial class Ids
+    public partial class IDS
     {
+		public Requirement NewRequirement()
+		{
+			return new Requirement(this)
+			{
+				ModelSubset = new ModelPart(this),
+				Need = new Expectation(this)
+			};
+		}
+
+		public IDS()
+		{
+			ModelSetRepository = new ModelPartCollection(this);
+		}
+
 		public IEnumerable<Requirement> AllRequirements()
 		{
 			foreach (var rg in RequirementGroups)
@@ -21,11 +36,11 @@ namespace Xbim.IDS
 
 		public Project Project { get; set; } = new Project();
 
-		public ObservableCollection<ModelPart> ModelSetRepository { get; set; } = new ObservableCollection<ModelPart>();
+		public ModelPartCollection ModelSetRepository { get; set; } 
 
-		public ObservableCollection<Expectation> ExpectationsRepository { get; set; } = new ObservableCollection<Expectation>();
+		public List<Expectation> ExpectationsRepository { get; set; } = new List<Expectation>();
 
-		public ObservableCollection<RequirementsCollection> RequirementGroups { get; set; } = new ObservableCollection<RequirementsCollection>();
+		public List<RequirementsCollection> RequirementGroups { get; set; } = new List<RequirementsCollection>();
 
 		internal Expectation GetExpectation(string guid)
 		{

@@ -9,7 +9,7 @@ namespace Xbim.IDS
 		public ModelPart()
 		{ }
 
-		public ModelPart(Ids ids)
+		public ModelPart(IDS ids)
 		{
 			ids.ModelSetRepository.Add(this);
 			Guid = System.Guid.NewGuid().ToString();

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,30 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Xbim.IDS.UI.VM;
 
-namespace Xbim.IDS
+namespace Xbim.IDS.UI
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for ExpectationEditor.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class ExpectationEditor : Window
 	{
-		public MainWindow()
+		public ExpectationEditor()
 		{
 			InitializeComponent();
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			DirectoryInfo d = new DirectoryInfo(".");
-			Debug.WriteLine(d.FullName);
-			var ids = IDS.FromBuildingSmartIDS(@"..\..\..\Xbim.IDS.Tests\Files\bS\Example01.xml");
-			DataContext = new ReqGrpVM(ids.RequirementGroups.FirstOrDefault(), ids);
+			Close();
 		}
-
-		
 	}
 }

@@ -14,22 +14,23 @@ namespace Xbim.IDS
 {
     public partial class Requirement
     {
-		private Ids ids;
+		private IDS ids;
 
+		[Obsolete("Only for persistence, use the constructor that passes the IDS, instead.")]
 		public Requirement()
 		{
 		}
 
-		public Requirement(Ids ids)
+		public Requirement(IDS ids)
 		{
 			this.ids = ids;
 		}
 
-		public ObservableCollection<string> Stages { get; set; }
+		public List<string> Stages { get; set; }
 
 		public Stakeholder Provider { get; set; }
 
-		public ObservableCollection<Stakeholder> Consumer { get; set; }
+		public List<Stakeholder> Consumer { get; set; }
 
 		public string Name { get; set; }
 
@@ -90,7 +91,7 @@ namespace Xbim.IDS
 			}
 		}
 
-		internal void SetIds(Ids unpersisted)
+		internal void SetIds(IDS unpersisted)
 		{
 			ids = unpersisted;
 			var t = unpersisted.GetExpectation(needId);
@@ -101,7 +102,5 @@ namespace Xbim.IDS
 			if (m != null)
 				ModelSubset = m;
 		}
-
-		
 	}
 }

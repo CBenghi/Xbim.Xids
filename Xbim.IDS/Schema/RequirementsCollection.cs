@@ -7,19 +7,18 @@ using System.Xml.Schema;
 using System.ComponentModel;
 using System.Xml;
 using System.Collections.ObjectModel;
-
+using System.Collections.Generic;
 
 namespace Xbim.IDS
 {
     public partial class RequirementsCollection
     {
-
-		public ObservableCollection<string> Stage { get; set; }
+		public List<string> Stage { get; set; }
 
 		public Stakeholder Provider { get; set; }
 
-		public ObservableCollection<Stakeholder> Consumer { get; set; }
+		public List<Stakeholder> Consumer { get; set; }
 
-		public ObservableCollection<Requirement> Requirements { get; set; } = new ObservableCollection<Requirement>();
+		public List<Requirement> Requirements { get; set; } = new List<Requirement>();
 	}
 }

@@ -38,7 +38,10 @@ namespace Xbim.IDS
 		}
 
 		public abstract bool Validate();
+
+		public abstract string Short();
 	}
+
 	public static class ExpectationExtensions
 	{
 		public static bool FilterMatch(this IEnumerable<ExpectationFacet> one, IEnumerable<ExpectationFacet> other)

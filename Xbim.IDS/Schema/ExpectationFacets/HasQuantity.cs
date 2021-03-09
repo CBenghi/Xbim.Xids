@@ -3,6 +3,10 @@ namespace Xbim.IDS
 {
     public partial class HasQuantity : ExpectationFacet, IEquatable<HasQuantity>
 	{
+		public override string Short()
+		{
+			return ToString();
+		}
 		public string PropertySetName { get; set; }
 
 		public string QuantityName { get; set; }

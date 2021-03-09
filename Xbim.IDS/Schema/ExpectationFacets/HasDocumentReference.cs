@@ -32,6 +32,11 @@ namespace Xbim.IDS
 			return $"{DocumentName}-{DocumentStatus}-{RequiredAttributes}".GetHashCode();
 		}
 
+		public override string Short()
+		{
+			return ToString();
+		}
+
 		public override bool Validate()
 		{
 			// Strictly speaking we only need DocumentName

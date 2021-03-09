@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Xbim.IDS
 {
-	public partial class Ids
+	public partial class IDS
 	{
 		public void SaveAsJson(string destinationFile)
 		{
@@ -31,7 +31,7 @@ namespace Xbim.IDS
 			}
 		}
 
-		public static Ids LoadFromJson(string sourceFile)
+		public static IDS LoadFromJson(string sourceFile)
 		{
 			using (StreamReader file = File.OpenText(sourceFile))
 			{
@@ -41,7 +41,7 @@ namespace Xbim.IDS
 					TypeNameHandling = TypeNameHandling.Auto,			
 				};
 				serializer.Converters.Add(new StringEnumConverter());
-				Ids unpersisted = (Ids)serializer.Deserialize(file, typeof(Ids));
+				IDS unpersisted = (IDS)serializer.Deserialize(file, typeof(IDS));
 				foreach (var req in unpersisted.AllRequirements())
 				{
 					req.SetIds(unpersisted);
