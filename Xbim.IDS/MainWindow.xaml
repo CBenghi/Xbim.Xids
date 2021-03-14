@@ -32,10 +32,7 @@
 				<DataGridTemplateColumn Header="Last">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<UI:UserControl1 
-								MyOwnDPIDeclaredInMyUc="{Binding Need, UpdateSourceTrigger=PropertyChanged}" 
-								Exp="{Binding Exp}"
-								/>
+							<UI:ExpSmall />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>

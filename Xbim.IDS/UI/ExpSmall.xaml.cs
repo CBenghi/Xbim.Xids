@@ -10,35 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Xbim.IDS.UI
 {
 	/// <summary>
-	/// Interaction logic for ExpectationEditor.xaml
+	/// Interaction logic for ExpSmall.xaml
 	/// </summary>
-	public partial class ExpectationEditor : Window
+	public partial class ExpSmall : UserControl
 	{
-		private Expectation exp;
-
-		public ExpectationEditor()
+		public ExpSmall()
 		{
 			InitializeComponent();
-		}
-
-		public Expectation Exp
-		{
-			get => exp;
-			internal set
-			{
-				exp = value;
-				this.DataContext = exp;
-			}
-		}
-
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			Close();
 		}
 	}
 }

@@ -5,14 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Xbim.IDS.UI"
         mc:Ignorable="d"
-        Title="ExpectationEditor" Height="214.5" Width="300.5">
+        Title="ExpectationEditor" Height="247.833" Width="364.5">
 	<Grid>
-		<TextBox 
-			Text="{Binding Name}" Height="23" Margin="87,13,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 		<Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
 		<TextBox 
-	  Text="{Binding Description}" Height="23" Margin="87,39,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+			Text="{Binding Name}" Height="23" Margin="87,13,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
 		<Label Content="Description" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top"/>
+		<TextBox 
+			Text="{Binding Description}" Height="23" Margin="87,39,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+		<DataGrid Margin="16,67,10,35" 
+				  ItemsSource="{Binding Facets}"
+				  >
+			
+			
+		</DataGrid>
+
+
 		<Button Content="Ok" Margin="0,0,10,10" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="Button_Click"/>
 	</Grid>
 </Window>

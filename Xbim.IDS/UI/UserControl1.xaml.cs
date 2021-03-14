@@ -38,7 +38,6 @@ namespace Xbim.IDS.UI
 			set
 			{
 				SetValue(MyOwnDPIDeclaredInMyUcProperty, value);
-
 			}
 		}
 

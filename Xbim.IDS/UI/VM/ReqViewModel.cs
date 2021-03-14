@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xbim.IDS.UI.mvvm;
 
 namespace Xbim.IDS.UI.VM
 {
-	class ReqViewModel : INotifyPropertyChanged
+	class ReqViewModel : ViewModelBase
 	{
 		private Requirement requirement;
 		
@@ -16,15 +18,14 @@ namespace Xbim.IDS.UI.VM
 			requirement = item;
 		}
 
-		public DateTime LaData { get; set; } = DateTime.Now;
-
 		public string ModelPart
 		{
 			get
 			{
 				return requirement.ModelSubset.Short();
 			}
-			set {
+			set
+			{
 				Change();
 			}
 		}
@@ -43,10 +44,32 @@ namespace Xbim.IDS.UI.VM
 
 		private void Change()
 		{
-			NotifyPropertyChanged("Need");
 			NotifyPropertyChanged("ModelPart");
-			LaData = DateTime.Now;
-			NotifyPropertyChanged("LaData");
+
+			NotifyPropertyChanged("Need");
+			NotifyPropertyChanged("Exp");
+		}
+
+		private ICommand editExpectationCommand;
+		public ICommand EditExpectationCommand
+		{
+			get
+			{
+				if (editExpectationCommand == null)
+				{
+					editExpectationCommand = new ActionCommand(parameter => EditExpectation());
+				}
+				return editExpectationCommand;
+			}
+		}
+
+		private void EditExpectation()
+		{
+			var t = new ExpectationEditor();
+			t.Exp = Exp;
+			t.ShowDialog();
+			NotifyPropertyChanged("Need");
+			NotifyPropertyChanged("Exp");
 		}
 
 		public Expectation Exp
@@ -62,11 +85,5 @@ namespace Xbim.IDS.UI.VM
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		protected void NotifyPropertyChanged(String info)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
-		}
 	}
 }

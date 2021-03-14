@@ -6,13 +6,14 @@ using Xbim.IDS.UI.mvvm;
 
 namespace Xbim.IDS.UI.VM
 {
-	internal class ReqGrpVM
+	internal class ReqGrpVM : ViewModelBase
 	{
 		private RequirementsCollection requirementsCollection;
 
-		private ICommand addRequirementCommand;
+		
 		private IDS ids;
 
+		private ICommand addRequirementCommand;
 		public ICommand AddRequirementCommand
 		{
 			get

@@ -64,6 +64,12 @@
     <Compile Include="UI\ExpectationEditor.xaml.cs">
       <DependentUpon>ExpectationEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\NeedSmall.xaml.cs">
+      <DependentUpon>NeedSmall.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ExpSmall.xaml.cs">
+      <DependentUpon>ExpSmall.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\mvvm\ActionCommand.cs" />
     <Compile Include="UI\mvvm\ViewModelBase.cs" />
     <Compile Include="UI\UserControl1.xaml.cs">
@@ -107,6 +113,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\ExpectationEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\NeedSmall.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ExpSmall.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
