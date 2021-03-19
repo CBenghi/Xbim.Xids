@@ -14,9 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Xbim.IDS.UI.VM;
+using Xbim.Xids.UI.VM;
 
-namespace Xbim.IDS
+namespace Xbim.Xids
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -32,7 +32,7 @@ namespace Xbim.IDS
 		{
 			DirectoryInfo d = new DirectoryInfo(".");
 			Debug.WriteLine(d.FullName);
-			var ids = IDS.FromBuildingSmartIDS(@"..\..\..\Xbim.IDS.Tests\Files\bS\Example01.xml");
+			var ids = Xids.FromBuildingSmartIDS(@"..\..\..\Xbim.IDS.Tests\Files\bS\Example01.xml");
 			DataContext = new ReqGrpVM(ids.RequirementGroups.FirstOrDefault(), ids);
 		}
 

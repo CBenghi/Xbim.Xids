@@ -2,16 +2,16 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using Xbim.IDS.UI.mvvm;
+using Xbim.Xids.UI.mvvm;
 
-namespace Xbim.IDS.UI.VM
+namespace Xbim.Xids.UI.VM
 {
 	internal class ReqGrpVM : ViewModelBase
 	{
 		private RequirementsCollection requirementsCollection;
 
 		
-		private IDS ids;
+		private Xids ids;
 
 		private ICommand addRequirementCommand;
 		public ICommand AddRequirementCommand
@@ -32,7 +32,7 @@ namespace Xbim.IDS.UI.VM
 			Reqs.Add(new ReqViewModel(t));
 		}
 
-		public ReqGrpVM(RequirementsCollection requirementsCollection, IDS ids)
+		public ReqGrpVM(RequirementsCollection requirementsCollection, Xids ids)
 		{
 			this.requirementsCollection = requirementsCollection;
 			this.ids = ids;

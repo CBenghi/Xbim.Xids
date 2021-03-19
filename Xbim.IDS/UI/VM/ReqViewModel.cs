@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xbim.IDS.UI.mvvm;
+using Xbim.Xids.UI.mvvm;
 
-namespace Xbim.IDS.UI.VM
+namespace Xbim.Xids.UI.VM
 {
 	class ReqViewModel : ViewModelBase
 	{
@@ -65,8 +65,10 @@ namespace Xbim.IDS.UI.VM
 
 		private void EditExpectation()
 		{
-			var t = new ExpectationEditor();
-			t.Exp = Exp;
+			var t = new ExpectationEditor
+			{
+				Exp = Exp
+			};
 			t.ShowDialog();
 			NotifyPropertyChanged("Need");
 			NotifyPropertyChanged("Exp");

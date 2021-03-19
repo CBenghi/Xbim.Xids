@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Xbim.IDS.UI.mvvm
+namespace Xbim.Xids.UI.mvvm
 {
 	public class ActionCommand : ICommand
     {
@@ -20,7 +20,7 @@ namespace Xbim.IDS.UI.mvvm
 
         bool ICommand.CanExecute(object parameter)
         {
-            return canExecute == null ? true : canExecute(parameter);
+            return canExecute == null || canExecute(parameter);
         }
 
         event EventHandler ICommand.CanExecuteChanged

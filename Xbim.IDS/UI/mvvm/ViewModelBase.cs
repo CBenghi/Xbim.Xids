@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xbim.IDS.UI.mvvm
+namespace Xbim.Xids.UI.mvvm
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

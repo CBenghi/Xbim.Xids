@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Xbim.IDS.Tests
+namespace Xbim.Xids.Tests
 {
 	[TestClass]
 	public class BuildingSmartIdsTests
@@ -10,7 +10,7 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void ReusesAapplicability()
 		{
-			var s = IDS.FromBuildingSmartIDS(@"Example01Mod2.xml");
+			var s = Xids.FromBuildingSmartIDS(@"Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			Assert.AreEqual(2, s.ModelSetRepository.Count);
 		}
@@ -19,7 +19,7 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void ReusesExpectation()
 		{
-			var s = IDS.FromBuildingSmartIDS(@"Example01Mod2.xml");
+			var s = Xids.FromBuildingSmartIDS(@"Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			Assert.AreEqual(2, s.ExpectationsRepository.Count);
 		}
@@ -28,31 +28,31 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void CanLoadBuildingSmartIdsFormats()
 		{
-			var s = IDS.FromBuildingSmartIDS(@"Files\bS\Example01.xml");
+			var s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01.xml");
 			AssertOk(s);
 			
-			s = IDS.FromBuildingSmartIDS(@"Files\bS\Example02.xml");
+			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example02.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 
 
-			s = IDS.FromBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
+			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 
-			s = IDS.FromBuildingSmartIDS(@"Files\bS\Example01Mod2.xml");
+			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 
 			var jFile = @"..\..\out.json";
 			var jFile2 = @"..\..\out2.json";
 			s.SaveAsJson(jFile);
-			var unp = IDS.LoadFromJson(jFile);
+			var unp = Xids.LoadFromJson(jFile);
 			Assert.IsNotNull(unp);
 			unp.SaveAsJson(jFile2);
 		}
 
-		private void AssertOk(IDS s)
+		private void AssertOk(Xids s)
 		{
 			Assert.IsNotNull(s);
 			foreach (var req in s.AllRequirements())

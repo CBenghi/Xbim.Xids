@@ -5,6 +5,7 @@ Information delivery specifications for projects.
 - [ ] Architecture
 	- [ ] Xbim.Xids
 		- [ ] multi-target lib
+		- [ ] Classes
 		- [ ] Native persistence
 	- [ ] Xbim.Xids.Ids10
 		- [ ] Buildingsmart IDS IO

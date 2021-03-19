@@ -59,9 +59,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Io\Ids.Io.json.cs" />
-    <Compile Include="Schema\Collections\ModelPartCollection.cs" />
-    <Compile Include="Schema\Values\RangeConstraint.cs" />
     <Compile Include="UI\ExpectationEditor.xaml.cs">
       <DependentUpon>ExpectationEditor.xaml</DependentUpon>
     </Compile>
@@ -77,29 +74,6 @@
       <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VM\ReqGrpVM.cs" />
-    <Compile Include="Schema\ExpectationFacets\ExpectationFacet.cs" />
-    <Compile Include="Io\Ids.Io.xml.cs" />
-    <Compile Include="Schema\SelectionFacets\IFilter.cs" />
-    <Compile Include="Schema\ExpectationFacets\HasDocumentReference.cs" />
-    <Compile Include="Schema\ExpectationFacets\HasMaterial.cs" />
-    <Compile Include="Schema\ExpectationFacets\HasProperty.cs" />
-    <Compile Include="Schema\ExpectationFacets\HasQuantity.cs" />
-    <Compile Include="Schema\IDS.cs" />
-    <Compile Include="Schema\RequirementsCollection.cs" />
-    <Compile Include="Schema\Requirement.cs" />
-    <Compile Include="Schema\SelectionFacets\IfcClassificationQuery.cs" />
-    <Compile Include="Schema\SelectionFacets\IfcPropertyQuery.cs" />
-    <Compile Include="Schema\SelectionFacets\IfcTypeQuery.cs" />
-    <Compile Include="Schema\ExpectationFacets\IsClassified.cs" />
-    <Compile Include="Schema\ModelSubset.cs" />
-    <Compile Include="Schema\Project.cs" />
-    <Compile Include="Schema\Stakeholder.cs" />
-    <Compile Include="Schema\Expectation.cs" />
-    <Compile Include="Schema\Values\OneOfConstraint.cs" />
-    <Compile Include="Schema\Values\TypeNames.cs" />
-    <Compile Include="Schema\Values\ValueConstraint.cs" />
-    <Compile Include="Schema\Values\IValueConstraint.cs" />
-    <Compile Include="Tools\MultiSetComparer.cs" />
     <Compile Include="UI\VM\ReqViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -156,6 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xbim.Xids\Xbim.Xids.csproj">
+      <Project>{c8908072-19b8-4f26-9bad-76c38936311c}</Project>
+      <Name>Xbim.Xids</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Xbim.IDS.UI
+namespace Xbim.Xids.UI
 {
 	/// <summary>
 	/// Interaction logic for UserControl1.xaml
@@ -59,8 +59,10 @@ namespace Xbim.IDS.UI
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			var t = new ExpectationEditor();
-			t.DataContext = Exp;
+			var t = new ExpectationEditor
+			{
+				DataContext = Exp
+			};
 			t.ShowDialog();
 			Exp = (Expectation)t.DataContext;
 		}
