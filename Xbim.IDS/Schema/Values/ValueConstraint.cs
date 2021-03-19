@@ -26,6 +26,7 @@ namespace Xbim.IDS
 		public object ExactValue { get; set; }
 
 		public TypeNames BaseType { get; set; }
+		
 
 		public bool Equals(ValueConstraint other)
 		{
@@ -72,7 +73,9 @@ namespace Xbim.IDS
 
 		public override string ToString()
 		{
-			return $"{BaseType}:{ExactValue}";
+			if (ExactValue != null)
+				return $"{BaseType}:{ExactValue}";
+			return $"{BaseType}:undefined";
 		}
 	}
 }

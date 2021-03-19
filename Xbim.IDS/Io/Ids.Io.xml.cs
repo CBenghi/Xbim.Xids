@@ -137,6 +137,40 @@ namespace Xbim.IDS
                             enumV.AddOption(tVal);
                     }
                 }
+                else if (
+                    sub.Name.LocalName == "minInclusive"
+                    ||
+                    sub.Name.LocalName == "minExclusive"
+                    )
+                {
+                    if (!(ret is RangeConstraint))
+                        ret = new RangeConstraint();
+                    RangeConstraint c = ret as RangeConstraint;
+                    var val = sub.Attribute("value");
+                    if (val != null)
+                    {
+                        var tVal = GetValue(val.Value, t);
+                        c.MinValue = tVal;
+                        c.MinInclusive = sub.Name.LocalName == "minInclusive";
+                    }
+                }
+                else if (
+                    sub.Name.LocalName == "maxInclusive"
+                    ||
+                    sub.Name.LocalName == "maxExclusive"
+                    )
+                {
+                    if (!(ret is RangeConstraint))
+                        ret = new RangeConstraint();
+                    RangeConstraint c = ret as RangeConstraint;
+                    var val = sub.Attribute("value");
+                    if (val != null)
+                    {
+                        var tVal = GetValue(val.Value, t);
+                        c.MaxValue = tVal;
+                        c.MaxInclusive = sub.Name.LocalName == "maxInclusive";
+                    }
+                }
             }
             return ret;
 		}

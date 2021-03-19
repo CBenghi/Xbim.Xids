@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ids xmlns="http://standards.buildingsmart.org/IDS/todo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<specification name="vaste wand, othername">
+	<specification name="WallReq">
 		<applicability>
 			<entity>
 				<name>IfcWall</name>
@@ -24,7 +24,7 @@
 			</property>
 		</requirements>
 	</specification>
-	<specification name="vaste wand, othername">
+	<specification name="Specereq">
 		<applicability>
 			<entity>
 				<name>IfcSpace</name>
@@ -38,6 +38,16 @@
 					<xs:restriction base="xs:string">
 						<xs:enumeration value="Living Room" />
 						<xs:enumeration value="Kitchen" />
+					</xs:restriction>
+				</value>
+			</property>
+			<property>
+				<propertyset>Anas</propertyset>
+				<name>Codice WBS</name>
+				<value>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="120"/>
 					</xs:restriction>
 				</value>
 			</property>

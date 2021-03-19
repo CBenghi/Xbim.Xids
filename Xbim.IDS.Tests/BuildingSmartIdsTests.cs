@@ -31,7 +31,6 @@ namespace Xbim.IDS.Tests
 			var s = IDS.FromBuildingSmartIDS(@"Files\bS\Example01.xml");
 			AssertOk(s);
 			
-
 			s = IDS.FromBuildingSmartIDS(@"Files\bS\Example02.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");

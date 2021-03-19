@@ -61,6 +61,7 @@
     </ApplicationDefinition>
     <Compile Include="Io\Ids.Io.json.cs" />
     <Compile Include="Schema\Collections\ModelPartCollection.cs" />
+    <Compile Include="Schema\Values\RangeConstraint.cs" />
     <Compile Include="UI\ExpectationEditor.xaml.cs">
       <DependentUpon>ExpectationEditor.xaml</DependentUpon>
     </Compile>
