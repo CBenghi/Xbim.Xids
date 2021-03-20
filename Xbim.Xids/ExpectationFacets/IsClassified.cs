@@ -8,11 +8,11 @@ namespace Xbim.Xids
 		{
 			return ToString();
 		}
-		public string ClassificationName { get; set; }
+		public string ClassificationName { get; set; } = "";
 
-		public string ClassificationValue { get; set; }
+		public string ClassificationValue { get; set; } = "";
 
-		public IsClassifiedValueMode ValueMode { get; set; }
+		public IsClassifiedValueMode ValueMode { get; set; } = IsClassifiedValueMode.Exact;
 
 		public override bool Equals(object obj)
 		{

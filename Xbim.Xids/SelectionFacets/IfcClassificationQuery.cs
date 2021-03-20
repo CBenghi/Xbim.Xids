@@ -7,12 +7,12 @@ namespace Xbim.Xids
 		/// <summary>
 		/// A string identifying the relevant classification system
 		/// </summary>
-		public string ClassificationSystem { get; set; }
+		public string ClassificationSystem { get; set; } = "";
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
-		public string Node { get; set; }
+		public string Node { get; set; } = "";
 
 		public bool Equals(IfcClassificationQuery other)
 		{

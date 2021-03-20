@@ -1,17 +1,34 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Xbim.Xids
 {
 	public partial class Xids
     {
-		public Requirement NewRequirement()
+		public Requirement NewRequirement(RequirementsCollection containingCollection = null)
 		{
-			return new Requirement(this)
+			var t = new Requirement(this)
 			{
 				ModelSubset = new ModelPart(this),
 				Need = new Expectation(this)
 			};
+			if (containingCollection == null)
+			{
+				containingCollection = this.RequirementGroups.FirstOrDefault();
+			}
+			if (containingCollection == null)
+			{
+				containingCollection = new RequirementsCollection();
+				RequirementGroups.Add(containingCollection);
+			}
+			containingCollection.Requirements.Add(t);
+			return t;
+		}
+
+		public static Xids FromStream(Stream s)
+		{
+			return Xids.ImportBuildingSmartIDS(s);
 		}
 
 		public Xids()

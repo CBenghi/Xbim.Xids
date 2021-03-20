@@ -5,13 +5,13 @@ namespace Xbim.Xids
 {
     public partial class HasProperty : ExpectationFacet, IEquatable<HasProperty>
 	{
-		public string PropertySetName { get; set; }
+		public string PropertySetName { get; set; } = "";
 
-		public string PropertyName { get; set; }
+		public string PropertyName { get; set; } = "";
 
-		public string PropertyType { get; set; }
+		public string PropertyType { get; set; } = "";
 
-		public IValueConstraint PropertyConstraint { get; set; }
+		public IValueConstraint PropertyConstraint { get; set; } = null;
 
 		public bool Equals(HasProperty other)
 		{

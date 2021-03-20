@@ -1,0 +1,95 @@
+<!-- edited with XMLSpy v2021 (x64) (http://www.altova.com) by buildingSMART -->
+<!-- DRAFT - NOT FOR PRODUCTION -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://standards.buildingsmart.org/IDS/ids.xsd" targetNamespace="http://standards.buildingsmart.org/IDS/ids.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="ids">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="specification">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="applicability">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="entity">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="name" type="xs:string"/>
+													<xs:element name="predefinedtype" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="classification">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="system" type="xs:string"/>
+													<xs:element name="value" type="xs:string"/>
+												</xs:sequence>
+												<xs:attribute name="location" type="xs:string"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="requirements">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="entity">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="name" type="xs:string"/>
+													<xs:element name="predefinedtype" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="classification">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="system">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="href" type="xs:anyURI"/>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="value" type="xs:string"/>
+												</xs:sequence>
+												<xs:attribute name="location" type="xs:string"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="propertyset" type="xs:string"/>
+													<xs:element name="name" type="xs:string"/>
+													<xs:element name="instructions" type="xs:string" minOccurs="0"/>
+													<xs:element name="value" type="xs:string"/>
+												</xs:sequence>
+												<xs:attribute name="location" type="xs:string" use="optional"/>
+												<xs:attribute name="href" type="xs:string" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="material">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="instructions" type="xs:string"/>
+													<xs:element name="value" type="xs:string"/>
+												</xs:sequence>
+												<xs:attribute name="location" type="xs:string"/>
+												<xs:attribute name="href" type="xs:string"/>
+												<xs:attribute name="use" type="xs:string"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

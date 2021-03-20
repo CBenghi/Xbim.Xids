@@ -7,11 +7,11 @@ namespace Xbim.Xids
 		{
 			return ToString();
 		}
-		public string PropertySetName { get; set; }
+		public string PropertySetName { get; set; } = "";
 
-		public string QuantityName { get; set; }
+		public string QuantityName { get; set; } = "";
 
-		public string QuantityType { get; set; }
+		public string QuantityType { get; set; } = "";
 
 		public bool Equals(HasQuantity other)
 		{

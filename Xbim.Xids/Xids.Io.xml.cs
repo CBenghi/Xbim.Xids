@@ -12,36 +12,47 @@ namespace Xbim.Xids
 {
 	public partial class Xids
 	{
-        public static void ToBuildingSmartIDS(string fileName)
+        public static void ExportBuildingSmartIDS(string fileName)
 		{
-
+            throw new NotImplementedException();
 		}
 
-        public static Xids FromBuildingSmartIDS(string fileName)
+        public static Xids ImportBuildingSmartIDS(Stream stream)
+        {
+            var t = XElement.Load(stream);
+            return ImportBuildingSmartIDS(t);
+        }
+
+        public static Xids ImportBuildingSmartIDS(string fileName)
 		{
 			if (!File.Exists(fileName))
 				return null;
-            var main = XElement.Parse(File.ReadAllText(fileName));
+			var main = XElement.Parse(File.ReadAllText(fileName));
 
-            if (main.Name.LocalName == "ids")
-            {
-                var ret = new Xids();
-                var grp = new RequirementsCollection();
-                ret.RequirementGroups.Add(grp);
+			return ImportBuildingSmartIDS(main);
+		}
 
-                foreach (var sub in main.Elements())
-                {
-                    if (sub.Name.LocalName == "specification")
-                    {
-                        AddSpecification(ret, grp, sub);
-                    }
-                }
-                return ret;
-            }
-            return null;
-        }
+		public static Xids ImportBuildingSmartIDS(XElement main)
+		{
+			if (main.Name.LocalName == "ids")
+			{
+				var ret = new Xids();
+				var grp = new RequirementsCollection();
+				ret.RequirementGroups.Add(grp);
 
-        private static void AddSpecification(Xids ids, RequirementsCollection destGroup, XElement spec)
+				foreach (var sub in main.Elements())
+				{
+					if (sub.Name.LocalName == "specification")
+					{
+						AddSpecification(ret, grp, sub);
+					}
+				}
+				return ret;
+			}
+			return null;
+		}
+
+		private static void AddSpecification(Xids ids, RequirementsCollection destGroup, XElement spec)
         {
             var req = new Requirement(ids);
             destGroup.Requirements.Add(req);
@@ -60,8 +71,6 @@ namespace Xbim.Xids
                 }
             }
         }
-
-       
 
 		private static ExpectationFacet GetProperty(XElement elem)
 		{

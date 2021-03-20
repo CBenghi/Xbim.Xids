@@ -8,18 +8,19 @@ namespace Xbim.Xids
         integer,
         floating,
         boolean,
+        undefined
     }
 
 
     public partial class IfcPropertyQuery : IFilter, IEquatable<IfcPropertyQuery>
     {
-		public string PropertySetName { get; set; }
+        public string PropertySetName { get; set; } = "";
 
-		public string PropertyName { get; set; }
+		public string PropertyName { get; set; } = "";
 
-		public string PropertyValue { get; set; }
+        public string PropertyValue { get; set; } = "";
 
-		public IfcPropertyQueryPropertyFormat PropertyFormat { get; set; }
+        public IfcPropertyQueryPropertyFormat PropertyFormat { get; set; } = IfcPropertyQueryPropertyFormat.undefined;
 
         public string Short()
         {

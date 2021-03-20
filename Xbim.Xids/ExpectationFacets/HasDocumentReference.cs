@@ -4,11 +4,11 @@ namespace Xbim.Xids
 {
     public partial class HasDocumentReference : ExpectationFacet, IEquatable<HasDocumentReference>
 	{
-		public string DocumentName { get; set; }
+		public string DocumentName { get; set; } = "";
 
-		public string DocumentStatus { get; set; }
+		public string DocumentStatus { get; set; } = "";
 
-		public string RequiredAttributes { get; set; }
+		public string RequiredAttributes { get; set; } = "";
 
 		public bool Equals(HasDocumentReference other)
 		{

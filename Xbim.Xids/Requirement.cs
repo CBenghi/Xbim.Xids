@@ -16,7 +16,7 @@ namespace Xbim.Xids
     {
 		private Xids ids;
 
-		[Obsolete("Only for persistence, use the constructor that passes the IDS, instead.")]
+		[Obsolete("Only for persistence, use the Xids.NewRequirement() method, instead.")]
 		public Requirement()
 		{
 		}

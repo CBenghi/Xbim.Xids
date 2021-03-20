@@ -3,7 +3,7 @@ namespace Xbim.Xids
 {
     public partial class HasMaterial : ExpectationFacet, IEquatable<HasMaterial>
 	{
-		public string MaterialName { get; set; }
+		public string MaterialName { get; set; } = "";
 
 		public override string Short()
 		{

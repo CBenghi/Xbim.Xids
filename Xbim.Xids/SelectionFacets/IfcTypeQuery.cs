@@ -4,7 +4,7 @@ namespace Xbim.Xids
 {
     public partial class IfcTypeQuery : IFilter, IEquatable<IfcTypeQuery>
     {
-		public string IfcType { get; set; }
+        public string IfcType { get; set; } = "";
 
         public bool IncludeSubtypes { get; set; } = true;
 

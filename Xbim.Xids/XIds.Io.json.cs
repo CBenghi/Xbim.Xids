@@ -13,6 +13,14 @@ namespace Xbim.Xids
 	{
 		public void SaveAsJson(string destinationFile)
 		{
+			using (StreamWriter sw = new StreamWriter(destinationFile))
+			{
+				SaveAsJson(sw);
+			}
+		}
+
+		public void SaveAsJson(StreamWriter sw)
+		{
 			var serializer = new JsonSerializer
 			{
 				NullValueHandling = NullValueHandling.Ignore,
@@ -21,10 +29,10 @@ namespace Xbim.Xids
 			serializer.Converters.Add(new StringEnumConverter());
 #if DEBUG
 			serializer.Formatting = Formatting.Indented;
-#endif 
+#endif
 			// serializer.Converters.Add(new JavaScriptDateTimeConverter());
 
-			using (StreamWriter sw = new StreamWriter(destinationFile))
+
 			using (JsonWriter writer = new JsonTextWriter(sw))
 			{
 				serializer.Serialize(writer, this);

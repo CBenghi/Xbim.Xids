@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Xml.Linq;
 
 namespace Xbim.Xids.Tests
 {
@@ -10,7 +11,8 @@ namespace Xbim.Xids.Tests
 		[TestMethod]
 		public void ReusesAapplicability()
 		{
-			var s = Xids.FromBuildingSmartIDS(@"Example01Mod2.xml");
+			XElement e = XElement.Load(@"Example01Mod2.xml");
+			var s = Xids.ImportBuildingSmartIDS(e);
 			Assert.IsNotNull(s);
 			Assert.AreEqual(2, s.ModelSetRepository.Count);
 		}
@@ -19,7 +21,7 @@ namespace Xbim.Xids.Tests
 		[TestMethod]
 		public void ReusesExpectation()
 		{
-			var s = Xids.FromBuildingSmartIDS(@"Example01Mod2.xml");
+			var s = Xids.ImportBuildingSmartIDS(@"Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			Assert.AreEqual(2, s.ExpectationsRepository.Count);
 		}
@@ -28,19 +30,19 @@ namespace Xbim.Xids.Tests
 		[TestMethod]
 		public void CanLoadBuildingSmartIdsFormats()
 		{
-			var s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01.xml");
+			var s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01.xml");
 			AssertOk(s);
 			
-			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example02.xml");
+			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example02.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 
 
-			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
+			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 
-			s = Xids.FromBuildingSmartIDS(@"Files\bS\Example01Mod2.xml");
+			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
 

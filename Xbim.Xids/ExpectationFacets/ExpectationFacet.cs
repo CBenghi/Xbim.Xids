@@ -9,14 +9,19 @@ namespace Xbim.Xids
 {
 	abstract public class ExpectationFacet : IEquatable<ExpectationFacet>
 	{
-		public Uri Uri { get; set; }
+		public Uri Uri { get; set; } = null;
 		// public Guid Guid { get; set; }
 
 		public bool Equals(ExpectationFacet other)
 		{
 			if (other == null)
 				return false;
-			if (Uri != other.Uri)
+			if (Uri == null)
+			{
+				if (other.Uri != null)
+					return false;
+			}
+			else if (Uri != other.Uri)
 				return false;
 			// we are ignoring guid if they are not set for both.
 			//if (Guid != Guid.Empty && other.Guid != Guid.Empty)
