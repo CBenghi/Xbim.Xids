@@ -74,7 +74,7 @@ namespace Xbim.Xids
 
 		private static ExpectationFacet GetProperty(XElement elem)
 		{
-            HasProperty ret = new HasProperty();
+			var ret = new HasProperty();
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "propertyset")
@@ -201,7 +201,7 @@ namespace Xbim.Xids
 
         private static void AddRequirements(Requirement req, XElement elem)
         {
-            List<ExpectationFacet> fs = new List<ExpectationFacet>();
+			var fs = new List<ExpectationFacet>();
             foreach (var sub in elem.Elements())
             {
                 ExpectationFacet t = null;
@@ -227,7 +227,7 @@ namespace Xbim.Xids
 
         private static void AddApplicability(Requirement e, XElement elem)
 		{
-            List<IFilter> fs = new List<IFilter>();
+			var fs = new List<IFilter>();
             foreach (var sub in elem.Elements())
             {
                 IFilter t = null;

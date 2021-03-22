@@ -13,7 +13,7 @@ namespace Xbim.Xids
 	{
 		public void SaveAsJson(string destinationFile)
 		{
-			using (StreamWriter sw = new StreamWriter(destinationFile))
+			using (var sw = new StreamWriter(destinationFile))
 			{
 				SaveAsJson(sw);
 			}

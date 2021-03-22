@@ -30,9 +30,14 @@ namespace Xbim.Xids
 			return this.Equals(obj as HasQuantity);
 		}
 
+		public override string ToString()
+		{
+			return $"{PropertySetName}-{QuantityName}-{QuantityType}";
+		}
+
 		public override int GetHashCode()
 		{
-			return $"{PropertySetName}-{QuantityName}-{QuantityType}".GetHashCode();
+			return ToString().GetHashCode();
 		}
 		public override bool Validate()
 		{

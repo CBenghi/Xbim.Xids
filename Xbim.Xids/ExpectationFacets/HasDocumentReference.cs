@@ -27,9 +27,14 @@ namespace Xbim.Xids
 			return this.Equals(obj as HasDocumentReference);
 		}
 
+		public override string ToString()
+		{
+			return $"{DocumentName}-{DocumentStatus}-{RequiredAttributes}";
+		}
+
 		public override int GetHashCode()
 		{
-			return $"{DocumentName}-{DocumentStatus}-{RequiredAttributes}".GetHashCode();
+			return ToString().GetHashCode();
 		}
 
 		public override string Short()

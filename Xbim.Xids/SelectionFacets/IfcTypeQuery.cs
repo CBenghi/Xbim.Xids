@@ -13,9 +13,14 @@ namespace Xbim.Xids
             return this.Equals(obj as IfcTypeQuery);
         }
 
-        public override int GetHashCode()
+		public override string ToString()
+		{
+            return $"{IfcType}-{IncludeSubtypes}";
+        }
+
+		public override int GetHashCode()
         {
-            return $"{IfcType}{IncludeSubtypes}".GetHashCode();
+           return ToString().GetHashCode();
         }
 
         public bool Equals(IfcTypeQuery other)

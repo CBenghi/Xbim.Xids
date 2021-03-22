@@ -24,6 +24,7 @@ namespace Xbim.Xids
 		public Requirement(Xids ids)
 		{
 			this.ids = ids;
+			Guid = System.Guid.NewGuid().ToString();
 		}
 
 		public List<string> Stages { get; set; }
@@ -98,9 +99,16 @@ namespace Xbim.Xids
 			if (t != null)
 				Need = t;
 
+			// collections
 			var m = unpersisted.GetModel(modelId);
 			if (m != null)
 				ModelSubset = m;
+			var f = unpersisted.GetExpectation(needId);
+			if (f != null)
+				Need = f;
+
+			if (Guid == null)
+				Guid = System.Guid.NewGuid().ToString();
 		}
 	}
 }

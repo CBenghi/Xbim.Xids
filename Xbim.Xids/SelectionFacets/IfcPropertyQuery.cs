@@ -34,10 +34,16 @@ namespace Xbim.Xids
 
         public override int GetHashCode()
         {
-            return $"{PropertySetName}{PropertyName}{PropertyValue}{PropertyFormat}".GetHashCode();
+            return ToString().GetHashCode();
         }
 
-        public bool Equals(IfcPropertyQuery other)
+		public override string ToString()
+		{
+            return $"{PropertySetName}{PropertyName}{PropertyValue}{PropertyFormat}";
+
+        }
+
+		public bool Equals(IfcPropertyQuery other)
         {
             if (other == null)
                 return false;

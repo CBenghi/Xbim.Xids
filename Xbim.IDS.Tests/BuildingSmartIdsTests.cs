@@ -1,5 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml.Linq;
 
 namespace Xbim.Xids.Tests
@@ -52,7 +55,34 @@ namespace Xbim.Xids.Tests
 			var unp = Xids.LoadFromJson(jFile);
 			Assert.IsNotNull(unp);
 			unp.SaveAsJson(jFile2);
+
+			var originalHash = GetFileHash(jFile);
+			var copiedHash = GetFileHash(jFile2);
+
+			Assert.AreEqual(copiedHash, originalHash);
 		}
+
+		public string GetFileHash(string filename)
+		{
+			var hash = new SHA1Managed();
+			var clearBytes = File.ReadAllBytes(filename);
+			var hashedBytes = hash.ComputeHash(clearBytes);
+			return ConvertBytesToHex(hashedBytes);
+		}
+
+		public string ConvertBytesToHex(byte[] bytes)
+		{
+			var sb = new StringBuilder();
+
+			for (var i = 0; i < bytes.Length; i++)
+			{
+				sb.Append(bytes[i].ToString("x"));
+			}
+			return sb.ToString();
+		}
+
+
+
 
 		private void AssertOk(Xids s)
 		{

@@ -19,9 +19,14 @@ namespace Xbim.Xids
 			return this.Equals(obj as IsClassified);
 		}
 
+		public override string ToString()
+		{
+			return $"{ClassificationName}-{ClassificationValue}";
+		}
+
 		public override int GetHashCode()
 		{
-			return $"{ClassificationName}-{ClassificationValue}".GetHashCode();
+			return ToString().GetHashCode();
 		}
 
 		public bool Equals(IsClassified other)

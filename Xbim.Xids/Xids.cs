@@ -34,6 +34,7 @@ namespace Xbim.Xids
 		public Xids()
 		{
 			ModelSetRepository = new ModelPartCollection(this);
+			ExpectationsRepository = new ExpectationCollection(this);
 		}
 
 		public IEnumerable<Requirement> AllRequirements()
@@ -49,9 +50,9 @@ namespace Xbim.Xids
 
 		public Project Project { get; set; } = new Project();
 
-		public ModelPartCollection ModelSetRepository { get; set; } 
+		public ModelPartCollection ModelSetRepository { get; set; }
 
-		public List<Expectation> ExpectationsRepository { get; set; } = new List<Expectation>();
+		public ExpectationCollection ExpectationsRepository { get; set; }
 
 		public List<RequirementsCollection> RequirementGroups { get; set; } = new List<RequirementsCollection>();
 

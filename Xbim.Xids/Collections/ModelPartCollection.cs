@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,20 @@ namespace Xbim.Xids
 			this.ids = ids;
 		}
 
+		[JsonIgnore]
 		public int Count => _parts.Count;
+
+		public List<ModelPart> Parts
+		{
+			get
+			{
+				return _parts;
+			}
+			set
+			{
+				_parts = value;
+			}
+		}
 
 		internal void Add(ModelPart modelPart)
 		{

@@ -32,14 +32,19 @@ namespace Xbim.Xids
 			return this.Equals(obj as IfcClassificationQuery);
 		}
 
+		public override string ToString()
+		{
+			return $"{ClassificationSystem}-{Node}";
+		}
+
 		public override int GetHashCode()
 		{
-			return $"{ClassificationSystem}-{Node}".GetHashCode();
+			return ToString().GetHashCode();
 		}
 
 		public string Short()
 		{
-			return "SomeClassificationFilter";
+			return ToString();
 		}
 	}
 }

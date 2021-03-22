@@ -1,40 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	<!-- To review target compatibility 
-	see  https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support 
-	netstandard2.0 is compatible with Framework 4.6.1, .NET Core 2.0 and NET 5.0
-	-->
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
-    <Authors>Claudio Benghi</Authors>
-    <Description>Xbim's Information Delivery Specification format.</Description>
-    <PackageLicenseExpression>CDDL-1.0</PackageLicenseExpression>
-    <PackageIcon>xbim-toolkit-icon.png</PackageIcon>
-    <AssemblyVersion>0.1.7.0</AssemblyVersion>
-    <FileVersion>0.1.7.0</FileVersion>
-    <Version>0.1.7</Version>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="..\xbim-toolkit-icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
+	<PropertyGroup>
+		<!-- To review target compatibility 
+		see  https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support 
+		netstandard2.0 is compatible with Framework 4.6.1, .NET Core 2.0 and NET 5.0
+		-->
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<Authors>Claudio Benghi</Authors>
+		<Description>Xbim's Information Delivery Specification format.</Description>
+		<PackageLicenseExpression>CDDL-1.0</PackageLicenseExpression>
+		<PackageIcon>xbim-toolkit-icon.png</PackageIcon>
+		<AssemblyVersion>0.1.12.0</AssemblyVersion>
+		<FileVersion>0.1.12.0</FileVersion>
+		<Version>0.1.12</Version>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\xbim-toolkit-icon.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 	<!--
 	If the expected destination folder exists on the local machine, this target copies the produced nupkg there too.
 	We are using forward slashes as they work on all OSs, but this is really only useful on windows at the moment.
 	-->
-    <Target Name="PublishLocally" AfterTargets="Pack" Condition="Exists('C:/Users/Claudio/OneDrive/Benghi/FastViewer')">
-		
+	<Target Name="PublishLocally" AfterTargets="Pack" Condition="Exists('C:/Users/Claudio/OneDrive/Benghi/FastViewer')">
 		<!-- just use forward slashes, works in windws as well -->
 		<Message Importance="high" Text="Copying local package to:  C:/Users/Claudio/OneDrive/Benghi/FastViewer" />
 		<Copy SourceFiles="$(OutputPath)/$(PackageId).$(PackageVersion).nupkg" DestinationFolder="C:/Users/Claudio/OneDrive/Benghi/FastViewer" />
 	</Target>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	</ItemGroup>
 </Project>
