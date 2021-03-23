@@ -74,7 +74,7 @@ namespace Xbim.Xids.UI.VM
 			NotifyPropertyChanged("Exp");
 		}
 
-		public Expectation Exp
+		public FacetGroup Exp
 		{
 			get
 			{

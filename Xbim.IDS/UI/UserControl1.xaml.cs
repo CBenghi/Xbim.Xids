@@ -43,13 +43,13 @@ namespace Xbim.Xids.UI
 
 		public static readonly DependencyProperty ExpProperty =
 			DependencyProperty.Register("Exp",
-			typeof(Expectation), typeof(UserControl1));
+			typeof(FacetGroup), typeof(UserControl1));
 
-		public Expectation Exp
+		public FacetGroup Exp
 		{
 			get
 			{
-				return (Expectation)GetValue(ExpProperty);
+				return (FacetGroup)GetValue(ExpProperty);
 			}
 			set
 			{
@@ -64,7 +64,7 @@ namespace Xbim.Xids.UI
 				DataContext = Exp
 			};
 			t.ShowDialog();
-			Exp = (Expectation)t.DataContext;
+			Exp = (FacetGroup)t.DataContext;
 		}
 	}
 }

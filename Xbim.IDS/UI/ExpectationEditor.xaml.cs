@@ -19,14 +19,14 @@ namespace Xbim.Xids.UI
 	/// </summary>
 	public partial class ExpectationEditor : Window
 	{
-		private Expectation exp;
+		private FacetGroup exp;
 
 		public ExpectationEditor()
 		{
 			InitializeComponent();
 		}
 
-		public Expectation Exp
+		public FacetGroup Exp
 		{
 			get => exp;
 			internal set

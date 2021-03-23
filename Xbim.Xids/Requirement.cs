@@ -36,7 +36,7 @@ namespace Xbim.Xids
 		public string Name { get; set; }
 
 		[JsonIgnore]
-		public ModelPart ModelSubset { get; set; }
+		public FacetGroup ModelSubset { get; set; }
 
 		private string modelId;
 
@@ -48,7 +48,7 @@ namespace Xbim.Xids
 		}
 
 		[JsonIgnore]
-		public Expectation Need { get; set; }
+		public FacetGroup Need { get; set; }
 
 		private string needId;
 
@@ -60,7 +60,7 @@ namespace Xbim.Xids
 
 		public string Guid { get; set; }
 
-		internal void SetExpectations(List<ExpectationFacet> fs)
+		internal void SetExpectations(List<IFacet> fs)
 		{
 			var existing = ids.GetExpectation(fs);
 			if (existing != null)
@@ -69,14 +69,14 @@ namespace Xbim.Xids
 				return;
 			}
 			if (Need == null)
-				Need = new Expectation(ids);
+				Need = new FacetGroup(ids.ExpectationsRepository);
 			foreach (var item in fs)
 			{
 				Need.Facets.Add(item);
 			}
 		}
 
-		internal void SetFilters(List<IFilter> fs)
+		internal void SetFilters(List<IFacet> fs)
 		{
 			var existing = ids.GetModel(fs);
 			if (existing != null)
@@ -85,10 +85,10 @@ namespace Xbim.Xids
 				return;
 			}
 			if (ModelSubset == null)
-				ModelSubset = new ModelPart(ids);
+				ModelSubset = new FacetGroup(ids.ModelSetRepository);
 			foreach (var item in fs)
 			{
-				ModelSubset.Items.Add(item);
+				ModelSubset.Facets.Add(item);
 			}
 		}
 

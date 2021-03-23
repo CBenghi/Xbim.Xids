@@ -2,7 +2,7 @@ using System;
 
 namespace Xbim.Xids
 {
-    public partial class IfcTypeQuery : IFilter, IEquatable<IfcTypeQuery>
+    public partial class IfcTypeFacet : IFacet, IEquatable<IfcTypeFacet>
     {
         public string IfcType { get; set; } = "";
 
@@ -10,7 +10,7 @@ namespace Xbim.Xids
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as IfcTypeQuery);
+            return this.Equals(obj as IfcTypeFacet);
         }
 
 		public override string ToString()
@@ -23,7 +23,7 @@ namespace Xbim.Xids
            return ToString().GetHashCode();
         }
 
-        public bool Equals(IfcTypeQuery other)
+        public bool Equals(IfcTypeFacet other)
 		{
             if (other == null)
                 return false;

@@ -2,25 +2,15 @@ using System;
 
 namespace Xbim.Xids
 {
-    public enum IfcPropertyQueryPropertyFormat
-    {
-        text,
-        integer,
-        floating,
-        boolean,
-        undefined
-    }
 
-
-    public partial class IfcPropertyQuery : IFilter, IEquatable<IfcPropertyQuery>
+	public partial class IfcPropertyFacet : IFacet, IEquatable<IfcPropertyFacet>
     {
         public string PropertySetName { get; set; } = "";
 
 		public string PropertyName { get; set; } = "";
+		public Uri Uri { get; set; } = null;
 
-        public string PropertyValue { get; set; } = "";
-
-        public IfcPropertyQueryPropertyFormat PropertyFormat { get; set; } = IfcPropertyQueryPropertyFormat.undefined;
+        public IValueConstraint PropertyValue { get; set; } = null;
 
         public string Short()
         {
@@ -29,7 +19,7 @@ namespace Xbim.Xids
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as IfcPropertyQuery);
+            return this.Equals(obj as IfcPropertyFacet);
         }
 
         public override int GetHashCode()
@@ -39,23 +29,22 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-            return $"{PropertySetName}{PropertyName}{PropertyValue}{PropertyFormat}";
-
+            return $"{PropertySetName}{PropertyName}{Uri?.ToString()??""}{PropertyValue?.ToString()??""}";
         }
 
-		public bool Equals(IfcPropertyQuery other)
+		public bool Equals(IfcPropertyFacet other)
         {
             if (other == null)
                 return false;
-
             if (PropertySetName.ToLowerInvariant() != other.PropertySetName.ToLowerInvariant())
                 return false;
             if (PropertyName.ToLowerInvariant() != other.PropertyName.ToLowerInvariant())
                 return false;
-            if (PropertyValue.ToLowerInvariant() != other.PropertyValue.ToLowerInvariant())
+            if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
-            if (PropertyFormat != other.PropertyFormat)
+            if (!IFacetExtensions.NullEquals(Uri, other.Uri))
                 return false;
+
             return true;
         }
     }

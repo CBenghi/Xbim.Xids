@@ -2,7 +2,7 @@ using System;
 
 namespace Xbim.Xids
 {
-	public partial class IfcClassificationQuery : IFilter, IEquatable<IfcClassificationQuery>
+	public partial class IfcClassificationFacet : IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system
@@ -14,7 +14,7 @@ namespace Xbim.Xids
 		/// </summary>
 		public string Node { get; set; } = "";
 
-		public bool Equals(IfcClassificationQuery other)
+		public bool Equals(IfcClassificationFacet other)
 		{
 			if (other == null)
 				return false;
@@ -29,7 +29,7 @@ namespace Xbim.Xids
 
 		public override bool Equals(object obj)
 		{
-			return this.Equals(obj as IfcClassificationQuery);
+			return this.Equals(obj as IfcClassificationFacet);
 		}
 
 		public override string ToString()

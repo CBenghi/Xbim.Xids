@@ -6,12 +6,12 @@ namespace Xbim.Xids
 {
 	public partial class Xids
     {
-		public Requirement NewRequirement(RequirementsCollection containingCollection = null)
+		public Requirement NewRequirement(RequirementsGroup containingCollection = null)
 		{
 			var t = new Requirement(this)
 			{
-				ModelSubset = new ModelPart(this),
-				Need = new Expectation(this)
+				ModelSubset = new FacetGroup(ModelSetRepository),
+				Need = new FacetGroup(ExpectationsRepository)
 			};
 			if (containingCollection == null)
 			{
@@ -19,7 +19,7 @@ namespace Xbim.Xids
 			}
 			if (containingCollection == null)
 			{
-				containingCollection = new RequirementsCollection();
+				containingCollection = new RequirementsGroup();
 				RequirementGroups.Add(containingCollection);
 			}
 			containingCollection.Requirements.Add(t);
@@ -33,8 +33,8 @@ namespace Xbim.Xids
 
 		public Xids()
 		{
-			ModelSetRepository = new ModelPartCollection(this);
-			ExpectationsRepository = new ExpectationCollection(this);
+			ModelSetRepository = new FacetGroupRepository(this);
+			ExpectationsRepository = new FacetGroupRepository(this);
 		}
 
 		public IEnumerable<Requirement> AllRequirements()
@@ -50,30 +50,30 @@ namespace Xbim.Xids
 
 		public Project Project { get; set; } = new Project();
 
-		public ModelPartCollection ModelSetRepository { get; set; }
+		public FacetGroupRepository ModelSetRepository { get; set; }
 
-		public ExpectationCollection ExpectationsRepository { get; set; }
+		public FacetGroupRepository ExpectationsRepository { get; set; }
 
-		public List<RequirementsCollection> RequirementGroups { get; set; } = new List<RequirementsCollection>();
+		public List<RequirementsGroup> RequirementGroups { get; set; } = new List<RequirementsGroup>();
 
-		internal Expectation GetExpectation(string guid)
+		internal FacetGroup GetExpectation(string guid)
 		{
 			return ExpectationsRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
 		}
 
-		internal Expectation GetExpectation(List<ExpectationFacet> fs)
+		internal FacetGroup GetExpectation(List<IFacet> fs)
 		{
 			return ExpectationsRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
 		}
 
-		internal ModelPart GetModel(string guid)
+		internal FacetGroup GetModel(string guid)
 		{
 			return ModelSetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
 		}
 
-		internal ModelPart GetModel(List<IFilter> fs)
+		internal FacetGroup GetModel(List<IFacet> fs)
 		{
-			return ModelSetRepository.FirstOrDefault(x => x.Items.FilterMatch(fs));
+			return ModelSetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
 		}
 	}
 }

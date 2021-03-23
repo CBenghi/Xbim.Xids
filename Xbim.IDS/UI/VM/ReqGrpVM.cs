@@ -8,7 +8,7 @@ namespace Xbim.Xids.UI.VM
 {
 	internal class ReqGrpVM : ViewModelBase
 	{
-		private RequirementsCollection requirementsCollection;
+		private RequirementsGroup requirementsCollection;
 
 		
 		private Xids ids;
@@ -32,7 +32,7 @@ namespace Xbim.Xids.UI.VM
 			Reqs.Add(new ReqViewModel(t));
 		}
 
-		public ReqGrpVM(RequirementsCollection requirementsCollection, Xids ids)
+		public ReqGrpVM(RequirementsGroup requirementsCollection, Xids ids)
 		{
 			this.requirementsCollection = requirementsCollection;
 			this.ids = ids;

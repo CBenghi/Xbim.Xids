@@ -2,7 +2,7 @@ using System;
 
 namespace Xbim.Xids
 {
-    public partial class HasDocumentReference : ExpectationFacet, IEquatable<HasDocumentReference>
+    public partial class DocumentReferenceFacet : IFacet, IEquatable<DocumentReferenceFacet>
 	{
 		public string DocumentName { get; set; } = "";
 
@@ -10,7 +10,7 @@ namespace Xbim.Xids
 
 		public string RequiredAttributes { get; set; } = "";
 
-		public bool Equals(HasDocumentReference other)
+		public bool Equals(DocumentReferenceFacet other)
 		{
 			if (other == null)
 				return false;
@@ -20,11 +20,11 @@ namespace Xbim.Xids
 				return false;
 			if (RequiredAttributes.ToLowerInvariant() != other.RequiredAttributes.ToLowerInvariant())
 				return false;
-			return base.Equals(other as ExpectationFacet);
+			return true;
 		}
 		public override bool Equals(object obj)
 		{
-			return this.Equals(obj as HasDocumentReference);
+			return this.Equals(obj as DocumentReferenceFacet);
 		}
 
 		public override string ToString()
@@ -37,19 +37,9 @@ namespace Xbim.Xids
 			return ToString().GetHashCode();
 		}
 
-		public override string Short()
+		public string Short()
 		{
-			return ToString();
-		}
-
-		public override bool Validate()
-		{
-			// Strictly speaking we only need DocumentName
-			if (string.IsNullOrWhiteSpace(DocumentName))
-				return false;
-			//if (Guid == Guid.Empty)
-			//	Guid = Guid.NewGuid();
-			return true;
+			throw new NotImplementedException();
 		}
 	}
 }

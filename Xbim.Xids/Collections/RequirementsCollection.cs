@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Xbim.Xids
 {
-    public partial class RequirementsCollection
+    public partial class RequirementsGroup
     {
 		public List<string> Stage { get; set; }
 

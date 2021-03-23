@@ -6,18 +6,18 @@ using System.Linq;
 
 namespace Xbim.Xids
 {
-	public partial class Expectation
+	public partial class FacetGroup
 	{
-		public Expectation()
+		public FacetGroup()
 		{ }
 
-		public Expectation(Xids ids)
+		public FacetGroup(FacetGroupRepository repository)
 		{
-			ids.ExpectationsRepository.Add(this);
+			repository.Add(this);
 			Guid = System.Guid.NewGuid().ToString();
 		}
 
-		public ObservableCollection<ExpectationFacet> Facets { get; set; } = new ObservableCollection<ExpectationFacet>();
+		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
 		public string Short()
 		{

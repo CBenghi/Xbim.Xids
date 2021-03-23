@@ -37,7 +37,7 @@ namespace Xbim.Xids
 			if (main.Name.LocalName == "ids")
 			{
 				var ret = new Xids();
-				var grp = new RequirementsCollection();
+				var grp = new RequirementsGroup();
 				ret.RequirementGroups.Add(grp);
 
 				foreach (var sub in main.Elements())
@@ -52,7 +52,7 @@ namespace Xbim.Xids
 			return null;
 		}
 
-		private static void AddSpecification(Xids ids, RequirementsCollection destGroup, XElement spec)
+		private static void AddSpecification(Xids ids, RequirementsGroup destGroup, XElement spec)
         {
             var req = new Requirement(ids);
             destGroup.Requirements.Add(req);
@@ -72,9 +72,9 @@ namespace Xbim.Xids
             }
         }
 
-		private static ExpectationFacet GetProperty(XElement elem)
+		private static IFacet GetProperty(XElement elem)
 		{
-			var ret = new HasProperty();
+			var ret = new IfcPropertyFacet();
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "propertyset")
@@ -96,7 +96,7 @@ namespace Xbim.Xids
                 }
                 else if (sub.Name.LocalName == "value")
                 {
-                    ret.PropertyConstraint = GetConstraint(sub);
+                    ret.PropertyValue = GetConstraint(sub);
                 }
             }
             return ret;
@@ -199,24 +199,29 @@ namespace Xbim.Xids
             return null;
         }
 
+        
         private static void AddRequirements(Requirement req, XElement elem)
         {
-			var fs = new List<ExpectationFacet>();
+			var fs = new List<IFacet>();
             foreach (var sub in elem.Elements())
             {
-                ExpectationFacet t = null;
+                IFacet t = null;
                 if (sub.Name.LocalName == "property")
                 {
                     t = GetProperty(sub);
                 }
                 else if (sub.Name.LocalName == "classification")
                 {
+                    // todo: 2021: complete addrequirements
                     // t = GetClassification(elem);
                 }
+                else
+				{
+
+				}
                 if (t != null)
                 {
-                    if (t.Validate())
-                        fs.Add(t);
+                    fs.Add(t);
                 }
             }
             if (fs.Any())
@@ -227,10 +232,10 @@ namespace Xbim.Xids
 
         private static void AddApplicability(Requirement e, XElement elem)
 		{
-			var fs = new List<IFilter>();
+			var fs = new List<IFacet>();
             foreach (var sub in elem.Elements())
             {
-                IFilter t = null;
+                IFacet t = null;
                 if (sub.Name.LocalName == "entity")
                 {
                     t = GetEntity(sub);
@@ -239,6 +244,10 @@ namespace Xbim.Xids
                 {
                     t = GetClassification(sub);
                 }
+                else
+				{
+
+				}
                 if (t != null)
                     fs.Add(t);
             }
@@ -248,34 +257,34 @@ namespace Xbim.Xids
 			}
         }
 
-		private static IfcClassificationQuery GetClassification(XElement elem)
+		private static IfcClassificationFacet GetClassification(XElement elem)
 		{
-            IfcClassificationQuery ret = null;
+            IfcClassificationFacet ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "system")
                 {
                     if (ret == null)
-                        ret = new IfcClassificationQuery();
+                        ret = new IfcClassificationFacet();
                     ret.ClassificationSystem = sub.Value;
                 }
                 else if (sub.Name.LocalName == "value")
                 {
                     if (ret == null)
-                        ret = new IfcClassificationQuery();
+                        ret = new IfcClassificationFacet();
                     ret.Node = sub.Value;
                 }
             }
             return ret;
         }
 
-		private static IfcTypeQuery GetEntity(XElement elem)
+		private static IfcTypeFacet GetEntity(XElement elem)
 		{
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "name")
                 {
-					return new IfcTypeQuery
+					return new IfcTypeFacet
 					{
 						IfcType = sub.Value,
 						IncludeSubtypes = false
