@@ -2,7 +2,7 @@ using System;
 
 namespace Xbim.Xids
 {
-	public partial class IfcClassificationFacet : IFacet, IEquatable<IfcClassificationFacet>
+	public partial class IfcClassificationFacet : LocationBase, IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system
@@ -18,13 +18,16 @@ namespace Xbim.Xids
 		{
 			if (other == null)
 				return false;
-			// todo: 2021: needs to clarify if the tests are case sensitive or not
-			if (ClassificationSystem.ToLowerInvariant() != other.ClassificationSystem.ToLowerInvariant())
+			if (
+				(ClassificationSystem.ToUpperInvariant(), 
+				Node.ToUpperInvariant()
+				).Equals((
+
+				other.ClassificationSystem.ToUpperInvariant(), 
+				other.Node.ToUpperInvariant())))
+
 				return false;
-			// todo: 2021: needs to clarify if the tests are case sensitive or not
-			if (Node.ToLowerInvariant() != other.Node.ToLowerInvariant())
-				return false;
-			return true;
+			return ((LocationBase)this).Equals((LocationBase)other);
 		}
 
 		public override bool Equals(object obj)
@@ -34,7 +37,7 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-			return $"{ClassificationSystem}-{Node}";
+			return $"{ClassificationSystem}-{Node}-{base.ToString()}";
 		}
 
 		public override int GetHashCode()

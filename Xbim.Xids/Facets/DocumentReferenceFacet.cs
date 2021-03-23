@@ -12,15 +12,8 @@ namespace Xbim.Xids
 
 		public bool Equals(DocumentReferenceFacet other)
 		{
-			if (other == null)
-				return false;
-			if (DocumentName.ToLowerInvariant() != other.DocumentName.ToLowerInvariant())
-				return false;
-			if (DocumentStatus.ToLowerInvariant() != other.DocumentStatus.ToLowerInvariant())
-				return false;
-			if (RequiredAttributes.ToLowerInvariant() != other.RequiredAttributes.ToLowerInvariant())
-				return false;
-			return true;
+			return (DocumentName, DocumentStatus, RequiredAttributes)
+				.Equals((other.DocumentName, other.DocumentStatus, other.RequiredAttributes));
 		}
 		public override bool Equals(object obj)
 		{
@@ -34,12 +27,12 @@ namespace Xbim.Xids
 
 		public override int GetHashCode()
 		{
-			return ToString().GetHashCode();
+			return (DocumentName, DocumentStatus, RequiredAttributes).GetHashCode();
 		}
 
 		public string Short()
 		{
-			throw new NotImplementedException();
+			return ToString();
 		}
 	}
 }

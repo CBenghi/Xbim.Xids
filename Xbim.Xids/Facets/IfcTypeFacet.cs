@@ -6,6 +6,8 @@ namespace Xbim.Xids
     {
         public string IfcType { get; set; } = "";
 
+        public string PredefinedType { get; set; } = "";
+
         public bool IncludeSubtypes { get; set; } = true;
 
         public override bool Equals(object obj)
@@ -15,24 +17,19 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-            return $"{IfcType}-{IncludeSubtypes}";
+            return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}";
         }
 
 		public override int GetHashCode()
         {
-           return ToString().GetHashCode();
+           return (IfcType, PredefinedType, IncludeSubtypes).GetHashCode();
         }
 
         public bool Equals(IfcTypeFacet other)
 		{
-            if (other == null)
-                return false;
-            if (IfcType.ToLowerInvariant() != other.IfcType.ToLowerInvariant())
-                return false;
-            if (IncludeSubtypes != other.IncludeSubtypes)
-                return false;
-            return true;
-		}
+            return (IfcType, PredefinedType, IncludeSubtypes)
+                .Equals((other.IfcType, other.PredefinedType, other.IncludeSubtypes));
+        }
 
 		public string Short()
         {

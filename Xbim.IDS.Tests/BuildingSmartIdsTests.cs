@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
@@ -60,6 +61,16 @@ namespace Xbim.Xids.Tests
 			var copiedHash = GetFileHash(jFile2);
 
 			Assert.AreEqual(copiedHash, originalHash);
+		}
+
+		[TestMethod]
+		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullLoad")]
+		public void FullLoadBuildingSmartIdsFormats()
+		{
+			var s = Xids.ImportBuildingSmartIDS(@"fullLoad\IDS-full.xml");
+			AssertOk(s);
+			var reqs = s.AllRequirements().ToList();
+
 		}
 
 		public string GetFileHash(string filename)

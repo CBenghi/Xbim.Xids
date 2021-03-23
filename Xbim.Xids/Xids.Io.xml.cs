@@ -63,41 +63,135 @@ namespace Xbim.Xids
 			{
                 if (elem.Name.LocalName == "applicability")
                 {
-                    AddApplicability(req, elem);
+                    var fs = GetFacets(elem);
+                    if (fs.Any())
+                    {
+                        req.SetFilters(fs);
+                    }
                 }
                 else if (elem.Name.LocalName == "requirements")
                 {
-                    AddRequirements(req, elem);
+                    var fs = GetFacets(elem);
+                    if (fs.Any())
+                    {
+                        req.SetExpectations(fs);
+                    }
                 }
             }
         }
 
-		private static IFacet GetProperty(XElement elem)
+        private static IFacet GetMaterial(XElement elem)
+        {
+			MaterialFacet ret = null;
+            foreach (var sub in elem.Elements())
+            {
+                if (sub.Name.LocalName == "value")
+                {
+                    ret = ret ?? new MaterialFacet();
+                    ret.Value = GetConstraint(sub);
+                }
+                else if (sub.Name.LocalName == "instructions")
+                {
+                    // todo: clarify what is the expected location of the instructions field... 
+                }
+                else
+                {
+
+                }
+            }
+			foreach (var attribute in elem.Attributes())
+			{
+                if (attribute.Name.LocalName == "location")
+                {
+                    ret = ret ?? new MaterialFacet();
+                    ret.Location = attribute.Value;
+                }
+                else if (attribute.Name.LocalName == "href")
+                {
+                    ret = ret ?? new MaterialFacet();
+                    if (Uri.TryCreate(attribute.Value, UriKind.RelativeOrAbsolute, out var created))
+                        ret.Uri = created;
+                    else
+                    {
+                        // todo: raise warning.
+                    }
+                }
+                else if (attribute.Name.LocalName == "use" ||
+                    attribute.Name.LocalName == "optional" 
+                    )
+                {
+                    // todo: raise warning.
+                }
+                else
+				{
+				}
+            }
+            return ret;
+        }
+
+        private static IFacet GetProperty(XElement elem)
 		{
-			var ret = new IfcPropertyFacet();
+			IfcPropertyFacet ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "propertyset")
                 {
+                    ret = ret ?? new IfcPropertyFacet();
                     ret.PropertySetName = sub.Value;
                 }
                 else if (
+                    sub.Name.LocalName == "property" ||
                     sub.Name.LocalName == "name"
-                    ||
-                    sub.Name.LocalName == "property"
                     )
                 {
+                    ret = ret ?? new IfcPropertyFacet();
                     ret.PropertyName = sub.Value;
                     var href = sub.Attribute("href");
                     if (href != null)
-					{
-                        ret.Uri = new Uri(href.Value);
-					}
+                    {
+                        if (Uri.TryCreate(href.Value, UriKind.RelativeOrAbsolute, out var created))
+                            ret.Uri = created;
+                        else
+                        {
+                            // todo: raise warning.
+                        }
+                    }
                 }
                 else if (sub.Name.LocalName == "value")
                 {
+                    ret = ret ?? new IfcPropertyFacet();
                     ret.PropertyValue = GetConstraint(sub);
                 }
+                else if (sub.Name.LocalName == "instructions")
+                {
+                    // todo: clarify what is the expected location of the instructions field... 
+                }
+                else 
+                {
+                }
+            }
+            foreach (var attribute in elem.Attributes())
+            {
+                if (attribute.Name.LocalName == "location")
+                {
+                    ret = ret ?? new IfcPropertyFacet();
+                    ret.Location = attribute.Value;
+                }
+                else if (attribute.Name.LocalName == "href")
+                {
+                    ret = ret ?? new IfcPropertyFacet();
+                    if (Uri.TryCreate(attribute.Value, UriKind.RelativeOrAbsolute, out var created))
+                        ret.Uri = created;
+                    else
+					{
+                        // todo: raise warning.
+					}
+                }
+                else
+                {
+
+                }
+
             }
             return ret;
         }
@@ -199,63 +293,38 @@ namespace Xbim.Xids
             return null;
         }
 
-        
-        private static void AddRequirements(Requirement req, XElement elem)
-        {
-			var fs = new List<IFacet>();
-            foreach (var sub in elem.Elements())
-            {
-                IFacet t = null;
-                if (sub.Name.LocalName == "property")
-                {
-                    t = GetProperty(sub);
-                }
-                else if (sub.Name.LocalName == "classification")
-                {
-                    // todo: 2021: complete addrequirements
-                    // t = GetClassification(elem);
-                }
-                else
-				{
-
-				}
-                if (t != null)
-                {
-                    fs.Add(t);
-                }
-            }
-            if (fs.Any())
-            {
-                req.SetExpectations(fs);
-            }
-        }
-
-        private static void AddApplicability(Requirement e, XElement elem)
+		private static List<IFacet> GetFacets(XElement elem)
 		{
 			var fs = new List<IFacet>();
-            foreach (var sub in elem.Elements())
-            {
-                IFacet t = null;
-                if (sub.Name.LocalName == "entity")
+			foreach (var sub in elem.Elements())
+			{
+				IFacet t = null;
+				if (sub.Name.LocalName == "entity")
+				{
+					t = GetEntity(sub);
+				}
+				else if (sub.Name.LocalName == "classification")
+				{
+					t = GetClassification(sub);
+				}
+				else if (sub.Name.LocalName == "property")
+				{
+                    t = GetProperty(sub);
+				}
+                else if (sub.Name.LocalName == "material")
                 {
-                    t = GetEntity(sub);
-                }
-                else if (sub.Name.LocalName == "classification")
-                {
-                    t = GetClassification(sub);
+                    t = GetMaterial(sub);
                 }
                 else
 				{
 
 				}
-                if (t != null)
-                    fs.Add(t);
-            }
-            if (fs.Any())
-			{
-                e.SetFilters(fs);
+				if (t != null)
+					fs.Add(t);
 			}
-        }
+
+			return fs;
+		}
 
 		private static IfcClassificationFacet GetClassification(XElement elem)
 		{
@@ -275,24 +344,48 @@ namespace Xbim.Xids
                     ret.Node = sub.Value;
                 }
             }
+            foreach (var attribute in elem.Attributes())
+            {
+                if (attribute.Name.LocalName == "location")
+				{
+                    ret = ret ?? new IfcClassificationFacet();
+                    ret.Location = attribute.Value;
+				}
+                else
+				{
+                    
+				}
+
+
+            }
             return ret;
         }
 
-		private static IfcTypeFacet GetEntity(XElement elem)
+        private const bool defaultSubTypeInclusion = false;
+
+        private static IfcTypeFacet GetEntity(XElement elem)
 		{
+            IfcTypeFacet ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (sub.Name.LocalName == "name")
                 {
-					return new IfcTypeFacet
-					{
-						IfcType = sub.Value,
-						IncludeSubtypes = false
-					};
-					
+                    if (ret == null)
+                        ret = new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                    ret.IfcType = sub.Value;
+                }
+                else if (sub.Name.LocalName == "predefinedtype")
+                {
+                    if (ret == null)
+                        ret = new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                    ret.PredefinedType = sub.Value;
                 }
             }
-            return null;
+            foreach (var attribute in elem.Attributes())
+            {
+
+            }
+            return ret;
         }
 	}
 }

@@ -3,13 +3,11 @@ using System;
 namespace Xbim.Xids
 {
 
-	public partial class IfcPropertyFacet : IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : LocationBase, IFacet, IEquatable<IfcPropertyFacet>
     {
         public string PropertySetName { get; set; } = "";
-
 		public string PropertyName { get; set; } = "";
-		public Uri Uri { get; set; } = null;
-
+		
         public IValueConstraint PropertyValue { get; set; } = null;
 
         public string Short()
@@ -29,7 +27,7 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-            return $"{PropertySetName}{PropertyName}{Uri?.ToString()??""}{PropertyValue?.ToString()??""}";
+            return $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{base.ToString()}";
         }
 
 		public bool Equals(IfcPropertyFacet other)
@@ -42,10 +40,7 @@ namespace Xbim.Xids
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
-            if (!IFacetExtensions.NullEquals(Uri, other.Uri))
-                return false;
-
-            return true;
+            return ((LocationBase)this).Equals((LocationBase)other);
         }
     }
 }

@@ -1,9 +1,9 @@
 using System;
 namespace Xbim.Xids
 {
-	public partial class MaterialFacet : IFacet, IEquatable<MaterialFacet>
+	public partial class MaterialFacet : LocationBase,  IFacet, IEquatable<MaterialFacet>
 	{
-		public string MaterialName { get; set; } = "";
+		public IValueConstraint Value { get; set; } = null;
 
 		public string Short()
 		{
@@ -12,16 +12,16 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-			return $"{MaterialName}";
+			return $"{Value}-{base.ToString()}";
 		}
 
 		public bool Equals(MaterialFacet other)
 		{
 			if (other == null)
 				return false;
-			if (MaterialName.ToLowerInvariant() != other.MaterialName.ToLowerInvariant())
+			if (!IFacetExtensions.NullEquals(Value, other.Value))
 				return false;
-			return true;
+			return ((LocationBase)this).Equals((LocationBase)other);
 		}
 		public override bool Equals(object obj)
 		{
