@@ -196,7 +196,7 @@ namespace Xbim.Xids
             return ret;
         }
 
-		private static IValueConstraint GetConstraint(XElement elem)
+		private static Value GetConstraint(XElement elem)
 		{
             XNamespace ns = "http://www.w3.org/2001/XMLSchema";
             var restriction = elem.Element(ns + "restriction");
@@ -224,20 +224,24 @@ namespace Xbim.Xids
                 // see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
             }
 
-            IValueConstraint ret = null; 
+            // we prepare the different possible scenarios, but then check in the end that the 
+            // xml encoutnered is solid.
+            //
+            List<object> enumeration = null;
+            RangeConstraint range = null;
             foreach (var sub in restriction.Elements())
             {
                 if (sub.Name.LocalName == "enumeration")
                 {
-                    if (!(ret is OneOfConstraint))
-                        ret = new OneOfConstraint();
-                    var enumV = ret as OneOfConstraint;
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
                         var tVal = GetValue(val.Value, t);
                         if (tVal != null)
-                            enumV.AddOption(tVal);
+                        {
+                            enumeration = enumeration ?? new List<object>();
+                            enumeration.Add(tVal);
+                        }
                     }
                 }
                 else if (
@@ -246,15 +250,21 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "minExclusive"
                     )
                 {
-                    if (!(ret is RangeConstraint))
-                        ret = new RangeConstraint();
-                    RangeConstraint c = ret as RangeConstraint;
+                    // todo: make GetValue accept null and cascade in single check
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
                         var tVal = GetValue(val.Value, t);
-                        c.MinValue = tVal;
-                        c.MinInclusive = sub.Name.LocalName == "minInclusive";
+                        if (tVal is IComparable cmp)
+						{
+                            range = range ?? new RangeConstraint();
+                            range.MinValue = cmp;
+                            range.MinInclusive = sub.Name.LocalName == "minInclusive";
+                        }
+                        else
+						{
+                            // todo: 2021: log error in conversion
+						}                       
                     }
                 }
                 else if (
@@ -263,30 +273,61 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "maxExclusive"
                     )
                 {
-                    if (!(ret is RangeConstraint))
-                        ret = new RangeConstraint();
-                    RangeConstraint c = ret as RangeConstraint;
+                    // todo: make GetValue accept null and cascade in single check
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
                         var tVal = GetValue(val.Value, t);
-                        c.MaxValue = tVal;
-                        c.MaxInclusive = sub.Name.LocalName == "maxInclusive";
+                        if (tVal is IComparable cmp)
+                        {
+                            range = range ?? new RangeConstraint();
+                            range.MaxValue = cmp;
+                            range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
+                        }
+                        else
+                        {
+                            // todo: 2021: log error in conversion
+                        }
                     }
                 }
+                else
+				{
+
+				}
             }
-            return ret;
+            // check that the temporary variable are coherent with valid value
+            if (enumeration != null && range != null)
+                return null;
+            if (enumeration != null)
+			{
+                var ret = new Value(Value.Resolve(t));
+                ret.AcceptedValues = new List<IValueConstraint>();
+				foreach (var val in enumeration)
+				{
+                    ret.AcceptedValues.Add(new ExactConstraint(val));
+				}
+                return ret;
+			}
+            if (range != null)
+			{
+				var ret = new Value(Value.Resolve(t))
+				{
+					AcceptedValues = new List<IValueConstraint>() { range }
+				};
+                return ret;
+            }
+            return null;
 		}
 
-		private static IValueConstraint GetValue(string value, Type t)
+		private static object GetValue(string value, Type t)
 		{
             if (t == typeof(string))
-                return new ValueConstraint(value);
+                return new Value(value);
             if (t == typeof(int))
             {
                 if (int.TryParse(value, out int val))
                 {
-                    return new ValueConstraint(val);
+                    return new Value(val);
                 }
                 return null;
             }

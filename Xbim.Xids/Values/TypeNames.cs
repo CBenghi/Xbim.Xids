@@ -1,6 +1,6 @@
 ﻿namespace Xbim.Xids
 {
-	public enum TypeNames
+	public enum TypeName
 	{
 		@undefined,
 		@text,

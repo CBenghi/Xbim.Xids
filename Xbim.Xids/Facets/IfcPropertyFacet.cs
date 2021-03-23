@@ -8,7 +8,7 @@ namespace Xbim.Xids
         public string PropertySetName { get; set; }
 		public string PropertyName { get; set; }
 		
-        public IValueConstraint PropertyValue { get; set; } 
+        public Value PropertyValue { get; set; } 
 
         public string Short()
         {

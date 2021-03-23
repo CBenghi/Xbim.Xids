@@ -92,9 +92,6 @@ namespace Xbim.Xids.Tests
 			return sb.ToString();
 		}
 
-
-
-
 		private void AssertOk(Xids s)
 		{
 			Assert.IsNotNull(s);

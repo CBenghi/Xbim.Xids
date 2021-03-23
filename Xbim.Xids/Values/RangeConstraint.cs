@@ -8,10 +8,10 @@ namespace Xbim.Xids
 {
 	public class RangeConstraint : IValueConstraint, IEquatable<RangeConstraint>
 	{
-		public object MinValue { get; set; }
+		public IComparable MinValue { get; set; }
 		public bool MinInclusive { get; set; }
 
-		public object MaxValue { get; set; }
+		public IComparable MaxValue { get; set; }
 		public bool MaxInclusive { get; set; }
 
 		public bool Equals(RangeConstraint other)
@@ -57,9 +57,12 @@ namespace Xbim.Xids
 			return ToString().GetHashCode();
 		}
 
-		public bool IsValid(object testObject)
+		public bool IsSatisfiedBy(object testObject)
 		{
-			throw new NotImplementedException();
+			var compe = testObject as IComparable;
+			if (compe == null)
+				return false;
+			return true;
 		}
 	}
 }
