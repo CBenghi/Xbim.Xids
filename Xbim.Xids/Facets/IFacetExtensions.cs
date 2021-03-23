@@ -22,5 +22,14 @@ namespace Xbim.Xids
 				return false;
 			return one.Equals(two);
 		}
+
+		public static bool NullableStringCaseInsensitiveEquals(string one, string two)
+		{
+			if (one == null && two == null)
+				return true;
+			if (one == null || two == null)
+				return false;
+			return one.ToUpperInvariant().Equals(two.ToUpperInvariant());
+		}
 	}
 }

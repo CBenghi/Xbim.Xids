@@ -5,10 +5,10 @@ namespace Xbim.Xids
 
 	public partial class IfcPropertyFacet : LocationBase, IFacet, IEquatable<IfcPropertyFacet>
     {
-        public string PropertySetName { get; set; } = "";
-		public string PropertyName { get; set; } = "";
+        public string PropertySetName { get; set; }
+		public string PropertyName { get; set; }
 		
-        public IValueConstraint PropertyValue { get; set; } = null;
+        public IValueConstraint PropertyValue { get; set; } 
 
         public string Short()
         {
@@ -34,9 +34,10 @@ namespace Xbim.Xids
         {
             if (other == null)
                 return false;
-            if (PropertySetName.ToLowerInvariant() != other.PropertySetName.ToLowerInvariant())
+
+            if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(PropertySetName, other.PropertySetName))
                 return false;
-            if (PropertyName.ToLowerInvariant() != other.PropertyName.ToLowerInvariant())
+            if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(PropertyName, other.PropertyName))
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;

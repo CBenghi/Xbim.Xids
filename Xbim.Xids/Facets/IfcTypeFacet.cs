@@ -4,9 +4,9 @@ namespace Xbim.Xids
 {
     public partial class IfcTypeFacet : IFacet, IEquatable<IfcTypeFacet>
     {
-        public string IfcType { get; set; } = "";
+        public string IfcType { get; set; }
 
-        public string PredefinedType { get; set; } = "";
+        public string PredefinedType { get; set; } 
 
         public bool IncludeSubtypes { get; set; } = true;
 
@@ -27,6 +27,8 @@ namespace Xbim.Xids
 
         public bool Equals(IfcTypeFacet other)
 		{
+            if (other == null)
+                return false;
             return (IfcType, PredefinedType, IncludeSubtypes)
                 .Equals((other.IfcType, other.PredefinedType, other.IncludeSubtypes));
         }
