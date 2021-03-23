@@ -336,6 +336,17 @@ namespace Xbim.Xids
                     if (ret == null)
                         ret = new IfcClassificationFacet();
                     ret.ClassificationSystem = sub.Value;
+
+                    var href = sub.Attribute("href");
+                    if (href != null)
+                    {
+                        if (Uri.TryCreate(href.Value, UriKind.RelativeOrAbsolute, out var created))
+                            ret.Uri = created;
+                        else
+                        {
+                            // todo: raise warning.
+                        }
+                    }
                 }
                 else if (sub.Name.LocalName == "value")
                 {
