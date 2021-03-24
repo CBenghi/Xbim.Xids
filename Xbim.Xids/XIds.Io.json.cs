@@ -30,9 +30,6 @@ namespace Xbim.Xids
 #if DEBUG
 			serializer.Formatting = Formatting.Indented;
 #endif
-			// serializer.Converters.Add(new JavaScriptDateTimeConverter());
-
-
 			using (JsonWriter writer = new JsonTextWriter(sw))
 			{
 				serializer.Serialize(writer, this);

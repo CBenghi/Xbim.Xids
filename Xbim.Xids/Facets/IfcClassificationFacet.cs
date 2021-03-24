@@ -8,11 +8,13 @@ namespace Xbim.Xids
 		/// A string identifying the relevant classification system
 		/// </summary>
 		public string ClassificationSystem { get; set; }
+		
+		public Uri ClassificationSystemUri { get; set; }
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
-		public string Node { get; set; }
+		public Value Node { get; set; }
 
 		public bool Equals(IfcClassificationFacet other)
 		{
@@ -23,7 +25,7 @@ namespace Xbim.Xids
 				ClassificationSystem, other.ClassificationSystem)
 				)
 				return false;
-			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(
+			if (!IFacetExtensions.NullEquals(
 				Node, other.Node)
 				)
 				return false;

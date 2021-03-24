@@ -2,9 +2,9 @@
 {
 	public enum TypeName
 	{
-		@undefined,
-		@text,
-		@integer,
-		@floating,
+		Undefined,
+		String,
+		Integer,
+		Floating,
 	}
 }

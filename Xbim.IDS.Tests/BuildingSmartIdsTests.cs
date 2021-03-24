@@ -37,7 +37,7 @@ namespace Xbim.Xids.Tests
 		{
 			var s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01.xml");
 			AssertOk(s);
-			
+
 			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example02.xml");
 			Assert.IsNotNull(s);
 			// Ids.ToBuildingSmartIDS("out.xml");
@@ -71,9 +71,27 @@ namespace Xbim.Xids.Tests
 			var s = Xids.ImportBuildingSmartIDS(@"fullLoad\IDS-full.xml");
 			AssertOk(s);
 			var reqs = s.AllRequirements().ToList();
-			
 		}
 
+		[TestMethod]
+		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullSave")]
+		public void FullSaveBuildingSmartIdsFormats()
+		{
+			var s = Xids.ImportBuildingSmartIDS(@"fullSave\IDS-full.xml");
+			AssertOk(s);
+			s.ExportBuildingSmartIDS(@"..\..\saveattempt.xml");
+		}
+
+		[TestMethod]
+		public void WeirdValues()
+		{
+			var stringV = "someValue";
+			var val = Value.SingleUndefinedExact(stringV);
+			var itIs = val.IsSingleUndefinedExact(out var retVal);
+			Assert.IsTrue(itIs);
+			Assert.AreEqual(stringV, retVal);
+		}
+		 
 		public string GetFileHash(string filename)
 		{
 			var hash = new SHA1Managed();

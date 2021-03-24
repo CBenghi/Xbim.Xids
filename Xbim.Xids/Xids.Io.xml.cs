@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -12,12 +9,260 @@ namespace Xbim.Xids
 {
 	public partial class Xids
 	{
-        public static void ExportBuildingSmartIDS(string fileName)
+        private static XmlWriterSettings WriteSettings
+        {
+            get
+            {
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Async = false;
+#if DEBUG
+                settings.Indent = true;
+                settings.IndentChars = "\t";
+#endif
+                return settings;
+            }
+        }
+
+        public void ExportBuildingSmartIDS(string destinationFile)
 		{
-            throw new NotImplementedException();
+            using (XmlWriter writer = XmlWriter.Create(destinationFile, WriteSettings))
+            {
+                ExportBuildingSmartIDS(writer);
+            }
+        }
+
+        public void ExportBuildingSmartIDS(Stream destinationStream)
+        {
+            using (XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings))
+			{
+				ExportBuildingSmartIDS(writer);
+			}
 		}
 
-        public static Xids ImportBuildingSmartIDS(Stream stream)
+		private void ExportBuildingSmartIDS(XmlWriter xmlWriter)
+		{
+			xmlWriter.WriteStartElement("ids", @"http://standards.buildingsmart.org/IDS/ids.xml");
+            // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
+            xmlWriter.WriteAttributeString("xmlns", "xs", null, "http://www.w3.org/2001/XMLSchema");
+            xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+
+			foreach (var requirement in AllRequirements())
+			{
+                ExportBuildingSmartIDS(requirement, xmlWriter);
+            }
+
+            // writer.WriteString("text");
+
+            // writer.WriteProcessingInstruction("pName", "pValue");
+            xmlWriter.WriteEndElement();
+			xmlWriter.Flush();
+		}
+
+		private void ExportBuildingSmartIDS(Requirement requirement, XmlWriter xmlWriter)
+		{
+            xmlWriter.WriteStartElement("specification");
+            
+            xmlWriter.WriteAttributeString("name", requirement.Name);
+            xmlWriter.WriteStartElement("applicability");
+			foreach (var item in requirement.ModelSubset.Facets)
+			{
+                ExportBuildingSmartIDS(item, xmlWriter);
+            }
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteStartElement("requirements");
+            foreach (var item in requirement.Need.Facets)
+            {
+                ExportBuildingSmartIDS(item, xmlWriter);
+            }
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+        }
+
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter)
+        {
+            if (item is IfcTypeFacet tf)
+            {
+                xmlWriter.WriteStartElement("entity");
+                if (!string.IsNullOrWhiteSpace(tf.IfcType))
+                {
+                    xmlWriter.WriteStartElement("name");
+                    xmlWriter.WriteString(tf.IfcType);
+                    xmlWriter.WriteEndElement();
+                }
+                if (!string.IsNullOrWhiteSpace(tf.PredefinedType))
+                {
+                    xmlWriter.WriteStartElement("predefinedtype");
+                    xmlWriter.WriteString(tf.PredefinedType);
+                    xmlWriter.WriteEndElement();
+                }
+                xmlWriter.WriteEndElement();
+            }
+            else if (item is IfcClassificationFacet cf)
+            {
+                xmlWriter.WriteStartElement("classification");
+                WriteLocation(cf, xmlWriter);
+                if (!string.IsNullOrWhiteSpace(cf.ClassificationSystem))
+                {
+                    xmlWriter.WriteStartElement("system");
+                    if (cf.ClassificationSystemUri != null)
+                    {
+                        xmlWriter.WriteAttributeString("href", cf.ClassificationSystemUri.ToString());
+                    }
+                    xmlWriter.WriteString(cf.ClassificationSystem);
+                    xmlWriter.WriteEndElement();
+                }
+                WriteValue(cf.Node, xmlWriter);
+                xmlWriter.WriteEndElement();
+            }
+            else if (item is IfcPropertyFacet pf)
+            {
+                xmlWriter.WriteStartElement("property");
+                WriteLocation(pf, xmlWriter);
+                
+                if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
+                {
+                    xmlWriter.WriteStartElement("propertyset");
+                    xmlWriter.WriteString(pf.PropertySetName);
+                    xmlWriter.WriteEndElement();
+                }
+                if (!string.IsNullOrWhiteSpace(pf.PropertyName))
+                {
+                    xmlWriter.WriteStartElement("name");
+                    xmlWriter.WriteString(pf.PropertyName);
+                    xmlWriter.WriteEndElement();
+                }
+                WriteValue(pf.PropertyValue, xmlWriter);
+                xmlWriter.WriteEndElement();
+            }
+            else if (item is MaterialFacet mf)
+            {
+                xmlWriter.WriteStartElement("material");
+                WriteLocation(mf, xmlWriter);
+                WriteValue(mf.Value, xmlWriter);
+                //if (!string.IsNullOrWhiteSpace(pf.PropertyName))
+                //{
+                //    xmlWriter.WriteStartElement("name");
+                //    xmlWriter.WriteString(pf.PropertyName);
+                //    xmlWriter.WriteEndElement();
+                //}
+                xmlWriter.WriteEndElement();
+            }
+        }
+
+		private void WriteValue(Value value, XmlWriter xmlWriter)
+		{
+            if (value == null)
+                return;
+            xmlWriter.WriteStartElement("value");
+            if (value.IsSingleUndefinedExact(out string exact))
+			{
+                xmlWriter.WriteString(exact);
+            }
+            else if (value.AcceptedValues != null)
+			{
+                xmlWriter.WriteStartElement("restriction", @"http://www.w3.org/2001/XMLSchema");
+                if (value.BaseType != TypeName.Undefined)
+				{
+                    var val = GetXsdTypeString(value.BaseType);
+                    xmlWriter.WriteAttributeString("base", val);
+                }
+                foreach (var item in value.AcceptedValues)
+                {
+                    if (item is PatternConstraint pc)
+                    {
+                        xmlWriter.WriteStartElement("pattern", @"http://www.w3.org/2001/XMLSchema");
+                        xmlWriter.WriteAttributeString("value", pc.Pattern);
+                        xmlWriter.WriteEndElement();
+                    }
+                    else if (item is ExactConstraint ec)
+                    {
+                        xmlWriter.WriteStartElement("enumeration", @"http://www.w3.org/2001/XMLSchema");
+                        xmlWriter.WriteAttributeString("value", ec.Value.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                    else if (item is RangeConstraint rc)
+                    {
+                        if (rc.MinValue != null)
+                        {
+                            var tp = rc.MinInclusive ? "minInclusive" : "minExclusive";
+                            xmlWriter.WriteStartElement(tp, @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", rc.MinValue.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                        if (rc.MaxValue != null)
+                        {
+                            var tp = rc.MinInclusive ? "maxInclusive" : "maxExclusive";
+                            xmlWriter.WriteStartElement(tp, @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", rc.MaxValue.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                    }
+                    else if (item is StructureConstraint sc)
+                    {
+                        if (sc.Length != null)
+                        {
+                            xmlWriter.WriteStartElement("length", @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", sc.Length.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                        if (sc.MinLength != null)
+                        {
+                            xmlWriter.WriteStartElement("minLength", @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", sc.MinLength.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                        if (sc.MaxLength != null)
+                        {
+                            xmlWriter.WriteStartElement("maxLength", @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", sc.MaxLength.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                        if (sc.TotalDigits != null)
+                        {
+                            xmlWriter.WriteStartElement("totalDigits", @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", sc.TotalDigits.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                        if (sc.FractionDigits != null)
+                        {
+                            xmlWriter.WriteStartElement("fractionDigits", @"http://www.w3.org/2001/XMLSchema");
+                            xmlWriter.WriteAttributeString("value", sc.FractionDigits.ToString());
+                            xmlWriter.WriteEndElement();
+                        }
+                    }
+                }
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+        }
+
+		public static string GetXsdTypeString(TypeName baseType)
+		{
+			switch (baseType)
+			{
+                case  TypeName.Integer:
+                    return "xs:integer";
+                case TypeName.String:
+                    return "xs:string";
+                case TypeName.Floating:
+                    return "xs:decimal";
+            }
+            return "";
+		}
+
+		private void WriteLocation(LocationBase cf, XmlWriter xmlWriter)
+		{
+            if (!string.IsNullOrWhiteSpace(cf.Location))
+            {
+                xmlWriter.WriteAttributeString("location", cf.Location);
+            }
+            if (cf.Uri != null)
+            {
+                xmlWriter.WriteAttributeString("href", cf.Uri.ToString());
+            }
+        }
+
+		public static Xids ImportBuildingSmartIDS(Stream stream)
         {
             var t = XElement.Load(stream);
             return ImportBuildingSmartIDS(t);
@@ -198,10 +443,15 @@ namespace Xbim.Xids
 
 		private static Value GetConstraint(XElement elem)
 		{
-            XNamespace ns = "http://www.w3.org/2001/XMLSchema";
+			XNamespace ns = "http://www.w3.org/2001/XMLSchema";
             var restriction = elem.Element(ns + "restriction");
             if (restriction == null)
-                return null;
+            {
+                // get the textual content as a fixed 
+                var content = elem.Value;
+                var tc = Value.SingleUndefinedExact(content);
+                return tc;
+            }
             Type t = null;
             var bse = restriction.Attribute("base");
             if (bse != null && bse.Value != null)
@@ -214,13 +464,17 @@ namespace Xbim.Xids
                     t = typeof(bool);
                 else if (bse.Value == "xs:double")
                     t = typeof(double);
+                else if (bse.Value == "xs:decimal")
+                    t = typeof(decimal);
+                else if (bse.Value == "xs:float")
+                    t = typeof(float);
                 else if (bse.Value == "xs:date")
                     t = typeof(DateTime);
                 else if (bse.Value == "xs:time")
                     t = typeof(DateTime);
                 else if (bse.Value == "xs:anyURI")
                     t = typeof(string);
-                // todo: 2021: evaluate more types?
+                // todo: 2021: evaluate more XSD types?
                 // see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
             }
 
@@ -229,7 +483,8 @@ namespace Xbim.Xids
             //
             List<object> enumeration = null;
             RangeConstraint range = null;
-            PatternConstraint pc = null;
+            PatternConstraint patternc = null;
+            StructureConstraint structure = null;
 
             foreach (var sub in restriction.Elements())
             {
@@ -287,18 +542,64 @@ namespace Xbim.Xids
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        pc = new PatternConstraint() { Pattern = val.Value };
+                        patternc = new PatternConstraint() { Pattern = val.Value };
+                    }
+                }
+                else if (sub.Name.LocalName == "minLength")
+                {
+                    var val = sub.Attribute("value");
+                    if (val != null && int.TryParse(val.Value, out var ival))
+                    {
+                        structure = structure ?? new StructureConstraint();
+                        structure.MinLength = ival;
+                    }
+                }
+                else if (sub.Name.LocalName == "maxLength")
+                {
+                    var val = sub.Attribute("value");
+                    if (val != null && int.TryParse(val.Value, out var ival))
+                    {
+                        structure = structure ?? new StructureConstraint();
+                        structure.MaxLength = ival;
+                    }
+                }
+                else if (sub.Name.LocalName == "length")
+                {
+                    var val = sub.Attribute("value");
+                    if (val != null && int.TryParse(val.Value, out var ival))
+                    {
+                        structure = structure ?? new StructureConstraint();
+                        structure.Length = ival;
+                    }
+                }
+                else if (sub.Name.LocalName == "totalDigits")
+                {
+                    var val = sub.Attribute("value");
+                    if (val != null && int.TryParse(val.Value, out var ival))
+                    {
+                        structure = structure ?? new StructureConstraint();
+                        structure.TotalDigits = ival;
+                    }
+                }
+                else if (sub.Name.LocalName == "fractionDigits")
+                {
+                    var val = sub.Attribute("value");
+                    if (val != null && int.TryParse(val.Value, out var ival))
+                    {
+                        structure = structure ?? new StructureConstraint();
+                        structure.FractionDigits = ival;
                     }
                 }
                 else
-                {
+				{
 
-                }
+				}
             }
             // check that the temporary variable are coherent with valid value
             var count = (enumeration != null) ? 1 : 0;
             count += (range != null) ? 1 : 0;
-            count += (pc != null) ? 1 : 0;
+            count += (patternc != null) ? 1 : 0;
+            count += (structure != null) ? 1 : 0;
             if (count != 1)
                 return null;
             if (enumeration != null)
@@ -321,11 +622,19 @@ namespace Xbim.Xids
 				};
                 return ret;
             }
-            if (pc!=null)
+            if (patternc!=null)
 			{
                 var ret = new Value(Value.Resolve(t))
                 {
-                    AcceptedValues = new List<IValueConstraint>() { pc }
+                    AcceptedValues = new List<IValueConstraint>() { patternc }
+                };
+                return ret;
+            }
+            if (structure != null)
+			{
+                var ret = new Value(Value.Resolve(t))
+                {
+                    AcceptedValues = new List<IValueConstraint>() { structure }
                 };
                 return ret;
             }
@@ -380,7 +689,7 @@ namespace Xbim.Xids
                     if (href != null)
                     {
                         if (Uri.TryCreate(href.Value, UriKind.RelativeOrAbsolute, out var created))
-                            ret.Uri = created;
+                            ret.ClassificationSystemUri = created;
                         else
                         {
                             // todo: raise warning.
@@ -389,9 +698,8 @@ namespace Xbim.Xids
                 }
                 else if (sub.Name.LocalName == "value")
                 {
-                    if (ret == null)
-                        ret = new IfcClassificationFacet();
-                    ret.Node = sub.Value;
+                    ret = ret ?? new IfcClassificationFacet();
+                    ret.Node = GetConstraint(sub); 
                 }
             }
             foreach (var attribute in elem.Attributes())

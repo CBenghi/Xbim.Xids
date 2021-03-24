@@ -11,6 +11,7 @@ namespace Xbim.IDS.Tests
 	[TestClass]
 	public class FacetImplementationTests
 	{
+
 		[TestMethod]
 		public void FacetEqualImplementation()
 		{
@@ -20,7 +21,7 @@ namespace Xbim.IDS.Tests
 			{
 				ClassificationSystem = "1",
 				Location = "2",
-				Node = "3",
+				Node = new Value(12),
 				Uri = new Uri("http://www.gino.com")
 			});
 
@@ -67,6 +68,10 @@ namespace Xbim.IDS.Tests
 			var rc = new RangeConstraint();
 			TestAddRemove(rcl, rc);
 
+			List<StructureConstraint> scl = new List<StructureConstraint>();
+			var sc = new StructureConstraint();
+			var t = sc.GetHashCode();
+			TestAddRemove(scl, sc);
 
 			var val1 = MakeEnumVal();
 			var val2 = MakeEnumVal();
@@ -77,7 +82,7 @@ namespace Xbim.IDS.Tests
 		private Value MakeEnumVal()
 		{
 			var val = new Value();
-			val.BaseType = TypeName.text;
+			val.BaseType = TypeName.String;
 			val.AcceptedValues = new List<IValueConstraint>();
 			val.AcceptedValues.Add(new ExactConstraint("30"));
 			val.AcceptedValues.Add(new ExactConstraint("60"));

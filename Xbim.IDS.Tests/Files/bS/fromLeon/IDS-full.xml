@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ids xmlns="http://standards.buildingsmart.org/IDS/ids.xml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ids xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://standards.buildingsmart.org/IDS/ids.xml">
 	<specification name="binder">
 		<applicability>
 			<entity>
@@ -20,7 +20,7 @@
 				<system href="http://identifier.buildingsmart.org/uri/owner/name">NL-Sfb</system>
 				<value>
 					<xs:restriction base="xs:string">
-						<xs:length value="2"/>
+						<xs:length value="2" />
 					</xs:restriction>
 				</value>
 			</classification>
@@ -30,9 +30,9 @@
 				<instructions>Please add the desired fire rating</instructions>
 				<value>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value="30"/>
-						<xs:enumeration value="60"/>
-						<xs:enumeration value="90"/>
+						<xs:enumeration value="30" />
+						<xs:enumeration value="60" />
+						<xs:enumeration value="90" />
 					</xs:restriction>
 				</value>
 			</property>
@@ -43,8 +43,8 @@
 					<xs:restriction base="xs:integer">
 						<!-- to check for resilient import -->
 						<xs:minInclusive /> 
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="120"/>
+						<xs:minInclusive value="0" />
+						<xs:maxInclusive value="120" />
 					</xs:restriction>
 				</value>
 			</property>
@@ -52,7 +52,7 @@
 				<instructions>The only acceptable value is one lowercase letter (from a to z)</instructions>
 				<value>
 					<xs:restriction base="xs:string">
-						<xs:pattern value="[a-z]"/>
+						<xs:pattern value="[a-z]" />
 					</xs:restriction>
 				</value>
 			</material>

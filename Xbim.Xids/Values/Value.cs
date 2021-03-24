@@ -17,7 +17,7 @@ namespace Xbim.Xids
 		{
 			AcceptedValues = new List<IValueConstraint>();
 			AcceptedValues.Add(new ExactConstraint(value));
-			BaseType = TypeName.text;
+			BaseType = TypeName.String;
 		}
 
 		public Value(TypeName value)
@@ -29,7 +29,7 @@ namespace Xbim.Xids
 		{
 			AcceptedValues = new List<IValueConstraint>();
 			AcceptedValues.Add(new ExactConstraint(value));
-			BaseType = TypeName.integer;
+			BaseType = TypeName.Integer;
 		}
 
 		public TypeName BaseType { get; set; }
@@ -57,9 +57,9 @@ namespace Xbim.Xids
 		{
 			switch (BaseType)
 			{
-				case TypeName.floating:
+				case TypeName.Floating:
 					return typeof(double);
-				case TypeName.integer:
+				case TypeName.Integer:
 					return typeof(int);
 				default:
 					return typeof(string);
@@ -88,17 +88,17 @@ namespace Xbim.Xids
 		public static TypeName Resolve(Type t)
 		{
 			if (t == typeof(string))
-				return TypeName.text;
+				return TypeName.String;
 			if (t == typeof(int))
-				return TypeName.integer;
+				return TypeName.Integer;
 			if (t == typeof(double) || t == typeof(float))
-				return TypeName.floating;
-			return TypeName.undefined;
+				return TypeName.Floating;
+			return TypeName.Undefined;
 		}
 
 		public bool IsValid(object testObject)
 		{
-			if (BaseType != TypeName.undefined && !ResolvedType().IsAssignableFrom(testObject.GetType()))
+			if (BaseType != TypeName.Undefined && !ResolvedType().IsAssignableFrom(testObject.GetType()))
 				return false;
 			foreach (var acceptableValue in AcceptedValues)
 			{
@@ -124,6 +124,33 @@ namespace Xbim.Xids
 				return $"{BaseType}";
 			var joined = string.Join(",", AcceptedValues.Select(x => x.ToString()).ToArray());
 			return $"{BaseType}:{joined}";
+		}
+
+		public bool IsSingleUndefinedExact(out string exact)
+		{
+			if (BaseType != TypeName.Undefined || AcceptedValues == null || AcceptedValues.Count != 1)
+			{
+				exact = "";
+				return false;
+			}
+			var unique = AcceptedValues.FirstOrDefault() as ExactConstraint;
+			if (unique == null)
+			{
+				exact = "";
+				return false;
+			}
+			exact = unique.Value.ToString();
+			return true;
+		}
+
+		public static Value SingleUndefinedExact(string content)
+		{
+			Value ret = new Value()
+			{
+				BaseType = TypeName.Undefined,
+				AcceptedValues = new List<IValueConstraint>() { new ExactConstraint(content) }
+			};
+			return ret;
 		}
 	}
 }
