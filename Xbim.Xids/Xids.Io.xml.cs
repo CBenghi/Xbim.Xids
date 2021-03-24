@@ -445,7 +445,7 @@ namespace Xbim.Xids
             if (bse != null && bse.Value != null)
 			{
 				var tval = bse.Value;
-				t = GetNamedType(tval);
+				t = GetNamedTypeFromXsd(tval);
 			}
 
 			// we prepare the different possible scenarios, but then check in the end that the 

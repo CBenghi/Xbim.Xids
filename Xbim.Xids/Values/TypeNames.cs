@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Xbim.Xids
 {
@@ -16,6 +17,8 @@ namespace Xbim.Xids
 		Decimal,
 		Date,
 		Time,
+		DateTime,
+		Duration,
 		Uri,
 	}
 
@@ -41,6 +44,10 @@ namespace Xbim.Xids
 					return "xs:date";
 				case TypeName.Time:
 					return "xs:time";
+				case TypeName.Duration:
+					return "xs:duration";
+				case TypeName.DateTime:
+					return "xs:dateTime";
 				case TypeName.Uri:
 					return "xs:anyURI";
 			}
@@ -72,7 +79,7 @@ namespace Xbim.Xids
 
 
 
-		private static TypeName GetNamedType(string tval)
+		public static TypeName GetNamedTypeFromXsd(string tval)
 		{
 			if (tval == "xs:string")
 				return TypeName.String;
@@ -88,11 +95,55 @@ namespace Xbim.Xids
 				return TypeName.Floating;
 			else if (tval == "xs:date")
 				return TypeName.Date;
+			else if (tval == "xs:dateTime")
+				return TypeName.DateTime;
+			else if (tval == "xs:duration")
+				return TypeName.Duration;
 			else if (tval == "xs:time")
 				return TypeName.Time;
 			else if (tval == "xs:anyURI")
 				return  TypeName.Uri;
 			return TypeName.Undefined;
+		}
+
+		public enum constraints
+		{
+			length,
+			minLength,
+			maxLength,
+			pattern,
+			enumeration,
+			whiteSpace,
+			totalDigits,
+			fractionDigits,
+			minExclusive,
+			minInclusive,
+			maxExclusive,
+			maxInclusive,
+		}
+
+		// documentation taken from:
+		// https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#string
+		public IEnumerable<constraints> CompatibleConstraints(TypeName withType)
+		{
+			switch (withType)
+			{
+				case TypeName.String:
+					return new[] { constraints.length, constraints.minLength, constraints.maxLength, constraints.pattern, constraints.enumeration, constraints.whiteSpace };
+				case TypeName.Boolean:
+					return new[] { constraints.pattern, constraints.whiteSpace };
+				case TypeName.Decimal:
+				case TypeName.Integer:
+					return new[] { constraints.totalDigits, constraints.fractionDigits, constraints.pattern, constraints.whiteSpace, constraints.enumeration, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive };
+				case TypeName.Floating:
+				case TypeName.Double:
+				case TypeName.Duration:
+				case TypeName.DateTime:
+				case TypeName.Time:
+				case TypeName.Uri:
+				default:
+					return new[] { constraints.pattern, constraints.enumeration, constraints.whiteSpace, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive };
+			}
 		}
 	}
 }

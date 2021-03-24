@@ -79,6 +79,18 @@ namespace Xbim.IDS.Tests
 
 		}
 
+		[TestMethod]
+		public void DataTypesOk()
+		{
+			var typeNames = Enum.GetValues(typeof(TypeName)).Cast<TypeName>();
+			foreach (var tName in typeNames)
+			{
+				var t = Xids.Xids.GetXsdTypeString(tName);
+				var back = Xids.Xids.GetNamedTypeFromXsd(t);
+				Assert.AreEqual(tName, back);
+			}
+		}
+
 		private Value MakeEnumVal()
 		{
 			var val = new Value();
