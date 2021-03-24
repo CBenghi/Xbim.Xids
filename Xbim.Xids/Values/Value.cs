@@ -58,27 +58,77 @@ namespace Xbim.Xids
 			switch (BaseType)
 			{
 				case TypeName.Floating:
+					return typeof(float);
+				case TypeName.Double:
 					return typeof(double);
 				case TypeName.Integer:
 					return typeof(int);
+				case TypeName.Decimal:
+					return typeof(decimal);
+				case TypeName.Date:
+					return typeof(DateTime);
+				case TypeName.Time:
+					return typeof(TimeSpan);
+				case TypeName.String:
+					return typeof(string);
+				case TypeName.Boolean:
+					return typeof(bool);
+				case TypeName.Uri:
+					return typeof(Uri);
 				default:
 					return typeof(string);
 			}
 		}
 
-		public static object GetObject(string value, Type t)
+		public static object GetObject(string value, TypeName t)
 		{
-			if (t == typeof(string))
+			if (t ==  TypeName.String )
 				return value;
-			if (t == typeof(int))
+			if (t == TypeName.Integer)
 			{
 				if (int.TryParse(value, out var val))
 					return val;
 				return null;
 			}
-			if (t == typeof(double))
+			if (t == TypeName.Decimal)
+			{
+				if (decimal.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Double)
 			{
 				if (double.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Floating)
+			{
+				if (float.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Date)
+			{
+				if (DateTime.TryParse(value, out var val))
+					return val.Date;
+				return null;
+			}
+			if (t == TypeName.Boolean)
+			{
+				if (bool.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Time)
+			{
+				if (DateTime.TryParse(value, out var val))
+					return val.TimeOfDay;
+				return null;
+			}
+			if (t == TypeName.Uri)
+			{
+				if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var val))
 					return val;
 				return null;
 			}

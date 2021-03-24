@@ -236,19 +236,7 @@ namespace Xbim.Xids
             xmlWriter.WriteEndElement();
         }
 
-		public static string GetXsdTypeString(TypeName baseType)
-		{
-			switch (baseType)
-			{
-                case  TypeName.Integer:
-                    return "xs:integer";
-                case TypeName.String:
-                    return "xs:string";
-                case TypeName.Floating:
-                    return "xs:decimal";
-            }
-            return "";
-		}
+		
 
 		private void WriteLocation(LocationBase cf, XmlWriter xmlWriter)
 		{
@@ -452,36 +440,18 @@ namespace Xbim.Xids
                 var tc = Value.SingleUndefinedExact(content);
                 return tc;
             }
-            Type t = null;
+            TypeName t = TypeName.Undefined;
             var bse = restriction.Attribute("base");
             if (bse != null && bse.Value != null)
-            {
-                if (bse.Value == "xs:string")
-                    t = typeof(string);
-                else if (bse.Value == "xs:integer")
-                    t = typeof(int);
-                else if (bse.Value == "xs:boolean")
-                    t = typeof(bool);
-                else if (bse.Value == "xs:double")
-                    t = typeof(double);
-                else if (bse.Value == "xs:decimal")
-                    t = typeof(decimal);
-                else if (bse.Value == "xs:float")
-                    t = typeof(float);
-                else if (bse.Value == "xs:date")
-                    t = typeof(DateTime);
-                else if (bse.Value == "xs:time")
-                    t = typeof(DateTime);
-                else if (bse.Value == "xs:anyURI")
-                    t = typeof(string);
-                // todo: 2021: evaluate more XSD types?
-                // see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
-            }
+			{
+				var tval = bse.Value;
+				t = GetNamedType(tval);
+			}
 
-            // we prepare the different possible scenarios, but then check in the end that the 
-            // xml encoutnered is solid.
-            //
-            List<object> enumeration = null;
+			// we prepare the different possible scenarios, but then check in the end that the 
+			// xml encoutnered is solid.
+			//
+			List<object> enumeration = null;
             RangeConstraint range = null;
             PatternConstraint patternc = null;
             StructureConstraint structure = null;
@@ -604,7 +574,7 @@ namespace Xbim.Xids
                 return null;
             if (enumeration != null)
 			{
-				var ret = new Value(Value.Resolve(t))
+				var ret = new Value(t)
 				{
 					AcceptedValues = new List<IValueConstraint>()
 				};
@@ -616,7 +586,7 @@ namespace Xbim.Xids
 			}
             if (range != null)
 			{
-				var ret = new Value(Value.Resolve(t))
+				var ret = new Value(t)
 				{
 					AcceptedValues = new List<IValueConstraint>() { range }
 				};
@@ -624,7 +594,7 @@ namespace Xbim.Xids
             }
             if (patternc!=null)
 			{
-                var ret = new Value(Value.Resolve(t))
+                var ret = new Value(t)
                 {
                     AcceptedValues = new List<IValueConstraint>() { patternc }
                 };
@@ -632,7 +602,7 @@ namespace Xbim.Xids
             }
             if (structure != null)
 			{
-                var ret = new Value(Value.Resolve(t))
+                var ret = new Value(t)
                 {
                     AcceptedValues = new List<IValueConstraint>() { structure }
                 };
@@ -640,6 +610,8 @@ namespace Xbim.Xids
             }
             return null;
 		}
+
+		
 
 		private static List<IFacet> GetFacets(XElement elem)
 		{
