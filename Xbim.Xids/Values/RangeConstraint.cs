@@ -18,22 +18,10 @@ namespace Xbim.Xids
 		{
 			if (other == null)
 				return false;
-			if (MinValue != null)
-			{
-				if (!MinValue.Equals(other.MinValue))
-					return false;
-			}
-			else if (other.MinValue == null)
-					return false;
-
-			if (MaxValue != null)
-			{
-				if (!MaxValue.Equals(other.MaxValue))
-					return false;
-			}
-			else if (other.MaxValue == null)
+			if (!IFacetExtensions.NullEquals(MinValue, other.MinValue))
 				return false;
-
+			if (!IFacetExtensions.NullEquals(MaxValue, other.MaxValue))
+				return false;
 			return MinInclusive == other.MinInclusive &&
 				MaxInclusive == other.MaxInclusive;
 		}

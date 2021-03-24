@@ -15,8 +15,8 @@ namespace Xbim.IDS.Tests
 		public void FacetEqualImplementation()
 		{
 			List<IFacet> lst = new List<IFacet>();
-			Test(lst, new IfcClassificationFacet());
-			Test(lst, new IfcClassificationFacet()
+			TestAddRemove(lst, new IfcClassificationFacet());
+			TestAddRemove(lst, new IfcClassificationFacet()
 			{
 				ClassificationSystem = "1",
 				Location = "2",
@@ -25,8 +25,8 @@ namespace Xbim.IDS.Tests
 			});
 
 
-			Test(lst, new IfcPropertyFacet());
-			Test(lst, new IfcPropertyFacet()
+			TestAddRemove(lst, new IfcPropertyFacet());
+			TestAddRemove(lst, new IfcPropertyFacet()
 			{
 				Location = "1",
 				PropertyName = "2",
@@ -34,23 +34,57 @@ namespace Xbim.IDS.Tests
 				Uri = new Uri("http://www.gino.com")
 			});
 
-			Test(lst, new IfcTypeFacet());
-			Test(lst, new IfcTypeFacet()
+			TestAddRemove(lst, new IfcTypeFacet());
+			TestAddRemove(lst, new IfcTypeFacet()
 			{
 				IfcType = "1",
 				IncludeSubtypes = false,
 				PredefinedType = "3"
 			});
 
-			Test(lst, new MaterialFacet());
-			Test(lst, new MaterialFacet()
+			TestAddRemove(lst, new MaterialFacet());
+			TestAddRemove(lst, new MaterialFacet()
 			{
 				Location = "1",
 				Uri = new Uri("http://www.gino.com")
 			});
 		}
 
-		private static void Test(List<IFacet> lst, IFacet c)
+		[TestMethod]
+		public void ValueEqualImplementationTest()
+		{
+			List<PatternConstraint> pcl = new List<PatternConstraint>();
+			var pc = new PatternConstraint();
+			TestAddRemove(pcl, pc);
+
+			List<Value> vals = new List<Value>();
+			var val = new Value();
+			TestAddRemove(vals, val);
+			val = MakeEnumVal();
+			TestAddRemove(vals, val);
+
+			List<RangeConstraint> rcl = new List<RangeConstraint>();
+			var rc = new RangeConstraint();
+			TestAddRemove(rcl, rc);
+
+
+			var val1 = MakeEnumVal();
+			var val2 = MakeEnumVal();
+			Assert.AreEqual(val1, val2);
+
+		}
+
+		private Value MakeEnumVal()
+		{
+			var val = new Value();
+			val.BaseType = TypeName.text;
+			val.AcceptedValues = new List<IValueConstraint>();
+			val.AcceptedValues.Add(new ExactConstraint("30"));
+			val.AcceptedValues.Add(new ExactConstraint("60"));
+			return val;
+		}
+
+		private static void TestAddRemove<T>(List<T> lst, T c)
 		{
 			var s = c.ToString();
 			Assert.AreNotEqual("", s);

@@ -53,7 +53,7 @@ namespace Xbim.Xids
 			return true;
 		}
 
-		Type ResolvedType()
+		public Type ResolvedType()
 		{
 			switch (BaseType)
 			{
@@ -64,6 +64,25 @@ namespace Xbim.Xids
 				default:
 					return typeof(string);
 			}
+		}
+
+		public static object GetObject(string value, Type t)
+		{
+			if (t == typeof(string))
+				return value;
+			if (t == typeof(int))
+			{
+				if (int.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == typeof(double))
+			{
+				if (double.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			return value;
 		}
 
 		public static TypeName Resolve(Type t)
@@ -104,7 +123,7 @@ namespace Xbim.Xids
 			if (AcceptedValues == null || !AcceptedValues.Any())
 				return $"{BaseType}";
 			var joined = string.Join(",", AcceptedValues.Select(x => x.ToString()).ToArray());
-			return $"{BaseType}:joined";
+			return $"{BaseType}:{joined}";
 		}
 	}
 }

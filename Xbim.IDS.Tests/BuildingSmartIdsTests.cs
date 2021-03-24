@@ -23,10 +23,11 @@ namespace Xbim.Xids.Tests
 
 		[DeploymentItem(@"Files\bS\Example01Mod2.xml")]
 		[TestMethod]
-		public void ReusesExpectation()
+		public void ReusesRequirements()
 		{
 			var s = Xids.ImportBuildingSmartIDS(@"Example01Mod2.xml");
 			Assert.IsNotNull(s);
+			s.SaveAsJson(@"..\..\reuse.json");
 			Assert.AreEqual(2, s.ExpectationsRepository.Count);
 		}
 
@@ -70,7 +71,7 @@ namespace Xbim.Xids.Tests
 			var s = Xids.ImportBuildingSmartIDS(@"fullLoad\IDS-full.xml");
 			AssertOk(s);
 			var reqs = s.AllRequirements().ToList();
-
+			
 		}
 
 		public string GetFileHash(string filename)

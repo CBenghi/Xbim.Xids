@@ -41,6 +41,8 @@
 				<name>Codice WBS</name>
 				<value>
 					<xs:restriction base="xs:integer">
+						<!-- to check for resilient import -->
+						<xs:minInclusive /> 
 						<xs:minInclusive value="0"/>
 						<xs:maxInclusive value="120"/>
 					</xs:restriction>

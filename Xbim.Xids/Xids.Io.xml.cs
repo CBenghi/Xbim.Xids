@@ -229,6 +229,8 @@ namespace Xbim.Xids
             //
             List<object> enumeration = null;
             RangeConstraint range = null;
+            PatternConstraint pc = null;
+
             foreach (var sub in restriction.Elements())
             {
                 if (sub.Name.LocalName == "enumeration")
@@ -236,7 +238,7 @@ namespace Xbim.Xids
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        var tVal = GetValue(val.Value, t);
+                        var tVal = Value.GetObject(val.Value, t);
                         if (tVal != null)
                         {
                             enumeration = enumeration ?? new List<object>();
@@ -250,21 +252,16 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "minExclusive"
                     )
                 {
-                    // todo: make GetValue accept null and cascade in single check
-                    var val = sub.Attribute("value");
-                    if (val != null)
+                    var val = Value.GetObject(sub.Attribute("value")?.Value, t);
+                    if (val != null && val is IComparable cmp)
                     {
-                        var tVal = GetValue(val.Value, t);
-                        if (tVal is IComparable cmp)
-						{
-                            range = range ?? new RangeConstraint();
-                            range.MinValue = cmp;
-                            range.MinInclusive = sub.Name.LocalName == "minInclusive";
-                        }
-                        else
-						{
-                            // todo: 2021: log error in conversion
-						}                       
+                        range = range ?? new RangeConstraint();
+                        range.MinValue = cmp;
+                        range.MinInclusive = sub.Name.LocalName == "minInclusive";
+                    }
+                    else
+                    {
+                        // todo: 2021: log error in conversion
                     }
                 }
                 else if (
@@ -273,35 +270,43 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "maxExclusive"
                     )
                 {
-                    // todo: make GetValue accept null and cascade in single check
+                    var val = Value.GetObject(sub.Attribute("value")?.Value, t);
+                    if (val != null && val is IComparable cmp)
+                    {
+                        range = range ?? new RangeConstraint();
+                        range.MaxValue = cmp;
+                        range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
+                    }
+                    else
+                    {
+                        // todo: 2021: log error in conversion
+                    }
+                }
+                else if (sub.Name.LocalName == "pattern")
+                {
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        var tVal = GetValue(val.Value, t);
-                        if (tVal is IComparable cmp)
-                        {
-                            range = range ?? new RangeConstraint();
-                            range.MaxValue = cmp;
-                            range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
-                        }
-                        else
-                        {
-                            // todo: 2021: log error in conversion
-                        }
+                        pc = new PatternConstraint() { Pattern = val.Value };
                     }
                 }
                 else
-				{
+                {
 
-				}
+                }
             }
             // check that the temporary variable are coherent with valid value
-            if (enumeration != null && range != null)
+            var count = (enumeration != null) ? 1 : 0;
+            count += (range != null) ? 1 : 0;
+            count += (pc != null) ? 1 : 0;
+            if (count != 1)
                 return null;
             if (enumeration != null)
 			{
-                var ret = new Value(Value.Resolve(t));
-                ret.AcceptedValues = new List<IValueConstraint>();
+				var ret = new Value(Value.Resolve(t))
+				{
+					AcceptedValues = new List<IValueConstraint>()
+				};
 				foreach (var val in enumeration)
 				{
                     ret.AcceptedValues.Add(new ExactConstraint(val));
@@ -316,23 +321,16 @@ namespace Xbim.Xids
 				};
                 return ret;
             }
-            return null;
-		}
-
-		private static object GetValue(string value, Type t)
-		{
-            if (t == typeof(string))
-                return new Value(value);
-            if (t == typeof(int))
-            {
-                if (int.TryParse(value, out int val))
+            if (pc!=null)
+			{
+                var ret = new Value(Value.Resolve(t))
                 {
-                    return new Value(val);
-                }
-                return null;
+                    AcceptedValues = new List<IValueConstraint>() { pc }
+                };
+                return ret;
             }
             return null;
-        }
+		}
 
 		private static List<IFacet> GetFacets(XElement elem)
 		{
