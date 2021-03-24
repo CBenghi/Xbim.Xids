@@ -85,9 +85,20 @@ namespace Xbim.IDS.Tests
 			var typeNames = Enum.GetValues(typeof(TypeName)).Cast<TypeName>();
 			foreach (var tName in typeNames)
 			{
-				var t = Xids.Xids.GetXsdTypeString(tName);
-				var back = Xids.Xids.GetNamedTypeFromXsd(t);
+				if (tName == TypeName.Undefined)
+					continue;
+
+				var t = Value.GetXsdTypeString(tName);
+				var back = Value.GetNamedTypeFromXsd(t);
 				Assert.AreEqual(tName, back);
+
+				
+				var newT = Value.GetNetType(tName);
+				var defval = Value.GetDefault(tName);
+
+				Assert.IsNotNull(defval, $"Cannot create type: {tName}, {newT}");
+				Assert.IsNotNull(newT, $"Empty return type: {tName}, {newT}");
+				Assert.AreEqual(newT, defval.GetType());
 			}
 		}
 

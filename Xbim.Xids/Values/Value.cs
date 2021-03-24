@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Xbim.Xids
 {
 
-	public class Value : IEquatable<Value>
+	public partial class Value : IEquatable<Value>
 	{
 		public Value() {}
 
@@ -80,60 +80,7 @@ namespace Xbim.Xids
 			}
 		}
 
-		public static object GetObject(string value, TypeName t)
-		{
-			if (t ==  TypeName.String )
-				return value;
-			if (t == TypeName.Integer)
-			{
-				if (int.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Decimal)
-			{
-				if (decimal.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Double)
-			{
-				if (double.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Floating)
-			{
-				if (float.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Date)
-			{
-				if (DateTime.TryParse(value, out var val))
-					return val.Date;
-				return null;
-			}
-			if (t == TypeName.Boolean)
-			{
-				if (bool.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Time)
-			{
-				if (DateTime.TryParse(value, out var val))
-					return val.TimeOfDay;
-				return null;
-			}
-			if (t == TypeName.Uri)
-			{
-				if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var val))
-					return val;
-				return null;
-			}
-			return value;
-		}
+		
 
 		public static TypeName Resolve(Type t)
 		{
@@ -156,6 +103,25 @@ namespace Xbim.Xids
 					return true;
 			}
 			return false;
+		}
+
+		public static object GetDefault(TypeName tName)
+		{
+			if (tName == TypeName.String)
+				return "";
+			if (tName == TypeName.Uri)
+				return new Uri(".", UriKind.Relative);
+			var newT = GetNetType(tName);
+			if (newT == typeof(string))
+				return "";
+			try
+			{
+				return Activator.CreateInstance(newT);
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		public override bool Equals(object obj)

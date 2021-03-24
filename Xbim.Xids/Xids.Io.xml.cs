@@ -163,7 +163,7 @@ namespace Xbim.Xids
                 xmlWriter.WriteStartElement("restriction", @"http://www.w3.org/2001/XMLSchema");
                 if (value.BaseType != TypeName.Undefined)
 				{
-                    var val = GetXsdTypeString(value.BaseType);
+                    var val = Value.GetXsdTypeString(value.BaseType);
                     xmlWriter.WriteAttributeString("base", val);
                 }
                 foreach (var item in value.AcceptedValues)
@@ -445,7 +445,7 @@ namespace Xbim.Xids
             if (bse != null && bse.Value != null)
 			{
 				var tval = bse.Value;
-				t = GetNamedTypeFromXsd(tval);
+				t = Value.GetNamedTypeFromXsd(tval);
 			}
 
 			// we prepare the different possible scenarios, but then check in the end that the 

@@ -22,7 +22,7 @@ namespace Xbim.Xids
 		Uri,
 	}
 
-	public partial class Xids
+	public partial class Value
 	{
 		public static string GetXsdTypeString(TypeName baseType)
 		{
@@ -54,26 +54,33 @@ namespace Xbim.Xids
 			return "";
 		}
 
-		private static Type GetNetType(string tval)
+		public static Type GetNetType(TypeName baseType)
 		{
-			if (tval == "xs:string")
-				return typeof(string);
-			else if (tval == "xs:integer")
-				return typeof(int);
-			else if (tval == "xs:boolean")
-				return typeof(bool);
-			else if (tval == "xs:double")
-				return typeof(double);
-			else if (tval == "xs:decimal")
-				return typeof(decimal);
-			else if (tval == "xs:float")
-				return typeof(float);
-			else if (tval == "xs:date")
-				return typeof(DateTime);
-			else if (tval == "xs:time")
-				return typeof(DateTime);
-			else if (tval == "xs:anyURI")
-				return typeof(string);
+			switch (baseType)
+			{
+				case TypeName.Integer:
+					return typeof(int);
+				case TypeName.String:
+					return typeof(string);
+				case TypeName.Boolean:
+					return typeof(bool);
+				case TypeName.Floating:
+					return typeof(float);
+				case TypeName.Double:
+					return typeof(double);
+				case TypeName.Decimal:
+					return typeof(decimal);
+				case TypeName.Date:
+					return typeof(DateTime);
+				case TypeName.Time:
+					return typeof(TimeSpan);
+				case TypeName.Duration:
+					return typeof(TimeSpan);
+				case TypeName.DateTime:
+					return typeof(DateTime);
+				case TypeName.Uri:
+					return typeof(Uri);
+			}
 			return null;
 		}
 
@@ -120,6 +127,61 @@ namespace Xbim.Xids
 			minInclusive,
 			maxExclusive,
 			maxInclusive,
+		}
+
+		public static object GetObject(string value, TypeName t)
+		{
+			if (t == TypeName.String)
+				return value;
+			if (t == TypeName.Integer)
+			{
+				if (int.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Decimal)
+			{
+				if (decimal.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Double)
+			{
+				if (double.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Floating)
+			{
+				if (float.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Date)
+			{
+				if (DateTime.TryParse(value, out var val))
+					return val.Date;
+				return null;
+			}
+			if (t == TypeName.Boolean)
+			{
+				if (bool.TryParse(value, out var val))
+					return val;
+				return null;
+			}
+			if (t == TypeName.Time)
+			{
+				if (DateTime.TryParse(value, out var val))
+					return val.TimeOfDay;
+				return null;
+			}
+			if (t == TypeName.Uri)
+			{
+				if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var val))
+					return val;
+				return null;
+			}
+			return value;
 		}
 
 		// documentation taken from:
