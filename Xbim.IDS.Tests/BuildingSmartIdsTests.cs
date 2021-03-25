@@ -18,7 +18,7 @@ namespace Xbim.Xids.Tests
 			XElement e = XElement.Load(@"Example01Mod2.xml");
 			var s = Xids.ImportBuildingSmartIDS(e);
 			Assert.IsNotNull(s);
-			Assert.AreEqual(2, s.ModelSetRepository.Count);
+			Assert.AreEqual(4, s.FacetRepository.Count);
 		}
 
 		[DeploymentItem(@"Files\bS\Example01Mod2.xml")]
@@ -28,7 +28,7 @@ namespace Xbim.Xids.Tests
 			var s = Xids.ImportBuildingSmartIDS(@"Example01Mod2.xml");
 			Assert.IsNotNull(s);
 			s.SaveAsJson(@"..\..\reuse.json");
-			Assert.AreEqual(2, s.ExpectationsRepository.Count);
+			Assert.AreEqual(4, s.FacetRepository.Count);
 		}
 
 		[DeploymentItem(@"Files\bS", @"Files\bS")]
@@ -131,8 +131,8 @@ namespace Xbim.Xids.Tests
 			Assert.IsNotNull(s);
 			foreach (var req in s.AllRequirements())
 			{
-				Assert.IsNotNull(req.Need);
-				Assert.IsNotNull(req.ModelSubset);
+				Assert.IsNotNull(req.Requirement);
+				Assert.IsNotNull(req.Applicability);
 			}
 		}
 	}

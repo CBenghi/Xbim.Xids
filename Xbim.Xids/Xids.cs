@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,23 +7,23 @@ namespace Xbim.Xids
 {
 	public partial class Xids
     {
-		public Requirement NewRequirement(RequirementsGroup containingCollection = null)
+		public Specification NewSpecification(SpecificationsGroup containingCollection = null)
 		{
-			var t = new Requirement(this)
+			var t = new Specification(this)
 			{
-				ModelSubset = new FacetGroup(ModelSetRepository),
-				Need = new FacetGroup(ExpectationsRepository)
+				Applicability = new FacetGroup(FacetRepository),
+				Requirement = new FacetGroup(FacetRepository)
 			};
 			if (containingCollection == null)
 			{
-				containingCollection = this.RequirementGroups.FirstOrDefault();
+				containingCollection = this.SpecificationsGroups.FirstOrDefault();
 			}
 			if (containingCollection == null)
 			{
-				containingCollection = new RequirementsGroup();
-				RequirementGroups.Add(containingCollection);
+				containingCollection = new SpecificationsGroup();
+				SpecificationsGroups.Add(containingCollection);
 			}
-			containingCollection.Requirements.Add(t);
+			containingCollection.Specifications.Add(t);
 			return t;
 		}
 
@@ -33,15 +34,20 @@ namespace Xbim.Xids
 
 		public Xids()
 		{
-			ModelSetRepository = new FacetGroupRepository(this);
-			ExpectationsRepository = new FacetGroupRepository(this);
+			FacetRepository = new FacetGroupRepository(this);
 		}
 
-		public IEnumerable<Requirement> AllRequirements()
+		[Obsolete("Use AllSpecifications(), instead.")]
+		public IEnumerable<Specification> AllRequirements()
 		{
-			foreach (var rg in RequirementGroups)
+			return AllSpecifications();
+		}
+
+		public IEnumerable<Specification> AllSpecifications()
+		{
+			foreach (var rg in SpecificationsGroups)
 			{
-				foreach (var req in rg.Requirements)
+				foreach (var req in rg.Specifications)
 				{
 					yield return req;
 				}
@@ -50,30 +56,19 @@ namespace Xbim.Xids
 
 		public Project Project { get; set; } = new Project();
 
-		public FacetGroupRepository ModelSetRepository { get; set; }
+		public FacetGroupRepository FacetRepository { get; set; }
 
-		public FacetGroupRepository ExpectationsRepository { get; set; }
 
-		public List<RequirementsGroup> RequirementGroups { get; set; } = new List<RequirementsGroup>();
+		public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
 
-		internal FacetGroup GetExpectation(string guid)
+		internal FacetGroup GetFacet(string guid)
 		{
-			return ExpectationsRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
+			return FacetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
 		}
 
-		internal FacetGroup GetExpectation(List<IFacet> fs)
+		internal FacetGroup GetFacet(List<IFacet> fs)
 		{
-			return ExpectationsRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
-		}
-
-		internal FacetGroup GetModel(string guid)
-		{
-			return ModelSetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
-		}
-
-		internal FacetGroup GetModel(List<IFacet> fs)
-		{
-			return ModelSetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
-		}
+			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
+		}	
 	}
 }

@@ -58,19 +58,19 @@ namespace Xbim.Xids
 			xmlWriter.Flush();
 		}
 
-		private void ExportBuildingSmartIDS(Requirement requirement, XmlWriter xmlWriter)
+		private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter)
 		{
             xmlWriter.WriteStartElement("specification");
             
             xmlWriter.WriteAttributeString("name", requirement.Name);
             xmlWriter.WriteStartElement("applicability");
-			foreach (var item in requirement.ModelSubset.Facets)
+			foreach (var item in requirement.Applicability.Facets)
 			{
                 ExportBuildingSmartIDS(item, xmlWriter);
             }
             xmlWriter.WriteEndElement();
             xmlWriter.WriteStartElement("requirements");
-            foreach (var item in requirement.Need.Facets)
+            foreach (var item in requirement.Requirement.Facets)
             {
                 ExportBuildingSmartIDS(item, xmlWriter);
             }
@@ -270,8 +270,8 @@ namespace Xbim.Xids
 			if (main.Name.LocalName == "ids")
 			{
 				var ret = new Xids();
-				var grp = new RequirementsGroup();
-				ret.RequirementGroups.Add(grp);
+				var grp = new SpecificationsGroup();
+				ret.SpecificationsGroups.Add(grp);
 
 				foreach (var sub in main.Elements())
 				{
@@ -285,10 +285,10 @@ namespace Xbim.Xids
 			return null;
 		}
 
-		private static void AddSpecification(Xids ids, RequirementsGroup destGroup, XElement spec)
+		private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec)
         {
-            var req = new Requirement(ids);
-            destGroup.Requirements.Add(req);
+            var req = new Specification(ids);
+            destGroup.Specifications.Add(req);
             var nm = spec.Attribute("name");
             if (nm != null)
                 req.Name = nm.Value;

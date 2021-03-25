@@ -11,20 +11,20 @@
 		<Button Content="Load" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
 		<DataGrid Margin="10,35,10,10" ItemsSource="{Binding Reqs}" AutoGenerateColumns="False">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="Model" Binding="{Binding ModelPart}"                                    
+				<DataGridTextColumn Header="Applicability" Binding="{Binding Applicability}"                                    
                                     Width="100"/>
-				<DataGridTextColumn Header="Need" Binding="{Binding Need}"                                    
+				<DataGridTextColumn Header="Requirement" Binding="{Binding Requirement}"                                    
                                     Width="100"/>
 
 				<DataGridTemplateColumn Header="Department" Width="150">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<Label Content="{Binding Need, UpdateSourceTrigger=PropertyChanged}" />
+							<Label Content="{Binding Requirement, UpdateSourceTrigger=PropertyChanged}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<DataGridTemplateColumn.CellEditingTemplate>
 						<DataTemplate>
-							<TextBox Text="{Binding Need, UpdateSourceTrigger=PropertyChanged}"/>
+							<TextBox Text="{Binding Requirement, UpdateSourceTrigger=PropertyChanged}"/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellEditingTemplate>
 				</DataGridTemplateColumn>

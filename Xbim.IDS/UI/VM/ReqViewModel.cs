@@ -11,9 +11,9 @@ namespace Xbim.Xids.UI.VM
 {
 	class ReqViewModel : ViewModelBase
 	{
-		private Requirement requirement;
+		private Specification requirement;
 		
-		public ReqViewModel(Requirement item)
+		public ReqViewModel(Specification item)
 		{
 			requirement = item;
 		}
@@ -22,7 +22,7 @@ namespace Xbim.Xids.UI.VM
 		{
 			get
 			{
-				return requirement.ModelSubset.Short();
+				return requirement.Applicability.Short();
 			}
 			set
 			{
@@ -34,7 +34,7 @@ namespace Xbim.Xids.UI.VM
 		{
 			get
 			{
-				return requirement.Need.Short();
+				return requirement.Requirement.Short();
 			}
 			set
 			{
@@ -78,11 +78,11 @@ namespace Xbim.Xids.UI.VM
 		{
 			get
 			{
-				return requirement.Need;
+				return requirement.Requirement;
 			}
 			set
 			{
-				requirement.Need = value;
+				requirement.Requirement = value;
 				Change();
 			}
 		}

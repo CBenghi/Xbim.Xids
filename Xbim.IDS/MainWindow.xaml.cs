@@ -33,7 +33,7 @@ namespace Xbim.Xids
 			DirectoryInfo d = new DirectoryInfo(".");
 			Debug.WriteLine(d.FullName);
 			var ids = Xids.ImportBuildingSmartIDS(@"..\..\..\Xbim.IDS.Tests\Files\bS\Example01.xml");
-			DataContext = new ReqGrpVM(ids.RequirementGroups.FirstOrDefault(), ids);
+			DataContext = new ReqGrpVM(ids.SpecificationsGroups.FirstOrDefault(), ids);
 		}
 
 		
