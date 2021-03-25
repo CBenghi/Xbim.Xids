@@ -77,9 +77,24 @@ namespace Xbim.Xids.Tests
 		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullSave")]
 		public void FullSaveBuildingSmartIdsFormats()
 		{
-			var s = Xids.ImportBuildingSmartIDS(@"fullSave\IDS-full.xml");
+			var fileIn = @"fullSave\IDS-full.xml";
+			// if the test fails here, because th input file was changed update the expected hash
+			var readHash = GetFileHash(fileIn);
+			Assert.AreEqual(readHash, "4ce9188fddd95e38caa76acaf065f9d7c5b252");
+
+			var s = Xids.ImportBuildingSmartIDS(fileIn);
 			AssertOk(s);
-			s.ExportBuildingSmartIDS(@"..\..\saveattempt.xml");
+			var fileOut = @"..\..\saveattempt.xml";
+			s.ExportBuildingSmartIDS(fileOut);
+			// if the test fails here, visually check that the data is correct and then
+			// update the expected hash
+
+			// files in debug have newlines and indents
+#if DEBUG
+			Assert.AreEqual("7cd8b3ad0aa38cad4ffbb304781511241824c4", GetFileHash(fileOut));
+#else
+			Assert.AreEqual("b5aa6b8054b7f2367aff1d7c85d9f3c29573f1", GetFileHash(fileOut));
+#endif
 		}
 
 		[TestMethod]
