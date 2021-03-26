@@ -47,7 +47,7 @@ namespace Xbim.Xids
 				};
 				serializer.Converters.Add(new StringEnumConverter());
 				Xids unpersisted = (Xids)serializer.Deserialize(file, typeof(Xids));
-				foreach (var req in unpersisted.AllRequirements())
+				foreach (var req in unpersisted.AllSpecifications())
 				{
 					req.SetIds(unpersisted);
 				}

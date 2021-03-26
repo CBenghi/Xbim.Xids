@@ -70,7 +70,7 @@ namespace Xbim.Xids.Tests
 		{
 			var s = Xids.ImportBuildingSmartIDS(@"fullLoad\IDS-full.xml");
 			AssertOk(s);
-			var reqs = s.AllRequirements().ToList();
+			var reqs = s.AllSpecifications().ToList();
 		}
 
 		[TestMethod]
@@ -129,7 +129,7 @@ namespace Xbim.Xids.Tests
 		private void AssertOk(Xids s)
 		{
 			Assert.IsNotNull(s);
-			foreach (var req in s.AllRequirements())
+			foreach (var req in s.AllSpecifications())
 			{
 				Assert.IsNotNull(req.Requirement);
 				Assert.IsNotNull(req.Applicability);

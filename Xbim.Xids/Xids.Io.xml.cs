@@ -46,7 +46,7 @@ namespace Xbim.Xids
             xmlWriter.WriteAttributeString("xmlns", "xs", null, "http://www.w3.org/2001/XMLSchema");
             xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
 
-			foreach (var requirement in AllRequirements())
+			foreach (var requirement in AllSpecifications())
 			{
                 ExportBuildingSmartIDS(requirement, xmlWriter);
             }
@@ -111,7 +111,7 @@ namespace Xbim.Xids
                     xmlWriter.WriteString(cf.ClassificationSystem);
                     xmlWriter.WriteEndElement();
                 }
-                WriteValue(cf.Node, xmlWriter);
+                WriteValue(cf.Identification, xmlWriter);
                 xmlWriter.WriteEndElement();
             }
             else if (item is IfcPropertyFacet pf)
@@ -671,7 +671,7 @@ namespace Xbim.Xids
                 else if (sub.Name.LocalName == "value")
                 {
                     ret = ret ?? new IfcClassificationFacet();
-                    ret.Node = GetConstraint(sub); 
+                    ret.Identification = GetConstraint(sub); 
                 }
             }
             foreach (var attribute in elem.Attributes())

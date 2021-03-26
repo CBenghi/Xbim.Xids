@@ -14,7 +14,7 @@ namespace Xbim.Xids
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
-		public Value Node { get; set; }
+		public Value Identification { get; set; }
 
 		public bool Equals(IfcClassificationFacet other)
 		{
@@ -26,7 +26,7 @@ namespace Xbim.Xids
 				)
 				return false;
 			if (!IFacetExtensions.NullEquals(
-				Node, other.Node)
+				Identification, other.Identification)
 				)
 				return false;
 			return ((LocationBase)this).Equals((LocationBase)other);
@@ -39,7 +39,7 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-			return $"{ClassificationSystem}-{Node}-{base.ToString()}";
+			return $"{ClassificationSystem}-{Identification}-{base.ToString()}";
 		}
 
 		public override int GetHashCode()

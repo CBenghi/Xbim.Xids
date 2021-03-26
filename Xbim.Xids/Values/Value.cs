@@ -33,6 +33,13 @@ namespace Xbim.Xids
 		}
 
 		public TypeName BaseType { get; set; }
+
+		public bool IsEmpty()
+		{
+			return BaseType == TypeName.Undefined
+				&&
+				(AcceptedValues == null || !AcceptedValues.Any());
+		}
 		
 		public bool Equals(Value other)
 		{
@@ -156,6 +163,23 @@ namespace Xbim.Xids
 				return false;
 			}
 			exact = unique.Value.ToString();
+			return true;
+		}
+
+		public bool IsSingleExact(out object exact)
+		{
+			if (AcceptedValues == null || AcceptedValues.Count != 1)
+			{
+				exact = null;
+				return false;
+			}
+			var unique = AcceptedValues.FirstOrDefault() as ExactConstraint;
+			if (unique == null)
+			{
+				exact = null;
+				return false;
+			}
+			exact = unique.Value;
 			return true;
 		}
 

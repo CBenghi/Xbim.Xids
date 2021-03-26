@@ -21,7 +21,7 @@ namespace Xbim.IDS.Tests
 			{
 				ClassificationSystem = "1",
 				Location = "2",
-				Node = new Value(12),
+				Identification = new Value(12),
 				Uri = new Uri("http://www.gino.com")
 			});
 
@@ -78,6 +78,20 @@ namespace Xbim.IDS.Tests
 			Assert.AreEqual(val1, val2);
 
 		}
+
+
+		[TestMethod]
+		public void ValueIsEmpty()
+		{		
+			Assert.IsTrue(new Value().IsEmpty());
+			Assert.IsFalse(new Value() { BaseType = TypeName.String }.IsEmpty());
+
+			Assert.IsTrue(new Value() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
+			Assert.IsFalse(new Value() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
+			Assert.IsFalse(new Value() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty());
+
+		}
+
 
 		[TestMethod]
 		public void DataTypesOk()
