@@ -53,15 +53,24 @@ namespace Xbim.Xids.Tests
 
 			var jFile = @"..\..\out.json";
 			var jFile2 = @"..\..\out2.json";
+			var jFile3 = @"..\..\out3.json";
 			s.SaveAsJson(jFile);
 			var unp = Xids.LoadFromJson(jFile);
 			Assert.IsNotNull(unp);
 			unp.SaveAsJson(jFile2);
 
+			// try to read json via stream
+			//
+			var fromStream = Xids.LoadFromJson(File.OpenRead(jFile2));
+			Assert.IsNotNull(fromStream);
+			fromStream.SaveAsJson(jFile3);
+
 			var originalHash = GetFileHash(jFile);
 			var copiedHash = GetFileHash(jFile2);
+			var streamHash = GetFileHash(jFile3);
 
 			Assert.AreEqual(copiedHash, originalHash);
+			Assert.AreEqual(copiedHash, streamHash);
 		}
 
 		[TestMethod]

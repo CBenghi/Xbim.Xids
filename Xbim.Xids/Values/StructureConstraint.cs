@@ -17,10 +17,7 @@ namespace Xbim.Xids
 			return Equals(obj as StructureConstraint);
 		}
 
-		public override int GetHashCode()
-		{
-			return (TotalDigits, FractionDigits, Length, MinLength, MaxLength).GetHashCode();
-		}
+		public override int GetHashCode() => (TotalDigits, FractionDigits, Length, MinLength, MaxLength).GetHashCode();
 
 		public bool Equals(StructureConstraint other)
 		{

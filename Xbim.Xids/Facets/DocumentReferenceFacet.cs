@@ -25,10 +25,7 @@ namespace Xbim.Xids
 			return $"{DocumentName}-{DocumentStatus}-{RequiredAttributes}";
 		}
 
-		public override int GetHashCode()
-		{
-			return (DocumentName, DocumentStatus, RequiredAttributes).GetHashCode();
-		}
+		public override int GetHashCode() => (DocumentName, DocumentStatus, RequiredAttributes).GetHashCode();
 
 		public string Short()
 		{

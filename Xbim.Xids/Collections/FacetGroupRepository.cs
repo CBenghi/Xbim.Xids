@@ -14,28 +14,19 @@ namespace Xbim.Xids
 			this.ids = ids;
 		}
 
-		private List<FacetGroup> _collection = new List<FacetGroup>();
-
 		[JsonIgnore]
-		public int Count => _collection.Count;
+		public int Count => Collection.Count;
 
-		public List<FacetGroup> Collection
-		{
-			get => _collection;
-			set
-			{
-				_collection = value;
-			}
-		}
+		public List<FacetGroup> Collection { get; set; } = new List<FacetGroup>();
 
 		internal void Add(FacetGroup group)
 		{
-			_collection.Add(group);
+			Collection.Add(group);
 		}
 
 		internal FacetGroup FirstOrDefault(Func<FacetGroup, bool> p)
 		{
-			return _collection.FirstOrDefault(p);
+			return Collection.FirstOrDefault(p);
 		}
 	}
 }

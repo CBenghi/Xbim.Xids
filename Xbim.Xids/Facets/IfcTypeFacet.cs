@@ -20,12 +20,9 @@ namespace Xbim.Xids
             return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}";
         }
 
-		public override int GetHashCode()
-        {
-           return (IfcType, PredefinedType, IncludeSubtypes).GetHashCode();
-        }
+		public override int GetHashCode() => (IfcType, PredefinedType, IncludeSubtypes).GetHashCode();
 
-        public bool Equals(IfcTypeFacet other)
+		public bool Equals(IfcTypeFacet other)
 		{
             if (other == null)
                 return false;

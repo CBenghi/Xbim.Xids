@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ids xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://standards.buildingsmart.org/IDS/ids.xml">
+	<specification name="binder">
+		<applicability>
+			<entity>
+				<name>IfcCovering</name>
+				<predefinedtype>CLADDING</predefinedtype>
+			</entity>
+			<classification location="type|instance">
+				<system>NL-Sfb</system>
+				<value>21.22|21.21</value>
+			</classification>
+		</applicability>
+		<requirements>
+			<entity>
+				<name>IfcCovering</name>
+				<predefinedtype>CLADDING</predefinedtype>
+			</entity>
+			<classification location="type">
+				<system href="http://identifier.buildingsmart.org/uri/owner/name">NL-Sfb</system>
+				<value>
+					<xs:restriction base="xs:string">
+						<xs:length value="2" />
