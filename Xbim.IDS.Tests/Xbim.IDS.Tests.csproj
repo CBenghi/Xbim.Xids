@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="BuildingSmartIdsTests.cs" />
     <Compile Include="FacetImplementationTests.cs" />
+    <Compile Include="HelpersTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Xbim.Essentials" Version="5.1.323" />
+		<PackageReference Include="Xbim.Properties" Version="5.0.0" />
+	</ItemGroup>
+</Project>
