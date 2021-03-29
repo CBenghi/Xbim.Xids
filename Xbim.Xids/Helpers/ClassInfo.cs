@@ -19,6 +19,18 @@ namespace Xbim.Xids.Helpers
 		Dictionary<string, ClassInfo> Classes;
 		bool linked = false;
 
+		public ClassInfo this[string className]
+		{
+			get
+			{
+				if (Classes.TryGetValue(className, out var cl))
+				{
+					return cl;
+				}
+				return Classes.Values.FirstOrDefault(x => x.Name.Equals(className, StringComparison.InvariantCultureIgnoreCase));
+			}
+		}
+
 		public void Add(ClassInfo classToAdd)
 		{
 			linked = false;
@@ -32,17 +44,15 @@ namespace Xbim.Xids.Helpers
 			foreach (var currClass in Classes.Values)
 			{
 				var parent = currClass.ParentName;
-				if (!string.IsNullOrWhiteSpace(parent))
+				if (!string.IsNullOrWhiteSpace(parent) && Classes.TryGetValue(parent, out var gotten))
 				{
-					if (Classes.TryGetValue(parent, out var gotten))
+					if (!gotten.SubClasses.Any(x => x.Name == currClass.Name))
 					{
-						if (!gotten.SubClasses.Where(x=>x.Name == currClass.Name).Any())
-						{
-							gotten.SubClasses.Add(currClass);
-						}
+						gotten.SubClasses.Add(currClass);
 					}
+					currClass.Parent = gotten;
 				}
-			}
+			}		
 			linked = true;
 		}
 
@@ -91,8 +101,33 @@ namespace Xbim.Xids.Helpers
 		public string Name { get; set; }
 		public string ParentName { get; set; }
 		public ClassType Type { get; set; }
+		public ClassInfo Parent { get; internal set; }
+
+		public bool Is(string className)
+		{
+			if (Name.Equals(className, StringComparison.InvariantCultureIgnoreCase))
+				return true;
+			if (Parent != null)
+				return Parent.Is(className);
+			return false;
+		}
 
 		public List<ClassInfo> SubClasses = new List<ClassInfo>();
+		public IEnumerable<ClassInfo> MatchingConcreteClasses
+		{
+			get
+			{
+				if (Type == ClassType.Concrete)
+					yield return this;
+				foreach (var item in SubClasses)
+				{
+					foreach (var sub in item.MatchingConcreteClasses)
+					{
+						yield return sub;
+					}
+				}
+			}
+		}
 
 		public ClassInfo(string name, string parentName, ClassType type)
 		{

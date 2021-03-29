@@ -11,7 +11,8 @@ namespace Xbim.Xids.Generator
 		public static void Main()
 		{
 			// Console.Write(PropertiesGenerator.Execute());
-			Console.Write(ClassesGenerator.Execute());;
+			// Console.Write(PropertyApplicabilityStudy.Execute());;
+			Console.Write(ClassGenerator.Execute()); ;
 		}
 	}
 }

@@ -31,6 +31,12 @@ namespace Xbim.IDS.Tests
 		{
 			Assert.IsTrue(Xids.Helpers.SchemaInfo.SchemaIfc4.Any());
 			Assert.AreNotEqual(2, Xids.Helpers.SchemaInfo.SchemaIfc4.Count());
+			Assert.AreEqual("IfcObject", Xids.Helpers.SchemaInfo.SchemaIfc4["IfcProduct"].Parent.Name);
+			Assert.AreEqual(3, Xids.Helpers.SchemaInfo.SchemaIfc4["IfcFeatureElement"].SubClasses.Count());
+			Assert.AreEqual(5, Xids.Helpers.SchemaInfo.SchemaIfc4["IfcFeatureElement"].MatchingConcreteClasses.Count());
+			Assert.IsTrue(Xids.Helpers.SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWall"));
+			Assert.IsTrue(Xids.Helpers.SchemaInfo.SchemaIfc4["IfcWallStandardCase"].Is("IfcWall"));
+			Assert.IsFalse(Xids.Helpers.SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWallStandardCase"));
 		}
 
 		[TestMethod]
