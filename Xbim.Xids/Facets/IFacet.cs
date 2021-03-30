@@ -5,5 +5,6 @@ namespace Xbim.Xids
 	public interface IFacet
 	{
 		string Short();
+		bool IsValid();
 	}
 }

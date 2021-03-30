@@ -32,5 +32,11 @@ namespace Xbim.Xids
 		{
 			return ToString().GetHashCode();
 		}
+
+		public bool IsValid()
+		{
+			// an empty one just means should have a material
+			return true;
+		}
 	}
 }

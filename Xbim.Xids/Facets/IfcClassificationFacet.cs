@@ -51,5 +51,12 @@ namespace Xbim.Xids
 		{
 			return ToString();
 		}
+
+		public bool IsValid()
+		{
+			// if we assume that all empty means that it's enough to have any classification
+			// then the facet is always valid.
+			return true;
+		}
 	}
 }

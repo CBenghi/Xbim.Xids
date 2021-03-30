@@ -19,6 +19,18 @@ namespace Xbim.Xids
 
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
+		public bool IsValid()
+		{
+			if (!Facets.Any())
+				return false;
+			foreach (var facet in Facets)
+			{
+				if (!facet.IsValid())
+					return false;
+			}
+			return true;
+		}
+
 		public string Short()
 		{
 			if (!string.IsNullOrWhiteSpace(Name))

@@ -31,5 +31,10 @@ namespace Xbim.Xids
 		{
 			return ToString();
 		}
+
+		public bool IsValid()
+		{
+			return !string.IsNullOrWhiteSpace(DocumentName);
+		}
 	}
 }

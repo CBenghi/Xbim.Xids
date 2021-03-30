@@ -34,5 +34,14 @@ namespace Xbim.Xids
         {
             return ToString();
         }
-    }
+
+		public bool IsValid()
+		{
+            return !( // negated
+                string.IsNullOrWhiteSpace(IfcType)
+                &&
+                string.IsNullOrWhiteSpace(PredefinedType)
+                );
+        }
+	}
 }

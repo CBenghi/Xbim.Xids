@@ -43,5 +43,13 @@ namespace Xbim.Xids
                 return false;
             return ((LocationBase)this).Equals((LocationBase)other);
         }
-    }
+
+		public bool IsValid()
+		{
+            // I suppose that at least PropertySetName should be defined.
+            if (string.IsNullOrWhiteSpace(PropertySetName))
+                return false;
+            return true;
+		}
+	}
 }
