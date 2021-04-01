@@ -19,6 +19,11 @@ namespace Xbim.Xids
 
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
+		public int UseCount(Xids t)
+		{
+			return t.AllSpecifications().Count(x => x.Applicability == this || x.Requirement == this);
+		}
+
 		public bool IsValid()
 		{
 			if (!Facets.Any())
