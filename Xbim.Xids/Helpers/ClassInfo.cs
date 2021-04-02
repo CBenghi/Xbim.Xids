@@ -98,10 +98,12 @@ namespace Xbim.Xids.Helpers
 
 	public partial class ClassInfo
 	{	
-		public string Name { get; set; }
-		public string ParentName { get; set; }
-		public ClassType Type { get; set; }
+		public string Name { get; private set; }
+		public string ParentName { get; private set; }
+		public ClassType Type { get; private set; }
 		public ClassInfo Parent { get; internal set; }
+
+		public IEnumerable<string> PredefinedTypeValues { get; private set; }
 
 		public bool Is(string className)
 		{
@@ -129,11 +131,12 @@ namespace Xbim.Xids.Helpers
 			}
 		}
 
-		public ClassInfo(string name, string parentName, ClassType type)
+		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined)
 		{
 			Name = name;
 			ParentName = parentName;
 			Type = type;
+			PredefinedTypeValues = predefined;
 		}
 	}
 }

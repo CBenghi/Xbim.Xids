@@ -38,9 +38,27 @@ namespace Xbim.Xids.Generator
 				foreach (var className in HandledTypes)
 				{
 					var daType = metaD.ExpressType(className.ToUpperInvariant());
+
+					var propPdefT = daType.Properties.Values.FirstOrDefault(x=>x.Name == "PredefinedType");
+					var predType = "null";
+					if (propPdefT != null)
+					{
+						var pt = propPdefT.PropertyInfo.PropertyType;
+						pt = Nullable.GetUnderlyingType(pt) ?? pt;
+						var vals = Enum.GetValues(pt);
+
+
+						List<string> pdtypes = new List<string>();
+						foreach (var val in vals)
+						{
+							pdtypes.Add(val.ToString());
+						}
+						predType = newStringArray(pdtypes.ToArray());
+					}
+
 					var t = daType.Type;
-					var abNot = t.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
-					sb.AppendLine($@"			schema{schema}.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abNot}));");
+					var abstractOrNot = t.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
+					sb.AppendLine($@"			schema{schema}.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}));");
 				}
 				source = source.Replace($"<PlaceHolder{schema}>", sb.ToString());
 			}
