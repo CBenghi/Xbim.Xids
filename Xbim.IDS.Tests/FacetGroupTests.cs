@@ -22,7 +22,6 @@ namespace Xbim.IDS.Tests
 			var spec2 = t.NewSpecification();
 			spec2.Requirement = group;
 			Assert.AreEqual(2, group.UseCount(t));
-
 		}
 	}
 }

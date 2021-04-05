@@ -1,10 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using IdsLib;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
+using static IdsLib.CheckOptions;
 
 namespace Xbim.Xids.Tests
 {
@@ -84,6 +86,7 @@ namespace Xbim.Xids.Tests
 
 		[TestMethod]
 		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullSave")]
+		[DeploymentItem(@"Schema\ids.xsd", "fullSave")]
 		public void FullSaveBuildingSmartIdsFormats()
 		{
 			var fileIn = @"fullSave\IDS-full.xml";
@@ -95,6 +98,9 @@ namespace Xbim.Xids.Tests
 			AssertOk(s);
 			var fileOut = @"..\..\saveattempt.xml";
 			s.ExportBuildingSmartIDS(fileOut);
+
+			CheckIDSSchema(fileOut, @"fullSave\IDS-full.xml");
+
 			// if the test fails here, visually check that the data is correct and then
 			// update the expected hash
 
@@ -104,6 +110,18 @@ namespace Xbim.Xids.Tests
 #else
 			Assert.AreEqual("b5aa6b8054b7f2367aff1d7c85d9f3c29573f1", GetFileHash(fileOut));
 #endif
+		}
+
+		private void CheckIDSSchema(string fileOut, string schema)
+		{
+			CheckOptions c = new CheckOptions();
+			c.CheckSchema = new List<string> { schema };
+			c.InputSource = fileOut;
+			c.CheckSchemaDefinition = false;
+
+			// to adjust once we fix the xml file in the other repo.
+			var ret = CheckOptions.Run(c);
+			Assert.AreEqual(Status.Ok, ret);
 		}
 
 		[TestMethod]

@@ -35,7 +35,11 @@ namespace Xbim.Xids
             return ToString();
         }
 
-		public bool IsValid()
+        /// <summary>
+        /// Valid if at least one of IfcType or PredefinedType are not NullOrWhiteSpace
+        /// </summary>
+        /// <returns>true if valid</returns>
+        public bool IsValid()
 		{
             return !( // negated
                 string.IsNullOrWhiteSpace(IfcType)

@@ -4,6 +4,14 @@ using System.Text;
 
 namespace Xbim.Xids
 {
+	public enum Location
+	{
+		type,
+		instance,
+		any
+	}
+
+
 	public abstract class LocationBase : IEquatable<LocationBase>
 	{
 		public string Location { get; set; } = "";
