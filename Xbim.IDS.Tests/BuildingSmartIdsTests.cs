@@ -99,7 +99,7 @@ namespace Xbim.Xids.Tests
 			var fileOut = @"..\..\saveattempt.xml";
 			s.ExportBuildingSmartIDS(fileOut);
 
-			CheckIDSSchema(fileOut, @"fullSave\IDS-full.xml");
+			CheckIDSSchema(fileOut, @"fullSave\ids.xsd");
 
 			// if the test fails here, visually check that the data is correct and then
 			// update the expected hash
@@ -117,7 +117,7 @@ namespace Xbim.Xids.Tests
 			CheckOptions c = new CheckOptions();
 			c.CheckSchema = new List<string> { schema };
 			c.InputSource = fileOut;
-			c.CheckSchemaDefinition = false;
+			// c.CheckSchemaDefinition = false;
 
 			// to adjust once we fix the xml file in the other repo.
 			var ret = CheckOptions.Run(c);

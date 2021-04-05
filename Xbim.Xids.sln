@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbim.IDS.Tests", "Xbim.IDS.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.Xids", "Xbim.Xids\Xbim.Xids.csproj", "{C8908072-19B8-4F26-9BAD-76C38936311C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbim.Xids.Generator", "Xbim.Xids.Generator\Xbim.Xids.Generator.csproj", "{04B5FC8A-2815-4335-BC15-7319AA1C5BF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.Xids.Generator", "Xbim.Xids.Generator\Xbim.Xids.Generator.csproj", "{04B5FC8A-2815-4335-BC15-7319AA1C5BF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

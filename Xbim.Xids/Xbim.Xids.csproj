@@ -3,6 +3,10 @@
 		<!-- To review target compatibility 
 		see  https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support 
 		netstandard2.0 is compatible with Framework 4.6.1, .NET Core 2.0 and NET 5.0
+		
+		For conditional statements in code see declares at
+		https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries#how-to-multitarget
+		
 		-->
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<Authors>Claudio Benghi</Authors>
