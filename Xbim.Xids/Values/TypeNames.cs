@@ -22,7 +22,7 @@ namespace Xbim.Xids
 		Uri,
 	}
 
-	public partial class Value
+	public partial class ValueConstraint
 	{
 		public static string GetXsdTypeString(TypeName baseType)
 		{

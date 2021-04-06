@@ -99,7 +99,7 @@ namespace Xbim.Xids.Tests
 		public void WeirdValues()
 		{
 			var stringV = "someValue";
-			var val = Value.SingleUndefinedExact(stringV);
+			var val = ValueConstraint.SingleUndefinedExact(stringV);
 			var itIs = val.IsSingleUndefinedExact(out var retVal);
 			Assert.IsTrue(itIs);
 			Assert.AreEqual(stringV, retVal);

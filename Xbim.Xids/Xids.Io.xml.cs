@@ -147,7 +147,7 @@ namespace Xbim.Xids
 
 		
 
-		private void WriteValue(Value value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
+		private void WriteValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
         {
             if (value == null)
                 return;
@@ -168,7 +168,7 @@ namespace Xbim.Xids
                 xmlWriter.WriteStartElement("restriction", @"http://www.w3.org/2001/XMLSchema");
                 if (value.BaseType != TypeName.Undefined)
                 {
-                    var val = Value.GetXsdTypeString(value.BaseType);
+                    var val = ValueConstraint.GetXsdTypeString(value.BaseType);
                     xmlWriter.WriteAttributeString("base", val);
                 }
                 foreach (var item in value.AcceptedValues)
@@ -413,7 +413,7 @@ namespace Xbim.Xids
             return ret;
         }
 
-        private static Value GetConstraint(XElement elem)
+        private static ValueConstraint GetConstraint(XElement elem)
         {
             XNamespace ns = "http://www.w3.org/2001/XMLSchema";
             var restriction = elem.Element(ns + "restriction");
@@ -421,7 +421,7 @@ namespace Xbim.Xids
             {
                 // get the textual content as a fixed 
                 var content = elem.Value;
-                var tc = Value.SingleUndefinedExact(content);
+                var tc = ValueConstraint.SingleUndefinedExact(content);
                 return tc;
             }
             TypeName t = TypeName.Undefined;
@@ -429,7 +429,7 @@ namespace Xbim.Xids
             if (bse != null && bse.Value != null)
             {
                 var tval = bse.Value;
-                t = Value.GetNamedTypeFromXsd(tval);
+                t = ValueConstraint.GetNamedTypeFromXsd(tval);
             }
 
             // we prepare the different possible scenarios, but then check in the end that the 
@@ -447,7 +447,7 @@ namespace Xbim.Xids
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        var tVal = Value.GetObject(val.Value, t);
+                        var tVal = ValueConstraint.GetObject(val.Value, t);
                         if (tVal != null)
                         {
                             enumeration = enumeration ?? new List<object>();
@@ -461,7 +461,7 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "minExclusive"
                     )
                 {
-                    var val = Value.GetObject(sub.Attribute("value")?.Value, t);
+                    var val = ValueConstraint.GetObject(sub.Attribute("value")?.Value, t);
                     if (val != null && val is IComparable cmp)
                     {
                         range = range ?? new RangeConstraint();
@@ -479,7 +479,7 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "maxExclusive"
                     )
                 {
-                    var val = Value.GetObject(sub.Attribute("value")?.Value, t);
+                    var val = ValueConstraint.GetObject(sub.Attribute("value")?.Value, t);
                     if (val != null && val is IComparable cmp)
                     {
                         range = range ?? new RangeConstraint();
@@ -558,7 +558,7 @@ namespace Xbim.Xids
                 return null;
             if (enumeration != null)
             {
-                var ret = new Value(t)
+                var ret = new ValueConstraint(t)
                 {
                     AcceptedValues = new List<IValueConstraint>()
                 };
@@ -570,7 +570,7 @@ namespace Xbim.Xids
             }
             if (range != null)
             {
-                var ret = new Value(t)
+                var ret = new ValueConstraint(t)
                 {
                     AcceptedValues = new List<IValueConstraint>() { range }
                 };
@@ -578,7 +578,7 @@ namespace Xbim.Xids
             }
             if (patternc != null)
             {
-                var ret = new Value(t)
+                var ret = new ValueConstraint(t)
                 {
                     AcceptedValues = new List<IValueConstraint>() { patternc }
                 };
@@ -586,7 +586,7 @@ namespace Xbim.Xids
             }
             if (structure != null)
             {
-                var ret = new Value(t)
+                var ret = new ValueConstraint(t)
                 {
                     AcceptedValues = new List<IValueConstraint>() { structure }
                 };

@@ -3,7 +3,7 @@ namespace Xbim.Xids
 {
 	public partial class MaterialFacet : FacetBase,  IFacet, IEquatable<MaterialFacet>
 	{
-		public Value Value { get; set; } = null;
+		public ValueConstraint Value { get; set; } = null;
 
 		public string Short()
 		{

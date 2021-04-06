@@ -6,26 +6,41 @@ using System.Threading.Tasks;
 
 namespace Xbim.Xids
 {
-
-	public partial class Value : IEquatable<Value>
+	// todo: 2021: values of the constraints should be dependent on the type defined here.  e.g. decimal, double and so on.
+	
+	public partial class ValueConstraint : IEquatable<ValueConstraint>
 	{
-		public Value() {}
+		public ValueConstraint() {}
 
 		public List<IValueConstraint> AcceptedValues { get; set; }
 
-		public Value(string value)
+		public ValueConstraint(string value)
 		{
 			AcceptedValues = new List<IValueConstraint>();
 			AcceptedValues.Add(new ExactConstraint(value));
 			BaseType = TypeName.String;
 		}
 
-		public Value(TypeName value)
+		public bool IsSatisfiedBy(object o)
+		{
+			// todo: 2021: check type compatibility
+			// 
+			if (AcceptedValues == null)
+				return false;
+			foreach (var av in AcceptedValues)
+			{
+				if (av.IsSatisfiedBy(o))
+					return true;
+			}
+			return false;
+		}
+
+		public ValueConstraint(TypeName value)
 		{
 			BaseType = value;
 		}
 
-		public Value(int value)
+		public ValueConstraint(int value)
 		{
 			AcceptedValues = new List<IValueConstraint>();
 			AcceptedValues.Add(new ExactConstraint(value));
@@ -41,7 +56,7 @@ namespace Xbim.Xids
 				(AcceptedValues == null || !AcceptedValues.Any());
 		}
 		
-		public bool Equals(Value other)
+		public bool Equals(ValueConstraint other)
 		{
 			if (other == null)
 				return false;
@@ -87,8 +102,6 @@ namespace Xbim.Xids
 			}
 		}
 
-		
-
 		public static TypeName Resolve(Type t)
 		{
 			if (t == typeof(string))
@@ -133,7 +146,7 @@ namespace Xbim.Xids
 
 		public override bool Equals(object obj)
 		{
-			return this.Equals(obj as Value);
+			return this.Equals(obj as ValueConstraint);
 		}
 
 		public override int GetHashCode()
@@ -183,9 +196,9 @@ namespace Xbim.Xids
 			return true;
 		}
 
-		public static Value SingleUndefinedExact(string content)
+		public static ValueConstraint SingleUndefinedExact(string content)
 		{
-			Value ret = new Value()
+			ValueConstraint ret = new ValueConstraint()
 			{
 				BaseType = TypeName.Undefined,
 				AcceptedValues = new List<IValueConstraint>() { new ExactConstraint(content) }

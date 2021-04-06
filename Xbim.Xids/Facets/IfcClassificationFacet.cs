@@ -7,7 +7,7 @@ namespace Xbim.Xids
 		/// <summary>
 		/// A string identifying the relevant classification system
 		/// </summary>
-		public Value ClassificationSystem { get; set; }
+		public ValueConstraint ClassificationSystem { get; set; }
 
 		/// <summary>
 		/// Uri of the classification system
@@ -17,7 +17,7 @@ namespace Xbim.Xids
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
-		public Value Identification { get; set; }
+		public ValueConstraint Identification { get; set; }
 
 		public bool Equals(IfcClassificationFacet other)
 		{

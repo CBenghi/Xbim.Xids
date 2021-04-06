@@ -19,9 +19,9 @@ namespace Xbim.IDS.Tests
 			TestAddRemove(lst, new IfcClassificationFacet());
 			TestAddRemove(lst, new IfcClassificationFacet()
 			{
-				ClassificationSystem = new Value("2"),
+				ClassificationSystem = new ValueConstraint("2"),
 				Location = "2",
-				Identification = new Value(12)
+				Identification = new ValueConstraint(12)
 			});
 
 
@@ -55,8 +55,8 @@ namespace Xbim.IDS.Tests
 			var pc = new PatternConstraint();
 			TestAddRemove(pcl, pc);
 
-			List<Value> vals = new List<Value>();
-			var val = new Value();
+			List<ValueConstraint> vals = new List<ValueConstraint>();
+			var val = new ValueConstraint();
 			TestAddRemove(vals, val);
 			val = MakeEnumVal();
 			TestAddRemove(vals, val);
@@ -80,12 +80,12 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void ValueIsEmpty()
 		{		
-			Assert.IsTrue(new Value().IsEmpty());
-			Assert.IsFalse(new Value() { BaseType = TypeName.String }.IsEmpty());
+			Assert.IsTrue(new ValueConstraint().IsEmpty());
+			Assert.IsFalse(new ValueConstraint() { BaseType = TypeName.String }.IsEmpty());
 
-			Assert.IsTrue(new Value() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
-			Assert.IsFalse(new Value() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
-			Assert.IsFalse(new Value() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty());
+			Assert.IsTrue(new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
+			Assert.IsFalse(new ValueConstraint() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
+			Assert.IsFalse(new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty());
 
 		}
 
@@ -99,13 +99,13 @@ namespace Xbim.IDS.Tests
 				if (tName == TypeName.Undefined)
 					continue;
 
-				var t = Value.GetXsdTypeString(tName);
-				var back = Value.GetNamedTypeFromXsd(t);
+				var t = ValueConstraint.GetXsdTypeString(tName);
+				var back = ValueConstraint.GetNamedTypeFromXsd(t);
 				Assert.AreEqual(tName, back);
 
 				
-				var newT = Value.GetNetType(tName);
-				var defval = Value.GetDefault(tName);
+				var newT = ValueConstraint.GetNetType(tName);
+				var defval = ValueConstraint.GetDefault(tName);
 
 				Assert.IsNotNull(defval, $"Cannot create type: {tName}, {newT}");
 				Assert.IsNotNull(newT, $"Empty return type: {tName}, {newT}");
@@ -113,9 +113,9 @@ namespace Xbim.IDS.Tests
 			}
 		}
 
-		private Value MakeEnumVal()
+		private ValueConstraint MakeEnumVal()
 		{
-			var val = new Value();
+			var val = new ValueConstraint();
 			val.BaseType = TypeName.String;
 			val.AcceptedValues = new List<IValueConstraint>();
 			val.AcceptedValues.Add(new ExactConstraint("30"));
