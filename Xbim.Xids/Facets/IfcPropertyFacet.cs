@@ -3,7 +3,7 @@ using System;
 namespace Xbim.Xids
 {
 
-	public partial class IfcPropertyFacet : LocationBase, IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : FacetBase, IFacet, IEquatable<IfcPropertyFacet>
     {
         public string PropertySetName { get; set; }
 		public string PropertyName { get; set; }
@@ -41,7 +41,7 @@ namespace Xbim.Xids
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
-            return ((LocationBase)this).Equals((LocationBase)other);
+            return ((FacetBase)this).Equals((FacetBase)other);
         }
 
 		public bool IsValid()

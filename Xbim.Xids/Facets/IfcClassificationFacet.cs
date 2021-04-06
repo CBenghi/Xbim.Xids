@@ -2,19 +2,22 @@ using System;
 
 namespace Xbim.Xids
 {
-	public partial class IfcClassificationFacet : LocationBase, IFacet, IEquatable<IfcClassificationFacet>
+	public partial class IfcClassificationFacet : FacetBase, IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system
 		/// </summary>
 		public Value ClassificationSystem { get; set; }
+
+		/// <summary>
+		/// Uri of the classification system
+		/// </summary>
 		public string ClassificationSystemHref { get; set; }
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
 		public Value Identification { get; set; }
-		
 
 		public bool Equals(IfcClassificationFacet other)
 		{
@@ -29,7 +32,7 @@ namespace Xbim.Xids
 				Identification, other.Identification)
 				)
 				return false;
-			return ((LocationBase)this).Equals((LocationBase)other);
+			return ((FacetBase)this).Equals((FacetBase)other);
 		}
 
 		public override bool Equals(object obj)

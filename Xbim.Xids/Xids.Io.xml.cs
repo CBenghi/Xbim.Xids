@@ -241,7 +241,7 @@ namespace Xbim.Xids
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteLocationAttributes(LocationBase cf, XmlWriter xmlWriter)
+        private void WriteLocationAttributes(FacetBase cf, XmlWriter xmlWriter)
         {
             if (!string.IsNullOrWhiteSpace(cf.Location))
                 xmlWriter.WriteAttributeString("location", cf.Location);
@@ -251,7 +251,7 @@ namespace Xbim.Xids
                 xmlWriter.WriteAttributeString("use", cf.Use);
         }
 
-        private void WriteLocationElements(LocationBase cf, XmlWriter xmlWriter)
+        private void WriteLocationElements(FacetBase cf, XmlWriter xmlWriter)
         {
             if (!string.IsNullOrWhiteSpace(cf.Instructions))
                 xmlWriter.WriteElementString("instructions", cf.Instructions);
@@ -683,7 +683,7 @@ namespace Xbim.Xids
 
 
 
-        private static void GetBaseEntity(XElement sub, LocationBase ret)
+        private static void GetBaseEntity(XElement sub, FacetBase ret)
         {
             if (sub.Name.LocalName == "instructions")
                 ret.Instructions = sub.Value;
@@ -713,7 +713,7 @@ namespace Xbim.Xids
             }
         }
 
-        private static void GetBaseAttribute(XAttribute attribute, LocationBase ret)
+        private static void GetBaseAttribute(XAttribute attribute, FacetBase ret)
         {
             if (attribute.Name.LocalName == "href")
                 ret.Uri = attribute.Value;

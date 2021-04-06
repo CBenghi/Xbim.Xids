@@ -1,7 +1,7 @@
 using System;
 namespace Xbim.Xids
 {
-	public partial class MaterialFacet : LocationBase,  IFacet, IEquatable<MaterialFacet>
+	public partial class MaterialFacet : FacetBase,  IFacet, IEquatable<MaterialFacet>
 	{
 		public Value Value { get; set; } = null;
 
@@ -21,7 +21,7 @@ namespace Xbim.Xids
 				return false;
 			if (!IFacetExtensions.NullEquals(Value, other.Value))
 				return false;
-			return ((LocationBase)this).Equals((LocationBase)other);
+			return ((FacetBase)this).Equals((FacetBase)other);
 		}
 		public override bool Equals(object obj)
 		{

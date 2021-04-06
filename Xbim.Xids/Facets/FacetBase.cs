@@ -6,13 +6,13 @@ namespace Xbim.Xids
 {
 	public enum Location
 	{
-		type,
+		any,
 		instance,
-		any
+		type,
 	}
 
 
-	public abstract class LocationBase : IEquatable<LocationBase>
+	public abstract class FacetBase : IEquatable<FacetBase>
 	{
 		public string Location { get; set; } = null; // attribute location
 		public string Uri { get; set; } = null; // attribute href
@@ -24,7 +24,7 @@ namespace Xbim.Xids
 			return $"{Uri?.ToString() ?? ""}-{Location}-{Use}-{Instructions}";
 		}
 
-		public bool Equals(LocationBase other)
+		public bool Equals(FacetBase other)
 		{
 			if (other == null)
 				return false;
@@ -41,7 +41,7 @@ namespace Xbim.Xids
 
 		public override bool Equals(object obj)
 		{
-			return this.Equals(obj as LocationBase);
+			return this.Equals(obj as FacetBase);
 		}
 
 		public override int GetHashCode()
