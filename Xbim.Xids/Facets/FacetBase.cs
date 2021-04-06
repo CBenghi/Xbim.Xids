@@ -11,6 +11,13 @@ namespace Xbim.Xids
 		type,
 	}
 
+	public enum Use
+	{
+		undefined,
+		required,
+		optional
+	}
+
 
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
