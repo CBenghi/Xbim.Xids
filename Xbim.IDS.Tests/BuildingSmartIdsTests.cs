@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
 using System.Xml.Linq;
 using static IdsLib.CheckOptions;
 
@@ -13,86 +14,49 @@ namespace Xbim.Xids.Tests
 	[TestClass]
 	public class BuildingSmartIdsTests
 	{
-		[DeploymentItem(@"Files\bS\Example01Mod2.xml")]
-		[TestMethod]
-		public void ReusesAapplicability()
-		{
-			XElement e = XElement.Load(@"Example01Mod2.xml");
-			var s = Xids.ImportBuildingSmartIDS(e);
-			Assert.IsNotNull(s);
-			Assert.AreEqual(4, s.FacetRepository.Count);
-		}
-
-		[DeploymentItem(@"Files\bS\Example01Mod2.xml")]
-		[TestMethod]
-		public void ReusesRequirements()
-		{
-			var s = Xids.ImportBuildingSmartIDS(@"Example01Mod2.xml");
-			Assert.IsNotNull(s);
-			s.SaveAsJson(@"..\..\reuse.json");
-			Assert.AreEqual(4, s.FacetRepository.Count);
-		}
-
-		[DeploymentItem(@"Files\bS", @"Files\bS")]
+		[DeploymentItem(@"Files\bSv3", @"Files\bS")]
 		[TestMethod]
 		public void CanLoadBuildingSmartIdsFormats()
 		{
-			var s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01.xml");
-			AssertOk(s);
+			DirectoryInfo d = new DirectoryInfo(@"Files\bS");
+			foreach (var file in d.GetFiles("*.xml"))
+			{
+				var s = Xids.ImportBuildingSmartIDS(file.FullName);
+				AssertOk(s);
+			}
 
-			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example02.xml");
-			Assert.IsNotNull(s);
-			// Ids.ToBuildingSmartIDS("out.xml");
+			//var jFile = @"..\..\out.json";
+			//var jFile2 = @"..\..\out2.json";
+			//var jFile3 = @"..\..\out3.json";
+			//s.SaveAsJson(jFile);
+			//var unp = Xids.LoadFromJson(jFile);
+			//Assert.IsNotNull(unp);
+			//unp.SaveAsJson(jFile2);
 
+			//// try to read json via stream
+			////
+			//var fromStream = Xids.LoadFromJson(File.OpenRead(jFile2));
+			//Assert.IsNotNull(fromStream);
+			//fromStream.SaveAsJson(jFile3);
 
-			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01Mod.xml");
-			Assert.IsNotNull(s);
-			// Ids.ToBuildingSmartIDS("out.xml");
+			//var originalHash = GetFileHash(jFile);
+			//var copiedHash = GetFileHash(jFile2);
+			//var streamHash = GetFileHash(jFile3);
 
-			s = Xids.ImportBuildingSmartIDS(@"Files\bS\Example01Mod2.xml");
-			Assert.IsNotNull(s);
-			// Ids.ToBuildingSmartIDS("out.xml");
-
-			var jFile = @"..\..\out.json";
-			var jFile2 = @"..\..\out2.json";
-			var jFile3 = @"..\..\out3.json";
-			s.SaveAsJson(jFile);
-			var unp = Xids.LoadFromJson(jFile);
-			Assert.IsNotNull(unp);
-			unp.SaveAsJson(jFile2);
-
-			// try to read json via stream
-			//
-			var fromStream = Xids.LoadFromJson(File.OpenRead(jFile2));
-			Assert.IsNotNull(fromStream);
-			fromStream.SaveAsJson(jFile3);
-
-			var originalHash = GetFileHash(jFile);
-			var copiedHash = GetFileHash(jFile2);
-			var streamHash = GetFileHash(jFile3);
-
-			Assert.AreEqual(copiedHash, originalHash);
-			Assert.AreEqual(copiedHash, streamHash);
+			//Assert.AreEqual(copiedHash, originalHash);
+			//Assert.AreEqual(copiedHash, streamHash);
 		}
 
 		[TestMethod]
-		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullLoad")]
-		public void FullLoadBuildingSmartIdsFormats()
-		{
-			var s = Xids.ImportBuildingSmartIDS(@"fullLoad\IDS-full.xml");
-			AssertOk(s);
-			var reqs = s.AllSpecifications().ToList();
-		}
+		[DeploymentItem(@"Files\bSv3\IDS_example-with-restrictions.xml", "fullSave")]
+		[DeploymentItem(@"Files\bSv3\id.xsd", "fullSave")]
 
-		[TestMethod]
-		[DeploymentItem(@"Files\bS\fromLeon\IDS-full.xml", "fullSave")]
-		[DeploymentItem(@"Schema\ids.xsd", "fullSave")]
 		public void FullSaveBuildingSmartIdsFormats()
 		{
-			var fileIn = @"fullSave\IDS-full.xml";
-			// if the test fails here, because th input file was changed update the expected hash
+			var fileIn = @"fullSave\IDS_example-with-restrictions.xml";
+			// if the test fails here, because the input file was changed update the expected hash
 			var readHash = GetFileHash(fileIn);
-			Assert.AreEqual(readHash, "4ce9188fddd95e38caa76acaf065f9d7c5b252");
+			Assert.AreEqual("819389d3bbd72c25f1ef1257c428d6c01cb477", readHash);
 
 			var s = Xids.ImportBuildingSmartIDS(fileIn);
 			AssertOk(s);
@@ -106,21 +70,28 @@ namespace Xbim.Xids.Tests
 
 			// files in debug have newlines and indents
 #if DEBUG
-			Assert.AreEqual("7cd8b3ad0aa38cad4ffbb304781511241824c4", GetFileHash(fileOut));
+			Assert.AreEqual("f65384bf7733bc8647e1db9de4331ed9c7bfe6", GetFileHash(fileOut));
 #else
-			Assert.AreEqual("b5aa6b8054b7f2367aff1d7c85d9f3c29573f1", GetFileHash(fileOut));
+			Assert.AreEqual("3b51da0925d75c7992d6bf8787bdd6ef5241b", GetFileHash(fileOut));
 #endif
 		}
 
 		private void CheckIDSSchema(string fileOut, string schema)
 		{
 			CheckOptions c = new CheckOptions();
-			c.CheckSchema = new List<string> { schema };
+			c.CheckSchema = new List<string> { @"C:\Data\Dev\BuildingSmart\IDS\Development\Third production release\ids.xsd" };
 			c.InputSource = fileOut;
-			// c.CheckSchemaDefinition = false;
 
 			// to adjust once we fix the xml file in the other repo.
-			var ret = CheckOptions.Run(c);
+			var w = new StringWriter();
+			var ret = CheckOptions.Run(c, w);
+#if DEBUG
+			if (ret != Status.Ok)
+			{
+				string s = w.ToString();
+				Clipboard.SetText(s);
+			}
+#endif
 			Assert.AreEqual(Status.Ok, ret);
 		}
 

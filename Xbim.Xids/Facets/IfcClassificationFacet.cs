@@ -7,21 +7,21 @@ namespace Xbim.Xids
 		/// <summary>
 		/// A string identifying the relevant classification system
 		/// </summary>
-		public string ClassificationSystem { get; set; }
-		
-		public Uri ClassificationSystemUri { get; set; }
+		public Value ClassificationSystem { get; set; }
+		public string ClassificationSystemHref { get; set; }
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
 		/// </summary>
 		public Value Identification { get; set; }
+		
 
 		public bool Equals(IfcClassificationFacet other)
 		{
 			if (other == null)
 				return false;
 
-			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(
+			if (!IFacetExtensions.NullEquals(
 				ClassificationSystem, other.ClassificationSystem)
 				)
 				return false;

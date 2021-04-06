@@ -19,10 +19,9 @@ namespace Xbim.IDS.Tests
 			TestAddRemove(lst, new IfcClassificationFacet());
 			TestAddRemove(lst, new IfcClassificationFacet()
 			{
-				ClassificationSystem = "1",
+				ClassificationSystem = new Value("2"),
 				Location = "2",
-				Identification = new Value(12),
-				Uri = new Uri("http://www.gino.com")
+				Identification = new Value(12)
 			});
 
 
@@ -32,7 +31,6 @@ namespace Xbim.IDS.Tests
 				Location = "1",
 				PropertyName = "2",
 				PropertySetName = "3",
-				Uri = new Uri("http://www.gino.com")
 			});
 
 			TestAddRemove(lst, new IfcTypeFacet());
@@ -47,7 +45,6 @@ namespace Xbim.IDS.Tests
 			TestAddRemove(lst, new MaterialFacet()
 			{
 				Location = "1",
-				Uri = new Uri("http://www.gino.com")
 			});
 		}
 

@@ -14,20 +14,25 @@ namespace Xbim.Xids
 
 	public abstract class LocationBase : IEquatable<LocationBase>
 	{
-		public string Location { get; set; } = "";
-
-		public Uri Uri { get; set; } = null;
+		public string Location { get; set; } = null; // attribute location
+		public string Uri { get; set; } = null; // attribute href
+		public string Use { get; set; } = null; // attribute use
+		public string Instructions { get; set; } // element
 
 		public override string ToString()
 		{
-			return $"{Uri?.ToString() ?? ""}-{Location}";
+			return $"{Uri?.ToString() ?? ""}-{Location}-{Use}-{Instructions}";
 		}
 
 		public bool Equals(LocationBase other)
 		{
 			if (other == null)
 				return false;
-			if (Location.ToLowerInvariant() != other.Location.ToLowerInvariant())
+			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Location, other.Location))
+				return false;
+			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Use, other.Use))
+				return false;
+			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Instructions, other.Instructions))
 				return false;
 			if (!IFacetExtensions.NullEquals(Uri, other.Uri))
 				return false;
