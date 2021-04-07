@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildingSmartIdsTests.cs" />
+    <Compile Include="EnumTests.cs" />
     <Compile Include="ValueContraintTests.cs" />
     <Compile Include="FacetGroupTests.cs" />
     <Compile Include="FacetImplementationTests.cs" />
