@@ -47,6 +47,13 @@ namespace Xbim.Xids
 			BaseType = TypeName.Integer;
 		}
 
+		public ValueConstraint(double value)
+		{
+			AcceptedValues = new List<IValueConstraint>();
+			AcceptedValues.Add(new ExactConstraint(value));
+			BaseType = TypeName.Double;
+		}
+
 		public TypeName BaseType { get; set; }
 
 		public bool IsEmpty()
