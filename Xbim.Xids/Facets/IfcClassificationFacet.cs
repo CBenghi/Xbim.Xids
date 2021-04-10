@@ -8,20 +8,28 @@ namespace Xbim.Xids
 		/// A string identifying the relevant classification system
 		/// </summary>
 		public ValueConstraint ClassificationSystem { get; set; }
-
+		
 		/// <summary>
 		/// Uri of the classification system
 		/// </summary>
 		public string ClassificationSystemHref { get; set; }
 
 		/// <summary>
-		/// The specific class element within the tree of the <see cref="ClassificationSystem"/> 
+		/// The specific class element within the tree of the <see cref="ClassificationSystem"/>.
 		/// </summary>
 		public ValueConstraint Identification { get; set; }
+
+		/// <summary>
+		/// Includes hierarchical values below the <see cref="Identification"/> element.
+		/// </summary>
+		public bool IncludeSubClasses { get; set; }
 
 		public bool Equals(IfcClassificationFacet other)
 		{
 			if (other == null)
+				return false;
+
+			if (IncludeSubClasses != other.IncludeSubClasses)
 				return false;
 
 			if (!IFacetExtensions.NullEquals(
@@ -42,7 +50,7 @@ namespace Xbim.Xids
 
 		public override string ToString()
 		{
-			return $"{ClassificationSystem}-{Identification}-{base.ToString()}";
+			return $"{ClassificationSystem}-{Identification}-{IncludeSubClasses}-{base.ToString()}";
 		}
 
 		public override int GetHashCode()
