@@ -8,8 +8,10 @@ namespace Xbim.Xids
 {
 	public partial class FacetGroup
 	{
+		[Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
 		public FacetGroup()
-		{ }
+		{
+		}
 
 		public FacetGroup(FacetGroupRepository repository)
 		{

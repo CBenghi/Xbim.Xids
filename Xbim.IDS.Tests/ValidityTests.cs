@@ -12,6 +12,7 @@ namespace Xbim.IDS.Tests
 	public class ValidityTests
 	{
 		[TestMethod]
+		[Obsolete]
 		public void FacetGroupValidityTests()
 		{
 			FacetGroup g = new FacetGroup();

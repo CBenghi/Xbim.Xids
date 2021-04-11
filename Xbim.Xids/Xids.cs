@@ -7,6 +7,11 @@ namespace Xbim.Xids
 {
 	public partial class Xids
     {
+		/// <summary>
+		/// prepares a new specification taking care of target specification group if not provided.
+		/// </summary>
+		/// <param name="containingCollection"></param>
+		/// <returns></returns>
 		public Specification NewSpecification(SpecificationsGroup containingCollection = null)
 		{
 			var t = new Specification(this)
