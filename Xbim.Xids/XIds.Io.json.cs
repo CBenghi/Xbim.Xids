@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Xbim.Xids.Helpers;
 
 namespace Xbim.Xids
 {
@@ -13,51 +12,64 @@ namespace Xbim.Xids
 	{
 		public void SaveAsJson(string destinationFile)
 		{
-			using (var sw = new StreamWriter(destinationFile))
+			if (File.Exists(destinationFile))
+				File.Delete(destinationFile);
+			using (var s = File.OpenWrite(destinationFile))
 			{
-				SaveAsJson(sw);
+				SaveAsJson(s);
 			}
 		}
 
-		public void SaveAsJson(StreamWriter sw)
+		public void SaveAsJson(Stream sw)
 		{
-			var serializer = new JsonSerializer
-			{
-				NullValueHandling = NullValueHandling.Ignore,
-				TypeNameHandling = TypeNameHandling.Auto
-			};
-			serializer.Converters.Add(new StringEnumConverter());
+			JsonSerializerOptions options = GetJsonSerializerOptions();
 #if DEBUG
-			serializer.Formatting = Formatting.Indented;
+			var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
+#else
+			var t = new Utf8JsonWriter(sw);
 #endif
-			using (JsonWriter writer = new JsonTextWriter(sw))
-			{
-				serializer.Serialize(writer, this);
-			}
+			JsonSerializer.Serialize(t, this, options);
+
 		}
 
-		private static JsonSerializer readSerializer()
+		private static JsonSerializerOptions GetJsonSerializerOptions()
 		{
-			var serializer = new JsonSerializer
+			JsonSerializerOptions options = new JsonSerializerOptions()
 			{
-				NullValueHandling = NullValueHandling.Ignore,
-				TypeNameHandling = TypeNameHandling.Auto,
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 			};
-			serializer.Converters.Add(new StringEnumConverter());
-			return serializer;
+			var facetConverter = new HeterogenousListConverter<IFacet, ObservableCollection<IFacet>>(
+				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
+				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
+				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
+				(nameof(MaterialFacet), typeof(MaterialFacet))
+			);
+			var constraintConverter = new HeterogenousListConverter<IValueConstraint, List<IValueConstraint>>(
+				(nameof(ExactConstraint), typeof(ExactConstraint)),
+				(nameof(PatternConstraint), typeof(PatternConstraint)),
+				(nameof(RangeConstraint), typeof(RangeConstraint)),
+				(nameof(StructureConstraint), typeof(StructureConstraint))
+				);
+
+			options.Converters.Add(facetConverter);
+			options.Converters.Add(constraintConverter);
+			options.Converters.Add(
+				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+				);
+			return options;
 		}
 
 		public static Xids LoadFromJson(string sourceFile)
 		{
-			using (StreamReader file = File.OpenText(sourceFile))
+			if (!File.Exists(sourceFile))
+				throw new FileNotFoundException($"File missing: '{sourceFile}'");
+			using (var s = File.OpenRead(sourceFile))
 			{
-				var serializer = readSerializer();
-				Xids unpersisted = (Xids)serializer.Deserialize(file, typeof(Xids));
-				return Finalize(unpersisted);
+				return LoadFromJsonAsync(s).GetAwaiter().GetResult();
 			}
 		}
 
-		private static Xids Finalize(Xids unpersisted)
+		public static Xids Finalize(Xids unpersisted)
 		{
 			if (unpersisted == null)
 				return null;
@@ -68,16 +80,12 @@ namespace Xbim.Xids
 			return unpersisted;
 		}
 
-		public static Xids LoadFromJson(Stream sourceStream)
+		public static async Task<Xids> LoadFromJsonAsync(Stream sourceStream)
 		{
-			var serializer = readSerializer();
-
-			using (var sr = new StreamReader(sourceStream))
-			using (var jsonTextReader = new JsonTextReader(sr))
-			{
-				Xids unpersisted  = (Xids)serializer.Deserialize(jsonTextReader, typeof(Xids));
-				return Finalize(unpersisted);
-			}
+			JsonSerializerOptions options = GetJsonSerializerOptions();
+			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;
+			return Finalize(t);
 		}
+
 	}
 }

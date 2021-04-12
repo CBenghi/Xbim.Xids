@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Xbim.Xids
 {
-	// todo: 2021: values of the constraints should be dependent on the type defined here.  e.g. decimal, double and so on.
-	
 	public partial class ValueConstraint : IEquatable<ValueConstraint>
 	{
 		public ValueConstraint() {}
@@ -21,15 +17,14 @@ namespace Xbim.Xids
 			BaseType = TypeName.String;
 		}
 
-		public bool IsSatisfiedBy(object o)
+		public bool IsSatisfiedBy(object candiatateValue)
 		{
-			// todo: 2021: check type compatibility
-			// 
 			if (AcceptedValues == null)
 				return false;
+			var cand = GetObject(candiatateValue, BaseType);
 			foreach (var av in AcceptedValues)
 			{
-				if (av.IsSatisfiedBy(o))
+				if (av.IsSatisfiedBy(cand, this))
 					return true;
 			}
 			return false;
@@ -43,14 +38,16 @@ namespace Xbim.Xids
 		public ValueConstraint(int value)
 		{
 			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value));
+			AcceptedValues.Add(new ExactConstraint(value.ToString()));
 			BaseType = TypeName.Integer;
 		}
 
 		public ValueConstraint(double value)
 		{
 			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value));
+			// G17 preserves the entire precision of double
+			// see https://stackoverflow.com/questions/42083822/how-to-convert-the-double-value-to-string-without-losing-the-data-in-c-sharp
+			AcceptedValues.Add(new ExactConstraint(value.ToString("G17")));
 			BaseType = TypeName.Double;
 		}
 
@@ -126,7 +123,7 @@ namespace Xbim.Xids
 				return false;
 			foreach (var acceptableValue in AcceptedValues)
 			{
-				if (acceptableValue.IsSatisfiedBy(testObject))
+				if (acceptableValue.IsSatisfiedBy(testObject, this))
 					return true;
 			}
 			return false;

@@ -14,50 +14,55 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void ExactContraintSatisfactionTest()
 		{
-			var t = new ExactConstraint("2");
-			Assert.IsTrue(t.IsSatisfiedBy("2"));
-			Assert.IsFalse(t.IsSatisfiedBy("1"));
-			Assert.IsFalse(t.IsSatisfiedBy(1));
-			Assert.IsFalse(t.IsSatisfiedBy(2));
+			var vc = new ValueConstraint(TypeName.String);
+			vc.AddAccepted(new ExactConstraint("2"));
+			
+			Assert.IsTrue(vc.IsSatisfiedBy("2"));
+			Assert.IsFalse(vc.IsSatisfiedBy("1"));
+			Assert.IsFalse(vc.IsSatisfiedBy(1));
+			Assert.IsFalse(vc.IsSatisfiedBy(2));
 		}
 
 		[TestMethod]
 		public void PatternConstraintSatisfactionTest()
 		{
-			var t = new PatternConstraint() { Pattern = "[a-z]" };
-			Assert.IsTrue(t.IsSatisfiedBy("a"));
-			Assert.IsTrue(t.IsSatisfiedBy("z"));
-			Assert.IsFalse(t.IsSatisfiedBy("A"));
-			Assert.IsFalse(t.IsSatisfiedBy("Z"));
+			var vc = new ValueConstraint(TypeName.String);
+			vc.AddAccepted(new PatternConstraint() { Pattern = "[a-z]" });
+			Assert.IsTrue(vc.IsSatisfiedBy("a"));
+			Assert.IsTrue(vc.IsSatisfiedBy("z"));
+			Assert.IsFalse(vc.IsSatisfiedBy("A"));
+			Assert.IsFalse(vc.IsSatisfiedBy("Z"));
 		}
 
 		[TestMethod]
 		public void RangeConstraintSatisfactionTest()
 		{
+			var vc = new ValueConstraint(TypeName.Double);
 			var t = new RangeConstraint()
 			{
-				MinValue = 2,
+				MinValue = 2.ToString(),
 				MinInclusive = true,
-				MaxValue = 4,
+				MaxValue = 4.ToString(),
 				MaxInclusive = true,
 			};
+			vc.AddAccepted(t);
 
-			Assert.IsFalse(t.IsSatisfiedBy(1));
-			Assert.IsTrue(t.IsSatisfiedBy(2));
-			Assert.IsTrue(t.IsSatisfiedBy(2.01));
-			Assert.IsTrue(t.IsSatisfiedBy(3.99));
-			Assert.IsTrue(t.IsSatisfiedBy(4));
-			Assert.IsFalse(t.IsSatisfiedBy(4.01));
+			Assert.IsFalse(vc.IsSatisfiedBy(1));
+			Assert.IsTrue(vc.IsSatisfiedBy(2));
+			Assert.IsTrue(vc.IsSatisfiedBy(2.01));
+			Assert.IsTrue(vc.IsSatisfiedBy(3.99));
+			Assert.IsTrue(vc.IsSatisfiedBy(4));
+			Assert.IsFalse(vc.IsSatisfiedBy(4.01));
 
 			t.MinInclusive = false;
 			t.MaxInclusive = false;
 
-			Assert.IsFalse(t.IsSatisfiedBy(1));
-			Assert.IsFalse(t.IsSatisfiedBy(2));
-			Assert.IsTrue(t.IsSatisfiedBy(2.01f));
-			Assert.IsTrue(t.IsSatisfiedBy(3.99f));
-			Assert.IsFalse(t.IsSatisfiedBy(4m));
-			Assert.IsFalse(t.IsSatisfiedBy(4.01));
+			Assert.IsFalse(vc.IsSatisfiedBy(1));
+			Assert.IsFalse(vc.IsSatisfiedBy(2));
+			Assert.IsTrue(vc.IsSatisfiedBy(2.01f));
+			Assert.IsTrue(vc.IsSatisfiedBy(3.99f));
+			Assert.IsFalse(vc.IsSatisfiedBy(4m));
+			Assert.IsFalse(vc.IsSatisfiedBy(4.01));
 
 		}
 	}

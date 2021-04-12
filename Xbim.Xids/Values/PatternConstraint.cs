@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Xbim.Xids
@@ -46,11 +44,11 @@ namespace Xbim.Xids
 			}
 		}
 
-		public bool IsSatisfiedBy(object testObject)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
 		{
 			if (!EnsureRegex())
 				return false;
-			return compiledRegex.IsMatch(testObject.ToString());
+			return compiledRegex.IsMatch(candiatateValue.ToString());
 		}
 
 		private bool EnsureRegex()

@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 /// <summary>
 ///  
 /// </summary>
 namespace Xbim.Xids.Helpers
 {
-    /// <summary>
-    /// Taken from https://stackoverflow.com/questions/50098/comparing-two-collections-for-equality-irrespective-of-the-order-of-items-in-the
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    internal class MultiSetComparer<T> : IEqualityComparer<IEnumerable<T>>
+	/// <summary>
+	/// Taken from https://stackoverflow.com/questions/50098/comparing-two-collections-for-equality-irrespective-of-the-order-of-items-in-the
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	internal class MultiSetComparer<T> : IEqualityComparer<IEnumerable<T>>
     {
         private readonly IEqualityComparer<T> m_comparer;
         public MultiSetComparer(IEqualityComparer<T> comparer = null)

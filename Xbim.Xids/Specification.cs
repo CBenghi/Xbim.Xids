@@ -1,18 +1,10 @@
 using System;
-using System.Diagnostics;
-using System.Xml.Serialization;
-using System.Runtime.Serialization;
-using System.Collections;
-using System.Xml.Schema;
-using System.ComponentModel;
-using System.Xml;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Xbim.Xids
 {
-    public partial class Specification
+	public partial class Specification
     {
 		private Xids ids;
 
@@ -40,7 +32,7 @@ namespace Xbim.Xids
 
 		private string applicabilityId;
 
-		[JsonProperty("Applicability")]
+		[JsonPropertyName("Applicability")]
 		public string ApplicabilityId
 		{
 			get => Applicability?.Guid.ToString();
@@ -52,7 +44,7 @@ namespace Xbim.Xids
 
 		private string requirementId;
 
-		[JsonProperty("Requirement")]
+		[JsonPropertyName("Requirement")]
 		public string RequirementId {
 			get => Requirement?.Guid.ToString();
 			set => requirementId = value;

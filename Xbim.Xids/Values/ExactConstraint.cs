@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Xbim.Xids
 {
 	public class ExactConstraint : IValueConstraint, IEquatable<ExactConstraint>
 	{
-		public ExactConstraint(object value)
+		public ExactConstraint(string value)
 		{
 			Value = value;
 		}
 
-		public object Value { get; set; }
+		public string Value { get; set; }
 
-		public bool IsSatisfiedBy(object testObject)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
 		{
-			return Value.Equals(testObject);
+			return Value.Equals(candiatateValue);
 		}
 
 		public override string ToString()
 		{
 			if (Value != null)
-				return Value.ToString();
+				return Value;
 			return "<null>";
 		}
 
@@ -41,6 +39,7 @@ namespace Xbim.Xids
 		{
 			if (other == null)
 				return false;
+			// using tuple's trick to evaluate equality
 			return (Value, true).Equals((other.Value, true));
 		}
 	}

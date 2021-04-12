@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Xbim.Xids
 {
-	// todo: 2021: evaluate more XSD types?
+	// to evaluate more XSD types see 
 	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
 	public enum TypeName
@@ -129,6 +129,35 @@ namespace Xbim.Xids
 			maxInclusive,
 		}
 
+		public static object GetObject(object value, TypeName t)
+		{
+			if (t == TypeName.Integer)
+				return Convert.ToInt32(value);
+			if (t == TypeName.Decimal)
+				return Convert.ToDecimal(value);
+			if (t == TypeName.Double)
+				return Convert.ToDouble(value);
+			if (t == TypeName.Floating)
+				return Convert.ToSingle(value);
+			if (t == TypeName.Date)
+				return Convert.ToDateTime(value);
+			if (t == TypeName.Boolean)
+				return Convert.ToBoolean(value);
+			if (t == TypeName.Time)
+			{
+				var tmp = Convert.ToDateTime(value);
+				return tmp.TimeOfDay;
+			}
+			if (t == TypeName.Uri)
+			{
+				if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
+					return val;
+				return null;
+			}
+			return value;
+		}
+
+
 		public static object GetObject(string value, TypeName t)
 		{
 			if (t == TypeName.String)
@@ -206,6 +235,12 @@ namespace Xbim.Xids
 				default:
 					return new[] { constraints.pattern, constraints.enumeration, constraints.whiteSpace, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive };
 			}
+		}
+
+		public void AddAccepted(IValueConstraint constraint)
+		{
+			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues.Add(constraint);
 		}
 	}
 }

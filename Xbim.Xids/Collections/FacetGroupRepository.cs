@@ -1,14 +1,21 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Xbim.Xids
 {
 	public class FacetGroupRepository
 	{
 		private Xids ids;
+
+		[Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
+		[JsonConstructor]
+		public FacetGroupRepository()
+		{
+
+		}
+
 		public FacetGroupRepository(Xids ids)
 		{
 			this.ids = ids;

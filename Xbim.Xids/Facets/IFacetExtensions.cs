@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Xbim.Xids.Helpers;
 
 // todo: 2021: add quantities

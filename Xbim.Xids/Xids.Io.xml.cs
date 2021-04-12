@@ -433,9 +433,9 @@ namespace Xbim.Xids
             }
 
             // we prepare the different possible scenarios, but then check in the end that the 
-            // xml encoutnered is solid.
+            // xml encountered is solid.
             //
-            List<object> enumeration = null;
+            List<string> enumeration = null;
             RangeConstraint range = null;
             PatternConstraint patternc = null;
             StructureConstraint structure = null;
@@ -447,12 +447,8 @@ namespace Xbim.Xids
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        var tVal = ValueConstraint.GetObject(val.Value, t);
-                        if (tVal != null)
-                        {
-                            enumeration = enumeration ?? new List<object>();
-                            enumeration.Add(tVal);
-                        }
+                        enumeration = enumeration ?? new List<string>();
+                        enumeration.Add(val.Value);
                     }
                 }
                 else if (
@@ -461,16 +457,12 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "minExclusive"
                     )
                 {
-                    var val = ValueConstraint.GetObject(sub.Attribute("value")?.Value, t);
-                    if (val != null && val is IComparable cmp)
+                    var val = sub.Attribute("value")?.Value;
+                    if (val != null)
                     {
                         range = range ?? new RangeConstraint();
-                        range.MinValue = cmp;
+                        range.MinValue = val;
                         range.MinInclusive = sub.Name.LocalName == "minInclusive";
-                    }
-                    else
-                    {
-                        // todo: 2021: log error in conversion
                     }
                 }
                 else if (
@@ -479,16 +471,12 @@ namespace Xbim.Xids
                     sub.Name.LocalName == "maxExclusive"
                     )
                 {
-                    var val = ValueConstraint.GetObject(sub.Attribute("value")?.Value, t);
-                    if (val != null && val is IComparable cmp)
+                    var val = sub.Attribute("value")?.Value;
+                    if (val != null)
                     {
                         range = range ?? new RangeConstraint();
-                        range.MaxValue = cmp;
+                        range.MaxValue = val;
                         range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
-                    }
-                    else
-                    {
-                        // todo: 2021: log error in conversion
                     }
                 }
                 else if (sub.Name.LocalName == "pattern")
