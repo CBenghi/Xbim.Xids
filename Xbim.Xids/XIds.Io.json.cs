@@ -4,9 +4,10 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Xbim.Xids.Helpers;
+using Xbim.InformationSpecifications.Helpers;
 
-namespace Xbim.Xids
+
+namespace Xbim.InformationSpecifications
 {
 	public partial class Xids
 	{
@@ -61,12 +62,12 @@ namespace Xbim.Xids
 
 		public static Xids LoadFromJson(string sourceFile)
 		{
+			// todo: 2021: json perhaps not efficient for large files.
 			if (!File.Exists(sourceFile))
 				throw new FileNotFoundException($"File missing: '{sourceFile}'");
-			using (var s = File.OpenRead(sourceFile))
-			{
-				return LoadFromJsonAsync(s).GetAwaiter().GetResult();
-			}
+			var allfile = File.ReadAllText(sourceFile);
+			var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions());
+			return Finalize(t);
 		}
 
 		public static Xids Finalize(Xids unpersisted)
@@ -87,5 +88,6 @@ namespace Xbim.Xids
 			return Finalize(t);
 		}
 
+		
 	}
 }

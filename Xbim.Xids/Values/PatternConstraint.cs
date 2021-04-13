@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public class PatternConstraint : IValueConstraint, IEquatable<PatternConstraint>
 	{

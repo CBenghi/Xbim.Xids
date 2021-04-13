@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public partial class Xids
     {

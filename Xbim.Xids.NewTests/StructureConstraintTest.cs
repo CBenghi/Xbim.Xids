@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Xbim.Xids.NewTests
+
+namespace Xbim.InformationSpecifications.NewTests
 {
 	public class StructureConstraintTests
 	{

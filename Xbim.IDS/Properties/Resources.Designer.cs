@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 
-namespace Xbim.Xids.Properties
+namespace Xbim.InformationSpecifications.Properties
 {
 	/// <summary>
 	///   A strongly-typed resource class, for looking up localized strings, etc.

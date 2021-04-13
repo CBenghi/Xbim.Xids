@@ -8,7 +8,7 @@ using Xbim.Common.Metadata;
 using Xbim.Ifc2x3.SharedBldgElements;
 using Xbim.Properties;
 
-namespace Xbim.Xids.Generator
+namespace Xbim.InformationSpecifications.Generator
 {
 	public class PropertyApplicabilityStudy
 	{

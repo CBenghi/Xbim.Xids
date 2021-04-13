@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xbim.IDS.Tests
+
+namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class EnumTests
@@ -14,9 +15,9 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void CanSetEnum()
 		{
-			Xids.IfcClassificationFacet f = new Xids.IfcClassificationFacet();
+			IfcClassificationFacet f = new IfcClassificationFacet();
 
-			var values = Enum.GetValues(typeof(Xids.Location)).Cast<Xbim.Xids.Location>();
+			var values = Enum.GetValues(typeof(Location)).Cast<Location>();
 			foreach (var val in values)
 			{
 				f.SetLocation(val);

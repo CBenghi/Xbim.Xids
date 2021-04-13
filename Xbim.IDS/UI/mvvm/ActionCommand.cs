@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Xbim.Xids.UI.mvvm
+namespace Xbim.InformationSpecifications.UI.mvvm
 {
 	public class ActionCommand : ICommand
     {

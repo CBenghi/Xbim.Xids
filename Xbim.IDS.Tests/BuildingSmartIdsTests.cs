@@ -8,8 +8,9 @@ using System.Text;
 using System.Windows;
 using System.Xml.Linq;
 using static IdsLib.CheckOptions;
+using Xbim.InformationSpecifications;
 
-namespace Xbim.Xids.Tests
+namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class BuildingSmartIdsTests

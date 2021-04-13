@@ -1,12 +1,12 @@
 using System;
 using Xunit;
-using Xbim.Xids;
+using Xbim.InformationSpecifications;
 using System.IO;
 using System.Diagnostics;
 using FluentAssertions;
 using System.Linq;
 
-namespace Xbim.Xids.NewTests
+namespace Xbim.InformationSpecifications.NewTests
 {
 	public class NewJsonTests
 	{

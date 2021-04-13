@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 
 	public enum ClassType

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	// part of the serialization solution at for HeterogenousListConverter
 	public class ReversibleLookup<T1, T2> : ReadOnlyDictionary<T1, T2>

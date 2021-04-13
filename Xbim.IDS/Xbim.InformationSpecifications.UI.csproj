@@ -128,9 +128,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Xbim.Xids\Xbim.Xids.csproj">
+    <ProjectReference Include="..\Xbim.Xids\Xbim.InformationSpecifications.csproj">
       <Project>{c8908072-19b8-4f26-9bad-76c38936311c}</Project>
-      <Name>Xbim.Xids</Name>
+      <Name>Xbim.InformationSpecifications</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

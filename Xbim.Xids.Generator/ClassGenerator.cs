@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using Xbim.Common.Metadata;
 using Xbim.Properties;
 
-namespace Xbim.Xids.Generator
+namespace Xbim.InformationSpecifications.Generator
 {
     public class ClassGenerator
 	{
@@ -71,7 +71,7 @@ namespace Xbim.Xids.Generator
 		}
 
 		private const string stub = @"// generated via source generation from xbim.xids.generator
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	// to evaluate more XSD types see 
 	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes

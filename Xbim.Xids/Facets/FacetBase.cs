@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	[Flags]
 	public enum Location
@@ -20,7 +20,7 @@ namespace Xbim.Xids
 
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
-		private string location = Xbim.Xids.Location.any.ToString();
+		private string location = InformationSpecifications.Location.any.ToString();
 
 		public Location GetLocation()
 		{
@@ -28,7 +28,7 @@ namespace Xbim.Xids
 			{
 				return loc;
 			}
-			return Xbim.Xids.Location.any;
+			return InformationSpecifications.Location.any;
 		}
 		public void SetLocation(Location loc)
 		{

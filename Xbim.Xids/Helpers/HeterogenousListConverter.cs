@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	// https://stackoverflow.com/questions/59743382/is-there-a-simple-way-to-manually-serialize-deserialize-child-objects-in-a-custo/59744188
 	// note that the old explicit type approach of newtonsoft json was a security concern

@@ -1,7 +1,7 @@
 ﻿// generated via source generation from xbim.xids.generator
 using System.Collections.Generic;
 
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class PropertySetInfo
 	{

@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xbim.Xids;
 
-namespace Xbim.IDS.Tests
+namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class ValueContraintTests

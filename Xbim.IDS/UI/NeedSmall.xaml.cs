@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Xbim.Xids.UI
+namespace Xbim.InformationSpecifications.UI
 {
 	/// <summary>
 	/// Interaction logic for ExpSmall.xaml

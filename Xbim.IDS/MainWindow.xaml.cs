@@ -14,9 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Xbim.Xids.UI.VM;
+using Xbim.InformationSpecifications.UI.VM;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

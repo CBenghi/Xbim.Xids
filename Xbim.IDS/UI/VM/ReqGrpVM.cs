@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using Xbim.Xids.UI.mvvm;
+using Xbim.InformationSpecifications.UI.mvvm;
 
-namespace Xbim.Xids.UI.VM
+namespace Xbim.InformationSpecifications.UI.VM
 {
 	internal class ReqGrpVM : ViewModelBase
 	{

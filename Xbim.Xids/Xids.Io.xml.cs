@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
     public partial class Xids
     {

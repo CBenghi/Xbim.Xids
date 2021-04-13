@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xbim.Xids;
+using Xbim.InformationSpecifications;
 
-namespace Xbim.IDS.Tests
+namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class FacetImplementationTests

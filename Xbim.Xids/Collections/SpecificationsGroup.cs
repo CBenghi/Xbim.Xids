@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public partial class SpecificationsGroup
 	{

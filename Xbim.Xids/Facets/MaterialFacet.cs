@@ -1,5 +1,5 @@
 using System;
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public partial class MaterialFacet : FacetBase,  IFacet, IEquatable<MaterialFacet>
 	{

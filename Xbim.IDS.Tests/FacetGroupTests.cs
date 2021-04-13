@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Xbim.IDS.Tests
+namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class FacetGroupTests
@@ -14,7 +14,7 @@ namespace Xbim.IDS.Tests
 		[TestMethod]
 		public void FacetGroupUseCount()
 		{
-			Xids.Xids t = new Xids.Xids();
+			Xids t = new Xids();
 			var spec = t.NewSpecification();
 			var group = spec.Applicability;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public class ExactConstraint : IValueConstraint, IEquatable<ExactConstraint>
 	{

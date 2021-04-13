@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public partial class Specification
     {

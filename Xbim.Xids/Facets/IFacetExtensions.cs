@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Xbim.Xids.Helpers;
+using Xbim.InformationSpecifications.Helpers;
 
 // todo: 2021: add quantities
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public static class IFacetExtensions
 	{

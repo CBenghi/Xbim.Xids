@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public partial class ValueConstraint : IEquatable<ValueConstraint>
 	{

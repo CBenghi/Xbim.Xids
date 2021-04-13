@@ -1,4 +1,4 @@
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
     public partial class Project
     {

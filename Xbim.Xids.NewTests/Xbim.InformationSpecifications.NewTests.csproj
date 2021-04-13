@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xbim.Xids\Xbim.Xids.csproj" />
+    <ProjectReference Include="..\Xbim.Xids\Xbim.InformationSpecifications.csproj" />
   </ItemGroup>
 
 </Project>

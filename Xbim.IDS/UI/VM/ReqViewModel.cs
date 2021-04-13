@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xbim.Xids.UI.mvvm;
+using Xbim.InformationSpecifications.UI.mvvm;
 
-namespace Xbim.Xids.UI.VM
+namespace Xbim.InformationSpecifications.UI.VM
 {
 	class ReqViewModel : ViewModelBase
 	{

@@ -1,5 +1,5 @@
 ﻿// generated via source generation from xbim.xids.generator
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{

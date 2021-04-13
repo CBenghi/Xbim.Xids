@@ -5,7 +5,7 @@ using System.Linq;
 /// <summary>
 ///  
 /// </summary>
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	/// <summary>
 	/// Taken from https://stackoverflow.com/questions/50098/comparing-two-collections-for-equality-irrespective-of-the-order-of-items-in-the

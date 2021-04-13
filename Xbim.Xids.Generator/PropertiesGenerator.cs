@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Xbim.Properties;
 
-namespace Xbim.Xids.Generator
+namespace Xbim.InformationSpecifications.Generator
 {
     public class PropertiesGenerator 
     {
@@ -70,7 +70,7 @@ namespace Xbim.Xids.Generator
 // generated via source generation from xbim.xids.generator
 using System.Collections.Generic;
 
-namespace Xbim.Xids.Helpers
+namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class PropertySetInfo
 	{

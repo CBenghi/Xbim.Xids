@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public class FacetGroupRepository
 	{

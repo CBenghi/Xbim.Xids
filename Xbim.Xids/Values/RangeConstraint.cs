@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Xbim.Xids
+namespace Xbim.InformationSpecifications
 {
 	public class RangeConstraint : IValueConstraint, IEquatable<RangeConstraint>
 	{
