@@ -2,7 +2,7 @@
 
 Information delivery specifications for projects.
 
-- [ ] Architecture
+- [x] Architecture
 	- [x] Xbim.InformationSpecifications
 		- [x] multi-target lib
 		- [x] Native persistence
@@ -13,6 +13,7 @@ Information delivery specifications for projects.
 		- [x] Net framework UI for checker
 	- [x] Xbim.it
 		- [x] Xbim wasm UI
+	- [x] Namespace fixed
 
 - [ ] Structure
 	- [x] Classes
