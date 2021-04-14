@@ -10,17 +10,12 @@ namespace Xbim.InformationSpecifications
 
 		public List<IValueConstraint> AcceptedValues { get; set; }
 
-		public ValueConstraint(string value)
-		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value));
-			BaseType = TypeName.String;
-		}
-
 		public bool IsSatisfiedBy(object candiatateValue)
 		{
-			if (AcceptedValues == null)
+			if (BaseType != TypeName.Undefined && !ResolvedType(BaseType).IsAssignableFrom(candiatateValue.GetType()))
 				return false;
+			if (AcceptedValues == null || !AcceptedValues.Any())
+				return true;
 			var cand = GetObject(candiatateValue, BaseType);
 			foreach (var av in AcceptedValues)
 			{
@@ -30,9 +25,23 @@ namespace Xbim.InformationSpecifications
 			return false;
 		}
 
+		public ValueConstraint(string value)
+		{
+			AcceptedValues = new List<IValueConstraint>();
+			AcceptedValues.Add(new ExactConstraint(value));
+			BaseType = TypeName.String;
+		}
+
 		public ValueConstraint(TypeName value)
 		{
 			BaseType = value;
+		}
+
+		public ValueConstraint(TypeName valueType, string value)
+		{
+			AcceptedValues = new List<IValueConstraint>();
+			AcceptedValues.Add(new ExactConstraint(value));
+			BaseType = valueType;
 		}
 
 		public ValueConstraint(int value)
@@ -42,12 +51,17 @@ namespace Xbim.InformationSpecifications
 			BaseType = TypeName.Integer;
 		}
 
+		public ValueConstraint(decimal value)
+		{
+			AcceptedValues = new List<IValueConstraint>();
+			AcceptedValues.Add(new ExactConstraint(value.ToString()));
+			BaseType = TypeName.Decimal;
+		}
+
 		public ValueConstraint(double value)
 		{
 			AcceptedValues = new List<IValueConstraint>();
-			// G17 preserves the entire precision of double
-			// see https://stackoverflow.com/questions/42083822/how-to-convert-the-double-value-to-string-without-losing-the-data-in-c-sharp
-			AcceptedValues.Add(new ExactConstraint(value.ToString("G17")));
+			AcceptedValues.Add(new ExactConstraint(value.ToString()));
 			BaseType = TypeName.Double;
 		}
 
@@ -79,9 +93,9 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public Type ResolvedType()
+		public static Type ResolvedType(TypeName Name)
 		{
-			switch (BaseType)
+			switch (Name)
 			{
 				case TypeName.Floating:
 					return typeof(float);
@@ -92,8 +106,10 @@ namespace Xbim.InformationSpecifications
 				case TypeName.Decimal:
 					return typeof(decimal);
 				case TypeName.Date:
+				case TypeName.DateTime:
 					return typeof(DateTime);
 				case TypeName.Time:
+				case TypeName.Duration:
 					return typeof(TimeSpan);
 				case TypeName.String:
 					return typeof(string);
@@ -101,6 +117,8 @@ namespace Xbim.InformationSpecifications
 					return typeof(bool);
 				case TypeName.Uri:
 					return typeof(Uri);
+				case TypeName.Undefined:
+					return null;
 				default:
 					return typeof(string);
 			}
@@ -115,18 +133,6 @@ namespace Xbim.InformationSpecifications
 			if (t == typeof(double) || t == typeof(float))
 				return TypeName.Floating;
 			return TypeName.Undefined;
-		}
-
-		public bool IsValid(object testObject)
-		{
-			if (BaseType != TypeName.Undefined && !ResolvedType().IsAssignableFrom(testObject.GetType()))
-				return false;
-			foreach (var acceptableValue in AcceptedValues)
-			{
-				if (acceptableValue.IsSatisfiedBy(testObject, this))
-					return true;
-			}
-			return false;
 		}
 
 		public static object GetDefault(TypeName tName)

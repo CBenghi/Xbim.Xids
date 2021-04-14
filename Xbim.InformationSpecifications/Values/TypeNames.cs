@@ -71,17 +71,18 @@ namespace Xbim.InformationSpecifications
 				case TypeName.Decimal:
 					return typeof(decimal);
 				case TypeName.Date:
-					return typeof(DateTime);
-				case TypeName.Time:
-					return typeof(TimeSpan);
-				case TypeName.Duration:
-					return typeof(TimeSpan);
 				case TypeName.DateTime:
 					return typeof(DateTime);
+				case TypeName.Time:
+				case TypeName.Duration:
+					return typeof(TimeSpan);
 				case TypeName.Uri:
 					return typeof(Uri);
+				case TypeName.Undefined:
+					return null;
+				default:
+					return null;
 			}
-			return null;
 		}
 
 
@@ -157,60 +158,57 @@ namespace Xbim.InformationSpecifications
 			return value;
 		}
 
+		public void Add(IValueConstraint newConstraint)
+		{
+			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues.Add(newConstraint);
+		}
 
 		public static object GetObject(string value, TypeName t)
 		{
-			if (t == TypeName.String)
-				return value;
-			if (t == TypeName.Integer)
+			switch (t)
 			{
-				if (int.TryParse(value, out var val))
-					return val;
-				return null;
+				case TypeName.Undefined:
+					return value;
+				case TypeName.Boolean:
+					if (bool.TryParse(value, out var boolval))
+						return boolval;
+					return null;
+				case TypeName.String:
+					return value;
+				case TypeName.Integer:
+					if (int.TryParse(value, out var ival))
+						return ival;
+					return null;
+				case TypeName.Floating:
+					if (float.TryParse(value, out var fval))
+						return fval;
+					return null;
+				case TypeName.Double:
+					if (double.TryParse(value, out var dblval))
+						return dblval;
+					return null;
+				case TypeName.Decimal:
+					if (decimal.TryParse(value, out var dval))
+						return dval;
+					return null;
+				case TypeName.Date:
+				case TypeName.DateTime:
+					if (DateTime.TryParse(value, out var dateval))
+						return dateval.Date;
+					return null;
+				case TypeName.Time:
+				case TypeName.Duration:
+					if (TimeSpan.TryParse(value, out var timeval))
+						return timeval;
+					return null;			
+				case TypeName.Uri:
+					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
+						return urival;
+					return null;
+				default:
+					return value;
 			}
-			if (t == TypeName.Decimal)
-			{
-				if (decimal.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Double)
-			{
-				if (double.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Floating)
-			{
-				if (float.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Date)
-			{
-				if (DateTime.TryParse(value, out var val))
-					return val.Date;
-				return null;
-			}
-			if (t == TypeName.Boolean)
-			{
-				if (bool.TryParse(value, out var val))
-					return val;
-				return null;
-			}
-			if (t == TypeName.Time)
-			{
-				if (DateTime.TryParse(value, out var val))
-					return val.TimeOfDay;
-				return null;
-			}
-			if (t == TypeName.Uri)
-			{
-				if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var val))
-					return val;
-				return null;
-			}
-			return value;
 		}
 
 		// documentation taken from:

@@ -13,13 +13,30 @@ namespace Xbim.InformationSpecifications.Tests
 		[TestMethod]
 		public void ExactContraintSatisfactionTest()
 		{
-			var vc = new ValueConstraint(TypeName.String);
-			vc.AddAccepted(new ExactConstraint("2"));
-			
+			var vc = new ValueConstraint(TypeName.String, "2");
 			Assert.IsTrue(vc.IsSatisfiedBy("2"));
 			Assert.IsFalse(vc.IsSatisfiedBy("1"));
 			Assert.IsFalse(vc.IsSatisfiedBy(1));
-			Assert.IsFalse(vc.IsSatisfiedBy(2));
+			Assert.IsFalse(vc.IsSatisfiedBy(2)); // conversion ToString is valid match
+
+			vc = new ValueConstraint(375.230);
+			Assert.IsTrue(vc.IsSatisfiedBy(375.23));
+			Assert.IsTrue(vc.IsSatisfiedBy(375.230000));
+			Assert.IsTrue(vc.IsSatisfiedBy(375.230000));
+
+			vc = new ValueConstraint(375.230m);
+			Assert.IsTrue(vc.IsSatisfiedBy(375.230m));
+			Assert.IsFalse(vc.IsSatisfiedBy(375.23m));
+
+
+			vc = new ValueConstraint("red");
+			Assert.IsTrue(vc.IsSatisfiedBy("red"));
+			Assert.IsFalse(vc.IsSatisfiedBy("blue"));
+
+			vc = new ValueConstraint(TypeName.Floating);
+			Assert.IsTrue(vc.IsSatisfiedBy(2f));
+			Assert.IsFalse(vc.IsSatisfiedBy("blue"));
+			Assert.IsFalse(vc.IsSatisfiedBy(2d));
 		}
 
 		[TestMethod]
@@ -46,23 +63,22 @@ namespace Xbim.InformationSpecifications.Tests
 			};
 			vc.AddAccepted(t);
 
-			Assert.IsFalse(vc.IsSatisfiedBy(1));
-			Assert.IsTrue(vc.IsSatisfiedBy(2));
+			Assert.IsFalse(vc.IsSatisfiedBy(1d));
+			Assert.IsTrue(vc.IsSatisfiedBy(2d));
 			Assert.IsTrue(vc.IsSatisfiedBy(2.01));
 			Assert.IsTrue(vc.IsSatisfiedBy(3.99));
-			Assert.IsTrue(vc.IsSatisfiedBy(4));
+			Assert.IsTrue(vc.IsSatisfiedBy(4d));
 			Assert.IsFalse(vc.IsSatisfiedBy(4.01));
 
 			t.MinInclusive = false;
 			t.MaxInclusive = false;
 
-			Assert.IsFalse(vc.IsSatisfiedBy(1));
-			Assert.IsFalse(vc.IsSatisfiedBy(2));
-			Assert.IsTrue(vc.IsSatisfiedBy(2.01f));
-			Assert.IsTrue(vc.IsSatisfiedBy(3.99f));
-			Assert.IsFalse(vc.IsSatisfiedBy(4m));
-			Assert.IsFalse(vc.IsSatisfiedBy(4.01));
-
+			Assert.IsFalse(vc.IsSatisfiedBy(1d));
+			Assert.IsFalse(vc.IsSatisfiedBy(2d));
+			Assert.IsTrue(vc.IsSatisfiedBy(2.01d));
+			Assert.IsTrue(vc.IsSatisfiedBy(3.99d));
+			Assert.IsFalse(vc.IsSatisfiedBy(4d));
+			Assert.IsFalse(vc.IsSatisfiedBy(4.01d));
 		}
 	}
 }

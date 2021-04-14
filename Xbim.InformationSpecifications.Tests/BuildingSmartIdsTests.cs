@@ -97,13 +97,21 @@ namespace Xbim.InformationSpecifications.Tests
 		}
 
 		[TestMethod]
-		public void WeirdValues()
+		public void SingleUndefinedExactTests()
 		{
 			var stringV = "someValue";
 			var val = ValueConstraint.SingleUndefinedExact(stringV);
 			var itIs = val.IsSingleUndefinedExact(out var retVal);
 			Assert.IsTrue(itIs);
 			Assert.AreEqual(stringV, retVal);
+
+			ValueConstraint t = new ValueConstraint(2d);
+			Assert.IsFalse(t.IsSingleUndefinedExact(out var _));
+
+			t = new ValueConstraint(TypeName.Undefined);
+			t.Add(new RangeConstraint());
+			Assert.IsFalse(t.IsSingleUndefinedExact(out var _));
+
 		}
 		 
 		public string GetFileHash(string filename)

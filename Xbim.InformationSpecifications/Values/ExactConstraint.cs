@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
 		{
-			return Value.Equals(candiatateValue);
+			return Value.Equals(candiatateValue.ToString());
 		}
 
 		public override string ToString()
