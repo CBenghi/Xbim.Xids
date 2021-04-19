@@ -102,5 +102,11 @@ namespace Xbim.InformationSpecifications
 			if (t != null)
 				Source = t;
 		}
+
+		public IEnumerable<FacetGroup> UsedGroups()
+		{
+			if (Source != null)
+				yield return Source;
+		}
 	}
 }

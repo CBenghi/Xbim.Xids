@@ -7,5 +7,7 @@ namespace Xbim.InformationSpecifications
 	interface IRepositoryRef
 	{
 		void SetIds(Xids unpersisted);
+
+		IEnumerable<FacetGroup> UsedGroups();
 	}
 }

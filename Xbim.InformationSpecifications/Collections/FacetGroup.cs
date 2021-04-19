@@ -28,7 +28,10 @@ namespace Xbim.InformationSpecifications
 
 		public int UseCount(Xids t)
 		{
-			return t.AllSpecifications().Count(x => x.Applicability == this || x.Requirement == this);
+			var directSpecificationUse = t.AllSpecifications().Count(x => x.Applicability == this || x.Requirement == this);
+			var relatedUse = t.FacetRepository.Collection.SelectMany(x => x.Facets.OfType<IRepositoryRef>().Where(y => y.UsedGroups().Contains(this))).Count();
+
+			return directSpecificationUse + relatedUse;
 		}
 
 		public bool IsValid()

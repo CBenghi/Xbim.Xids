@@ -73,11 +73,13 @@ namespace Xbim.InformationSpecifications.NewTests
 			var spaces = new FacetGroup(x.FacetRepository);
 			spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IfcSpace" });
 
-			spec.Applicability.Facets.Add(new IfcRelationFacet()
+			var relFacet = new IfcRelationFacet()
 			{
 				Source = spaces,
 				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
-			});
+			};
+
+			spec.Applicability.Facets.Add(relFacet);
 			spec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcFurnishingElement" });
 			spec.Requirement.Facets.Add(new IfcPropertyFacet() { PropertySetName = "pset", PropertyName = "prop" });
 
@@ -92,6 +94,10 @@ namespace Xbim.InformationSpecifications.NewTests
 			var h1 = FileHelper.GetFileHash(fname);
 			var h2 = FileHelper.GetFileHash(fname2);
 			h1.Should().Be(h2);
+
+			relFacet.UsedGroups().Count().Should().Be(1);
+
+			spaces.UseCount(x).Should().Be(1);
 		}
 	}
 }
