@@ -35,8 +35,6 @@ namespace Xbim.InformationSpecifications
 			location = loc.ToString();
 		}
 
-
-
 		/// <summary>
 		/// String value of location, use <see cref="GetLocation()"/> for the enum.
 		/// Setting an invalid string will ignore the change.
@@ -46,7 +44,7 @@ namespace Xbim.InformationSpecifications
 			get => location;
 			set
 			{
-				if (Enum.TryParse<Location>(location, out _))
+				if (Enum.TryParse<Location>(value, out _))
 					location = value;
 			}
 		}

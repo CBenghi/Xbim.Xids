@@ -19,6 +19,11 @@ namespace Xbim.InformationSpecifications
 			Guid = System.Guid.NewGuid().ToString();
 		}
 
+		public string Guid { get; set; }
+		public string Name { get; set; }
+		public string Reference { get; set; }
+		public string Description { get; set; }
+
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
 		public int UseCount(Xids t)
@@ -51,12 +56,6 @@ namespace Xbim.InformationSpecifications
 			return "<undefined>";
 		}
 
-		public string Reference { get; set; }
-
-		public string Guid { get; set; }
-
-		public string Name { get; set; }
-
-		public string Description { get; set; }
+		
 	}
 }

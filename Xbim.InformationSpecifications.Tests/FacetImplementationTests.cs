@@ -46,6 +46,15 @@ namespace Xbim.InformationSpecifications.Tests
 			{
 				Location = "1",
 			});
+
+
+			TestAddRemove(lst, new IfcRelationFacet());
+			TestAddRemove(lst, new IfcRelationFacet()
+			{
+				Source = new FacetGroup(),
+				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
+			});
+
 		}
 
 		[TestMethod]

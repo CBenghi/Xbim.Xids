@@ -54,7 +54,7 @@ namespace Xbim.InformationSpecifications
 
 		internal void SetExpectations(List<IFacet> fs)
 		{
-			var existing = ids.GetFacet(fs);
+			var existing = ids.GetFacetGroup(fs);
 			if (existing != null)
 			{
 				Requirement = existing;
@@ -70,7 +70,7 @@ namespace Xbim.InformationSpecifications
 
 		internal void SetFilters(List<IFacet> fs)
 		{
-			var existing = ids.GetFacet(fs);
+			var existing = ids.GetFacetGroup(fs);
 			if (existing != null)
 			{
 				Applicability = existing;
@@ -87,15 +87,14 @@ namespace Xbim.InformationSpecifications
 		internal void SetIds(Xids unpersisted)
 		{
 			ids = unpersisted;
-			var t = unpersisted.GetFacet(requirementId);
+			var t = unpersisted.GetFacetGroup(requirementId);
 			if (t != null)
 				Requirement = t;
-
 			// collections
-			var m = unpersisted.GetFacet(applicabilityId);
+			var m = unpersisted.GetFacetGroup(applicabilityId);
 			if (m != null)
 				Applicability = m;
-			var f = unpersisted.GetFacet(requirementId);
+			var f = unpersisted.GetFacetGroup(requirementId);
 			if (f != null)
 				Requirement = f;
 

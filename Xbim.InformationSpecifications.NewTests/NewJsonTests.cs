@@ -60,5 +60,38 @@ namespace Xbim.InformationSpecifications.NewTests
 
 			}
 		}
+
+		[Fact]
+		public void CanSerializeExtraFacets()
+		{
+			var x = new Xids();
+			
+			// relation: furniture contained in spaces
+			//
+			var spec = x.NewSpecification();
+
+			var spaces = new FacetGroup(x.FacetRepository);
+			spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IfcSpace" });
+
+			spec.Applicability.Facets.Add(new IfcRelationFacet()
+			{
+				Source = spaces,
+				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
+			});
+			spec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcFurnishingElement" });
+			spec.Requirement.Facets.Add(new IfcPropertyFacet() { PropertySetName = "pset", PropertyName = "prop" });
+
+			var fname = "CanSerializeExtraFacets.json";
+			var fname2 = "CanSerializeExtraFacets2.json";
+			x.SaveAsJson(fname);
+			var reloaded = Xids.LoadFromJson(fname);
+			reloaded.AllSpecifications().Count().Should().Be(x.AllSpecifications().Count());
+
+			reloaded.SaveAsJson(fname2);
+
+			var h1 = FileHelper.GetFileHash(fname);
+			var h2 = FileHelper.GetFileHash(fname2);
+			h1.Should().Be(h2);
+		}
 	}
 }

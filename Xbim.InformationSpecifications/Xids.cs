@@ -63,15 +63,14 @@ namespace Xbim.InformationSpecifications
 
 		public FacetGroupRepository FacetRepository { get; set; }
 
-
 		public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
 
-		internal FacetGroup GetFacet(string guid)
+		internal FacetGroup GetFacetGroup(string guid)
 		{
 			return FacetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
 		}
 
-		internal FacetGroup GetFacet(List<IFacet> fs)
+		internal FacetGroup GetFacetGroup(List<IFacet> fs)
 		{
 			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
 		}	

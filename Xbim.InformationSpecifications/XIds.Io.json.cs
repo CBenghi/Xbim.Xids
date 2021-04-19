@@ -43,6 +43,8 @@ namespace Xbim.InformationSpecifications
 				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
 				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
 				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
+				(nameof(DocumentReferenceFacet), typeof(DocumentReferenceFacet)),
+				(nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
 				(nameof(MaterialFacet), typeof(MaterialFacet))
 			);
 			var constraintConverter = new HeterogenousListConverter<IValueConstraint, List<IValueConstraint>>(
@@ -74,9 +76,19 @@ namespace Xbim.InformationSpecifications
 		{
 			if (unpersisted == null)
 				return null;
-			foreach (var req in unpersisted.AllSpecifications())
+			foreach (var spec in unpersisted.AllSpecifications())
 			{
-				req.SetIds(unpersisted);
+				spec.SetIds(unpersisted);
+			}
+			foreach (var facetGroup in unpersisted.FacetRepository.Collection)
+			{
+				foreach (var facet in facetGroup.Facets)
+				{
+					if (facet is IRepositoryRef repref)
+					{
+						repref.SetIds(unpersisted);
+					}
+				}
 			}
 			return unpersisted;
 		}
