@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Xbim.InformationSpecifications
@@ -63,6 +64,21 @@ namespace Xbim.InformationSpecifications
 					: mx.CompareTo(compe) > 0;
 			}
 			return minOk && maxOk;
+		}
+
+		public string Short()
+		{
+			List<string> ret = new List<string>();
+			if (!string.IsNullOrEmpty(MinValue))
+				ret.Add(MinInclusive
+					? $"is equal or more than '{MinValue}'"
+					: $"is greater than '{MinValue}'");
+			if (!string.IsNullOrEmpty(MaxValue))
+				ret.Add(MaxInclusive
+						? $"is equal or less than '{MaxValue}'"
+						: $"is less than '{MaxValue}'");
+
+			return string.Join(" and ", ret.ToArray());
 		}
 	}
 }

@@ -42,5 +42,10 @@ namespace Xbim.InformationSpecifications
 			// using tuple's trick to evaluate equality
 			return (Value, true).Equals((other.Value, true));
 		}
+
+		public string Short()
+		{
+			return Value;
+		}
 	}
 }

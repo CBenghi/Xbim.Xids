@@ -55,7 +55,7 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"{Uri?.ToString() ?? ""}-{Location}-{Use}-{Instructions}";
+			return $"{Uri}-{Location}-{Use}-{Instructions}";
 		}
 
 		public bool Equals(FacetBase other)

@@ -22,6 +22,7 @@ namespace Xbim.InformationSpecifications
 		Uri,
 	}
 
+
 	public partial class ValueConstraint
 	{
 		public static string GetXsdTypeString(TypeName baseType)
@@ -110,7 +111,7 @@ namespace Xbim.InformationSpecifications
 			else if (tval == "xs:time")
 				return TypeName.Time;
 			else if (tval == "xs:anyURI")
-				return  TypeName.Uri;
+				return TypeName.Uri;
 			return TypeName.Undefined;
 		}
 
@@ -158,11 +159,7 @@ namespace Xbim.InformationSpecifications
 			return value;
 		}
 
-		public void Add(IValueConstraint newConstraint)
-		{
-			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
-			AcceptedValues.Add(newConstraint);
-		}
+
 
 		public static object GetObject(string value, TypeName t)
 		{
@@ -201,7 +198,7 @@ namespace Xbim.InformationSpecifications
 				case TypeName.Duration:
 					if (TimeSpan.TryParse(value, out var timeval))
 						return timeval;
-					return null;			
+					return null;
 				case TypeName.Uri:
 					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
 						return urival;
@@ -235,10 +232,6 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public void AddAccepted(IValueConstraint constraint)
-		{
-			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
-			AcceptedValues.Add(constraint);
-		}
+
 	}
 }

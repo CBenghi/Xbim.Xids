@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -9,6 +11,24 @@ namespace Xbim.InformationSpecifications
         public string PredefinedType { get; set; } 
 
         public bool IncludeSubtypes { get; set; } = true;
+
+        public string Short()
+        {
+            List<string> desc = new List<string>();
+            if (!string.IsNullOrEmpty(IfcType))
+            {
+                var tmpT = $"is of type {IfcType}";
+                if (IncludeSubtypes)
+                    tmpT += " or one of its subtypes";
+                desc.Add(tmpT);
+            }
+            if (!string.IsNullOrEmpty(PredefinedType))
+            {
+                desc.Add($"has a predefined type value of '{PredefinedType}'");
+            }
+            var tmp = string.Join(" and ", desc.ToArray()) + ".";
+            return tmp.FirstCharToUpper();
+        }
 
         public override bool Equals(object obj)
         {
@@ -30,10 +50,7 @@ namespace Xbim.InformationSpecifications
                 .Equals((other.IfcType, other.PredefinedType, other.IncludeSubtypes));
         }
 
-		public string Short()
-        {
-            return ToString();
-        }
+		
 
         /// <summary>
         /// Valid if at least one of IfcType or PredefinedType are not NullOrWhiteSpace

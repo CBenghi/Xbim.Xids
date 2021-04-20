@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications
 {
@@ -195,6 +196,21 @@ namespace Xbim.InformationSpecifications
 			}
 			return true;
 		}
-		
+
+		public string Short()
+		{
+			List<string> ret = new List<string>();
+			if (TotalDigits.HasValue)
+				ret.Add($"has {TotalDigits.Value} digits in total");
+			if (FractionDigits.HasValue)
+				ret.Add($"has {FractionDigits.Value} decimal digits");
+			if (Length.HasValue)
+				ret.Add($"is {Length.Value} characters long");
+			if (MinLength.HasValue)
+				ret.Add($"is minimum of {MinLength.Value} characters long");
+			if (MaxLength.HasValue)
+				ret.Add($"is maximum of {MaxLength.Value} characters long");
+			return string.Join(" and ", ret.ToArray());
+		}
 	}
 }

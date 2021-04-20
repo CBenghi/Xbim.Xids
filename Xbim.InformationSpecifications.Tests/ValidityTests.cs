@@ -39,7 +39,7 @@ namespace Xbim.InformationSpecifications.Tests
 			var mat = new MaterialFacet();
 			Assert.IsTrue(mat.IsValid());
 
-			var doc = new DocumentReferenceFacet();
+			var doc = new DocumentFacet();
 			Assert.IsFalse(doc.IsValid());
 			doc.DocumentName = "ValidName";
 			g.Facets.Add(doc);

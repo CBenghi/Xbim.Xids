@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -18,6 +21,26 @@ namespace Xbim.InformationSpecifications
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/>.
 		/// </summary>
 		public ValueConstraint Identification { get; set; }
+
+		public string Short()
+		{
+			if (ClassificationSystem == null
+				&& Identification == null
+				&& string.IsNullOrEmpty(ClassificationSystemHref))
+				return "Any valid classification";
+			List<string> desc = new List<string>();
+
+			if (ClassificationSystem != null)
+			{
+				desc.Add($"classification system {ClassificationSystem.Short()}");
+			}
+			if (Identification != null)
+			{
+				desc.Add($"identification {Identification.Short()}");
+			}		
+			var tmp = string.Join(" and ", desc.ToArray()) + ".";
+			return tmp.FirstCharToUpper();
+		}
 
 		/// <summary>
 		/// Includes hierarchical values below the <see cref="Identification"/> element.
@@ -40,7 +63,7 @@ namespace Xbim.InformationSpecifications
 				Identification, other.Identification)
 				)
 				return false;
-			return ((FacetBase)this).Equals((FacetBase)other);
+			return base.Equals(other);
 		}
 
 		public override bool Equals(object obj)
@@ -58,10 +81,7 @@ namespace Xbim.InformationSpecifications
 			return ToString().GetHashCode();
 		}
 
-		public string Short()
-		{
-			return ToString();
-		}
+		
 
 		public bool IsValid()
 		{

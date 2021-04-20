@@ -43,7 +43,7 @@ namespace Xbim.InformationSpecifications
 				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
 				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
 				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
-				(nameof(DocumentReferenceFacet), typeof(DocumentReferenceFacet)),
+				(nameof(DocumentFacet), typeof(DocumentFacet)),
 				(nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
 				(nameof(MaterialFacet), typeof(MaterialFacet))
 			);

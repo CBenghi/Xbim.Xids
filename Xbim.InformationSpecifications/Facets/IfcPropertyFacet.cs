@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Xbim.InformationSpecifications
 {
@@ -7,12 +8,21 @@ namespace Xbim.InformationSpecifications
     {
         public string PropertySetName { get; set; }
 		public string PropertyName { get; set; }
-		
-        public ValueConstraint PropertyValue { get; set; } 
+		public ValueConstraint PropertyValue { get; set; } 
 
         public string Short()
         {
-            return ToString();
+            StringBuilder sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(PropertyName))
+                sb.Append($"Has property '{PropertyName}'");
+            else
+                sb.Append($"Has any property");
+            if (!string.IsNullOrEmpty(PropertySetName))
+                sb.Append($" in property set '{PropertySetName}'");
+            if (PropertyValue != null)
+                sb.Append($" {PropertyValue.Short()}");
+            sb.Append(".");
+            return sb.ToString();
         }
 
         public override bool Equals(object obj)
@@ -41,7 +51,7 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
-            return ((FacetBase)this).Equals((FacetBase)other);
+            return base.Equals(other);
         }
 
 		public bool IsValid()

@@ -70,5 +70,10 @@ namespace Xbim.InformationSpecifications
 		{
 			return $"Pattern:{Pattern}";
 		}
+
+		public string Short()
+		{
+			return $"matches the regular pattern: '{Pattern}'";
+		}
 	}
 }

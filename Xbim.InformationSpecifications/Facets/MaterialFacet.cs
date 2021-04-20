@@ -7,7 +7,11 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			return ToString();
+			if (Value == null)
+			{
+				return "Specifies any valid material.";
+			}
+			return $"Has a material's name {Value.Short()}";
 		}
 
 		public override string ToString()
@@ -21,7 +25,7 @@ namespace Xbim.InformationSpecifications
 				return false;
 			if (!IFacetExtensions.NullEquals(Value, other.Value))
 				return false;
-			return ((FacetBase)this).Equals((FacetBase)other);
+			return base.Equals(other);
 		}
 		public override bool Equals(object obj)
 		{

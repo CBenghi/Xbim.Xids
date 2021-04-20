@@ -8,6 +8,18 @@ namespace Xbim.InformationSpecifications
 	{
 		public ValueConstraint() {}
 
+		public void Add(IValueConstraint newConstraint)
+		{
+			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues.Add(newConstraint);
+		}
+
+		public void AddAccepted(IValueConstraint constraint)
+		{
+			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues.Add(constraint);
+		}
+
 		public List<IValueConstraint> AcceptedValues { get; set; }
 
 		public bool IsSatisfiedBy(object candiatateValue)
@@ -171,6 +183,26 @@ namespace Xbim.InformationSpecifications
 			var joined = string.Join(",", AcceptedValues.Select(x => x.ToString()).ToArray());
 			return $"{BaseType}:{joined}";
 		}
+
+		public string Short()
+		{
+			if (this.IsSingleUndefinedExact(out var exact))
+			{
+				return $"of value '{exact}'";
+			}
+			List<string> ret= new List<string>();
+			if (BaseType != TypeName.Undefined)
+				ret.Add($"of type {BaseType.ToString().ToLowerInvariant()}");
+			else
+				ret.Add($"of any type");
+			if (AcceptedValues != null && AcceptedValues.Any())
+			{
+				ret.Add($"valid if value {string.Join (" or ", AcceptedValues.Select(x=>x.Short()).ToArray())}");
+			}
+			return string.Join(", ", ret);
+		}
+
+
 
 		public bool IsSingleUndefinedExact(out string exact)
 		{
