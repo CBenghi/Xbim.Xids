@@ -80,5 +80,20 @@ namespace Xbim.InformationSpecifications.Tests
 			Assert.IsFalse(vc.IsSatisfiedBy(4d));
 			Assert.IsFalse(vc.IsSatisfiedBy(4.01d));
 		}
+
+		[TestMethod]
+		public void EnumConstraintSatisfactionTest()
+		{
+			var vc = new ValueConstraint(TypeName.Integer);
+			vc.AddAccepted(new ExactConstraint(30.ToString()));
+			vc.AddAccepted(new ExactConstraint(60.ToString()));
+			vc.AddAccepted(new ExactConstraint(90.ToString()));
+
+			Assert.IsFalse(vc.IsSatisfiedBy(1d));
+			Assert.IsTrue(vc.IsSatisfiedBy(30L));
+			Assert.IsTrue(vc.IsSatisfiedBy(60));
+			Assert.IsTrue(vc.IsSatisfiedBy(60L));
+			
+		}
 	}
 }

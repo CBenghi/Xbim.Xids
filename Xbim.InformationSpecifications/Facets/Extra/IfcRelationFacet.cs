@@ -96,6 +96,7 @@ namespace Xbim.InformationSpecifications
 			return ToString();
 		}
 
+		// IRepositoryRef
 		public void SetIds(Xids unpersisted)
 		{
 			var t = unpersisted.GetFacetGroup(sourceId);
@@ -103,6 +104,7 @@ namespace Xbim.InformationSpecifications
 				Source = t;
 		}
 
+		// IRepositoryRef
 		public IEnumerable<FacetGroup> UsedGroups()
 		{
 			if (Source != null)

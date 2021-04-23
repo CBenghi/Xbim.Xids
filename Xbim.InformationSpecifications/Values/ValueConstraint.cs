@@ -114,7 +114,7 @@ namespace Xbim.InformationSpecifications
 				case TypeName.Double:
 					return typeof(double);
 				case TypeName.Integer:
-					return typeof(int);
+					return typeof(long);
 				case TypeName.Decimal:
 					return typeof(decimal);
 				case TypeName.Date:
