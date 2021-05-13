@@ -5,8 +5,22 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications
 {
+	
+
 	public partial class Xids
     {
+		public static bool HasData(Xids xidsToTest)
+		{
+			if (xidsToTest == null)
+				return false;
+			if (xidsToTest.AllSpecifications().Any())
+				return true;
+			if (xidsToTest.FacetRepository.Collection.Any())
+				return true;
+			return false;
+		}
+
+
 		/// <summary>
 		/// prepares a new specification taking care of target specification group if not provided.
 		/// </summary>
