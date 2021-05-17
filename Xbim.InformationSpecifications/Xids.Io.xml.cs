@@ -294,7 +294,7 @@ namespace Xbim.InformationSpecifications
 
         private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec)
         {
-            var req = new Specification(ids);
+            var req = new Specification(ids, destGroup);
             destGroup.Specifications.Add(req);
             var nm = spec.Attribute("name");
             if (nm != null)

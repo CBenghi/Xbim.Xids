@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsSatisfiedBy(object candiatateValue)
 		{
-			if (BaseType != TypeName.Undefined && !ResolvedType(BaseType).IsAssignableFrom(candiatateValue.GetType()))
+			if (BaseType != TypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
 				return false;
 			if (AcceptedValues == null || !AcceptedValues.Any())
 				return true;
@@ -35,6 +35,22 @@ namespace Xbim.InformationSpecifications
 					return true;
 			}
 			return false;
+		}
+
+		private bool IsCompatible(Type destType, Type passedType)
+		{
+			if (
+				destType == typeof(Int64) 
+				)
+			{
+				if (typeof(double) == passedType)
+					return false;
+				if (typeof(int) == passedType)
+					return true;
+				if (typeof(long) == passedType)
+					return true;
+			}
+			return destType.IsAssignableFrom(passedType);
 		}
 
 		public ValueConstraint(string value)

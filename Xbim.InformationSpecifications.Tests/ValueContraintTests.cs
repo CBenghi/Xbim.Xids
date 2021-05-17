@@ -89,10 +89,10 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.AddAccepted(new ExactConstraint(60.ToString()));
 			vc.AddAccepted(new ExactConstraint(90.ToString()));
 
-			Assert.IsFalse(vc.IsSatisfiedBy(1d));
-			Assert.IsTrue(vc.IsSatisfiedBy(30L));
-			Assert.IsTrue(vc.IsSatisfiedBy(60));
-			Assert.IsTrue(vc.IsSatisfiedBy(60L));
+			Assert.IsFalse(vc.IsSatisfiedBy(1d), "1d failure");
+			Assert.IsTrue(vc.IsSatisfiedBy(30L), "30L failure");
+			Assert.IsTrue(vc.IsSatisfiedBy(60), "60 failure");
+			Assert.IsTrue(vc.IsSatisfiedBy(60L), "60L failure");
 			
 		}
 	}

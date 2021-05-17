@@ -51,7 +51,9 @@ namespace Xbim.InformationSpecifications.Tests
 			TestAddRemove(lst, new IfcRelationFacet());
 			TestAddRemove(lst, new IfcRelationFacet()
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				Source = new FacetGroup(),
+#pragma warning restore CS0618 // Type or member is obsolete
 				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
 			});
 

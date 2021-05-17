@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
 {
@@ -28,7 +29,7 @@ namespace Xbim.InformationSpecifications
 		/// <returns></returns>
 		public Specification NewSpecification(SpecificationsGroup containingCollection = null)
 		{
-			var t = new Specification(this)
+			var t = new Specification(this, containingCollection)
 			{
 				Applicability = new FacetGroup(FacetRepository),
 				Requirement = new FacetGroup(FacetRepository)
@@ -56,12 +57,6 @@ namespace Xbim.InformationSpecifications
 			FacetRepository = new FacetGroupRepository(this);
 		}
 
-		[Obsolete("Use AllSpecifications(), instead.")]
-		public IEnumerable<Specification> AllRequirements()
-		{
-			return AllSpecifications();
-		}
-
 		public IEnumerable<Specification> AllSpecifications()
 		{
 			foreach (var rg in SpecificationsGroups)
@@ -70,6 +65,15 @@ namespace Xbim.InformationSpecifications
 				{
 					yield return req;
 				}
+			}
+		}
+
+		public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
+		{
+			foreach (var fg in FacetRepository.Collection)
+			{
+				if (fg.IsUsed(this, use))
+					yield return fg;
 			}
 		}
 
@@ -87,6 +91,9 @@ namespace Xbim.InformationSpecifications
 		internal FacetGroup GetFacetGroup(List<IFacet> fs)
 		{
 			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
-		}	
+		}
+
+
+
 	}
 }

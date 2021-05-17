@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
-	public partial class Specification
-    {
+	public partial class Specification : ISpecificationMetadata
+	{
 		private Xids ids;
 
 		[Obsolete("Only for persistence, use the Xids.NewSpecification() method, instead.")]
@@ -13,17 +14,60 @@ namespace Xbim.InformationSpecifications
 		{
 		}
 
-		public Specification(Xids ids)
+		[JsonIgnore]
+		SpecificationsGroup Parent { get; set; }
+
+		public Specification(Xids ids, SpecificationsGroup parent)
 		{
 			this.ids = ids;
+			Parent = parent;
 			Guid = System.Guid.NewGuid().ToString();
 		}
 
+		/// <summary>
+		/// Used to set the provider directly on this instance, otherwise inherited.
+		/// Use <see cref="GetProvider"/>.
+		/// </summary>
+		public string Provider { get; set; }
+
+		public string GetProvider()
+		{
+			if (!string.IsNullOrWhiteSpace(Provider))
+				return Provider;
+			if (Parent != null)
+				return Parent.Provider;
+			return Provider;
+		}
+
+		/// <summary>
+		/// Used to set the consumers directly on this instance, otherwise inherited.
+		/// Use <see cref="GetConsumers"/>.
+		/// </summary>
+		public List<string> Consumers { get; set; }
+
+		public IEnumerable<string> GetConsumers()
+		{
+			if (Consumers != null && Consumers.Any())
+				return Consumers;
+			if (Parent?.Consumers != null)
+				return Parent.Consumers;
+			return Enumerable.Empty<string>();
+		}
+
+		/// <summary>
+		/// Used to set the consumers directly on this instance, otherwise inherited.
+		/// Use <see cref="GetStages"/>.
+		/// </summary>
 		public List<string> Stages { get; set; }
 
-		public Stakeholder Provider { get; set; }
-
-		public List<Stakeholder> Consumer { get; set; }
+		public IEnumerable<string> GetStages()
+		{
+			if (Stages != null && Stages.Any())
+				return Stages;
+			if (Parent?.Stages != null)
+				return Parent.Stages;
+			return Enumerable.Empty<string>();
+		}
 
 		public string Name { get; set; }
 
@@ -82,6 +126,13 @@ namespace Xbim.InformationSpecifications
 			{
 				Applicability.Facets.Add(item);
 			}
+		}
+
+		public string Short()
+		{
+			if (!string.IsNullOrWhiteSpace(Name))
+				return Name;
+			return "<Unnamed>";
 		}
 
 		internal void SetIds(Xids unpersisted)

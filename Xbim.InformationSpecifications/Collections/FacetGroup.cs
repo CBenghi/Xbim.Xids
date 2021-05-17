@@ -13,6 +13,10 @@ namespace Xbim.InformationSpecifications
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance and adds it to the owning repository.
+		/// </summary>
+		/// <param name="repository">The owning repository, already associated, no need to add.</param>
 		public FacetGroup(FacetGroupRepository repository)
 		{
 			repository.Add(this);
@@ -26,11 +30,66 @@ namespace Xbim.InformationSpecifications
 
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
+		[Flags]
+		public enum FacetUse
+		{
+			None = 0,
+			Applicability = 1,
+			Requirement = 2,
+			RelationSource = 4,
+			All = ~None
+		}
+
+		public bool IsUsed(SpecificationsGroup container, FacetUse mode)
+		{
+			if (mode.HasFlag(FacetUse.Applicability))
+			{
+				if (container.Specifications.Any(x => x.Applicability == this))
+					return true;
+			}
+			if (mode.HasFlag(FacetUse.Requirement))
+			{
+				if (container.Specifications.Any(x => x.Requirement == this))
+					return true;
+			}
+			if (mode.HasFlag(FacetUse.RelationSource))
+			{
+				// not tested
+				if (container.UsedFacetGroups().OfType<IRepositoryRef>().Any(
+					x => x.UsedGroups().Contains(this)
+					))
+					return true;
+			}
+			return false;
+		}
+
+		public bool IsUsed(Xids t, FacetUse mode)
+		{
+			if (mode.HasFlag(FacetUse.Applicability))
+			{
+				if (t.AllSpecifications().Any(x => x.Applicability == this))
+					return true;
+			}
+			if (mode.HasFlag(FacetUse.Requirement))
+			{
+				if (t.AllSpecifications().Any(x => x.Requirement == this))
+					return true;
+			}
+			if (mode.HasFlag(FacetUse.RelationSource))
+			{
+				// not tested
+				if (t.FacetRepository.Collection.OfType<IRepositoryRef>().Any(
+					x => x.UsedGroups().Contains(this)
+					))
+					return true;
+			}
+			return false;
+		}
+
 		public int UseCount(Xids t)
 		{
 			var directSpecificationUse = t.AllSpecifications().Count(x => x.Applicability == this || x.Requirement == this);
 			var relatedUse = t.FacetRepository.Collection.SelectMany(x => x.Facets.OfType<IRepositoryRef>().Where(y => y.UsedGroups().Contains(this))).Count();
-
 			return directSpecificationUse + relatedUse;
 		}
 
