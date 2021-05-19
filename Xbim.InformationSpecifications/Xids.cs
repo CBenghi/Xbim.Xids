@@ -18,25 +18,42 @@ namespace Xbim.InformationSpecifications
 				return true;
 			if (xidsToTest.FacetRepository.Collection.Any())
 				return true;
+			if (xidsToTest.SpecificationsGroups.Any())
+				return true;
 			return false;
 		}
 
-
-		/// <summary>
-		/// prepares a new specification taking care of target specification group if not provided.
-		/// </summary>
-		/// <param name="containingCollection"></param>
-		/// <returns></returns>
+		[Obsolete("Use PrepareSpecification() instead")]
 		public Specification NewSpecification(SpecificationsGroup containingCollection = null)
 		{
+			return PrepareSpecification(containingCollection);
+		}
+
+		/// <summary>
+		/// Prepares a new specification taking care of target specification group if not provided.
+		/// WARNING: this creates two new facetgroups if not provided.
+		/// </summary>
+		/// <param name="containingCollection">the desired parent collection</param>
+		/// <returns>The initialised specification</returns>
+		public Specification PrepareSpecification(
+			SpecificationsGroup containingCollection = null,
+			FacetGroup applicability = null,
+			FacetGroup requirement = null
+			)
+		{
+			if (applicability == null)
+				applicability = new FacetGroup(FacetRepository);
+			if (requirement == null)
+				requirement = new FacetGroup(FacetRepository);
+
 			var t = new Specification(this, containingCollection)
 			{
-				Applicability = new FacetGroup(FacetRepository),
-				Requirement = new FacetGroup(FacetRepository)
+				Applicability = applicability,
+				Requirement = requirement
 			};
 			if (containingCollection == null)
 			{
-				containingCollection = this.SpecificationsGroups.FirstOrDefault();
+				containingCollection = SpecificationsGroups.FirstOrDefault();
 			}
 			if (containingCollection == null)
 			{
@@ -74,6 +91,15 @@ namespace Xbim.InformationSpecifications
 			{
 				if (fg.IsUsed(this, use))
 					yield return fg;
+			}
+		}
+
+		public void Purge()
+		{
+			var unusedFG = FacetRepository.Collection.Except(FacetGroups(FacetUse.All)).ToList();
+			foreach (var unused in unusedFG)
+			{
+				FacetRepository.Collection.Remove(unused);
 			}
 		}
 
