@@ -13,97 +13,34 @@ namespace Xbim.InformationSpecifications.Helpers
 		Enumeration
 	}
 
-	public partial class SchemaInfo: IEnumerable<ClassInfo>
-	{
-		Dictionary<string, ClassInfo> Classes;
-		bool linked = false;
-
-		public ClassInfo this[string className]
-		{
-			get
-			{
-				if (Classes.TryGetValue(className, out var cl))
-				{
-					return cl;
-				}
-				return Classes.Values.FirstOrDefault(x => x.Name.Equals(className, StringComparison.InvariantCultureIgnoreCase));
-			}
-		}
-
-		public void Add(ClassInfo classToAdd)
-		{
-			linked = false;
-			if (Classes == null)
-				Classes = new Dictionary<string, ClassInfo>();
-			Classes.Add(classToAdd.Name, classToAdd);
-		}
-
-		private void LinkTree()
-		{
-			foreach (var currClass in Classes.Values)
-			{
-				var parent = currClass.ParentName;
-				if (!string.IsNullOrWhiteSpace(parent) && Classes.TryGetValue(parent, out var gotten))
-				{
-					if (!gotten.SubClasses.Any(x => x.Name == currClass.Name))
-					{
-						gotten.SubClasses.Add(currClass);
-					}
-					currClass.Parent = gotten;
-				}
-			}		
-			linked = true;
-		}
-
-		public static SchemaInfo schemaIFC4;
-		public static SchemaInfo SchemaIfc4
-		{
-			get
-			{
-				if (schemaIFC4 == null)
-					GetClassesIFC4();
-				return schemaIFC4;
-			}
-		}
-
-		public static SchemaInfo schemaIFC2x3;
-		public static SchemaInfo SchemaIfc2x3
-		{
-			get
-			{
-				if (schemaIFC2x3 == null)
-					GetClassesIFC2x3();
-				return schemaIFC2x3;
-			}
-		}
-
-		static partial void GetClassesIFC2x3();
-		static partial void GetClassesIFC4();
-
-		public IEnumerator<ClassInfo> GetEnumerator()
-		{
-			if (!linked)
-				LinkTree();
-			return Classes.Values.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			if (!linked)
-				LinkTree();
-			return Classes.Values.GetEnumerator();
-		}
-	}
-
+	/// <summary>
+	/// Contains information on relevant standard properties of IFC classes
+	/// </summary>
 	public partial class ClassInfo
 	{	
+		/// <summary>
+		/// Name string
+		/// </summary>
 		public string Name { get; private set; }
+		/// <summary>
+		/// Parent name as string
+		/// </summary>
 		public string ParentName { get; private set; }
 		public ClassType Type { get; private set; }
+		/// <summary>
+		/// Resolved parent Classinfo
+		/// </summary>
 		public ClassInfo Parent { get; internal set; }
 
+		/// <summary>
+		/// List of predefined type strings from the schema
+		/// </summary>
 		public IEnumerable<string> PredefinedTypeValues { get; private set; }
 
+		/// <summary>
+		/// Similar to the c# Is clause
+		/// </summary>
+		/// <param name="className">the class we are comparing against</param>
 		public bool Is(string className)
 		{
 			if (Name.Equals(className, StringComparison.InvariantCultureIgnoreCase))
@@ -113,7 +50,15 @@ namespace Xbim.InformationSpecifications.Helpers
 			return false;
 		}
 
+		/// <summary>
+		/// List of all subclasses.
+		/// </summary>
 		public List<ClassInfo> SubClasses = new List<ClassInfo>();
+		
+		
+		/// <summary>
+		/// All matching concrete classes, including self and entire subclass tree
+		/// </summary>
 		public IEnumerable<ClassInfo> MatchingConcreteClasses
 		{
 			get

@@ -20,7 +20,7 @@ namespace Xbim.InformationSpecifications
 
 		public override int GetHashCode()
 		{
-			return Pattern.GetHashCode();
+			return (Pattern, true).GetHashCode();
 		}
 
 		public override bool Equals(object obj)

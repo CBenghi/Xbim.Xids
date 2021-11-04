@@ -45,5 +45,30 @@ namespace Xbim.InformationSpecifications.Tests
 			Assert.IsTrue(Helpers.SchemaInfo.SchemaIfc2x3.Any());
 			Assert.AreNotEqual(2, Helpers.SchemaInfo.SchemaIfc2x3.Count());
 		}
+
+		
+		[TestMethod]
+		public void HasAttributesV2x3()
+		{
+			var attribs = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeClasses("NotExisting");
+			Assert.IsNull(attribs);
+			attribs = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeClasses("ID");
+			Assert.AreEqual(2, attribs.Length);
+
+			var attribNames = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeNames();
+			Assert.AreEqual(12, attribNames.Count());
+		}
+
+		[TestMethod]
+		public void HasAttributesV4()
+		{
+			var attribs = Helpers.SchemaInfo.SchemaIfc4.GetAttributeClasses("NotExisting");
+			Assert.IsNull(attribs);
+			attribs = Helpers.SchemaInfo.SchemaIfc4.GetAttributeClasses("UserDefinedOperationType");
+			Assert.AreEqual(2, attribs.Length);
+
+			var attribNames = Helpers.SchemaInfo.SchemaIfc4.GetAttributeNames();
+			Assert.AreEqual(12, attribNames.Count());
+		}
 	}
 }

@@ -2,16 +2,17 @@ using System;
 
 namespace Xbim.InformationSpecifications
 {
-
-	// IfcRelAssociatesDocument referenes the IfcDocumentSelect, which can be:
+	// IfcRelAssociatesDocument references the IfcDocumentSelect, which can be:
 	// -> IfcDocumentInformation
-	//     IFC2X3 IFC4
-	//     DocumentId -> Identification ** Change
-	//     Name 
+	// 	
+	//     IFC2X3             | IFC4                                              | Notes
+	//     ------------------ | ------------------------------------------------  | ----------
+	//     DocumentId         | Identification ** Change (type: IfcIdentifier)    | Required
+	//     Name               | (type: IfcLabel)                                  | Required
 	//     Description 
-	//     DocumentReferences -> Location ** Change
-	//     Purpose 
-	//     IntendedUse 
+	//     DocumentReferences | Location  (Change) (type: IfcURIReference)
+	//     Purpose            | (type: IfcText)
+	//     IntendedUse        | (type: IfcText)
 	//     Scope 
 	//     Revision 
 	//     DocumentOwner 
@@ -21,33 +22,35 @@ namespace Xbim.InformationSpecifications
 	//     ElectronicFormat 
 	//     ValidFrom 
 	//     ValidUntil 
-	//     Confidentiality 
-	//     Status 
+	//     Confidentiality    | 
+	//     Status             | DRAFT, FINALDRAFT, FINAL, REVISION, NOTDEFINED
 
 	// 
 	// -> IfcDocumentReference
-	//     IFC2X3 IFC4
+	//     IFC2X3         | IFC4
+	//     -------------- | ------------------
 	//	   Location			MODIFIED	** Change
-	//	   ItemReference -> Identification		** Change
-	//	   () -> Description ADDED	
+	//	   ItemReference  | Identification		
+	//	                  | Description ADDED	
 	//	   () -> ReferencedDocument ADDED	
 
 
 	public partial class DocumentFacet : FacetBase, IFacet, IEquatable<DocumentFacet>
 	{
-		public string DocumentName { get; set; } = "";
+		public ValueConstraint DocId { get; set; } // Ide
+		public ValueConstraint DocName { get; set; }
+		public ValueConstraint DocLocation { get; set; }
+		public ValueConstraint DocPurpose { get; set; }
+		public ValueConstraint DocIntendedUse { get; set; }
 
-		public string DocumentStatus { get; set; } = "";
-
-		public string RequiredAttributes { get; set; } = "";
 
 		public bool Equals(DocumentFacet other)
 		{
 			if (other == null)
 				return false;
-			var thisEquaal = (DocumentName, DocumentStatus, RequiredAttributes)
-				.Equals((other.DocumentName, other.DocumentStatus, other.RequiredAttributes));
-			if (!thisEquaal)
+			var thisEqual = (DocId, DocName, DocLocation, DocPurpose, DocIntendedUse)
+				.Equals((other.DocId, other.DocName, other.DocLocation, other.DocPurpose, other.DocIntendedUse));
+			if (!thisEqual)
 				return false;
 			return base.Equals(other);
 		}
@@ -58,10 +61,10 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"{DocumentName}-{DocumentStatus}-{RequiredAttributes}-{base.ToString()}";
+			return $"{DocId}-{DocName}-{DocLocation}-{DocPurpose}-{DocIntendedUse}-{base.ToString()}";
 		}
 
-		public override int GetHashCode() => (DocumentName, DocumentStatus, RequiredAttributes).GetHashCode();
+		public override int GetHashCode() => (DocId, DocName, DocLocation, DocPurpose, DocIntendedUse).GetHashCode();
 
 		public string Short()
 		{
@@ -70,7 +73,12 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsValid()
 		{
-			return !string.IsNullOrWhiteSpace(DocumentName);
+			// at least one field is not empty
+			return ValueConstraint.IsNotEmpty(DocId) ||
+				ValueConstraint.IsNotEmpty(DocName) ||
+				ValueConstraint.IsNotEmpty(DocLocation) ||
+				ValueConstraint.IsNotEmpty(DocPurpose) ||
+				ValueConstraint.IsNotEmpty(DocIntendedUse);
 		}
 	}
 }

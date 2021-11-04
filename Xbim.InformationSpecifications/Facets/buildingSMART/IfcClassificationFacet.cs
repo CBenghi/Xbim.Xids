@@ -81,8 +81,6 @@ namespace Xbim.InformationSpecifications
 			return ToString().GetHashCode();
 		}
 
-		
-
 		public bool IsValid()
 		{
 			// if we assume that all empty means that it's enough to have any classification

@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 			var doc = new DocumentFacet();
 			Assert.IsFalse(doc.IsValid());
-			doc.DocumentName = "ValidName";
+			doc.DocName = "ValidName"; // there is an implicit string to ValueConstraint conversion.
 			g.Facets.Add(doc);
 			Assert.IsTrue(doc.IsValid());
 		}

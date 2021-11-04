@@ -44,6 +44,8 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
 		{
+			if (context == null)
+				return false;
 			var compe = candiatateValue as IComparable;
 			if (compe == null)
 				return false;

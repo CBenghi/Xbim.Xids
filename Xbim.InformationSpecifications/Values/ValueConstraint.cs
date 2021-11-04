@@ -95,6 +95,13 @@ namespace Xbim.InformationSpecifications
 
 		public TypeName BaseType { get; set; }
 
+		public static bool IsNotEmpty(ValueConstraint value)
+		{
+			if (value == null)
+				return false;
+			return !value.IsEmpty(); 
+		}
+
 		public bool IsEmpty()
 		{
 			return BaseType == TypeName.Undefined
@@ -253,6 +260,8 @@ namespace Xbim.InformationSpecifications
 			exact = unique.Value;
 			return true;
 		}
+
+		public static implicit operator ValueConstraint(string singleUndefinedExact) => SingleUndefinedExact(singleUndefinedExact);
 
 		public static ValueConstraint SingleUndefinedExact(string content)
 		{

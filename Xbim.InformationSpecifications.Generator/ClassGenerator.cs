@@ -29,8 +29,7 @@ namespace Xbim.InformationSpecifications.Generator
 
 				// trying to find a set of classes that matches the property types
 				List<string> HandledTypes = new List<string>();
-				// HandledTypes.AddRange(TreeOf(metaD.ExpressType("IFCROOT")));
-				foreach (var item in PropertyApplicabilityStudy.IncludeTypes[schema])
+				foreach (var item in PropertyApplicabilityStudy.IncludeTypes[schema]) // this determines the included types by schema
 				{
 					HandledTypes.AddRange(PropertyApplicabilityStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
 				}

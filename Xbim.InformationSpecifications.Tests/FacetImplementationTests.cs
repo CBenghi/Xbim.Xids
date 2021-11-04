@@ -57,7 +57,20 @@ namespace Xbim.InformationSpecifications.Tests
 				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
 			});
 
+			TestAddRemove(lst, new DocumentFacet());
+			TestAddRemove(lst, new DocumentFacet()
+			{
+				DocId = "1",
+				DocIntendedUse = "2",
+				DocLocation = "3",
+				DocName = "4",
+				DocPurpose = "5"
+			});
+
 		}
+
+
+
 
 		[TestMethod]
 		public void ValueEqualImplementationTest()
@@ -113,8 +126,7 @@ namespace Xbim.InformationSpecifications.Tests
 				var t = ValueConstraint.GetXsdTypeString(tName);
 				var back = ValueConstraint.GetNamedTypeFromXsd(t);
 				Assert.AreEqual(tName, back);
-
-				
+			
 				var newT = ValueConstraint.GetNetType(tName);
 				var defval = ValueConstraint.GetDefault(tName);
 
@@ -137,6 +149,21 @@ namespace Xbim.InformationSpecifications.Tests
 		private static void TestAddRemove<T>(List<T> lst, T c)
 		{
 			var s = c.ToString();
+			var t = c.GetHashCode();
+			Assert.IsNotNull(t);
+			if (c is IFacet f)
+			{
+				var shortV = f.Short();
+				Assert.IsNotNull(shortV);
+			}
+			if (c is IValueConstraint vc)
+			{
+				var shortV = vc.Short();
+				Assert.IsNotNull(shortV);
+				var any = vc.IsSatisfiedBy("random", null);
+				Assert.IsNotNull(any);
+
+			}
 			Assert.AreNotEqual("", s);
 			lst.Add(c); lst.Remove(c);
 			Assert.AreEqual(0, lst.Count);

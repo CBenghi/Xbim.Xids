@@ -12,7 +12,8 @@ namespace Xbim.InformationSpecifications.Generator
 		{
 			// Console.Write(PropertiesGenerator.Execute());
 			// Console.Write(PropertyApplicabilityStudy.Execute());;
-			Console.Write(ClassGenerator.Execute()); ;
+			// Console.Write(ClassGenerator.Execute()); ;
+			Console.Write(AttributesGenerator.Execute()); ;
 		}
 	}
 }
