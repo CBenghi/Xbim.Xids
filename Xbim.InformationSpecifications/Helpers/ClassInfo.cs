@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
-
 	public enum ClassType
 	{
 		Abstract,

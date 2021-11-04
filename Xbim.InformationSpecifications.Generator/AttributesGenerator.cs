@@ -51,13 +51,30 @@ namespace Xbim.InformationSpecifications.Generator
 				Debug.WriteLine($"{schema}");
 				foreach (var pair in typesByAttribute)
 				{
-					var attribute = $"\"{pair.Key}\"" ;
-					var classes = pair.Value.Select(x=>$"\"{x}\"").ToArray();
-					var line = $"schema{schema}.AddAttribute({attribute}, new[] {{{string.Join(",", classes)}}});";
+					var attribute = $"\"{pair.Key}\"";
+					// trying to remove all subclasses
+					var OnlyTopClasses = pair.Value.ToList();
+					for (int i = 0; i < OnlyTopClasses.Count; i++)
+					{
+						var thisClassName = OnlyTopClasses[i];
+						var thisClass = metaD.ExpressType(thisClassName.ToUpperInvariant());
+
+						foreach (var sub in thisClass.AllSubTypes)
+						{
+							OnlyTopClasses.Remove(sub.Name);
+						}
+					}
+
+					var classesInQuotes = pair.Value.Select(x=>$"\"{x}\"").ToArray();
+					var topClassesInQuotes = OnlyTopClasses.Select(x=>$"\"{x}\"").ToArray();
+					var line = $"schema{schema}.AddAttribute({attribute}, new[] {{{string.Join(",", topClassesInQuotes)}}}, new[] {{{string.Join(",", classesInQuotes)}}});";
 					Debug.WriteLine(line);
 				}
 			}
 			
+			
+			Debug.WriteLine("The content of output populates the file SchemaInfo.GeneratedAttributes.cs");
+			Debugger.Break();
 			return source;
 		}
 	}

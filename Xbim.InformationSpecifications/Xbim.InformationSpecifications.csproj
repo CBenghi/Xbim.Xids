@@ -14,9 +14,9 @@
 		<Description>Xbim's Information Delivery Specification format.</Description>
 		<PackageLicenseExpression>CDDL-1.0</PackageLicenseExpression>
 		<PackageIcon>xbim-toolkit-icon.png</PackageIcon>
-		<AssemblyVersion>0.2.38.0</AssemblyVersion>
-		<FileVersion>0.2.38.0</FileVersion>
-		<Version>0.2.38</Version>
+		<AssemblyVersion>0.2.39.0</AssemblyVersion>
+		<FileVersion>0.2.39.0</FileVersion>
+		<Version>0.2.39</Version>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>

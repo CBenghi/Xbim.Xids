@@ -19,7 +19,12 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// <summary>
 		/// from the attribute name to the names of the classes that have the attribute.
 		/// </summary>
-		private Dictionary<string, string[]> Attributes { get; set; }
+		private Dictionary<string, string[]> AttributesToAllClasses { get; set; }
+
+		/// <summary>
+		/// from the attribute name to the names of the minimum set of classes that declare the attribute (no subclasses).
+		/// </summary>
+		private Dictionary<string, string[]> AttributesToTopClasses { get; set; }
 
 		/// <summary>
 		/// Get the classinfo by name string.
@@ -84,11 +89,20 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
-		public string[] GetAttributeClasses(string attributeName)
+		/// <summary>
+		/// Returns information on the classes that have an attribute.
+		/// </summary>
+		/// <param name="attributeName">The attribute being sought</param>
+		/// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
+		/// <returns>enumeration of class names or null, if not found</returns>
+		public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
 		{
-			if (Attributes == null)
+			var toUse = onlyTopClasses
+				? AttributesToTopClasses
+				: AttributesToAllClasses;
+			if (toUse == null)
 				return null;
-			if (Attributes.TryGetValue(attributeName, out var ret))
+			if (toUse.TryGetValue(attributeName, out var ret))
 				return ret;
 			return null;
 		}
@@ -114,7 +128,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		public IEnumerable<string> GetAttributeNames()
 		{
-			return Attributes?.Keys;
+			return AttributesToAllClasses?.Keys;
 		}
 
 		static partial void GetClassesIFC4();
@@ -122,11 +136,15 @@ namespace Xbim.InformationSpecifications.Helpers
 		static partial void GetAttributesIFC2x3();
 		static partial void GetAttributesIFC4();
 
-		private void AddAttribute(string attributeName, string[] classNames)
+		private void AddAttribute(string attributeName, string[] topClassNames, string[] allClassNames)
 		{
-			if (Attributes == null)
-				Attributes = new Dictionary<string, string[]>();
-			Attributes.Add(attributeName, classNames);
+			if (AttributesToAllClasses == null)
+				AttributesToAllClasses = new Dictionary<string, string[]>();
+			AttributesToAllClasses.Add(attributeName, allClassNames);
+
+			if (AttributesToTopClasses == null)
+				AttributesToTopClasses = new Dictionary<string, string[]>();
+			AttributesToTopClasses.Add(attributeName, topClassNames);
 		}
 
 		public IEnumerator<ClassInfo> GetEnumerator()
