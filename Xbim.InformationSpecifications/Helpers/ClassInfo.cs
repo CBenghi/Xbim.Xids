@@ -50,6 +50,11 @@ namespace Xbim.InformationSpecifications.Helpers
 		}
 
 		/// <summary>
+		/// The namespace of the class
+		/// </summary>
+		public string NameSpace { get; internal set; }
+
+		/// <summary>
 		/// List of all subclasses.
 		/// </summary>
 		public List<ClassInfo> SubClasses = new List<ClassInfo>();
@@ -74,12 +79,13 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
-		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined)
+		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace)
 		{
 			Name = name;
 			ParentName = parentName;
 			Type = type;
 			PredefinedTypeValues = predefined;
+			NameSpace = nameSpace;
 		}
 	}
 }

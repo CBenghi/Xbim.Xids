@@ -10,10 +10,13 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
+			// NOTE: IN DEBUG MODE OUTPUT IS LIKELY REDIRECTED TO FILE (file.cs)
+
 			// Console.Write(PropertiesGenerator.Execute());
 			// Console.Write(PropertyApplicabilityStudy.Execute());;
-			// Console.Write(ClassGenerator.Execute()); ;
-			Console.Write(AttributesGenerator.Execute()); ;
+			// Console.Write(ClassGenerator.Execute());
+			// Console.Write(AttributesGenerator.Execute()); 
+			Console.Write(AttributesValueGenerator.Execute());
 		}
 	}
 }
