@@ -156,6 +156,10 @@ namespace Xbim.InformationSpecifications
 					return val;
 				return null;
 			}
+			if (t == TypeName.String)
+			{
+				return value.ToString();
+			}
 			return value;
 		}
 

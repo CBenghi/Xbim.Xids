@@ -50,7 +50,11 @@ namespace Xbim.InformationSpecifications
 				if (typeof(long) == passedType)
 					return true;
 			}
-			return destType.IsAssignableFrom(passedType);
+			if (destType.IsAssignableFrom(passedType))
+				return true;
+			if (destType == typeof(string))
+				return true; // we can always convert to string
+			return false;
 		}
 
 		public ValueConstraint(string value)

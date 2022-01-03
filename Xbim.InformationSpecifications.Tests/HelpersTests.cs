@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications.Tests
 			Assert.AreEqual(2, attribs.Length);
 
 			var attribNames = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeNames();
-			Assert.AreEqual(12, attribNames.Count());
+			Assert.AreEqual(179, attribNames.Count());
 		}
 
 		[TestMethod]
@@ -68,7 +68,7 @@ namespace Xbim.InformationSpecifications.Tests
 			Assert.AreEqual(2, attribs.Length);
 
 			var attribNames = Helpers.SchemaInfo.SchemaIfc4.GetAttributeNames();
-			Assert.AreEqual(12, attribNames.Count());
+			Assert.AreEqual(117, attribNames.Count());
 		}
 	}
 }

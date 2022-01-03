@@ -5,11 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Xbim.InformationSpecifications.Tests
 {
 	[TestClass]
 	public class ValueContraintTests
 	{
+
+		[TestMethod]
+		public void IPersistValues()
+        {
+			var str = "2O2Fr$t4X7Zf8NOew3FLOH";
+            Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new Ifc2x3.UtilityResource.IfcGloballyUniqueId(str);
+			var vc = new ValueConstraint(str);
+			Assert.IsTrue(vc.IsSatisfiedBy(i));
+
+			var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
+			var vc2 = new ValueConstraint(str2);
+			Assert.IsFalse(vc2.IsSatisfiedBy(i)); // end in lowercase h
+		}
+
 		[TestMethod]
 		public void ExactContraintSatisfactionTest()
 		{
@@ -17,12 +32,12 @@ namespace Xbim.InformationSpecifications.Tests
 			Assert.IsTrue(vc.IsSatisfiedBy("2"));
 			Assert.IsFalse(vc.IsSatisfiedBy("1"));
 			Assert.IsFalse(vc.IsSatisfiedBy(1));
-			Assert.IsFalse(vc.IsSatisfiedBy(2)); // conversion ToString is valid match
+			Assert.IsTrue(vc.IsSatisfiedBy(2)); // conversion ToString is valid match
 
 			vc = new ValueConstraint(375.230);
 			Assert.IsTrue(vc.IsSatisfiedBy(375.23));
 			Assert.IsTrue(vc.IsSatisfiedBy(375.230000));
-			Assert.IsTrue(vc.IsSatisfiedBy(375.230000));
+			Assert.IsFalse(vc.IsSatisfiedBy(375.230001));
 
 			vc = new ValueConstraint(375.230m);
 			Assert.IsTrue(vc.IsSatisfiedBy(375.230m));
