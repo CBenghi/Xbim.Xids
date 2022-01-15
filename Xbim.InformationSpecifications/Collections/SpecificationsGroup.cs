@@ -8,6 +8,7 @@ namespace Xbim.InformationSpecifications
 	{
 		public string Name { get; set; }
 
+		public string Copyright { get; set; }
 		public string Provider { get; set; }
 
 		public List<string> Consumers { get; set; }

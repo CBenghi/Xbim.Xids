@@ -266,7 +266,12 @@ namespace Xbim.InformationSpecifications
         public static Xids ImportBuildingSmartIDS(string fileName)
         {
             if (!File.Exists(fileName))
+            {
+                DirectoryInfo d = new DirectoryInfo(".");
+                Debug.WriteLine($"file '{fileName}' not found from '{d.FullName}'"); ;
                 return null;
+            }
+            
             var main = XElement.Parse(File.ReadAllText(fileName));
 
             return ImportBuildingSmartIDS(main);
@@ -279,17 +284,68 @@ namespace Xbim.InformationSpecifications
                 var ret = new Xids();
                 var grp = new SpecificationsGroup();
                 ret.SpecificationsGroups.Add(grp);
-
                 foreach (var sub in main.Elements())
                 {
-                    if (sub.Name.LocalName == "specification")
+                    var name = sub.Name.LocalName.ToLowerInvariant();
+                    if (name == "specifications")
                     {
-                        AddSpecification(ret, grp, sub);
+                        AddSpecifications(ret, grp, sub);
+                    }
+                    else if (name == "info")
+                    {
+                        AddInfo(ret, grp, sub);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Unexpected field evaluating main element: '{name}'");
                     }
                 }
                 return ret;
             }
             return null;
+        }
+
+        private static void AddInfo(Xids ret, SpecificationsGroup grp, XElement info)
+        {
+            foreach (var elem in info.Elements())
+            {
+                var name = elem.Name.LocalName.ToLowerInvariant();
+                switch (name)
+                {
+                    case "title":
+                        grp.Name = elem.Value;
+                        break;
+                    case "copyright":
+                        grp.Copyright = elem.Value;
+                        break;
+                    case "ifcversion":
+                        // todo: probably at grp level
+                        break;
+                    case "date":
+                        // todo: probably at grp level
+                        break;
+                    default:
+                        Debug.WriteLine($"Unexpected field evaluating info element: '{elem.Name.LocalName}'");
+                        break;
+                }
+            }
+        }
+
+        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications)
+        {
+            foreach (var elem in specifications.Elements())
+            {
+                var name = elem.Name.LocalName.ToLowerInvariant();
+                switch (name)
+                {
+                    case "specification":
+                        AddSpecification(ids, destGroup, elem);
+                        break;
+                    default:
+                        Debug.WriteLine($"Unexpected field evaluating specifications element: '{name}'");
+                        break;
+                }
+            }
         }
 
         private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec)
@@ -301,21 +357,35 @@ namespace Xbim.InformationSpecifications
                 req.Name = nm.Value;
             foreach (var elem in spec.Elements())
             {
-                if (elem.Name.LocalName == "applicability")
+                var name = elem.Name.LocalName.ToLowerInvariant();
+                switch (name)
                 {
-                    var fs = GetFacets(elem);
-                    if (fs.Any())
-                    {
-                        req.SetFilters(fs);
-                    }
-                }
-                else if (elem.Name.LocalName == "requirements")
-                {
-                    var fs = GetFacets(elem);
-                    if (fs.Any())
-                    {
-                        req.SetExpectations(fs);
-                    }
+                    case "applicability":
+                        {
+                            var fs = GetFacets(elem);
+                            if (fs.Any())
+                            {
+                                req.SetFilters(fs);
+                            }
+
+                            break;
+                        }
+
+                    case "requirements":
+                        {
+                            var fs = GetFacets(elem);
+                            if (fs.Any())
+                            {
+                                req.SetExpectations(fs);
+                            }
+
+                            break;
+                        }
+                    default:
+                        {
+                            Debug.WriteLine($"skipping attribute {name}");
+                            break;
+                        }
                 }
             }
         }
@@ -591,25 +661,26 @@ namespace Xbim.InformationSpecifications
             foreach (var sub in elem.Elements())
             {
                 IFacet t = null;
-                if (sub.Name.LocalName == "entity")
+                var locName = sub.Name.LocalName.ToLowerInvariant();
+                switch (locName)
                 {
-                    t = GetEntity(sub);
-                }
-                else if (sub.Name.LocalName == "classification")
-                {
-                    t = GetClassification(sub);
-                }
-                else if (sub.Name.LocalName == "property")
-                {
-                    t = GetProperty(sub);
-                }
-                else if (sub.Name.LocalName == "material")
-                {
-                    t = GetMaterial(sub);
-                }
-                else
-                {
-
+                    case "entity":
+                        t = GetEntity(sub);
+                        break;
+                    case "classification":
+                        t = GetClassification(sub);
+                        break;
+                    case "property":
+                        t = GetProperty(sub);
+                        break;
+                    case "material":
+                        t = GetMaterial(sub);
+                        break;
+                    case "attribute":
+                        t = GetAttribute(sub);
+                        break;
+                    default:
+                        break;
                 }
                 if (t != null)
                     fs.Add(t);
@@ -618,7 +689,30 @@ namespace Xbim.InformationSpecifications
             return fs;
         }
 
+        private static AttributeFacet GetAttribute(XElement elem)
+        {
+            AttributeFacet ret = null;
+            foreach (var sub in elem.Elements())
+            {
+                var subname = sub.Name.LocalName.ToLowerInvariant();
 
+                switch (subname)
+                {
+                    case "name":
+                        {
+                            ret ??= new AttributeFacet();
+                            ret.AttributeName = sub.Value;
+                            break;
+                        }
+
+                    case "value":
+                        ret ??= new AttributeFacet();
+                        ret.AttributeValue = GetConstraint(sub);
+                        break;
+                }
+            }
+            return ret;
+        }
 
         private static IfcClassificationFacet GetClassification(XElement elem)
         {

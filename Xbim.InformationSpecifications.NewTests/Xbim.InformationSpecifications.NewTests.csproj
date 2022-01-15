@@ -34,4 +34,26 @@
     <ProjectReference Include="..\Xbim.InformationSpecifications\Xbim.InformationSpecifications.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="bsFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="bsFiles\IDS_aachen_example.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="bsFiles\IDS_random_example_04.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="bsFiles\IDS_SimpleBIM_examples.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="bsFiles\IDS_ucms_prefab_pipes_IFC2x3.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="bsFiles\IDS_ucms_prefab_pipes_IFC4.3.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
