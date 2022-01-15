@@ -48,34 +48,36 @@ namespace Xbim.InformationSpecifications.Tests
 			//Assert.AreEqual(copiedHash, streamHash);
 		}
 
-		[TestMethod]
-		[DeploymentItem(@"Files\bSv3\IDS_example-with-restrictions.xml", "fullSave")]
-		[DeploymentItem(@"Files\bSv3\id.xsd", "fullSave")]
+		// we are moving buildingSmart compatibility to the other test library.
 
-		public void FullSaveBuildingSmartIdsFormats()
-		{
-			var fileIn = @"fullSave\IDS_example-with-restrictions.xml";
-			// if the test fails here, because the input file was changed update the expected hash
-			var readHash = GetFileHash(fileIn);
-			Assert.AreEqual("819389d3bbd72c25f1ef1257c428d6c01cb477", readHash);
+//		[TestMethod]
+//		[DeploymentItem(@"Files\bSv3\IDS_example-with-restrictions.xml", "fullSave")]
+//		[DeploymentItem(@"Files\bSv3\id.xsd", "fullSave")]
 
-			var s = Xids.ImportBuildingSmartIDS(fileIn);
-			AssertOk(s);
-			var fileOut = @"..\..\saveattempt.xml";
-			s.ExportBuildingSmartIDS(fileOut);
+//		public void FullSaveBuildingSmartIdsFormats()
+//		{
+//			var fileIn = @"fullSave\IDS_example-with-restrictions.xml";
+//			// if the test fails here, because the input file was changed update the expected hash
+//			var readHash = GetFileHash(fileIn);
+//			Assert.AreEqual("819389d3bbd72c25f1ef1257c428d6c01cb477", readHash);
 
-			CheckIDSSchema(fileOut, @"fullSave\ids.xsd");
+//			var s = Xids.ImportBuildingSmartIDS(fileIn);
+//			AssertOk(s);
+//			var fileOut = @"..\..\saveattempt.xml";
+//			s.ExportBuildingSmartIDS(fileOut);
 
-			// if the test fails here, visually check that the data is correct and then
-			// update the expected hash
+//			CheckIDSSchema(fileOut, @"fullSave\ids.xsd");
 
-			// files in debug have newlines and indents
-#if DEBUG
-			Assert.AreEqual("f65384bf7733bc8647e1db9de4331ed9c7bfe6", GetFileHash(fileOut));
-#else
-			Assert.AreEqual("3b51da0925d75c7992d6bf8787bdd6ef5241b", GetFileHash(fileOut));
-#endif
-		}
+//			// if the test fails here, visually check that the data is correct and then
+//			// update the expected hash
+
+//			// files in debug have newlines and indents
+//#if DEBUG
+//			Assert.AreEqual("f65384bf7733bc8647e1db9de4331ed9c7bfe6", GetFileHash(fileOut));
+//#else
+//			Assert.AreEqual("3b51da0925d75c7992d6bf8787bdd6ef5241b", GetFileHash(fileOut));
+//#endif
+//		}
 
 		private void CheckIDSSchema(string fileOut, string schema)
 		{

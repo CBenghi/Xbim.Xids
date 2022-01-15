@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Xbim.Essentials" Version="5.1.323" />
+		<PackageReference Include="Xbim.Essentials" Version="5.1.329" />
 		<PackageReference Include="Xbim.Properties" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
