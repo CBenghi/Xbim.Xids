@@ -42,37 +42,58 @@ namespace Xbim.InformationSpecifications
 
         private void ExportBuildingSmartIDS(XmlWriter xmlWriter)
         {
-            xmlWriter.WriteStartElement("ids", @"http://standards.buildingsmart.org/IDS");
+            xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
             xmlWriter.WriteAttributeString("xmlns", "xs", null, "http://www.w3.org/2001/XMLSchema");
             xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
             xmlWriter.WriteAttributeString("xsi", "schemaLocation", null, "http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd");
 
+            // info goes first
+            xmlWriter.WriteStartElement("info", IdsNamespace);
+            var titles = string.Join(", ",
+                    SpecificationsGroups.Select(x => x.Name).Distinct().ToArray());
+            xmlWriter.WriteElementString("title", IdsNamespace, titles);
+
+            var copy = string.Join(", ",
+                    SpecificationsGroups.Select(x => x.Copyright).Distinct().ToArray());
+            xmlWriter.WriteElementString("copyright", IdsNamespace, copy);
+            xmlWriter.WriteElementString("ifcVersion", IdsNamespace, IfcVersion);
+
+            var date = SpecificationsGroups.Select(x => x.Date).Max();
+            if (date != DateTime.MinValue)
+            {
+                xmlWriter.WriteElementString("date", IdsNamespace, $"{date:yyyy-MM-dd}");
+            }
+            xmlWriter.WriteEndElement();
+
+            // then the specifications
+            xmlWriter.WriteStartElement("specifications", IdsNamespace);
             foreach (var requirement in AllSpecifications())
             {
                 ExportBuildingSmartIDS(requirement, xmlWriter);
             }
-
-            // writer.WriteString("text");
-
-            // writer.WriteProcessingInstruction("pName", "pValue");
-            xmlWriter.WriteElementString("info", null);
+            xmlWriter.WriteEndElement();
+            
             xmlWriter.WriteEndElement();
             xmlWriter.Flush();
         }
 
+        private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
+        private const string IdsPrefix = "";
+
         private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter)
         {
-            xmlWriter.WriteStartElement("specification");
-
-            xmlWriter.WriteAttributeString("name", requirement.Name);
-            xmlWriter.WriteStartElement("applicability");
+            xmlWriter.WriteStartElement("specification", IdsNamespace);
+            if (requirement.Name != null)
+                xmlWriter.WriteAttributeString("name", requirement.Name);
+            xmlWriter.WriteAttributeString("use", requirement.Use.ToString().ToLowerInvariant());
+            xmlWriter.WriteStartElement("applicability", IdsNamespace);
             foreach (var item in requirement.Applicability.Facets)
             {
                 ExportBuildingSmartIDS(item, xmlWriter);
             }
             xmlWriter.WriteEndElement();
-            xmlWriter.WriteStartElement("requirements");
+            xmlWriter.WriteStartElement("requirements", IdsNamespace);
             foreach (var item in requirement.Requirement.Facets)
             {
                 ExportBuildingSmartIDS(item, xmlWriter);
@@ -83,75 +104,95 @@ namespace Xbim.InformationSpecifications
 
         private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter)
         {
-            if (item is IfcTypeFacet tf)
+            switch (item)
             {
-                xmlWriter.WriteStartElement("entity");
-                if (!string.IsNullOrWhiteSpace(tf.IfcType))
-                {
-                    xmlWriter.WriteStartElement("name");
-                    xmlWriter.WriteString(tf.IfcType);
+                case IfcTypeFacet tf:
+                    xmlWriter.WriteStartElement("entity", IdsNamespace);
+                    if (!string.IsNullOrWhiteSpace(tf.IfcType))
+                    {
+                        xmlWriter.WriteStartElement("name", IdsNamespace);
+                        WriteSimpleValue(xmlWriter, tf.IfcType);
+                        xmlWriter.WriteEndElement();
+                    }
+                    if (!string.IsNullOrWhiteSpace(tf.PredefinedType))
+                    {
+                        xmlWriter.WriteStartElement("predefinedType", IdsNamespace);
+                        xmlWriter.WriteString(tf.PredefinedType);
+                        xmlWriter.WriteEndElement();
+                    }
                     xmlWriter.WriteEndElement();
-                }
-                if (!string.IsNullOrWhiteSpace(tf.PredefinedType))
-                {
-                    xmlWriter.WriteStartElement("predefinedtype");
-                    xmlWriter.WriteString(tf.PredefinedType);
-                    xmlWriter.WriteEndElement();
-                }
-                xmlWriter.WriteEndElement();
-            }
-            else if (item is IfcClassificationFacet cf)
-            {
-                xmlWriter.WriteStartElement("classification");
-                WriteLocationAttributes(cf, xmlWriter); // attribute
-                WriteValue(cf.Identification, xmlWriter);
-                Dictionary<string, string> attributes = new Dictionary<string, string>();
-                if (!string.IsNullOrWhiteSpace( cf.ClassificationSystemHref))
-				{
-                    attributes.Add("href", cf.ClassificationSystemHref);
-				}
-                WriteValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
-                WriteLocationElements(cf, xmlWriter);
+                    break;
+                case IfcClassificationFacet cf:
+                    {
+                        xmlWriter.WriteStartElement("classification", IdsNamespace);
+                        WriteLocationAttributes(cf, xmlWriter); // attribute
+                        WriteValue(cf.Identification, xmlWriter);
+                        Dictionary<string, string> attributes = new Dictionary<string, string>();
+                        if (!string.IsNullOrWhiteSpace(cf.ClassificationSystemHref))
+                        {
+                            attributes.Add("href", cf.ClassificationSystemHref);
+                        }
+                        WriteValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
+                        WriteLocationElements(cf, xmlWriter);
 
-                xmlWriter.WriteEndElement();
-            }
-            else if (item is IfcPropertyFacet pf)
-            {
-                xmlWriter.WriteStartElement("property");
-                WriteLocationAttributes(pf, xmlWriter);
-                if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
-                {
-                    xmlWriter.WriteStartElement("propertyset");
-                    xmlWriter.WriteString(pf.PropertySetName);
+                        xmlWriter.WriteEndElement();
+                        break;
+                    }
+
+                case IfcPropertyFacet pf:
+                    xmlWriter.WriteStartElement("property", IdsNamespace);
+                    WriteLocationAttributes(pf, xmlWriter);
+                    if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
+                    {
+                        xmlWriter.WriteStartElement("propertyset", IdsNamespace);
+                        xmlWriter.WriteString(pf.PropertySetName);
+                        xmlWriter.WriteEndElement();
+                    }
+                    if (!string.IsNullOrWhiteSpace(pf.PropertyName))
+                    {
+                        xmlWriter.WriteStartElement("name", IdsNamespace);
+                        xmlWriter.WriteString(pf.PropertyName);
+                        xmlWriter.WriteEndElement();
+                    }
+                    WriteValue(pf.PropertyValue, xmlWriter);
+                    WriteLocationElements(pf, xmlWriter);
                     xmlWriter.WriteEndElement();
-                }
-                if (!string.IsNullOrWhiteSpace(pf.PropertyName))
-                {
-                    xmlWriter.WriteStartElement("name");
-                    xmlWriter.WriteString(pf.PropertyName);
+                    break;
+                case MaterialFacet mf:
+                    xmlWriter.WriteStartElement("material", IdsNamespace);
+                    WriteLocationAttributes(mf, xmlWriter);
+                    WriteValue(mf.Value, xmlWriter);
+                    WriteLocationElements(mf, xmlWriter);
                     xmlWriter.WriteEndElement();
-                }
-                WriteValue(pf.PropertyValue, xmlWriter);
-                WriteLocationElements(pf, xmlWriter);
-                xmlWriter.WriteEndElement();
-            }
-            else if (item is MaterialFacet mf)
-            {
-                xmlWriter.WriteStartElement("material");
-                WriteLocationAttributes(mf, xmlWriter);
-                WriteValue(mf.Value, xmlWriter);
-                WriteLocationElements(mf, xmlWriter);
-                xmlWriter.WriteEndElement();
+                    break;
+                case AttributeFacet af:
+                    xmlWriter.WriteStartElement("attribute", IdsNamespace);
+                    xmlWriter.WriteAttributeString("location", af.Location.ToLowerInvariant());
+                    xmlWriter.WriteStartElement("name", IdsNamespace);
+                    WriteSimpleValue(xmlWriter, af.AttributeName);
+                    xmlWriter.WriteEndElement();
+                    WriteValue(af.AttributeValue, xmlWriter);
+                    xmlWriter.WriteEndElement();
+                    break;
+                default:
+                    Debug.WriteLine($"todo: missing case for {item.GetType()}.");
+                    break;
             }
         }
 
-		
+        private void WriteSimpleValue(XmlWriter xmlWriter, string stringValue)
+        {
+            xmlWriter.WriteStartElement("simpleValue", IdsNamespace);
+            xmlWriter.WriteString(stringValue);
+            xmlWriter.WriteEndElement();
+        }
 
-		private void WriteValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
+        private void WriteValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
         {
             if (value == null)
                 return;
-            xmlWriter.WriteStartElement(name);
+            
+            xmlWriter.WriteStartElement(name, IdsNamespace);
             if (attributes != null)
             {
                 foreach (var att in attributes)
@@ -319,16 +360,22 @@ namespace Xbim.InformationSpecifications
                         grp.Copyright = elem.Value;
                         break;
                     case "ifcversion":
-                        // todo: probably at grp level
+                        ret.IfcVersion = elem.Value;
                         break;
                     case "date":
-                        // todo: probably at grp level
+                        grp.Date = ReadDate(elem);
                         break;
                     default:
                         Debug.WriteLine($"Unexpected field evaluating info element: '{elem.Name.LocalName}'");
                         break;
                 }
             }
+        }
+
+        private static DateTime ReadDate(XElement elem)
+        {
+            var dt = XmlConvert.ToDateTime(elem.Value, XmlDateTimeSerializationMode.Unspecified);
+            return dt;
         }
 
         private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications)
@@ -695,7 +742,6 @@ namespace Xbim.InformationSpecifications
             foreach (var sub in elem.Elements())
             {
                 var subname = sub.Name.LocalName.ToLowerInvariant();
-
                 switch (subname)
                 {
                     case "name":
@@ -711,6 +757,20 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
+            
+            foreach (var sub in elem.Attributes())
+            {
+                var subname = sub.Name.LocalName.ToLowerInvariant();
+                switch (subname)
+                {
+                    case "location":
+                        {
+                            ret.Location = sub.Value;
+                            break;
+                        }
+                }
+            }
+            
             return ret;
         }
 

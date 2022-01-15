@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,8 +9,10 @@ namespace Xbim.InformationSpecifications
 {
 	
 
-	public partial class Xids
+	public partial class Xids // basic definition file
     {
+		public string IfcVersion { get; set; } = "";
+
 		public static bool HasData(Xids xidsToTest)
 		{
 			if (xidsToTest == null)

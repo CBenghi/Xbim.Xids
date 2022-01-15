@@ -17,7 +17,6 @@ namespace Xbim.InformationSpecifications
 		optional
 	}
 
-
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
 		private string location = InformationSpecifications.Location.any.ToString();

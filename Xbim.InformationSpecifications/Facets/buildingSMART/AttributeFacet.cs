@@ -6,6 +6,36 @@ namespace Xbim.InformationSpecifications
 	{
 		public string AttributeName { get; set; } = "";
 
+		private string location = InformationSpecifications.Location.any.ToString();
+
+		public Location GetLocation()
+		{
+			if (Enum.TryParse<Location>(location, out var loc))
+			{
+				return loc;
+			}
+			return InformationSpecifications.Location.any;
+		}
+		public void SetLocation(Location loc)
+		{
+			location = loc.ToString();
+		}
+
+		/// <summary>
+		/// String value of location, use <see cref="GetLocation()"/> for the enum.
+		/// Setting an invalid string will ignore the change.
+		/// </summary>
+		public string Location
+		{
+			get => location;
+			set
+			{
+				if (Enum.TryParse<Location>(value, out _))
+					location = value;
+			}
+		}
+
+
 		public ValueConstraint AttributeValue { get; set; } 
 
 		public bool Equals(AttributeFacet other)

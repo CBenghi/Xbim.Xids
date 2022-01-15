@@ -39,7 +39,13 @@ namespace Xbim.InformationSpecifications.NewTests
             IdsLib.CheckOptions c = new IdsLib.CheckOptions();
             c.CheckSchema = new[] { "bsFiles\\ids_05.xsd" };
             c.InputSource = tmpFile;
-            var res = IdsLib.CheckOptions.Run(c);
+
+            StringWriter s = new StringWriter();
+            var res = IdsLib.CheckOptions.Run(c, s);
+            if (res != IdsLib.CheckOptions.Status.Ok)
+            {
+                Debug.WriteLine(s.ToString());
+            }
             Assert.Equal(IdsLib.CheckOptions.Status.Ok, res);
         }
 
@@ -63,13 +69,5 @@ namespace Xbim.InformationSpecifications.NewTests
             CanLoadFile("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16);
             CanLoadFile("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9);
         }
-
-
-        private void SaveFile()
-        {
-
-        }
-
-
     }
 }

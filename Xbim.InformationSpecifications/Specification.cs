@@ -5,6 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
+	public enum SpecificationUse
+    {
+		Required,
+		Optional
+    }
+
 	public partial class Specification : ISpecificationMetadata
 	{
 		private Xids ids;
@@ -14,6 +20,8 @@ namespace Xbim.InformationSpecifications
 		{
 		}
 
+		public SpecificationUse Use { get; set; } = SpecificationUse.Required;
+			
 		[JsonIgnore]
 		SpecificationsGroup Parent { get; set; }
 
@@ -93,6 +101,8 @@ namespace Xbim.InformationSpecifications
 			get => Requirement?.Guid.ToString();
 			set => requirementId = value;
 		}
+
+
 
 		public string Guid { get; set; }
 

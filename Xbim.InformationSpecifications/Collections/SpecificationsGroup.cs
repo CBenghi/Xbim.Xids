@@ -7,8 +7,8 @@ namespace Xbim.InformationSpecifications
 	public partial class SpecificationsGroup : ISpecificationMetadata
 	{
 		public string Name { get; set; }
-
 		public string Copyright { get; set; }
+		public DateTime Date { get; set; } = DateTime.MinValue;
 		public string Provider { get; set; }
 
 		public List<string> Consumers { get; set; }
