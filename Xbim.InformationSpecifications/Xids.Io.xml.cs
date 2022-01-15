@@ -327,12 +327,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseEntity(sub))
                 {
-                    ret = ret ?? new MaterialFacet();
+                    ret ??= new MaterialFacet();
                     GetBaseEntity(sub, ret);
                 }
                 else if (sub.Name.LocalName == "value")
                 {
-                    ret = ret ?? new MaterialFacet();
+                    ret ??= new MaterialFacet();
                     ret.Value = GetConstraint(sub);
                 }
                 else
@@ -344,12 +344,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseAttribute(attribute))
                 {
-                    ret = ret ?? new MaterialFacet();
+                    ret ??= new MaterialFacet();
                     GetBaseAttribute(attribute, ret);
                 }
                 else if (attribute.Name.LocalName == "location")
                 {
-                    ret = ret ?? new MaterialFacet();
+                    ret ??= new MaterialFacet();
                     ret.Location = attribute.Value;
                 }
                 else
@@ -367,12 +367,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseEntity(sub))
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     GetBaseEntity(sub, ret);
                 }
                 if (sub.Name.LocalName == "propertyset")
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     ret.PropertySetName = sub.Value;
                 }
                 else if (
@@ -380,12 +380,12 @@ namespace Xbim.InformationSpecifications
                     sub.Name.LocalName == "name"
                     )
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     ret.PropertyName = sub.Value;
                 }
                 else if (sub.Name.LocalName == "value")
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     ret.PropertyValue = GetConstraint(sub);
                 }
                 else
@@ -397,12 +397,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseAttribute(attribute))
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     GetBaseAttribute(attribute, ret);
                 }
                 else if (attribute.Name.LocalName == "location")
                 {
-                    ret = ret ?? new IfcPropertyFacet();
+                    ret ??= new IfcPropertyFacet();
                     ret.Location = attribute.Value;
                 }
                 else
@@ -447,7 +447,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        enumeration = enumeration ?? new List<string>();
+                        enumeration ??= new List<string>();
                         enumeration.Add(val.Value);
                     }
                 }
@@ -460,7 +460,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value")?.Value;
                     if (val != null)
                     {
-                        range = range ?? new RangeConstraint();
+                        range ??= new RangeConstraint();
                         range.MinValue = val;
                         range.MinInclusive = sub.Name.LocalName == "minInclusive";
                     }
@@ -474,7 +474,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value")?.Value;
                     if (val != null)
                     {
-                        range = range ?? new RangeConstraint();
+                        range ??= new RangeConstraint();
                         range.MaxValue = val;
                         range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
                     }
@@ -492,7 +492,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null && int.TryParse(val.Value, out var ival))
                     {
-                        structure = structure ?? new StructureConstraint();
+                        structure ??= new StructureConstraint();
                         structure.MinLength = ival;
                     }
                 }
@@ -501,7 +501,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null && int.TryParse(val.Value, out var ival))
                     {
-                        structure = structure ?? new StructureConstraint();
+                        structure ??= new StructureConstraint();
                         structure.MaxLength = ival;
                     }
                 }
@@ -510,7 +510,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null && int.TryParse(val.Value, out var ival))
                     {
-                        structure = structure ?? new StructureConstraint();
+                        structure ??= new StructureConstraint();
                         structure.Length = ival;
                     }
                 }
@@ -519,7 +519,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null && int.TryParse(val.Value, out var ival))
                     {
-                        structure = structure ?? new StructureConstraint();
+                        structure ??= new StructureConstraint();
                         structure.TotalDigits = ival;
                     }
                 }
@@ -528,7 +528,7 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null && int.TryParse(val.Value, out var ival))
                     {
-                        structure = structure ?? new StructureConstraint();
+                        structure ??= new StructureConstraint();
                         structure.FractionDigits = ival;
                     }
                 }
@@ -627,12 +627,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseEntity(sub))
                 {
-                    ret = ret ?? new IfcClassificationFacet();
+                    ret ??= new IfcClassificationFacet();
                     GetBaseEntity(sub, ret);
                 }
                 else if (sub.Name.LocalName == "system")
                 {
-                    ret = ret ?? new IfcClassificationFacet();
+                    ret ??= new IfcClassificationFacet();
                     ret.ClassificationSystem = GetConstraint(sub);
                     // classification has href attribute under system
                     foreach (var attribute in sub.Attributes())
@@ -645,7 +645,7 @@ namespace Xbim.InformationSpecifications
                 }
                 else if (sub.Name.LocalName == "value")
                 {
-                    ret = ret ?? new IfcClassificationFacet();
+                    ret ??= new IfcClassificationFacet();
                     ret.Identification = GetConstraint(sub);
                 }
             }
@@ -653,12 +653,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (IsBaseAttribute(attribute))
                 {
-                    ret = ret ?? new IfcClassificationFacet();
+                    ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret);
                 }
                 else if (attribute.Name.LocalName == "location")
                 {
-                    ret = ret ?? new IfcClassificationFacet();
+                    ret ??= new IfcClassificationFacet();
                     ret.Location = attribute.Value;
                 }
                 else
@@ -721,12 +721,12 @@ namespace Xbim.InformationSpecifications
             {
                 if (sub.Name.LocalName == "name")
                 {
-                    ret = ret ?? new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                    ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
                     ret.IfcType = sub.Value;
                 }
                 else if (sub.Name.LocalName == "predefinedtype")
                 {
-                    ret = ret ?? new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                    ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
                     ret.PredefinedType = sub.Value;
                 }
             }
