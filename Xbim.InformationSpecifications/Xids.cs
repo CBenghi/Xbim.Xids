@@ -77,6 +77,11 @@ namespace Xbim.InformationSpecifications
 			FacetRepository = new FacetGroupRepository(this);
 		}
 
+		public void Initialize(string ifcVersion)
+		{
+			IfcVersion = ifcVersion; 
+		}
+
 		public IEnumerable<Specification> AllSpecifications()
 		{
 			foreach (var rg in SpecificationsGroups)

@@ -24,6 +24,8 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+      
+
         public void ExportBuildingSmartIDS(string destinationFile)
         {
             using (XmlWriter writer = XmlWriter.Create(destinationFile, WriteSettings))
@@ -50,16 +52,25 @@ namespace Xbim.InformationSpecifications
 
             // info goes first
             xmlWriter.WriteStartElement("info", IdsNamespace);
+
+            // title needs to be written in any case
             var titles = string.Join(", ",
                     SpecificationsGroups.Select(x => x.Name).Distinct().ToArray());
             xmlWriter.WriteElementString("title", IdsNamespace, titles);
-
+            
+            // copy
             var copy = string.Join(", ",
                     SpecificationsGroups.Select(x => x.Copyright).Distinct().ToArray());
-            xmlWriter.WriteElementString("copyright", IdsNamespace, copy);
+            if (!string.IsNullOrEmpty(copy))
+                xmlWriter.WriteElementString("copyright", IdsNamespace, copy);
             xmlWriter.WriteElementString("ifcVersion", IdsNamespace, IfcVersion);
 
-            var date = SpecificationsGroups.Select(x => x.Date).Max();
+            // date
+            DateTime date = DateTime.MinValue;
+            if (SpecificationsGroups.Any())
+            {
+                date = SpecificationsGroups.Select(x => x.Date).Max();  
+            }
             if (date != DateTime.MinValue)
             {
                 xmlWriter.WriteElementString("date", IdsNamespace, $"{date:yyyy-MM-dd}");

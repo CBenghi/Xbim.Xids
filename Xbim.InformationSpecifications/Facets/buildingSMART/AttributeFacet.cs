@@ -60,7 +60,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			return ToString();
+			return $"attribute {AttributeName} = {AttributeValue}";
 		}
 
 		public bool IsValid()
