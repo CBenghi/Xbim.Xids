@@ -10,8 +10,12 @@ namespace Xbim.InformationSpecifications.NewTests
 {
     public class buildingSmartIDSLoadTests
     {
-        //[Theory]
-        //[InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
+        [Theory]
+        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
+        [InlineData("bsFiles/IDS_random_example_04.xml", 2, 7)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount)
         {
             DirectoryInfo d = new DirectoryInfo(".");
@@ -20,18 +24,18 @@ namespace Xbim.InformationSpecifications.NewTests
             var loaded = Xids.ImportBuildingSmartIDS(fileName);
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
 
-#if DEBUG
+
+            // comment the second line below to debug any problems.
             var tmpFile = Path.Combine(Path.GetTempPath(), "out.xml");
-#else
-            var tmpFile = Path.GetTempFileName();
-#endif
+            tmpFile = Path.GetTempFileName();
+
 
             Debug.WriteLine(tmpFile);
             loaded.ExportBuildingSmartIDS(tmpFile);
             CheckSchema(tmpFile);
 
             var reloaded = Xids.ImportBuildingSmartIDS(tmpFile);
-            // CheckCounts(specificationsCount, facetGroupsCount, reloaded);
+            CheckCounts(specificationsCount, facetGroupsCount, reloaded);
         }
 
         private static void CheckSchema(string tmpFile)
@@ -60,14 +64,5 @@ namespace Xbim.InformationSpecifications.NewTests
             Assert.Equal(facetGroupsCount, tot);
         }
 
-        [Fact]
-        public void LoadOneFile()
-        {
-            CanLoadFile("bsFiles/IDS_aachen_example.xml", 1, 2);
-            CanLoadFile("bsFiles/IDS_random_example_04.xml", 2, 7);
-            CanLoadFile("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9);
-            CanLoadFile("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16);
-            CanLoadFile("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9);
-        }
     }
 }

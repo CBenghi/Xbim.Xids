@@ -117,7 +117,7 @@ namespace Xbim.InformationSpecifications
                     if (!string.IsNullOrWhiteSpace(tf.PredefinedType))
                     {
                         xmlWriter.WriteStartElement("predefinedType", IdsNamespace);
-                        xmlWriter.WriteString(tf.PredefinedType);
+                        WriteSimpleValue(xmlWriter, tf.PredefinedType);
                         xmlWriter.WriteEndElement();
                     }
                     xmlWriter.WriteEndElement();
@@ -144,14 +144,14 @@ namespace Xbim.InformationSpecifications
                     WriteLocationAttributes(pf, xmlWriter);
                     if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
                     {
-                        xmlWriter.WriteStartElement("propertyset", IdsNamespace);
-                        xmlWriter.WriteString(pf.PropertySetName);
+                        xmlWriter.WriteStartElement("propertySet", IdsNamespace);
+                        WriteSimpleValue(xmlWriter, pf.PropertySetName);
                         xmlWriter.WriteEndElement();
                     }
                     if (!string.IsNullOrWhiteSpace(pf.PropertyName))
                     {
                         xmlWriter.WriteStartElement("name", IdsNamespace);
-                        xmlWriter.WriteString(pf.PropertyName);
+                        WriteSimpleValue(xmlWriter, pf.PropertyName);
                         xmlWriter.WriteEndElement();
                     }
                     WriteValue(pf.PropertyValue, xmlWriter);
@@ -202,7 +202,8 @@ namespace Xbim.InformationSpecifications
             }
             if (value.IsSingleUndefinedExact(out string exact))
             {
-                xmlWriter.WriteString(exact);                
+                // xmlWriter.WriteString(exact);
+                WriteSimpleValue(xmlWriter, exact);
             }
             else if (value.AcceptedValues != null)
             {
@@ -487,27 +488,25 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     GetBaseEntity(sub, ret);
                 }
-                if (sub.Name.LocalName == "propertyset")
+                var locName = sub.Name.LocalName.ToLowerInvariant();
+                switch (locName)
                 {
-                    ret ??= new IfcPropertyFacet();
-                    ret.PropertySetName = sub.Value;
-                }
-                else if (
-                    sub.Name.LocalName == "property" ||
-                    sub.Name.LocalName == "name"
-                    )
-                {
-                    ret ??= new IfcPropertyFacet();
-                    ret.PropertyName = sub.Value;
-                }
-                else if (sub.Name.LocalName == "value")
-                {
-                    ret ??= new IfcPropertyFacet();
-                    ret.PropertyValue = GetConstraint(sub);
-                }
-                else
-                {
-                    Debug.WriteLine($"skipping {sub.Name.LocalName}");
+                    case "propertyset":
+                        ret ??= new IfcPropertyFacet();
+                        ret.PropertySetName = GetFirstString(sub);
+                        break;
+                    case "property":
+                    case "name":
+                        ret ??= new IfcPropertyFacet();
+                        ret.PropertyName = sub.Value;
+                        break;
+                    case "value":
+                        ret ??= new IfcPropertyFacet();
+                        ret.PropertyValue = GetConstraint(sub);
+                        break;
+                    default:
+                        Debug.WriteLine($"skipping {locName}");
+                        break;
                 }
             }
             foreach (var attribute in elem.Attributes())
@@ -873,15 +872,27 @@ namespace Xbim.InformationSpecifications
             IfcTypeFacet ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (sub.Name.LocalName == "name")
+                var locName = sub.Name.LocalName.ToLowerInvariant();
+                switch (locName)
                 {
-                    ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                    ret.IfcType = sub.Value;
-                }
-                else if (sub.Name.LocalName == "predefinedtype")
-                {
-                    ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                    ret.PredefinedType = sub.Value;
+                    case "name":
+                        ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                        // todo: dealing with uncomprehensible v0.5 values
+                        // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
+                        if (string.IsNullOrEmpty(sub.Value))
+                        {
+                            ret.IfcType = GetFirstString(sub);
+                        }
+                        else
+                            ret.IfcType = sub.Value;
+                        break;
+                    case "predefinedtype":
+                        ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                        ret.PredefinedType = sub.Value;
+                        break;
+                    default:
+                        Debug.WriteLine($"skipping element {locName}");
+                        break;
                 }
             }
             foreach (var attribute in elem.Attributes())
@@ -889,6 +900,30 @@ namespace Xbim.InformationSpecifications
                 Debug.WriteLine($"skipping attribute {attribute.Name}");
             }
             return ret;
+        }
+
+        private static string GetFirstString(XElement sub)
+        {
+            if (!string.IsNullOrEmpty(sub.Value))
+                return sub.Value;
+            var nm = sub.Name.LocalName.ToLowerInvariant();
+            switch (nm)
+            {
+                case "pattern":
+                    {
+                        var val = sub.Attribute("value");
+                        if (!string.IsNullOrEmpty(val?.Value))
+                            return val.Value;
+                        break;
+                    }
+            }
+            foreach (var sub2 in sub.Elements())
+            {
+                var subS = GetFirstString(sub2);
+                if (!string.IsNullOrEmpty(subS))
+                    return subS;
+            }
+            return "";
         }
     }
 }
