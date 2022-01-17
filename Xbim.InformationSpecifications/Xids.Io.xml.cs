@@ -186,7 +186,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();
                     break;
                 default:
-                    _logger.LogInformation($"todo: missing case for {item.GetType()}.");
+                    _logger.LogWarning($"todo: missing case for {item.GetType()}.");
                     break;
             }
         }
@@ -381,10 +381,20 @@ namespace Xbim.InformationSpecifications
                         grp.Date = ReadDate(elem, logger);
                         break;
                     default:
-                        logger?.LogWarning($"Unexpected field evaluating info element: '{elem.Name.LocalName}'");
+                        LogUnexpected(elem, info, logger);
                         break;
                 }
             }
+        }
+
+        private static void LogUnexpected(XElement unepected, XElement parent, ILogger logger)
+        {
+            logger?.LogWarning("Unexpected element '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
+        }
+
+        private static void LogUnexpected(XAttribute unepected, XElement parent, ILogger logger)
+        {
+            logger?.LogWarning("Unexpected attribute '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
         }
 
         private static DateTime ReadDate(XElement elem, ILogger logger)
@@ -413,7 +423,7 @@ namespace Xbim.InformationSpecifications
                         AddSpecification(ids, destGroup, elem, logger);
                         break;
                     default:
-                        logger?.LogWarning($"Unexpected field evaluating specifications element: '{name}'");
+                        LogUnexpected(elem, specifications, logger);
                         break;
                 }
             }
@@ -447,10 +457,8 @@ namespace Xbim.InformationSpecifications
                             break;
                         }
                     default:
-                        {
-                            logger.LogWarning($"Unexpected element '{name}' in specification node.");
-                            break;
-                        }
+                        LogUnexpected(elem, spec, logger);
+                        break;
                 }
             }
         }
@@ -472,7 +480,7 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    logger?.LogWarning($"Unexpected element {sub.Name.LocalName} in Material facet.");
+                    LogUnexpected(sub, elem, logger);
                 }
             }
             foreach (var attribute in elem.Attributes())
@@ -489,7 +497,7 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    logger?.LogWarning($"Unexpected attribute {attribute.Name.LocalName} in Material facet.");
+                    LogUnexpected(attribute, elem, logger);
                 }
             }
             return ret;
@@ -522,7 +530,7 @@ namespace Xbim.InformationSpecifications
                         ret.PropertyValue = GetConstraint(sub, logger);
                         break;
                     default:
-                        logger?.LogWarning($"Unexpected element '{sub.Name.LocalName}' in IfcPropertyFacet.");
+                        LogUnexpected(sub, elem, logger);
                         break;
                 }
             }
@@ -667,7 +675,7 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-
+                    LogUnexpected(sub, elem, logger);
                 }
             }
             // check that the temporary variable are coherent with valid value
@@ -769,7 +777,7 @@ namespace Xbim.InformationSpecifications
                         ret.AttributeValue = GetConstraint(sub, logger);
                         break;
                     default:
-                        logger?.LogWarning($"Unexpected element '{subname}' in attribute facet.");
+                        LogUnexpected(sub, elem, logger);
                         break;
                 }
             }
@@ -820,6 +828,10 @@ namespace Xbim.InformationSpecifications
                 {
                     ret ??= new IfcClassificationFacet();
                     ret.Identification = GetConstraint(sub, logger);
+                }
+                else
+                {
+                    LogUnexpected(sub, elem, logger);
                 }
             }
             foreach (var attribute in elem.Attributes())
@@ -916,7 +928,7 @@ namespace Xbim.InformationSpecifications
                         ret.PredefinedType = sub.Value;
                         break;
                     default:
-                        logger?.LogWarning($"unexpected element {locName} in IfcTypeFacet");
+                        LogUnexpected(sub, elem, logger);
                         break;
                 }
             }

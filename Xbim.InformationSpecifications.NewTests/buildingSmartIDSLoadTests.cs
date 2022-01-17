@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -21,6 +22,7 @@ namespace Xbim.InformationSpecifications.NewTests
             DirectoryInfo d = new DirectoryInfo(".");
             Debug.WriteLine(d.FullName);
             CheckSchema(fileName);
+
             var loaded = Xids.ImportBuildingSmartIDS(fileName);
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
 
