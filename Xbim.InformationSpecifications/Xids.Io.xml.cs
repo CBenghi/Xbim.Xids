@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -186,7 +186,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();
                     break;
                 default:
-                    Debug.WriteLine($"todo: missing case for {item.GetType()}.");
+                    _logger.LogInformation($"todo: missing case for {item.GetType()}.");
                     break;
             }
         }
@@ -316,21 +316,20 @@ namespace Xbim.InformationSpecifications
             return ImportBuildingSmartIDS(t);
         }
 
-        public static Xids ImportBuildingSmartIDS(string fileName)
+        public static Xids ImportBuildingSmartIDS(string fileName, ILogger logger = null)
         {
             if (!File.Exists(fileName))
             {
                 DirectoryInfo d = new DirectoryInfo(".");
-                Debug.WriteLine($"file '{fileName}' not found from '{d.FullName}'"); ;
+                logger.LogError($"File '{fileName}' not found from executing directory '{d.FullName}'");
                 return null;
             }
             
             var main = XElement.Parse(File.ReadAllText(fileName));
-
-            return ImportBuildingSmartIDS(main);
+            return ImportBuildingSmartIDS(main, logger);
         }
 
-        public static Xids ImportBuildingSmartIDS(XElement main)
+        public static Xids ImportBuildingSmartIDS(XElement main, ILogger logger = null)
         {
             if (main.Name.LocalName == "ids")
             {
@@ -342,23 +341,27 @@ namespace Xbim.InformationSpecifications
                     var name = sub.Name.LocalName.ToLowerInvariant();
                     if (name == "specifications")
                     {
-                        AddSpecifications(ret, grp, sub);
+                        AddSpecifications(ret, grp, sub, logger);
                     }
                     else if (name == "info")
                     {
-                        AddInfo(ret, grp, sub);
+                        AddInfo(ret, grp, sub, logger);
                     }
                     else
                     {
-                        Debug.WriteLine($"Unexpected field evaluating main element: '{name}'");
+                        logger?.LogWarning($"Unexpected element evaluating ids: '{name}'");
                     }
                 }
                 return ret;
             }
+            else
+            {
+                logger?.LogError($"Unexpected element in ids: '{main.Name.LocalName}'");
+            }
             return null;
         }
 
-        private static void AddInfo(Xids ret, SpecificationsGroup grp, XElement info)
+        private static void AddInfo(Xids ret, SpecificationsGroup grp, XElement info, ILogger logger)
         {
             foreach (var elem in info.Elements())
             {
@@ -375,22 +378,31 @@ namespace Xbim.InformationSpecifications
                         ret.IfcVersion = elem.Value;
                         break;
                     case "date":
-                        grp.Date = ReadDate(elem);
+                        grp.Date = ReadDate(elem, logger);
                         break;
                     default:
-                        Debug.WriteLine($"Unexpected field evaluating info element: '{elem.Name.LocalName}'");
+                        logger?.LogWarning($"Unexpected field evaluating info element: '{elem.Name.LocalName}'");
                         break;
                 }
             }
         }
 
-        private static DateTime ReadDate(XElement elem)
+        private static DateTime ReadDate(XElement elem, ILogger logger)
         {
-            var dt = XmlConvert.ToDateTime(elem.Value, XmlDateTimeSerializationMode.Unspecified);
-            return dt;
+            try
+            {
+                var dt = XmlConvert.ToDateTime(elem.Value, XmlDateTimeSerializationMode.Unspecified);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Invalid value for date: {elem.Value}.");
+                return DateTime.MinValue;
+            }
+            
         }
 
-        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications)
+        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications, ILogger logger)
         {
             foreach (var elem in specifications.Elements())
             {
@@ -398,16 +410,16 @@ namespace Xbim.InformationSpecifications
                 switch (name)
                 {
                     case "specification":
-                        AddSpecification(ids, destGroup, elem);
+                        AddSpecification(ids, destGroup, elem, logger);
                         break;
                     default:
-                        Debug.WriteLine($"Unexpected field evaluating specifications element: '{name}'");
+                        logger?.LogWarning($"Unexpected field evaluating specifications element: '{name}'");
                         break;
                 }
             }
         }
 
-        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec)
+        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec, ILogger logger)
         {
             var req = new Specification(ids, destGroup);
             destGroup.Specifications.Add(req);
@@ -421,35 +433,29 @@ namespace Xbim.InformationSpecifications
                 {
                     case "applicability":
                         {
-                            var fs = GetFacets(elem);
+                            var fs = GetFacets(elem, logger);
                             if (fs.Any())
-                            {
                                 req.SetFilters(fs);
-                            }
-
                             break;
                         }
 
                     case "requirements":
                         {
-                            var fs = GetFacets(elem);
+                            var fs = GetFacets(elem, logger);
                             if (fs.Any())
-                            {
                                 req.SetExpectations(fs);
-                            }
-
                             break;
                         }
                     default:
                         {
-                            Debug.WriteLine($"skipping attribute {name}");
+                            logger.LogWarning($"Unexpected element '{name}' in specification node.");
                             break;
                         }
                 }
             }
         }
 
-        private static IFacet GetMaterial(XElement elem)
+        private static IFacet GetMaterial(XElement elem, ILogger logger)
         {
             MaterialFacet ret = null;
             foreach (var sub in elem.Elements())
@@ -457,16 +463,16 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseEntity(sub))
                 {
                     ret ??= new MaterialFacet();
-                    GetBaseEntity(sub, ret);
+                    GetBaseEntity(sub, ret, logger);
                 }
                 else if (sub.Name.LocalName == "value")
                 {
                     ret ??= new MaterialFacet();
-                    ret.Value = GetConstraint(sub);
+                    ret.Value = GetConstraint(sub, logger);
                 }
                 else
                 {
-                    Debug.WriteLine($"skipping {sub.Name.LocalName}");
+                    logger?.LogWarning($"Unexpected element {sub.Name.LocalName} in Material facet.");
                 }
             }
             foreach (var attribute in elem.Attributes())
@@ -483,13 +489,13 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    Debug.WriteLine($"skipping attribute {attribute.Name}");
+                    logger?.LogWarning($"Unexpected attribute {attribute.Name.LocalName} in Material facet.");
                 }
             }
             return ret;
         }
 
-        private static IFacet GetProperty(XElement elem)
+        private static IFacet GetProperty(XElement elem, ILogger logger)
         {
             IfcPropertyFacet ret = null;
             foreach (var sub in elem.Elements())
@@ -497,7 +503,7 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseEntity(sub))
                 {
                     ret ??= new IfcPropertyFacet();
-                    GetBaseEntity(sub, ret);
+                    GetBaseEntity(sub, ret, logger);
                 }
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
@@ -513,10 +519,10 @@ namespace Xbim.InformationSpecifications
                         break;
                     case "value":
                         ret ??= new IfcPropertyFacet();
-                        ret.PropertyValue = GetConstraint(sub);
+                        ret.PropertyValue = GetConstraint(sub, logger);
                         break;
                     default:
-                        Debug.WriteLine($"skipping {locName}");
+                        logger?.LogWarning($"Unexpected element '{sub.Name.LocalName}' in IfcPropertyFacet.");
                         break;
                 }
             }
@@ -534,13 +540,13 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    Debug.WriteLine($"skipping attribute {attribute.Name}");
+                    logger?.LogWarning($"Unexpected attribute '{attribute.Name.LocalName}' in IfcPropertyFacet.");
                 }
             }
             return ret;
         }
 
-        private static ValueConstraint GetConstraint(XElement elem)
+        private static ValueConstraint GetConstraint(XElement elem, ILogger logger)
         {
             XNamespace ns = "http://www.w3.org/2001/XMLSchema";
             var restriction = elem.Element(ns + "restriction");
@@ -712,7 +718,7 @@ namespace Xbim.InformationSpecifications
 
 
 
-        private static List<IFacet> GetFacets(XElement elem)
+        private static List<IFacet> GetFacets(XElement elem, ILogger logger)
         {
             var fs = new List<IFacet>();
             foreach (var sub in elem.Elements())
@@ -722,19 +728,19 @@ namespace Xbim.InformationSpecifications
                 switch (locName)
                 {
                     case "entity":
-                        t = GetEntity(sub);
+                        t = GetEntity(sub, logger);
                         break;
                     case "classification":
-                        t = GetClassification(sub);
+                        t = GetClassification(sub, logger);
                         break;
                     case "property":
-                        t = GetProperty(sub);
+                        t = GetProperty(sub, logger);
                         break;
                     case "material":
-                        t = GetMaterial(sub);
+                        t = GetMaterial(sub, logger);
                         break;
                     case "attribute":
-                        t = GetAttribute(sub);
+                        t = GetAttribute(sub, logger);
                         break;
                     default:
                         break;
@@ -746,7 +752,7 @@ namespace Xbim.InformationSpecifications
             return fs;
         }
 
-        private static AttributeFacet GetAttribute(XElement elem)
+        private static AttributeFacet GetAttribute(XElement elem, ILogger logger)
         {
             AttributeFacet ret = null;
             foreach (var sub in elem.Elements())
@@ -755,15 +761,15 @@ namespace Xbim.InformationSpecifications
                 switch (subname)
                 {
                     case "name":
-                        {
-                            ret ??= new AttributeFacet();
-                            ret.AttributeName = sub.Value;
-                            break;
-                        }
-
+                        ret ??= new AttributeFacet();
+                        ret.AttributeName = sub.Value;
+                        break;                        
                     case "value":
                         ret ??= new AttributeFacet();
-                        ret.AttributeValue = GetConstraint(sub);
+                        ret.AttributeValue = GetConstraint(sub, logger);
+                        break;
+                    default:
+                        logger?.LogWarning($"Unexpected element '{subname}' in attribute facet.");
                         break;
                 }
             }
@@ -778,13 +784,16 @@ namespace Xbim.InformationSpecifications
                             ret.Location = sub.Value;
                             break;
                         }
+                    default:
+                        logger?.LogWarning($"Unexpected attribute '{subname}' in attribute facet.");
+                        break;
                 }
             }
             
             return ret;
         }
 
-        private static IfcClassificationFacet GetClassification(XElement elem)
+        private static IfcClassificationFacet GetClassification(XElement elem, ILogger logger)
         {
             IfcClassificationFacet ret = null;
             foreach (var sub in elem.Elements())
@@ -792,12 +801,12 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseEntity(sub))
                 {
                     ret ??= new IfcClassificationFacet();
-                    GetBaseEntity(sub, ret);
+                    GetBaseEntity(sub, ret, logger);
                 }
                 else if (sub.Name.LocalName == "system")
                 {
                     ret ??= new IfcClassificationFacet();
-                    ret.ClassificationSystem = GetConstraint(sub);
+                    ret.ClassificationSystem = GetConstraint(sub, logger);
                     // classification has href attribute under system
                     foreach (var attribute in sub.Attributes())
                     { 
@@ -810,24 +819,25 @@ namespace Xbim.InformationSpecifications
                 else if (sub.Name.LocalName == "value")
                 {
                     ret ??= new IfcClassificationFacet();
-                    ret.Identification = GetConstraint(sub);
+                    ret.Identification = GetConstraint(sub, logger);
                 }
             }
             foreach (var attribute in elem.Attributes())
             {
+                var locAtt = attribute.Name.LocalName;
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret);
                 }
-                else if (attribute.Name.LocalName == "location")
+                else if (locAtt == "location")
                 {
                     ret ??= new IfcClassificationFacet();
                     ret.Location = attribute.Value;
                 }
                 else
                 {
-                    Debug.WriteLine($"skipping attribute {attribute.Name}");
+                    logger?.LogWarning($"Unexpected attribute {locAtt} in Classification facet.");
                 }
             }
             return ret;
@@ -835,10 +845,14 @@ namespace Xbim.InformationSpecifications
 
 
 
-        private static void GetBaseEntity(XElement sub, FacetBase ret)
+        private static void GetBaseEntity(XElement sub, FacetBase ret, ILogger logger)
         {
-            if (sub.Name.LocalName == "instructions")
+            var local = sub.Name.LocalName.ToLowerInvariant();
+            if (local == "instructions")
                 ret.Instructions = sub.Value;
+            else
+                logger?.LogWarning($"Unexpected element 'local' reading base entity.");
+
         }
 
         private static bool IsBaseEntity(XElement sub)
@@ -878,7 +892,7 @@ namespace Xbim.InformationSpecifications
 
         private const bool defaultSubTypeInclusion = false;
 
-        private static IfcTypeFacet GetEntity(XElement elem)
+        private static IfcTypeFacet GetEntity(XElement elem, ILogger logger)
         {
             IfcTypeFacet ret = null;
             foreach (var sub in elem.Elements())
@@ -902,13 +916,13 @@ namespace Xbim.InformationSpecifications
                         ret.PredefinedType = sub.Value;
                         break;
                     default:
-                        Debug.WriteLine($"skipping element {locName}");
+                        logger?.LogWarning($"unexpected element {locName} in IfcTypeFacet");
                         break;
                 }
             }
             foreach (var attribute in elem.Attributes())
             {
-                Debug.WriteLine($"skipping attribute {attribute.Name}");
+                logger?.LogWarning($"Unexpected attribute {attribute.Name} in IfcTypeFacet.");
             }
             return ret;
         }

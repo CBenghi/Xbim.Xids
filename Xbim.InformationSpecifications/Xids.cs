@@ -11,7 +11,9 @@ namespace Xbim.InformationSpecifications
 
 	public partial class Xids // basic definition file
     {
-		public string IfcVersion { get; set; } = "";
+        private ILogger<Xids> _logger;
+
+        public string IfcVersion { get; set; } = "";
 
 		public static bool HasData(Xids xidsToTest)
 		{
@@ -75,6 +77,10 @@ namespace Xbim.InformationSpecifications
 		public Xids()
 		{
 			FacetRepository = new FacetGroupRepository(this);
+		}
+		public Xids(ILogger<Xids> logger) : this()
+		{
+			_logger = logger;
 		}
 
 		public void Initialize(string ifcVersion)
