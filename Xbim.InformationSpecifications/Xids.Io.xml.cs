@@ -51,13 +51,29 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteAttributeString("xsi", "schemaLocation", null, "http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd");
 
             // info goes first
+            WriteInfo(xmlWriter);
+
+            // then the specifications
+            xmlWriter.WriteStartElement("specifications", IdsNamespace);
+            foreach (var requirement in AllSpecifications())
+            {
+                ExportBuildingSmartIDS(requirement, xmlWriter);
+            }
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+            xmlWriter.Flush();
+        }
+
+        private void WriteInfo(XmlWriter xmlWriter)
+        {
             xmlWriter.WriteStartElement("info", IdsNamespace);
 
             // title needs to be written in any case
             var titles = string.Join(", ",
                     SpecificationsGroups.Select(x => x.Name).Distinct().ToArray());
             xmlWriter.WriteElementString("title", IdsNamespace, titles);
-            
+
             // copy
             var copy = string.Join(", ",
                     SpecificationsGroups.Select(x => x.Copyright).Distinct().ToArray());
@@ -69,24 +85,13 @@ namespace Xbim.InformationSpecifications
             DateTime date = DateTime.MinValue;
             if (SpecificationsGroups.Any())
             {
-                date = SpecificationsGroups.Select(x => x.Date).Max();  
+                date = SpecificationsGroups.Select(x => x.Date).Max();
             }
             if (date != DateTime.MinValue)
             {
                 xmlWriter.WriteElementString("date", IdsNamespace, $"{date:yyyy-MM-dd}");
             }
             xmlWriter.WriteEndElement();
-
-            // then the specifications
-            xmlWriter.WriteStartElement("specifications", IdsNamespace);
-            foreach (var requirement in AllSpecifications())
-            {
-                ExportBuildingSmartIDS(requirement, xmlWriter);
-            }
-            xmlWriter.WriteEndElement();
-            
-            xmlWriter.WriteEndElement();
-            xmlWriter.Flush();
         }
 
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
@@ -98,18 +103,32 @@ namespace Xbim.InformationSpecifications
             if (requirement.Name != null)
                 xmlWriter.WriteAttributeString("name", requirement.Name);
             xmlWriter.WriteAttributeString("use", requirement.Use.ToString().ToLowerInvariant());
+            
+            // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
             foreach (var item in requirement.Applicability.Facets)
             {
                 ExportBuildingSmartIDS(item, xmlWriter);
             }
             xmlWriter.WriteEndElement();
+
+            // requirements
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
             foreach (var item in requirement.Requirement.Facets)
             {
                 ExportBuildingSmartIDS(item, xmlWriter);
             }
             xmlWriter.WriteEndElement();
+
+            // instructions
+            if (requirement.Instructions != null)
+            {
+                foreach (var instruct in requirement.Instructions)
+                {
+                    xmlWriter.WriteElementString("instructions", IdsNamespace, instruct);
+                }
+            }
+
             xmlWriter.WriteEndElement();
         }
 
@@ -164,6 +183,10 @@ namespace Xbim.InformationSpecifications
                         xmlWriter.WriteStartElement("name", IdsNamespace);
                         WriteSimpleValue(xmlWriter, pf.PropertyName);
                         xmlWriter.WriteEndElement();
+                    }
+                    if (!string.IsNullOrWhiteSpace(pf.PropertyValueType))
+                    {
+                        xmlWriter.WriteElementString("ifcMeasure", IdsNamespace, pf.PropertyValueType);
                     }
                     WriteValue(pf.PropertyValue, xmlWriter);
                     WriteLocationElements(pf, xmlWriter);
@@ -299,7 +322,7 @@ namespace Xbim.InformationSpecifications
             if (!string.IsNullOrWhiteSpace(cf.Location))
                 xmlWriter.WriteAttributeString("location", cf.Location);
             if (!string.IsNullOrWhiteSpace(cf.Uri))
-                xmlWriter.WriteAttributeString("href", cf.Uri);
+                xmlWriter.WriteAttributeString("uri", cf.Uri);
             if (!string.IsNullOrWhiteSpace(cf.Use))
                 xmlWriter.WriteAttributeString("use", cf.Use);
         }
@@ -374,17 +397,38 @@ namespace Xbim.InformationSpecifications
                     case "copyright":
                         grp.Copyright = elem.Value;
                         break;
+                    case "version":
+                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        break;
+                    case "author":
+                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        break;
+                    case "description":
+                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        break;
                     case "ifcversion":
                         ret.IfcVersion = elem.Value;
                         break;
                     case "date":
                         grp.Date = ReadDate(elem, logger);
                         break;
+                    case "purpose":
+                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        break;
+                    case "milestone":
+                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        break;
                     default:
                         LogUnexpected(elem, info, logger);
                         break;
                 }
             }
+        }
+
+        [Obsolete("We should make sure that all data is managed.")]
+        private static void LogUnmanaged(XElement unmanaged, XElement parent, ILogger logger)
+        {
+            logger?.LogInformation("Element '{unmanaged}' in '{parentName}' is not managed by the application.", unmanaged.Name.LocalName, parent.Name.LocalName);
         }
 
         private static void LogUnexpected(XElement unepected, XElement parent, ILogger logger)
@@ -433,31 +477,50 @@ namespace Xbim.InformationSpecifications
         {
             var req = new Specification(ids, destGroup);
             destGroup.Specifications.Add(req);
-            var nm = spec.Attribute("name");
-            if (nm != null)
-                req.Name = nm.Value;
-            foreach (var elem in spec.Elements())
+            foreach (var att in spec.Attributes())
             {
-                var name = elem.Name.LocalName.ToLowerInvariant();
+                var attName = att.Name.LocalName.ToLower();
+                switch (attName)
+                {
+                    case "name":
+                        req.Name = att.Value;
+                        break;
+                    case "use":
+                        if (att.Value.ToLowerInvariant() == "required")
+                            req.Use = SpecificationUse.Required;
+                        else if (att.Value.ToLowerInvariant() == "optional")
+                            req.Use = SpecificationUse.Optional;
+                        break;
+                    default:
+                        LogUnexpected(att, spec, logger);
+                        break;
+                }
+
+            }
+            foreach (var sub in spec.Elements())
+            {
+                var name = sub.Name.LocalName.ToLowerInvariant();
                 switch (name)
                 {
                     case "applicability":
                         {
-                            var fs = GetFacets(elem, logger);
+                            var fs = GetFacets(sub, logger);
                             if (fs.Any())
                                 req.SetFilters(fs);
                             break;
                         }
-
                     case "requirements":
                         {
-                            var fs = GetFacets(elem, logger);
+                            var fs = GetFacets(sub, logger);
                             if (fs.Any())
                                 req.SetExpectations(fs);
                             break;
                         }
+                    case "instructions":
+                        req.AddInstructions(sub.Value);
+                        break;
                     default:
-                        LogUnexpected(elem, spec, logger);
+                        LogUnexpected(sub, spec, logger);
                         break;
                 }
             }
@@ -524,6 +587,10 @@ namespace Xbim.InformationSpecifications
                     case "name":
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyName = sub.Value;
+                        break;
+                    case "ifcmeasure":
+                        ret ??= new IfcPropertyFacet();
+                        ret.PropertyValueType = sub.Value;
                         break;
                     case "value":
                         ret ??= new IfcPropertyFacet();
@@ -882,7 +949,7 @@ namespace Xbim.InformationSpecifications
         {
             switch (attribute.Name.LocalName)
             {
-                case "href":
+                case "uri":
                 case "location":
                 case "use":
                     return true;
@@ -893,7 +960,7 @@ namespace Xbim.InformationSpecifications
 
         private static void GetBaseAttribute(XAttribute attribute, FacetBase ret)
         {
-            if (attribute.Name.LocalName == "href")
+            if (attribute.Name.LocalName == "uri")
                 ret.Uri = attribute.Value;
             else if (attribute.Name.LocalName == "location")
                 ret.Location = attribute.Value;

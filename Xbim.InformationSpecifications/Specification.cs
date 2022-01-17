@@ -63,7 +63,7 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Used to set the consumers directly on this instance, otherwise inherited.
+		/// Used to set the stages directly on this instance, otherwise inherited.
 		/// Use <see cref="GetStages"/>.
 		/// </summary>
 		public List<string> Stages { get; set; }
@@ -102,7 +102,20 @@ namespace Xbim.InformationSpecifications
 			set => requirementId = value;
 		}
 
+		/// <summary>
+		/// To ensure proper initialization use <see cref="AddInstructions(string)"/> from your code.
+		/// </summary>
+		public List<string> Instructions { get; set; }
 
+
+		public void AddInstructions(string instructions)
+        {
+			if (string.IsNullOrEmpty(instructions))
+				return;
+			if (Instructions == null)
+				Instructions= new List<string>();
+			Instructions.Add(instructions);	
+        }
 
 		public string Guid { get; set; }
 

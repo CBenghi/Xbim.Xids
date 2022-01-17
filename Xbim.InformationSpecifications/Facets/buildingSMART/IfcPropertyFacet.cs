@@ -8,6 +8,7 @@ namespace Xbim.InformationSpecifications
     {
         public string PropertySetName { get; set; }
 		public string PropertyName { get; set; }
+		public string PropertyValueType { get; set; }
 		public ValueConstraint PropertyValue { get; set; } 
 
         public string Short()
@@ -19,8 +20,12 @@ namespace Xbim.InformationSpecifications
                 sb.Append($"Has any property");
             if (!string.IsNullOrEmpty(PropertySetName))
                 sb.Append($" in property set '{PropertySetName}'");
+            if (PropertyValueType != null)
+                sb.Append($" is of type '{PropertyValueType}'");
+            
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
+            
             sb.Append(".");
             return sb.ToString();
         }

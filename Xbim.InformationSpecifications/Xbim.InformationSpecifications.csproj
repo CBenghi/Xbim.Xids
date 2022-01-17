@@ -18,9 +18,9 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
-		<AssemblyVersion>0.2.45.0</AssemblyVersion>
-		<FileVersion>0.2.45.0</FileVersion>
-		<Version>0.2.45</Version>
+		<AssemblyVersion>0.2.46.0</AssemblyVersion>
+		<FileVersion>0.2.46.0</FileVersion>
+		<Version>0.2.46</Version>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\xbim-toolkit-icon.png">

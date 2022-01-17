@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,11 +9,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.NewTests
 {
     public class buildingSmartIDSLoadTests
     {
+        public buildingSmartIDSLoadTests(ITestOutputHelper outputHelper)
+        {
+            OutputHelper = outputHelper;
+        }
+
+        private ITestOutputHelper OutputHelper { get; }
+
         [Theory]
         [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
         [InlineData("bsFiles/IDS_random_example_04.xml", 2, 7)]
@@ -23,24 +34,33 @@ namespace Xbim.InformationSpecifications.NewTests
             Debug.WriteLine(d.FullName);
             CheckSchema(fileName);
 
-            var loaded = Xids.ImportBuildingSmartIDS(fileName);
+            var services = new ServiceCollection()
+            .AddLogging((builder) => builder.AddXUnit(OutputHelper)); 
+            IServiceProvider provider = services.BuildServiceProvider();
+
+            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
+            Assert.NotNull(logg);
+
+            var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
+
+            var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+            loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
+            var loggingCalls = loggerMock.Invocations.Select(x=>x.ToString()).ToArray(); // this creates the array of logging calls
+            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
+            
+            var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
+            outputFile = Path.GetTempFileName(); // comment the second line below to debug any file writing problems.
 
+            Debug.WriteLine(outputFile);
+            loaded.ExportBuildingSmartIDS(outputFile);
+            CheckSchema(outputFile, logg);
 
-            // comment the second line below to debug any problems.
-            var tmpFile = Path.Combine(Path.GetTempPath(), "out.xml");
-            tmpFile = Path.GetTempFileName();
-
-
-            Debug.WriteLine(tmpFile);
-            loaded.ExportBuildingSmartIDS(tmpFile);
-            CheckSchema(tmpFile);
-
-            var reloaded = Xids.ImportBuildingSmartIDS(tmpFile);
+            var reloaded = Xids.ImportBuildingSmartIDS(outputFile);
             CheckCounts(specificationsCount, facetGroupsCount, reloaded);
         }
 
-        private static void CheckSchema(string tmpFile)
+        private static void CheckSchema(string tmpFile, ILogger<buildingSmartIDSLoadTests> logg = null)
         {
             IdsLib.CheckOptions c = new IdsLib.CheckOptions();
             c.CheckSchema = new[] { "bsFiles\\ids_05.xsd" };
@@ -50,9 +70,9 @@ namespace Xbim.InformationSpecifications.NewTests
             var res = IdsLib.CheckOptions.Run(c, s);
             if (res != IdsLib.CheckOptions.Status.Ok)
             {
-                Debug.WriteLine(s.ToString());
+                logg.LogError(s.ToString());
             }
-            Assert.Equal(IdsLib.CheckOptions.Status.Ok, res);
+            res.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
         }
 
         private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)
