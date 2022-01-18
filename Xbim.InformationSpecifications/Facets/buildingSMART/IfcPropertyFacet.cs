@@ -21,7 +21,7 @@ namespace Xbim.InformationSpecifications
             if (!string.IsNullOrEmpty(PropertySetName))
                 sb.Append($" in property set '{PropertySetName}'");
             if (PropertyValueType != null)
-                sb.Append($" is of type '{PropertyValueType}'");
+                sb.Append($" of type '{PropertyValueType}'");
             
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
