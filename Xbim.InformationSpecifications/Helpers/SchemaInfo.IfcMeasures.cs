@@ -6,7 +6,7 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		static IEnumerable<IfcMeasureInfo> GetIfcMeasures()
+		public static IEnumerable<IfcMeasureInfo> GetIfcMeasures()
 		{
 			yield return new IfcMeasureInfo("IfcAreaDensityMeasure", "Area density", "", "Kg/m2");
 			yield return new IfcMeasureInfo("IfcAreaMeasure", "Area", "square meter", "m2");
