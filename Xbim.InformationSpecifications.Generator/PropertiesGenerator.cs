@@ -22,32 +22,6 @@ namespace Xbim.InformationSpecifications.Generator
 					propertyDefinitions.LoadAllDefault();
 				foreach (var set in propertyDefinitions.DefinitionSets)
 				{
-					/*
-					 * ApplicableTypeValue is a mess... suspended.
-					 * 
-					var appType = set.ApplicableTypeValue;
-
-					var re = new Regex(@"(?<type>.+)\.PredefinedType=""(?<ptype>.+)""");
-					var re2 = new Regex(@"PSET\.(?<pset>.+)\.(?<prop>.+)=""(?<val>.+)""");
-					var m = re.Match(appType);
-					var m2 = re2.Match(appType);
-					if (string.IsNullOrWhiteSpace(appType))
-					{
-
-					}
-					else if (m.Success)
-					{
-						sb.AppendLine($@"			// Type: {m.Groups["type"].Value} -> {m.Groups["ptype"].Value}");
-					}
-					else if (m2.Success)
-					{
-						sb.AppendLine($@"			// pset {m2.Groups["pset"].Value} - {m2.Groups["prop"].Value} -> {m2.Groups["val"].Value}");
-					}
-					else
-					{
-
-					}
-					*/
 					var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();
 					var properties = set.PropertyDefinitions.Select(x => x.Name).ToArray();
 					var cArr = newStringArray(classes);
