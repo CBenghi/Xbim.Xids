@@ -33,22 +33,16 @@ namespace Xbim.InformationSpecifications.NewTests
             DirectoryInfo d = new DirectoryInfo(".");
             Debug.WriteLine(d.FullName);
             CheckSchema(fileName);
-
-            var services = new ServiceCollection()
-            .AddLogging((builder) => builder.AddXUnit(OutputHelper)); 
-            IServiceProvider provider = services.BuildServiceProvider();
-
-            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
-            Assert.NotNull(logg);
+            ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
 
             var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
 
             var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
             loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
-            var loggingCalls = loggerMock.Invocations.Select(x=>x.ToString()).ToArray(); // this creates the array of logging calls
+            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
             loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
-            
+
             var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
             outputFile = Path.GetTempFileName(); // comment the second line below to debug any file writing problems.
 
@@ -58,6 +52,16 @@ namespace Xbim.InformationSpecifications.NewTests
 
             var reloaded = Xids.ImportBuildingSmartIDS(outputFile);
             CheckCounts(specificationsCount, facetGroupsCount, reloaded);
+        }
+
+        internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()
+        {
+            var services = new ServiceCollection()
+                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
+            IServiceProvider provider = services.BuildServiceProvider();
+            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
+            Assert.NotNull(logg);
+            return logg;
         }
 
         private static void CheckSchema(string tmpFile, ILogger<buildingSmartIDSLoadTests> logg = null)

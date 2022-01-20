@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications.UI.VM
 
 		private void AddRequirement()
 		{
-			var t = ids.NewSpecification();
+			var t = ids.PrepareSpecification("IFC2X3"); 
 			Reqs.Add(new ReqViewModel(t));
 		}
 

@@ -59,14 +59,17 @@ namespace Xbim.InformationSpecifications
 
 		public ValueConstraint(string value)
 		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value));
-			BaseType = TypeName.String;
+            AcceptedValues = new List<IValueConstraint>
+            {
+                new ExactConstraint(value)
+            };
+            BaseType = TypeName.String;
 		}
 
 		public ValueConstraint(TypeName value)
 		{
 			BaseType = value;
+			AcceptedValues = new List<IValueConstraint>();
 		}
 
 		public ValueConstraint(TypeName valueType, string value)

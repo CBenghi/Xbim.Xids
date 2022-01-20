@@ -102,20 +102,7 @@ namespace Xbim.InformationSpecifications
 			set => requirementId = value;
 		}
 
-		/// <summary>
-		/// To ensure proper initialization use <see cref="AddInstructions(string)"/> from your code.
-		/// </summary>
-		public List<string> Instructions { get; set; }
-
-
-		public void AddInstructions(string instructions)
-        {
-			if (string.IsNullOrEmpty(instructions))
-				return;
-			if (Instructions == null)
-				Instructions= new List<string>();
-			Instructions.Add(instructions);	
-        }
+		public string Instructions { get; set; }
 
 		public string Guid { get; set; }
 

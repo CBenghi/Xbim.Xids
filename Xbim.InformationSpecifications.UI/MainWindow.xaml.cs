@@ -32,7 +32,7 @@ namespace Xbim.InformationSpecifications
 		{
 			DirectoryInfo d = new DirectoryInfo(".");
 			Debug.WriteLine(d.FullName);
-			var ids = Xids.ImportBuildingSmartIDS(@"..\..\..\Xbim.IDS.Tests\Files\bS\Example01.xml");
+			var ids = Xids.ImportBuildingSmartIDS(@"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\IDS_aachen_example.xml");
 			DataContext = new ReqGrpVM(ids.SpecificationsGroups.FirstOrDefault(), ids);
 		}
 

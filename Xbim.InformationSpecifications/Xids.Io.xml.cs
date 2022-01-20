@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -24,25 +25,52 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-      
-
-        public void ExportBuildingSmartIDS(string destinationFile)
+        public enum ExportedFormat
         {
-            using (XmlWriter writer = XmlWriter.Create(destinationFile, WriteSettings))
-            {
-                ExportBuildingSmartIDS(writer);
-            }
+            XML,
+            ZIP
         }
 
-        public void ExportBuildingSmartIDS(Stream destinationStream)
+        /// <summary>
+        /// Exports the entire XIDS to a buildingSmart file, depending on the number of groups exports an XML or a ZIP file.
+        /// </summary>
+        /// <param name="destinationFileName">the path of a writeable location on disk</param>
+        /// <returns>An enum determining if XML or ZIP files were written</returns>
+        public ExportedFormat ExportBuildingSmartIDS(string destinationFileName)
         {
-            using (XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings))
-            {
-                ExportBuildingSmartIDS(writer);
-            }
+            using FileStream fs = File.OpenWrite(destinationFileName);
+            return ExportBuildingSmartIDS(fs);
         }
 
-        private void ExportBuildingSmartIDS(XmlWriter xmlWriter)
+        public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream)
+        {
+            if (SpecificationsGroups.Count == 1)
+            {
+                using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
+                ExportBuildingSmartIDS(SpecificationsGroups.First(), writer);
+                return ExportedFormat.XML;
+            }
+
+            ZipArchive zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true);
+            int i = 0;
+            foreach (var specGroup in SpecificationsGroups)
+            {
+                var name =
+                    (!string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                    ? $"{++i} - {specGroup.Name}.xml"
+                    : $"{++i}.xml";
+                var file = zipArchive.CreateEntry(name);
+                using var str = file.Open();
+                using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
+                ExportBuildingSmartIDS(specGroup, writer);
+                
+            }
+            return ExportedFormat.ZIP;
+        }
+
+        
+
+        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter)
         {
             xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
@@ -51,11 +79,11 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteAttributeString("xsi", "schemaLocation", null, "http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd");
 
             // info goes first
-            WriteInfo(xmlWriter);
+            WriteInfo(specGroup, xmlWriter);
 
             // then the specifications
             xmlWriter.WriteStartElement("specifications", IdsNamespace);
-            foreach (var requirement in AllSpecifications())
+            foreach (var requirement in specGroup.Specifications)
             {
                 ExportBuildingSmartIDS(requirement, xmlWriter);
             }
@@ -65,32 +93,35 @@ namespace Xbim.InformationSpecifications
             xmlWriter.Flush();
         }
 
-        private void WriteInfo(XmlWriter xmlWriter)
+        private static void WriteInfo(SpecificationsGroup specGroup, XmlWriter xmlWriter)
         {
             xmlWriter.WriteStartElement("info", IdsNamespace);
-
             // title needs to be written in any case
-            var titles = string.Join(", ",
-                    SpecificationsGroups.Select(x => x.Name).Distinct().ToArray());
-            xmlWriter.WriteElementString("title", IdsNamespace, titles);
-
+            xmlWriter.WriteElementString("title", IdsNamespace, specGroup.Name);
             // copy
-            var copy = string.Join(", ",
-                    SpecificationsGroups.Select(x => x.Copyright).Distinct().ToArray());
-            if (!string.IsNullOrEmpty(copy))
-                xmlWriter.WriteElementString("copyright", IdsNamespace, copy);
-            xmlWriter.WriteElementString("ifcVersion", IdsNamespace, IfcVersion);
-
+            if (!string.IsNullOrEmpty(specGroup.Copyright))
+                xmlWriter.WriteElementString("copyright", IdsNamespace, specGroup.Copyright);
+            // version
+            if (!string.IsNullOrEmpty(specGroup.Version))
+                xmlWriter.WriteElementString("version", IdsNamespace, specGroup.Version);
+            // ifcVersion
+            xmlWriter.WriteElementString("ifcVersion", IdsNamespace, specGroup.IfcVersion);
+            // description
+            if (!string.IsNullOrEmpty(specGroup.Description))
+                xmlWriter.WriteElementString("description", IdsNamespace, specGroup.Description);
+            // author
+            if (!string.IsNullOrEmpty(specGroup.Author))
+                xmlWriter.WriteElementString("author", IdsNamespace, specGroup.Author);
             // date
-            DateTime date = DateTime.MinValue;
-            if (SpecificationsGroups.Any())
-            {
-                date = SpecificationsGroups.Select(x => x.Date).Max();
-            }
-            if (date != DateTime.MinValue)
-            {
-                xmlWriter.WriteElementString("date", IdsNamespace, $"{date:yyyy-MM-dd}");
-            }
+            if (specGroup.Date.HasValue)
+                xmlWriter.WriteElementString("date", IdsNamespace, $"{specGroup.Date.Value:yyyy-MM-dd}");
+            // purpose
+            if (!string.IsNullOrEmpty(specGroup.Purpose))
+                xmlWriter.WriteElementString("purpose", IdsNamespace, specGroup.Purpose);
+            // milestone
+            if (!string.IsNullOrEmpty(specGroup.Milestone))
+                xmlWriter.WriteElementString("milestone", IdsNamespace, specGroup.Milestone);
+
             xmlWriter.WriteEndElement();
         }
 
@@ -121,13 +152,8 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
 
             // instructions
-            if (requirement.Instructions != null)
-            {
-                foreach (var instruct in requirement.Instructions)
-                {
-                    xmlWriter.WriteElementString("instructions", IdsNamespace, instruct);
-                }
-            }
+            if (requirement.Name != null)
+                xmlWriter.WriteElementString("instructions", IdsNamespace, requirement.Instructions);
 
             xmlWriter.WriteEndElement();
         }
@@ -209,7 +235,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();
                     break;
                 default:
-                    _logger.LogWarning($"todo: missing case for {item.GetType()}.");
+                    _logger?.LogWarning($"todo: missing case for {item.GetType()}.");
                     break;
             }
         }
@@ -344,7 +370,7 @@ namespace Xbim.InformationSpecifications
             if (!File.Exists(fileName))
             {
                 DirectoryInfo d = new DirectoryInfo(".");
-                logger.LogError($"File '{fileName}' not found from executing directory '{d.FullName}'");
+                logger?.LogError($"File '{fileName}' not found from executing directory '{d.FullName}'");
                 return null;
             }
             
@@ -398,25 +424,25 @@ namespace Xbim.InformationSpecifications
                         grp.Copyright = elem.Value;
                         break;
                     case "version":
-                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
-                        break;
-                    case "author":
-                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
-                        break;
-                    case "description":
-                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        grp.Version = elem.Value;
                         break;
                     case "ifcversion":
-                        ret.IfcVersion = elem.Value;
+                        grp.IfcVersion = elem.Value;
+                        break;
+                    case "description":
+                        grp.Description = elem.Value;
+                        break;
+                    case "author":
+                        grp.Author = elem.Value;
                         break;
                     case "date":
                         grp.Date = ReadDate(elem, logger);
                         break;
                     case "purpose":
-                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        grp.Purpose = elem.Value;
                         break;
                     case "milestone":
-                        LogUnmanaged(elem, info, logger); // todo: should we manage this?
+                        grp.Milestone = elem.Value;
                         break;
                     default:
                         LogUnexpected(elem, info, logger);
@@ -450,7 +476,7 @@ namespace Xbim.InformationSpecifications
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Invalid value for date: {elem.Value}.");
+                logger?.LogError(ex, $"Invalid value for date: {elem.Value}.");
                 return DateTime.MinValue;
             }
             
@@ -517,7 +543,7 @@ namespace Xbim.InformationSpecifications
                             break;
                         }
                     case "instructions":
-                        req.AddInstructions(sub.Value);
+                        req.Instructions = sub.Value;
                         break;
                     default:
                         LogUnexpected(sub, spec, logger);

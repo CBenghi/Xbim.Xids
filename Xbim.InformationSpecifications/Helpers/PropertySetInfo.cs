@@ -20,32 +20,26 @@ namespace Xbim.InformationSpecifications.Helpers
 			ApplicableClasses = applicableClasses;
 		}
 
-
-
-		public static IList<PropertySetInfo> schemaIFC4;
+		private static IList<PropertySetInfo> schemaIFC4;
 		public static IList<PropertySetInfo> SchemaIfc4
 		{
 			get
 			{
 				if (schemaIFC4 == null)
-					GetPropertiesIFC4();
+					schemaIFC4 = GetPropertiesIFC4();
 				return schemaIFC4;
 			}
 		}
 
-		public static IList<PropertySetInfo> schemaIFC2x3;
+		private static IList<PropertySetInfo> schemaIFC2x3;
 		public static IList<PropertySetInfo> SchemaIfc2x3
 		{
 			get
 			{
 				if (schemaIFC2x3 == null)
-					GetPropertiesIFC2x3();
+					schemaIFC2x3 = GetPropertiesIFC2x3();
 				return schemaIFC2x3;
 			}
 		}
-
-		static partial void GetPropertiesIFC2x3();
-		static partial void GetPropertiesIFC4();
-
 	}
 }

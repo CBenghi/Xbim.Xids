@@ -4,17 +4,32 @@ using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
 {
+	/// <summary>
+	/// A specification group is virtually capable of containing an entire bS IDS.
+	/// Conceptually it applies to a singe model.
+	/// It's then expanded to support extra LOIN features for XIDS.
+	/// 
+	/// Beyond rich metadata it contains a colleciton of <see cref="Specifications"/>, each having applicability and requirements.
+	/// </summary>
 	public partial class SpecificationsGroup : ISpecificationMetadata
 	{
-		public string Name { get; set; }
-		public string Copyright { get; set; }
-		public DateTime Date { get; set; } = DateTime.MinValue;
+		// main properties
+		public string Name { get; set; } // also in bS -> Title
+		public string Copyright { get; set; } // bS
+		public string Version { get; set; } // bS
+		public string IfcVersion { get; set; } // bS
+		public string Description { get; set; } // bS
+		public string Author { get; set; } // bS
+		public DateTime? Date { get; set; } // bS
+		public string Purpose { get; set; } // bS
+		public string Milestone { get; set; } // bS
+
+		// useful for LOIN
 		public string Provider { get; set; }
-
 		public List<string> Consumers { get; set; }
-
 		public List<string> Stages { get; set; }
 
+		// now the hierarchycal data
 		public List<Specification> Specifications { get; set; } = new List<Specification>();
 
 		internal IEnumerable<FacetGroup> UsedFacetGroups()
@@ -33,7 +48,6 @@ namespace Xbim.InformationSpecifications
 		/// <returns>a distinct enumerable</returns>
 		public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
 		{
-
 			// todo: 2021: improve documentation to clarify the use paramter (only starting from applic and requirement).
 
 			HashSet<FacetGroup> returned = new HashSet<FacetGroup>();

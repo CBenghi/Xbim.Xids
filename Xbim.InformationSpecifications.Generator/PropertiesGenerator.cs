@@ -53,7 +53,7 @@ namespace Xbim.InformationSpecifications.Generator
 					var cArr = newStringArray(classes);
 					var pArr = newStringArray(properties);
 					// sb.AppendLine($@"			// {string.Join(",", classes)}");
-					sb.AppendLine($@"			schema{schema}.Add(new PropertySetInfo(""{set.Name}"", {pArr}, {cArr} ));");
+					sb.AppendLine($@"			ret.Add(new PropertySetInfo(""{set.Name}"", {pArr}, {cArr} ));");
 				}
 				source = source.Replace($"<PlaceHolder{schema}>", sb.ToString());
 			}
@@ -76,14 +76,16 @@ namespace Xbim.InformationSpecifications.Helpers
 	{
 		static partial void GetPropertiesIFC2x3()
 		{
-			schemaIFC2x3 = new List<PropertySetInfo>();
+			var ret = new List<PropertySetInfo>();
 <PlaceHolderIFC2x3>
+			return ret;
 		}
 
 		static partial void GetPropertiesIFC4()
 		{
-			schemaIFC4 = new List<PropertySetInfo>();
+			var ret = new List<PropertySetInfo>();
 <PlaceHolderIFC4>
+			return ret;
 		}
 	}
 }

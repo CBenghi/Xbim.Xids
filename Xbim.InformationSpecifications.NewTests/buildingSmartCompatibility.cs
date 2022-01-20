@@ -1,10 +1,12 @@
-﻿using System;
+﻿using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
+using static Xbim.InformationSpecifications.Xids;
 
 namespace Xbim.InformationSpecifications.NewTests
 {
@@ -15,12 +17,12 @@ namespace Xbim.InformationSpecifications.NewTests
         public void MinimalFileTest()
         {
             Xids x = new Xids();
-            x.Initialize("IFC2X3");
             // at least one specification is needed
             //
-            var t = x.PrepareSpecification();
+            var t = x.PrepareSpecification("IFC2X3");
             t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
             t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+            t.Instructions = "Some instructions";
 
             // ensure it's there.
             Assert.Single(x.AllSpecifications());
@@ -42,6 +44,28 @@ namespace Xbim.InformationSpecifications.NewTests
                 Debug.WriteLine(s.ToString());
             }
             Assert.Equal(IdsLib.CheckOptions.Status.Ok, res);
+        }
+
+        [Fact]
+        public void DoubleFileTest()
+        {
+            Xids x = new Xids();
+            // at least one specification is needed
+            //
+            var t = x.PrepareSpecification("IFC2X3");
+            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+
+            t = x.PrepareSpecification("IFC4");
+            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
+
+            // export
+            var tmpFile = Path.GetTempFileName();
+            var type = x.ExportBuildingSmartIDS(tmpFile);
+            type.Should().Be(ExportedFormat.ZIP, "multiple groups are defined in the file");
+
+            // the file is actually a zip.
         }
 
     }

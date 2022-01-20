@@ -15,11 +15,11 @@ namespace Xbim.InformationSpecifications.Tests
 		public void FacetGroupUseCount()
 		{
 			Xids t = new Xids();
-			var spec = t.NewSpecification();
+			var spec = t.PrepareSpecification("IFC2X3");
 			var group = spec.Applicability;
 
 			Assert.AreEqual(1, group.UseCount(t));
-			var spec2 = t.NewSpecification();
+			var spec2 = t.PrepareSpecification("IFC2X3");
 			spec2.Requirement = group;
 			Assert.AreEqual(2, group.UseCount(t));
 		}

@@ -13,8 +13,6 @@ namespace Xbim.InformationSpecifications
     {
         private ILogger<Xids> _logger;
 
-        public string IfcVersion { get; set; } = "";
-
 		public static bool HasData(Xids xidsToTest)
 		{
 			if (xidsToTest == null)
@@ -34,14 +32,42 @@ namespace Xbim.InformationSpecifications
 			return PrepareSpecification(containingCollection);
 		}
 
+
 		/// <summary>
-		/// Prepares a new specification taking care of target specification group if not provided.
-		/// WARNING: this creates two new facetgroups if not provided.
+		/// Prepares a new specification,
+		/// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
+		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
 		/// </summary>
-		/// <param name="containingCollection">the desired parent collection</param>
+		/// <param name="ifcVersion">the desired parent collection</param>
+		/// <param name="applicability"></param>
+		/// <param name="requirement"></param>
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
-			SpecificationsGroup containingCollection = null,
+			string ifcVersion,
+			FacetGroup applicability = null,
+			FacetGroup requirement = null
+			)
+        {
+			var destinationGroup = SpecificationsGroups.FirstOrDefault(x=>x.IfcVersion == ifcVersion);
+			if (destinationGroup == null)
+			{
+				destinationGroup = new SpecificationsGroup();
+				destinationGroup.IfcVersion = ifcVersion;
+				SpecificationsGroups.Add(destinationGroup);
+			}
+			return PrepareSpecification(destinationGroup, applicability, requirement);
+		}
+
+		/// <summary>
+		/// Prepares a new specification, inside the specified destinationGroup
+		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+		/// </summary>
+		/// <param name="destinationGroup">the desired owning collection</param>
+		/// <param name="applicability"></param>
+		/// <param name="requirement"></param>
+		/// <returns>The initialised specification</returns>
+		public Specification PrepareSpecification(
+			SpecificationsGroup destinationGroup,
 			FacetGroup applicability = null,
 			FacetGroup requirement = null
 			)
@@ -51,21 +77,23 @@ namespace Xbim.InformationSpecifications
 			if (requirement == null)
 				requirement = new FacetGroup(FacetRepository);
 
-			var t = new Specification(this, containingCollection)
+			// checks and/or prepares destination
+			if (destinationGroup == null) // if one exists get that
+				destinationGroup = SpecificationsGroups.FirstOrDefault();
+			if (destinationGroup == null)
+			{
+				destinationGroup = new SpecificationsGroup();
+				SpecificationsGroups.Add(destinationGroup);
+			}
+
+			// creates new specification
+			var t = new Specification(this, destinationGroup)
 			{
 				Applicability = applicability,
 				Requirement = requirement
 			};
-			if (containingCollection == null)
-			{
-				containingCollection = SpecificationsGroups.FirstOrDefault();
-			}
-			if (containingCollection == null)
-			{
-				containingCollection = new SpecificationsGroup();
-				SpecificationsGroups.Add(containingCollection);
-			}
-			containingCollection.Specifications.Add(t);
+			
+			destinationGroup.Specifications.Add(t);
 			return t;
 		}
 
@@ -81,11 +109,6 @@ namespace Xbim.InformationSpecifications
 		public Xids(ILogger<Xids> logger) : this()
 		{
 			_logger = logger;
-		}
-
-		public void Initialize(string ifcVersion)
-		{
-			IfcVersion = ifcVersion; 
 		}
 
 		public IEnumerable<Specification> AllSpecifications()
