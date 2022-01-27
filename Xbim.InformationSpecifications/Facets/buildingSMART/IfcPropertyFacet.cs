@@ -6,19 +6,19 @@ namespace Xbim.InformationSpecifications
 
 	public partial class IfcPropertyFacet : FacetBase, IFacet, IEquatable<IfcPropertyFacet>
     {
-        public string PropertySetName { get; set; }
-		public string PropertyName { get; set; }
+        public ValueConstraint PropertySetName { get; set; }
+		public ValueConstraint PropertyName { get; set; }
 		public string PropertyValueType { get; set; }
 		public ValueConstraint PropertyValue { get; set; } 
 
         public string Short()
         {
             StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(PropertyName))
+            if (!FacetBase.IsNullOrEmpty(PropertyName))
                 sb.Append($"Has property '{PropertyName}'");
             else
                 sb.Append($"Has any property");
-            if (!string.IsNullOrEmpty(PropertySetName))
+            if (!FacetBase.IsNullOrEmpty(PropertySetName))
                 sb.Append($" in property set '{PropertySetName}'");
             if (PropertyValueType != null)
                 sb.Append($" of type '{PropertyValueType}'");
@@ -49,10 +49,9 @@ namespace Xbim.InformationSpecifications
         {
             if (other == null)
                 return false;
-
-            if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(PropertySetName, other.PropertySetName))
+            if (!IFacetExtensions.CaseInsensitiveEquals(PropertySetName, other.PropertySetName))
                 return false;
-            if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(PropertyName, other.PropertyName))
+            if (!IFacetExtensions.CaseInsensitiveEquals(PropertyName, other.PropertyName))
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
@@ -61,8 +60,9 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsValid()
 		{
-            // I suppose that at least PropertySetName should be defined.
-            if (string.IsNullOrWhiteSpace(PropertySetName))
+            if (FacetBase.IsNullOrEmpty(PropertySetName))
+                return false;
+            if (FacetBase.IsNullOrEmpty(PropertyName))
                 return false;
             return true;
 		}

@@ -3,6 +3,7 @@ using IdsLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -91,7 +92,10 @@ namespace Xbim.InformationSpecifications.NewTests
             // more checks
             var outputCount = XmlReport(exportedFile);
             var inputCount = XmlReport(fileName);
-            outputCount.Should().Be(inputCount, "everything should be exported");
+
+            var fd = inputCount.FirstDifference(outputCount);
+            fd.Should().Be("", "we don't expect differences");
+            // outputCount.Should().Be(inputCount, "everything should be exported");
 
         }
 
@@ -132,7 +136,7 @@ namespace Xbim.InformationSpecifications.NewTests
             return t;
         }
 
-        private class XmlElementSummary
+        private class XmlElementSummary 
         {
             public string type;
             public XmlElementSummary parent;
@@ -146,6 +150,59 @@ namespace Xbim.InformationSpecifications.NewTests
                 attributes = main.Attributes().Count(); 
                 Subs = main.Elements().Select(x=>new XmlElementSummary(x, this)).ToList();
             }
+
+            public string FirstDifference(XmlElementSummary other)
+            {
+                if (other == null)
+                    return ReportDifference("Other is null");
+                if (this.attributes != other.attributes)
+                    return ReportDifference("Different attributes count");
+                if (this.Subs.Count() != other.Subs.Count())
+                    return ReportDifference("Different elements count");
+                for (int i = 0; i< Subs.Count(); i++ )
+                {
+                    var thisSub = this.Subs[i];
+                    var otherSub = other.Subs[i];
+                    var fd = thisSub.FirstDifference(otherSub);
+                    if (string.IsNullOrEmpty(fd))
+                        return fd;
+                }
+                return "";
+            }
+
+            private string ReportDifference(string message)
+            {
+                StringBuilder sb = new StringBuilder(); 
+                
+                Stack<XmlElementSummary> parents = new Stack<XmlElementSummary>();
+                var running = this;
+                while (running.parent != null)
+                {
+                    parents.Push(running.parent);
+                    running = running.parent;
+                }
+                var indent = "";
+                while (parents.TryPop(out var current))
+                {
+                    sb.Append($"{indent}{current.type} - A: {current.attributes}");
+                    indent += "\t";
+                }
+                sb.Append($"{indent}{message}");
+                return sb.ToString();
+
+            }
+
+            //public bool Equals([AllowNull] XmlElementSummary other)
+            //{
+            //    if (other == null)
+            //        return false;
+            //    if (ReferenceEquals(this, other))
+            //        return true;
+            //    if (this.type != other.type)
+            //        return false;
+            //    if (this.attributes != other.attributes)
+            //        return false; 
+            //}
         }
 
 

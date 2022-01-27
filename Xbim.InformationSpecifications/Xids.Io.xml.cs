@@ -164,73 +164,50 @@ namespace Xbim.InformationSpecifications
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
-                    if (!string.IsNullOrWhiteSpace(tf.IfcType))
-                    {
-                        xmlWriter.WriteStartElement("name", IdsNamespace);
-                        WriteSimpleValue(xmlWriter, tf.IfcType);
-                        xmlWriter.WriteEndElement();
-                    }
-                    if (!string.IsNullOrWhiteSpace(tf.PredefinedType))
-                    {
-                        xmlWriter.WriteStartElement("predefinedType", IdsNamespace);
-                        WriteSimpleValue(xmlWriter, tf.PredefinedType);
-                        xmlWriter.WriteEndElement();
-                    }
+                    WriteConstraintValue(tf.IfcType, xmlWriter, "name");
+                    WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType");
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcClassificationFacet cf:
                     {
                         xmlWriter.WriteStartElement("classification", IdsNamespace);
                         WriteFaceteBaseAttributes(cf, xmlWriter); // attribute
-                        WriteValue(cf.Identification, xmlWriter);
+                        WriteConstraintValue(cf.Identification, xmlWriter);
                         Dictionary<string, string> attributes = new Dictionary<string, string>();
                         if (!string.IsNullOrWhiteSpace(cf.ClassificationSystemHref))
                         {
                             attributes.Add("href", cf.ClassificationSystemHref);
                         }
-                        WriteValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
+                        WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
                         WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                         xmlWriter.WriteEndElement();
                         break;
                     }
-
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
                     WriteFaceteBaseAttributes(pf, xmlWriter);
-                    if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
-                    {
-                        xmlWriter.WriteStartElement("propertySet", IdsNamespace);
-                        WriteSimpleValue(xmlWriter, pf.PropertySetName);
-                        xmlWriter.WriteEndElement();
-                    }
-                    if (!string.IsNullOrWhiteSpace(pf.PropertyName))
-                    {
-                        xmlWriter.WriteStartElement("name", IdsNamespace);
-                        WriteSimpleValue(xmlWriter, pf.PropertyName);
-                        xmlWriter.WriteEndElement();
-                    }
+                    WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet");
+                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name");
                     if (!string.IsNullOrWhiteSpace(pf.PropertyValueType))
                     {
                         xmlWriter.WriteElementString("ifcMeasure", IdsNamespace, pf.PropertyValueType);
                     }
-                    WriteValue(pf.PropertyValue, xmlWriter);
+                    WriteConstraintValue(pf.PropertyValue, xmlWriter);
                     WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
                     WriteFaceteBaseAttributes(mf, xmlWriter);
-                    WriteValue(mf.Value, xmlWriter);
+                    WriteConstraintValue(mf.Value, xmlWriter);
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
                     xmlWriter.WriteAttributeString("location", af.Location.ToLowerInvariant());
-                    xmlWriter.WriteStartElement("name", IdsNamespace);
-                    WriteSimpleValue(xmlWriter, af.AttributeName);
-                    xmlWriter.WriteEndElement();
-                    WriteValue(af.AttributeValue, xmlWriter);
+                    WriteConstraintValue(af.AttributeName, xmlWriter, "name");
+                    WriteConstraintValue(af.AttributeValue, xmlWriter);
                     xmlWriter.WriteEndElement();
                     break;
                 default:
@@ -246,7 +223,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
+        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
         {
             if (value == null)
                 return;

@@ -4,7 +4,7 @@ namespace Xbim.InformationSpecifications
 {
 	public partial class AttributeFacet : IFacet, IEquatable<AttributeFacet>
 	{
-		public string AttributeName { get; set; } = "";
+		public ValueConstraint AttributeName { get; set; } = "";
 
 		private string location = InformationSpecifications.Location.any.ToString();
 
@@ -65,7 +65,7 @@ namespace Xbim.InformationSpecifications
 
 		public bool IsValid()
 		{
-			return !string.IsNullOrWhiteSpace(AttributeName);
+			return !FacetBase.IsNullOrEmpty(AttributeName);
 		}
 	}
 }

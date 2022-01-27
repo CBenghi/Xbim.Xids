@@ -29,7 +29,15 @@ namespace Xbim.InformationSpecifications
 			}
 			return InformationSpecifications.Location.any;
 		}
-		public void SetLocation(Location loc)
+
+        internal static bool IsNullOrEmpty(ValueConstraint evaluatingConstraint)
+        {
+			if (evaluatingConstraint == null)
+				return true;
+			return evaluatingConstraint.IsEmpty();
+        }
+
+        public void SetLocation(Location loc)
 		{
 			location = loc.ToString();
 		}
@@ -61,11 +69,11 @@ namespace Xbim.InformationSpecifications
 		{
 			if (other == null)
 				return false;
-			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Location, other.Location))
+			if (!IFacetExtensions.CaseInsensitiveEquals(Location, other.Location))
 				return false;
-			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Use, other.Use))
+			if (!IFacetExtensions.CaseInsensitiveEquals(Use, other.Use))
 				return false;
-			if (!IFacetExtensions.NullableStringCaseInsensitiveEquals(Instructions, other.Instructions))
+			if (!IFacetExtensions.CaseInsensitiveEquals(Instructions, other.Instructions))
 				return false;
 			if (!IFacetExtensions.NullEquals(Uri, other.Uri))
 				return false;

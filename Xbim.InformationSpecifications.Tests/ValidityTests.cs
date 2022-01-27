@@ -25,6 +25,7 @@ namespace Xbim.InformationSpecifications.Tests
 			g.Facets.Add(prop);
 			Assert.IsFalse(g.IsValid());
 			prop.PropertySetName = "NowValid";
+			prop.PropertyName = "NowValid";
 			Assert.IsTrue(g.IsValid());
 
 			var type = new IfcTypeFacet();
@@ -33,7 +34,11 @@ namespace Xbim.InformationSpecifications.Tests
 			type.IfcType = "NowValid";
 			Assert.IsTrue(g.IsValid());
 
-			var newtype = new IfcTypeFacet() { PredefinedType = "ok" };
+			var newtype = new IfcTypeFacet() { 
+				PredefinedType = "Notok" 
+			};
+			Assert.IsFalse(newtype.IsValid());
+			newtype.IfcType = "MustBeDefined";
 			Assert.IsTrue(newtype.IsValid());
 
 			var mat = new MaterialFacet();
