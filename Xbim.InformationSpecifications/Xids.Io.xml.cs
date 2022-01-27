@@ -152,7 +152,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
 
             // instructions
-            if (requirement.Name != null)
+            if (requirement.Instructions != null)
                 xmlWriter.WriteElementString("instructions", IdsNamespace, requirement.Instructions);
 
             xmlWriter.WriteEndElement();
@@ -181,7 +181,7 @@ namespace Xbim.InformationSpecifications
                 case IfcClassificationFacet cf:
                     {
                         xmlWriter.WriteStartElement("classification", IdsNamespace);
-                        WriteLocationAttributes(cf, xmlWriter); // attribute
+                        WriteFaceteBaseAttributes(cf, xmlWriter); // attribute
                         WriteValue(cf.Identification, xmlWriter);
                         Dictionary<string, string> attributes = new Dictionary<string, string>();
                         if (!string.IsNullOrWhiteSpace(cf.ClassificationSystemHref))
@@ -189,15 +189,14 @@ namespace Xbim.InformationSpecifications
                             attributes.Add("href", cf.ClassificationSystemHref);
                         }
                         WriteValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
-                        WriteLocationElements(cf, xmlWriter);
-
+                        WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                         xmlWriter.WriteEndElement();
                         break;
                     }
 
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
-                    WriteLocationAttributes(pf, xmlWriter);
+                    WriteFaceteBaseAttributes(pf, xmlWriter);
                     if (!string.IsNullOrWhiteSpace(pf.PropertySetName))
                     {
                         xmlWriter.WriteStartElement("propertySet", IdsNamespace);
@@ -215,14 +214,14 @@ namespace Xbim.InformationSpecifications
                         xmlWriter.WriteElementString("ifcMeasure", IdsNamespace, pf.PropertyValueType);
                     }
                     WriteValue(pf.PropertyValue, xmlWriter);
-                    WriteLocationElements(pf, xmlWriter);
+                    WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
-                    WriteLocationAttributes(mf, xmlWriter);
+                    WriteFaceteBaseAttributes(mf, xmlWriter);
                     WriteValue(mf.Value, xmlWriter);
-                    WriteLocationElements(mf, xmlWriter);
+                    WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
@@ -343,7 +342,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteLocationAttributes(FacetBase cf, XmlWriter xmlWriter)
+        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter)
         {
             if (!string.IsNullOrWhiteSpace(cf.Location))
                 xmlWriter.WriteAttributeString("location", cf.Location);
@@ -353,10 +352,10 @@ namespace Xbim.InformationSpecifications
                 xmlWriter.WriteAttributeString("use", cf.Use);
         }
 
-        private void WriteLocationElements(FacetBase cf, XmlWriter xmlWriter)
+        private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
         {
             if (!string.IsNullOrWhiteSpace(cf.Instructions))
-                xmlWriter.WriteElementString("instructions", cf.Instructions);
+                xmlWriter.WriteElementString("instructions", IdsNamespace, cf.Instructions);
         }
 
         public static Xids ImportBuildingSmartIDS(Stream stream)
@@ -601,6 +600,7 @@ namespace Xbim.InformationSpecifications
                 {
                     ret ??= new IfcPropertyFacet();
                     GetBaseEntity(sub, ret, logger);
+                    continue;
                 }
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
@@ -777,7 +777,10 @@ namespace Xbim.InformationSpecifications
             count += (patternc != null) ? 1 : 0;
             count += (structure != null) ? 1 : 0;
             if (count != 1)
+            {
+                logger?.LogWarning($"Invalid value constraint for {elem.Name.LocalName} full xml '{elem}'.");
                 return null;
+            }
             if (enumeration != null)
             {
                 var ret = new ValueConstraint(t)

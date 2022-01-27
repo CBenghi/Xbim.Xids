@@ -23,17 +23,21 @@ namespace Xbim.InformationSpecifications.NewTests
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]
-        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
-        [InlineData("bsFiles/IDS_random_example_04.xml", 2, 7)]
-        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9)]
+        //[InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
+        //[InlineData("bsFiles/IDS_random_example_04.xml", 2, 7)]
+        //[InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9)]
+        //[InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16)]
+        //[InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9)]
+        
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1)]
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount)
         {
             DirectoryInfo d = new DirectoryInfo(".");
             Debug.WriteLine(d.FullName);
-            CheckSchema(fileName);
             ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
+            CheckSchema(fileName, logg);
+            
 
             var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
 
@@ -44,7 +48,7 @@ namespace Xbim.InformationSpecifications.NewTests
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
 
             var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
-            outputFile = Path.GetTempFileName(); // comment the second line below to debug any file writing problems.
+            outputFile = Path.GetTempFileName(); 
 
             Debug.WriteLine(outputFile);
             loaded.ExportBuildingSmartIDS(outputFile);
@@ -82,12 +86,16 @@ namespace Xbim.InformationSpecifications.NewTests
         private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)
         {
             Assert.NotNull(loaded);
-            Assert.Equal(specificationsCount, loaded.AllSpecifications().Count());
-            var grps = loaded.FacetGroups(FacetGroup.FacetUse.All);
-            var tot = grps.Sum(x => x.Facets.Count());
-            //var t = grps.Select(x=>x.GetType().Name).ToList();
-            //Debug.WriteLine(string.Join("\t", t));
-            Assert.Equal(facetGroupsCount, tot);
+            if (specificationsCount != -1)
+                Assert.Equal(specificationsCount, loaded.AllSpecifications().Count());
+            if (facetGroupsCount != -1)
+            {
+                var grps = loaded.FacetGroups(FacetGroup.FacetUse.All);
+                var tot = grps.Sum(x => x.Facets.Count());
+                //var t = grps.Select(x=>x.GetType().Name).ToList();
+                //Debug.WriteLine(string.Join("\t", t));
+                Assert.Equal(facetGroupsCount, tot);
+            }
         }
 
     }
