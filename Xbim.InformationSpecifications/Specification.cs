@@ -8,8 +8,16 @@ namespace Xbim.InformationSpecifications
 	public enum SpecificationUse
     {
 		Required,
-		Optional
+		Optional,
+		Prohibited
     }
+
+	public enum IfcSchemaVersion
+    {
+		IFC2X3,
+		IFC4,
+		IFC4_3,
+	}
 
 	public partial class Specification : ISpecificationMetadata
 	{
@@ -24,6 +32,8 @@ namespace Xbim.InformationSpecifications
 			
 		[JsonIgnore]
 		SpecificationsGroup Parent { get; set; }
+
+		public List<IfcSchemaVersion> IfcVersion { get; set; } // bS
 
 		public Specification(Xids ids, SpecificationsGroup parent)
 		{
@@ -77,7 +87,8 @@ namespace Xbim.InformationSpecifications
 			return Enumerable.Empty<string>();
 		}
 
-		public string Name { get; set; }
+		public string Name { get; set; } // bS
+		public string Description { get; set; } // bS
 
 		[JsonIgnore]
 		public FacetGroup Applicability { get; set; }

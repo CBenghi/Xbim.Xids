@@ -17,7 +17,7 @@ namespace Xbim.InformationSpecifications.NewTests
 			Debug.WriteLine(d.FullName);
 
 			var x = new Xids();
-			var newspec = x.PrepareSpecification("IFC2X3");
+			var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 			newspec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
 
 			newspec.Requirement.Facets.Add(
@@ -67,7 +67,7 @@ namespace Xbim.InformationSpecifications.NewTests
 			
 			// relation: furniture contained in spaces
 			//
-			var spec = x.PrepareSpecification("IFC2X3");
+			var spec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 
 			var spaces = new FacetGroup(x.FacetRepository);
 			spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IfcSpace" });

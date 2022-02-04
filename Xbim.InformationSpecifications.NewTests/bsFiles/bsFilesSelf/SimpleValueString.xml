@@ -5,110 +5,14 @@
     <ids:title>string</ids:title>
     <ids:copyright>string</ids:copyright>
     <ids:version>string</ids:version>
-    <ids:ifcVersion>IFC4_3</ids:ifcVersion>
     <ids:description>string</ids:description>
-    <ids:author>Cz@gH.gd</ids:author>
-    <ids:date>2006-02-23</ids:date>
+    <ids:author>Q!@$+x.H</ids:author>
+    <ids:date>1991-02-16</ids:date>
     <ids:purpose>string</ids:purpose>
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification use="required">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>IfcAreaDensityMeasure</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>add more here...</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:requirements>
-      <ids:instructions>string</ids:instructions>
-    </ids:specification>
-    <ids:specification use="required">
+    <ids:specification ifcVersion="IFC4_3 IFC4_3 IFC4_3 IFC4_3 IFC2X3 IFC4" use="required">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -119,196 +23,6 @@
           </ids:predefinedType>
         </ids:entity>
         <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="any">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>add more here...</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>add more here...</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:requirements>
-      <ids:instructions>string</ids:instructions>
-    </ids:specification>
-    <ids:specification use="optional">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="instance">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>IfcAreaDensityMeasure</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-          <ids:instructions>string</ids:instructions>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:ifcMeasure>add more here...</ids:ifcMeasure>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:instructions>string</ids:instructions>
-        </ids:material>
-      </ids:requirements>
-      <ids:instructions>string</ids:instructions>
-    </ids:specification>
-    <ids:specification use="optional">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="any">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -325,20 +39,20 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
         </ids:attribute>
-        <ids:property location="instance">
+        <ids:property location="any">
           <ids:propertySet>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:propertySet>
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
-          <ids:ifcMeasure>IfcAreaMeasure</ids:ifcMeasure>
+          <ids:ifcMeasure>IfcElectricVoltageMeasure</ids:ifcMeasure>
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
           <ids:instructions>string</ids:instructions>
         </ids:property>
-        <ids:material location="any">
+        <ids:material location="type">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -354,7 +68,8 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:classification location="instance">
+        <ids:partOf entity="IfcElementAssembly" />
+        <ids:classification location="type">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -378,13 +93,13 @@
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
-          <ids:ifcMeasure>IfcAreaMeasure</ids:ifcMeasure>
+          <ids:ifcMeasure>IfcTimeMeasure</ids:ifcMeasure>
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
           <ids:instructions>string</ids:instructions>
         </ids:property>
-        <ids:material location="type">
+        <ids:material location="instance">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>

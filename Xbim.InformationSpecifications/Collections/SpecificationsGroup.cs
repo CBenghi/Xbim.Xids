@@ -17,7 +17,6 @@ namespace Xbim.InformationSpecifications
 		public string Name { get; set; } // also in bS -> Title
 		public string Copyright { get; set; } // bS
 		public string Version { get; set; } // bS
-		public string IfcVersion { get; set; } // bS
 		public string Description { get; set; } // bS
 		public string Author { get; set; } // bS
 		public DateTime? Date { get; set; } // bS

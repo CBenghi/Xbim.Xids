@@ -7,11 +7,25 @@ using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
 {
-	
+	public static class IEnumerableExt
+	{
+		/// <summary>
+		/// Wraps this object instance into an IEnumerable&lt;T&gt;
+		/// consisting of a single item.
+		/// </summary>
+		/// <typeparam name="T"> Type of the object. </typeparam>
+		/// <param name="item"> The instance that will be wrapped. </param>
+		/// <returns> An IEnumerable&lt;T&gt; consisting of a single item. </returns>
+		public static IEnumerable<T> Yield<T>(this T item)
+		{
+			yield return item;
+		}
+	}
+
 
 	public partial class Xids // basic definition file
-    {
-        private ILogger<Xids> _logger;
+	{
+		private ILogger<Xids> _logger;
 
 		public static bool HasData(Xids xidsToTest)
 		{
@@ -26,12 +40,23 @@ namespace Xbim.InformationSpecifications
 			return false;
 		}
 
-		[Obsolete("Use PrepareSpecification() instead")]
-		public Specification NewSpecification(SpecificationsGroup containingCollection = null)
+		/// <summary>
+		/// Prepares a new specification,
+		/// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
+		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+		/// </summary>
+		/// <param name="ifcVersion">the desired parent collection</param>
+		/// <param name="applicability"></param>
+		/// <param name="requirement"></param>
+		/// <returns>The initialised specification</returns>
+		public Specification PrepareSpecification(
+			IfcSchemaVersion ifcVersion,
+			FacetGroup applicability = null,
+			FacetGroup requirement = null
+			)
 		{
-			return PrepareSpecification(containingCollection);
+			return PrepareSpecification(ifcVersion.Yield(), applicability, requirement);
 		}
-
 
 		/// <summary>
 		/// Prepares a new specification,
@@ -43,19 +68,18 @@ namespace Xbim.InformationSpecifications
 		/// <param name="requirement"></param>
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
-			string ifcVersion,
+			IEnumerable<IfcSchemaVersion> ifcVersion,
 			FacetGroup applicability = null,
 			FacetGroup requirement = null
-			)
-        {
-			var destinationGroup = SpecificationsGroups.FirstOrDefault(x=>x.IfcVersion == ifcVersion);
+		)
+		{
+			var destinationGroup = SpecificationsGroups.FirstOrDefault();
 			if (destinationGroup == null)
 			{
 				destinationGroup = new SpecificationsGroup();
-				destinationGroup.IfcVersion = ifcVersion;
 				SpecificationsGroups.Add(destinationGroup);
 			}
-			return PrepareSpecification(destinationGroup, applicability, requirement);
+			return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
 		}
 
 		/// <summary>
@@ -68,9 +92,28 @@ namespace Xbim.InformationSpecifications
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
 			SpecificationsGroup destinationGroup,
+			IfcSchemaVersion ifcVersion,
 			FacetGroup applicability = null,
 			FacetGroup requirement = null
 			)
+		{
+			return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
+		}
+
+		/// <summary>
+		/// Prepares a new specification, inside the specified destinationGroup
+		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+		/// </summary>
+		/// <param name="destinationGroup">the desired owning collection</param>
+		/// <param name="applicability"></param>
+		/// <param name="requirement"></param>
+		/// <returns>The initialised specification</returns>
+		public Specification PrepareSpecification(
+		SpecificationsGroup destinationGroup,
+		IEnumerable<IfcSchemaVersion> ifcVersion,
+		FacetGroup applicability = null,
+		FacetGroup requirement = null
+		)
 		{
 			if (applicability == null)
 				applicability = new FacetGroup(FacetRepository);
@@ -90,9 +133,10 @@ namespace Xbim.InformationSpecifications
 			var t = new Specification(this, destinationGroup)
 			{
 				Applicability = applicability,
-				Requirement = requirement
+				Requirement = requirement,
+				IfcVersion = ifcVersion.ToList()
 			};
-			
+
 			destinationGroup.Specifications.Add(t);
 			return t;
 		}
@@ -155,8 +199,5 @@ namespace Xbim.InformationSpecifications
 		{
 			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
 		}
-
-
-
 	}
 }

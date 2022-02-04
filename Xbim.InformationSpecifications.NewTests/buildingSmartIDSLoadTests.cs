@@ -23,12 +23,11 @@ namespace Xbim.InformationSpecifications.NewTests
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]
-        //[InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
-        //[InlineData("bsFiles/IDS_random_example_04.xml", 2, 7)]
-        //[InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9)]
-        //[InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16)]
-        //[InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9)]
-        
+        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2)]
+        [InlineData("bsFiles/IDS_random_example.xml", 2, 7)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount)

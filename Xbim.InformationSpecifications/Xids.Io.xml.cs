@@ -104,8 +104,6 @@ namespace Xbim.InformationSpecifications
             // version
             if (!string.IsNullOrEmpty(specGroup.Version))
                 xmlWriter.WriteElementString("version", IdsNamespace, specGroup.Version);
-            // ifcVersion
-            xmlWriter.WriteElementString("ifcVersion", IdsNamespace, specGroup.IfcVersion);
             // description
             if (!string.IsNullOrEmpty(specGroup.Description))
                 xmlWriter.WriteElementString("description", IdsNamespace, specGroup.Description);
@@ -131,8 +129,14 @@ namespace Xbim.InformationSpecifications
         private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
+            if (requirement.IfcVersion is null)
+                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", requirement.IfcVersion));
+            else
+                xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
             if (requirement.Name != null)
                 xmlWriter.WriteAttributeString("name", requirement.Name);
+            if (requirement.Description != null)
+                xmlWriter.WriteAttributeString("description", requirement.Description);
             xmlWriter.WriteAttributeString("use", requirement.Use.ToString().ToLowerInvariant());
             
             // applicability
@@ -402,9 +406,6 @@ namespace Xbim.InformationSpecifications
                     case "version":
                         grp.Version = elem.Value;
                         break;
-                    case "ifcversion":
-                        grp.IfcVersion = elem.Value;
-                        break;
                     case "description":
                         grp.Description = elem.Value;
                         break;
@@ -427,12 +428,6 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        [Obsolete("We should make sure that all data is managed.")]
-        private static void LogUnmanaged(XElement unmanaged, XElement parent, ILogger logger)
-        {
-            logger?.LogInformation("Element '{unmanaged}' in '{parentName}' is not managed by the application.", unmanaged.Name.LocalName, parent.Name.LocalName);
-        }
-
         private static void LogUnexpected(XElement unepected, XElement parent, ILogger logger)
         {
             logger?.LogWarning("Unexpected element '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
@@ -441,6 +436,11 @@ namespace Xbim.InformationSpecifications
         private static void LogUnexpected(XAttribute unepected, XElement parent, ILogger logger)
         {
             logger?.LogWarning("Unexpected attribute '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
+        }
+
+        private static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger logger)
+        {
+            logger?.LogWarning("Unexpected value '{unexpValue}' attribute '{unexpected}' in '{parentName}'.", unepected.Value, unepected.Name.LocalName, parent.Name.LocalName);
         }
 
         private static DateTime ReadDate(XElement elem, ILogger logger)
@@ -487,11 +487,32 @@ namespace Xbim.InformationSpecifications
                     case "name":
                         req.Name = att.Value;
                         break;
+                    case "description":
+                        req.Description = att.Value;
+                        break;
+                    case "ifcversion":
+                        var tmp = att.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                        var tmp2 = new List<IfcSchemaVersion>();
+                        foreach (var tmpIter in tmp)
+                        {
+                            if (Enum.TryParse(tmpIter, out IfcSchemaVersion tmpIter2))
+                                tmp2.Add(tmpIter2);
+                            else
+                                LogUnexpectedValue(att, spec, logger);
+                        }
+                        if (!tmp2.Any())
+                            tmp2.Add(IfcSchemaVersion.IFC2X3);
+                        req.IfcVersion = tmp2;
+                        break;
                     case "use":
                         if (att.Value.ToLowerInvariant() == "required")
                             req.Use = SpecificationUse.Required;
                         else if (att.Value.ToLowerInvariant() == "optional")
                             req.Use = SpecificationUse.Optional;
+                        else if (att.Value.ToLowerInvariant() == "prohibited")
+                            req.Use = SpecificationUse.Prohibited;
+                        else
+                            LogUnexpectedValue(att, spec, logger);
                         break;
                     default:
                         LogUnexpected(att, spec, logger);

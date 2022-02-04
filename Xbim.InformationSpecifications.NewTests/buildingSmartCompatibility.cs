@@ -23,7 +23,7 @@ namespace Xbim.InformationSpecifications.NewTests
             Xids x = new Xids();
             // at least one specification is needed
             //
-            var t = x.PrepareSpecification("IFC2X3");
+            var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
             t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
             t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
             t.Instructions = "Some instructions";
@@ -62,11 +62,14 @@ namespace Xbim.InformationSpecifications.NewTests
             Xids x = new Xids();
             // at least one specification is needed
             //
-            var t = x.PrepareSpecification("IFC2X3");
+            var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
             t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
             t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
 
-            t = x.PrepareSpecification("IFC4");
+            var newGroup = new SpecificationsGroup();
+            x.SpecificationsGroups.Add(newGroup);
+
+            t = x.PrepareSpecification(newGroup, IfcSchemaVersion.IFC4);
             t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
             t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
 
