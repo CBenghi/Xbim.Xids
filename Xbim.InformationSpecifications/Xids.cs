@@ -97,7 +97,7 @@ namespace Xbim.InformationSpecifications
 			FacetGroup requirement = null
 			)
 		{
-			return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
+			return PrepareSpecification(destinationGroup, ifcVersion.Yield(), applicability, requirement);
 		}
 
 		/// <summary>
