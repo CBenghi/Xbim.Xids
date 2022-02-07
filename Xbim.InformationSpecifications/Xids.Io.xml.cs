@@ -129,7 +129,7 @@ namespace Xbim.InformationSpecifications
         private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
-            if (requirement.IfcVersion is null)
+            if (requirement.IfcVersion != null)
                 xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", requirement.IfcVersion));
             else
                 xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
@@ -137,6 +137,9 @@ namespace Xbim.InformationSpecifications
                 xmlWriter.WriteAttributeString("name", requirement.Name);
             if (requirement.Description != null)
                 xmlWriter.WriteAttributeString("description", requirement.Description);
+            // instructions
+            if (requirement.Instructions != null)
+                xmlWriter.WriteAttributeString("instructions", requirement.Instructions);
             xmlWriter.WriteAttributeString("use", requirement.Use.ToString().ToLowerInvariant());
             
             // applicability
@@ -155,9 +158,7 @@ namespace Xbim.InformationSpecifications
             }
             xmlWriter.WriteEndElement();
 
-            // instructions
-            if (requirement.Instructions != null)
-                xmlWriter.WriteElementString("instructions", IdsNamespace, requirement.Instructions);
+           
 
             xmlWriter.WriteEndElement();
         }
@@ -190,12 +191,10 @@ namespace Xbim.InformationSpecifications
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
                     WriteFaceteBaseAttributes(pf, xmlWriter);
+                    if (!string.IsNullOrWhiteSpace(pf.Measure))
+                        xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet");
-                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name");
-                    if (!string.IsNullOrWhiteSpace(pf.PropertyValueType))
-                    {
-                        xmlWriter.WriteElementString("ifcMeasure", IdsNamespace, pf.PropertyValueType);
-                    }
+                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name");                  
                     WriteConstraintValue(pf.PropertyValue, xmlWriter);
                     WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
@@ -378,7 +377,7 @@ namespace Xbim.InformationSpecifications
                     }
                     else
                     {
-                        logger?.LogWarning($"Unexpected element evaluating ids: '{name}'");
+                        LogUnexpected(sub, main, logger);
                     }
                 }
                 return ret;
@@ -612,10 +611,6 @@ namespace Xbim.InformationSpecifications
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyName = sub.Value;
                         break;
-                    case "ifcmeasure":
-                        ret ??= new IfcPropertyFacet();
-                        ret.PropertyValueType = sub.Value;
-                        break;
                     case "value":
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyValue = GetConstraint(sub, logger);
@@ -636,6 +631,11 @@ namespace Xbim.InformationSpecifications
                 {
                     ret ??= new IfcPropertyFacet();
                     ret.Location = attribute.Value;
+                }
+                else if (attribute.Name.LocalName == "measure")
+                {
+                    ret ??= new IfcPropertyFacet();
+                    ret.Measure = attribute.Value;
                 }
                 else
                 {

@@ -8,7 +8,7 @@ namespace Xbim.InformationSpecifications
     {
         public ValueConstraint PropertySetName { get; set; }
 		public ValueConstraint PropertyName { get; set; }
-		public string PropertyValueType { get; set; }
+		public string Measure { get; set; }
 		public ValueConstraint PropertyValue { get; set; } 
 
         public string Short()
@@ -20,8 +20,8 @@ namespace Xbim.InformationSpecifications
                 sb.Append($"Has any property");
             if (!FacetBase.IsNullOrEmpty(PropertySetName))
                 sb.Append($" in property set '{PropertySetName}'");
-            if (PropertyValueType != null)
-                sb.Append($" of type '{PropertyValueType}'");
+            if (Measure != null)
+                sb.Append($" containing '{Measure}'");
             
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
