@@ -1,18 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	[TestClass]
+	
 	public class EnumTests
 	{
-		[TestMethod]
+		[Fact]
 		public void CanSetEnum()
 		{
 			IfcClassificationFacet f = new IfcClassificationFacet();
@@ -21,7 +21,7 @@ namespace Xbim.InformationSpecifications.Tests
 			foreach (var val in values)
 			{
 				f.SetLocation(val);
-				Assert.AreEqual(val, f.GetLocation());
+				f.GetLocation().Should().Be(val);				
 			}
 		}
 	}

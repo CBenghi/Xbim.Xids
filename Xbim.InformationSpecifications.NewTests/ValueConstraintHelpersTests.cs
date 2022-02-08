@@ -37,5 +37,26 @@ namespace Xbim.InformationSpecifications.NewTests
             test.Should().BeFalse();
             strVal.Should().Be(default(string));
         }
+
+        [Fact]
+        public void SingleUndefinedExactTests()
+        {
+            var stringV = "someValue";
+            var val = ValueConstraint.SingleUndefinedExact(stringV);
+            var itIs = val.IsSingleUndefinedExact(out var retVal);
+            itIs.Should().BeTrue();
+            retVal.Should().Be(stringV);
+            
+
+            ValueConstraint t = new ValueConstraint(2d);
+            t.IsSingleUndefinedExact(out var _).Should().BeFalse();
+            
+
+            t = new ValueConstraint(TypeName.Undefined);
+            t.Add(new RangeConstraint());
+            t.IsSingleUndefinedExact(out var _).Should().BeFalse();
+            
+
+        }
     }
 }

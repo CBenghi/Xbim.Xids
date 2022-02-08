@@ -90,8 +90,8 @@ namespace Xbim.InformationSpecifications.NewTests
 
 			reloaded.SaveAsJson(fname2);
 
-			var h1 = FileHelper.GetFileHash(fname);
-			var h2 = FileHelper.GetFileHash(fname2);
+			var h1 = FileHashing.GetFileHash(fname);
+			var h2 = FileHashing.GetFileHash(fname2);
 			h1.Should().Be(h2);
 
 			relFacet.UsedGroups().Count().Should().Be(1);

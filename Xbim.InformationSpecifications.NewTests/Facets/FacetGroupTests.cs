@@ -1,27 +1,21 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using FluentAssertions;
+using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	[TestClass]
-	public class FacetGroupTests
+    public class FacetGroupTests
 	{
-		[TestMethod]
+		[Fact]
 		public void FacetGroupUseCount()
 		{
 			Xids t = new Xids();
 			var spec = t.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 			var group = spec.Applicability;
-
-			Assert.AreEqual(1, group.UseCount(t));
+			group.UseCount(t).Should().Be(1);
+			
 			var spec2 = t.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 			spec2.Requirement = group;
-			Assert.AreEqual(2, group.UseCount(t));
+			group.UseCount(t).Should().Be(2);
 		}
 	}
 }

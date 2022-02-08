@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Xbim.InformationSpecifications.NewTests
 {
-	class FileHelper
+	class FileHashing
 	{
 		public static string GetFileHash(string filename)
 		{
-			var hash = new SHA1Managed();
+			var hash = SHA1.Create();
 			var clearBytes = File.ReadAllBytes(filename);
 			var hashedBytes = hash.ComputeHash(clearBytes);
 			return ConvertBytesToHex(hashedBytes);

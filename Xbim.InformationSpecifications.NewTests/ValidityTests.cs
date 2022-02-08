@@ -1,54 +1,57 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	[TestClass]
+
 	public class ValidityTests
 	{
-		[TestMethod]
+		[Fact]
 		[Obsolete]
 		public void FacetGroupValidityTests()
 		{
 			FacetGroup g = new FacetGroup();
-			Assert.IsFalse(g.IsValid());
-
-			g.Facets.Add(new IfcClassificationFacet() {  });
-			Assert.IsTrue(g.IsValid());
-
+			g.IsValid().Should().BeFalse();
+			new IfcClassificationFacet() { }.IsValid().Should().BeTrue();	
+			
 			var prop = new IfcPropertyFacet();
 			g.Facets.Add(prop);
-			Assert.IsFalse(g.IsValid());
+			g.IsValid().Should().BeFalse();
+			
 			prop.PropertySetName = "NowValid";
 			prop.PropertyName = "NowValid";
-			Assert.IsTrue(g.IsValid());
+			g.IsValid().Should().BeTrue();	
+			
 
 			var type = new IfcTypeFacet();
 			g.Facets.Add(type);
-			Assert.IsFalse(g.IsValid());
+			g.IsValid().Should().BeFalse();
+			
 			type.IfcType = "NowValid";
-			Assert.IsTrue(g.IsValid());
+			g.IsValid().Should().BeTrue();
 
 			var newtype = new IfcTypeFacet() { 
 				PredefinedType = "Notok" 
 			};
-			Assert.IsFalse(newtype.IsValid());
+			newtype.IsValid().Should().BeFalse();
 			newtype.IfcType = "MustBeDefined";
-			Assert.IsTrue(newtype.IsValid());
+			newtype.IsValid().Should().BeTrue();
 
 			var mat = new MaterialFacet();
-			Assert.IsTrue(mat.IsValid());
+			mat.IsValid().Should().BeTrue();
+			
 
 			var doc = new DocumentFacet();
-			Assert.IsFalse(doc.IsValid());
+			doc.IsValid().Should().BeFalse();
+			
 			doc.DocName = "ValidName"; // there is an implicit string to ValueConstraint conversion.
 			g.Facets.Add(doc);
-			Assert.IsTrue(doc.IsValid());
+			doc.IsValid().Should().BeTrue();
 		}
 	}
 }

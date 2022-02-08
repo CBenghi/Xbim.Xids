@@ -1,23 +1,23 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xbim.InformationSpecifications;
+using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	[TestClass]
 	public class FacetImplementationTests
 	{
 
-		[TestMethod]
+		[Fact]
 		public void FacetEqualImplementation()
 		{
-			List<IFacet> lst = new List<IFacet>();
-			TestAddRemove(lst, new IfcClassificationFacet());
-			TestAddRemove(lst, new IfcClassificationFacet()
+			
+			TestAddRemove(new IfcClassificationFacet());
+			TestAddRemove(new IfcClassificationFacet()
 			{
 				ClassificationSystem = new ValueConstraint("2"),
 				Location = "2",
@@ -25,31 +25,31 @@ namespace Xbim.InformationSpecifications.Tests
 			});
 
 
-			TestAddRemove(lst, new IfcPropertyFacet());
-			TestAddRemove(lst, new IfcPropertyFacet()
+			TestAddRemove(new IfcPropertyFacet());
+			TestAddRemove(new IfcPropertyFacet()
 			{
 				Location = "1",
 				PropertyName = "2",
 				PropertySetName = "3",
 			});
 
-			TestAddRemove(lst, new IfcTypeFacet());
-			TestAddRemove(lst, new IfcTypeFacet()
+			TestAddRemove(new IfcTypeFacet());
+			TestAddRemove(new IfcTypeFacet()
 			{
 				IfcType = "1",
 				IncludeSubtypes = false,
 				PredefinedType = "3"
 			});
 
-			TestAddRemove(lst, new MaterialFacet());
-			TestAddRemove(lst, new MaterialFacet()
+			TestAddRemove(new MaterialFacet());
+			TestAddRemove(new MaterialFacet()
 			{
 				Location = "1",
 			});
 
 
-			TestAddRemove(lst, new IfcRelationFacet());
-			TestAddRemove(lst, new IfcRelationFacet()
+			TestAddRemove(new IfcRelationFacet());
+			TestAddRemove(new IfcRelationFacet()
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
 				Source = new FacetGroup(),
@@ -57,8 +57,8 @@ namespace Xbim.InformationSpecifications.Tests
 				Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
 			});
 
-			TestAddRemove(lst, new DocumentFacet());
-			TestAddRemove(lst, new DocumentFacet()
+			TestAddRemove(new DocumentFacet());
+			TestAddRemove(new DocumentFacet()
 			{
 				DocId = "1",
 				DocIntendedUse = "2",
@@ -72,49 +72,48 @@ namespace Xbim.InformationSpecifications.Tests
 
 
 
-		[TestMethod]
+		[Fact]
 		public void ValueEqualImplementationTest()
 		{
-			List<PatternConstraint> pcl = new List<PatternConstraint>();
+			
 			var pc = new PatternConstraint();
-			TestAddRemove(pcl, pc);
+			TestAddRemove(pc);
 
 			List<ValueConstraint> vals = new List<ValueConstraint>();
 			var val = new ValueConstraint();
-			TestAddRemove(vals, val);
+			TestAddRemove(val);
 			val = MakeEnumVal();
-			TestAddRemove(vals, val);
+			TestAddRemove(val);
 
 			List<RangeConstraint> rcl = new List<RangeConstraint>();
 			var rc = new RangeConstraint();
-			TestAddRemove(rcl, rc);
+			TestAddRemove(rc);
 
 			List<StructureConstraint> scl = new List<StructureConstraint>();
 			var sc = new StructureConstraint();
 			var t = sc.GetHashCode();
-			TestAddRemove(scl, sc);
+			TestAddRemove(sc, false);
 
 			var val1 = MakeEnumVal();
 			var val2 = MakeEnumVal();
-			Assert.AreEqual(val1, val2);
+
+			val1.Should().Be(val2);
 
 		}
 
 
-		[TestMethod]
+		[Fact]
 		public void ValueIsEmpty()
-		{		
-			Assert.IsTrue(new ValueConstraint().IsEmpty());
-			Assert.IsFalse(new ValueConstraint() { BaseType = TypeName.String }.IsEmpty());
-
-			Assert.IsTrue(new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
-			Assert.IsFalse(new ValueConstraint() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty());
-			Assert.IsFalse(new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty());
-
+		{
+			new ValueConstraint().IsEmpty().Should().BeTrue();
+			new ValueConstraint() { BaseType = TypeName.String }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeTrue();
+			new ValueConstraint() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty().Should().BeFalse();
 		}
 
 
-		[TestMethod]
+		[Fact]
 		public void DataTypesOk()
 		{
 			var typeNames = Enum.GetValues(typeof(TypeName)).Cast<TypeName>();
@@ -125,14 +124,14 @@ namespace Xbim.InformationSpecifications.Tests
 
 				var t = ValueConstraint.GetXsdTypeString(tName);
 				var back = ValueConstraint.GetNamedTypeFromXsd(t);
-				Assert.AreEqual(tName, back);
+				back.Should().Be(tName);
+				
 			
 				var newT = ValueConstraint.GetNetType(tName);
 				var defval = ValueConstraint.GetDefault(tName);
-
-				Assert.IsNotNull(defval, $"Cannot create type: {tName}, {newT}");
-				Assert.IsNotNull(newT, $"Empty return type: {tName}, {newT}");
-				Assert.AreEqual(newT, defval.GetType());
+				defval.Should().NotBeNull($"should be possible to have default type: {tName}, {newT}");
+				newT.Should().NotBeNull($"should be possible to create type: {tName}, {newT}");
+				defval.GetType().Should().Be(newT);
 			}
 		}
 
@@ -146,27 +145,33 @@ namespace Xbim.InformationSpecifications.Tests
 			return val;
 		}
 
-		private static void TestAddRemove<T>(List<T> lst, T c)
+		// this one tests that the implementation of equals is correct on the object passed.
+		private static void TestAddRemove<T>(T c, bool testForRandom = true)
 		{
+			var lst = new List<T>();
 			var s = c.ToString();
-			var t = c.GetHashCode();
-			Assert.IsNotNull(t);
+			var t = c.GetHashCode(); // this must not crash
+			
 			if (c is IFacet f)
 			{
 				var shortV = f.Short();
-				Assert.IsNotNull(shortV);
+				shortV.Should().NotBeNull();
 			}
 			if (c is IValueConstraint vc)
 			{
 				var shortV = vc.Short();
-				Assert.IsNotNull(shortV);
-				var any = vc.IsSatisfiedBy("random", null);
-				Assert.IsNotNull(any);
-
+				shortV.Should().NotBeNull();
+				if (testForRandom)
+				{
+					var any = vc.IsSatisfiedBy("random", null);
+					any.Should().BeFalse();
+				}
 			}
-			Assert.AreNotEqual("", s);
-			lst.Add(c); lst.Remove(c);
-			Assert.AreEqual(0, lst.Count);
+			
+			s.Should().NotBe("");
+			lst.Add(c); 
+			lst.Remove(c);
+			lst.Count.Should().Be(0);	
 		}
 	}
 }
