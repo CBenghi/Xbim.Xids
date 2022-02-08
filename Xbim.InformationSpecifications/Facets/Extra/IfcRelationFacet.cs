@@ -20,9 +20,22 @@ namespace Xbim.InformationSpecifications
 
 		}
 
-		[JsonIgnore]
-		public FacetGroup Source { get; set; }
+		private string sourceId;
 
+		[JsonPropertyName("Source")]
+		public string SourceId
+        {
+            get
+            {
+				if (Source == null)
+					return sourceId;
+                return Source.Guid?.ToString();
+            }
+            set => sourceId = value;
+        }
+
+        [JsonIgnore]
+		public FacetGroup Source { get; set; }
 
 		private string relation = RelationType.Undefined.ToString();
 
@@ -51,17 +64,7 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"{sourceId}-{Relation}-{base.ToString()}";
-		}
-
-
-		private string sourceId;
-
-		[JsonPropertyName("Source")]
-		public string RelationFacetId
-		{
-			get => Source?.Guid.ToString();
-			set => sourceId = value;
+			return $"{SourceId}-{Relation}";
 		}
 
 		public override bool Equals(object obj)
@@ -73,8 +76,8 @@ namespace Xbim.InformationSpecifications
 		{
 			if (other == null)
 				return false;
-			return (Source, Relation )
-				.Equals((other.Source, other.Relation));
+			return (sourceId, Relation )
+				.Equals((other.SourceId, other.Relation));
 		}
 
 		public bool IsValid()

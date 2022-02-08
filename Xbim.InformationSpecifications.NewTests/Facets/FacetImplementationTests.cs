@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xbim.InformationSpecifications;
 using Xunit;
@@ -11,11 +13,73 @@ namespace Xbim.InformationSpecifications.Tests
 {
 	public class FacetImplementationTests
 	{
+		private Dictionary<string, string> guaranteedStructures = new Dictionary<string, string>()
+		{
+			{ "AttributeFacet","ValueConstraint AttributeName,String Location,ValueConstraint AttributeValue" },
+			{ "FacetBase","String Location,String Uri,String Use,String Instructions" },
+			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Location,String Uri,String Use,String Instructions" },
+			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Location,String Uri,String Use,String Instructions" },
+			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes" },
+			{ "MaterialFacet","ValueConstraint Value,String Location,String Uri,String Use,String Instructions" },
+			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Location,String Uri,String Use,String Instructions" },
+			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation" },
+			{ "ExactConstraint","String Value" },
+			{ "PatternConstraint","String Pattern,Boolean IsValidPattern" },
+			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
+			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
+			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
+			{ "","" },
+		};
 
+		/// when adding properties to an iequatable we need to make sure that they
+		/// are considered in the equals implementation, this is a test that reminds us of that.
 		[Fact]
+		public void EnsureIEquatableIsOk()
+        {
+			var allEquatables = typeof(Xids).Assembly.GetTypes().Where(t => t.GetInterfaces().Any(interf => interf.Name.Contains("IEquatable")));
+            foreach (var oneEqatable in allEquatables)
+            {
+				var foundInDictionary = guaranteedStructures.TryGetValue(oneEqatable.Name, out var expected);
+				foundInDictionary.Should().BeTrue($"{oneEqatable.Name} should be a guaranteed equatable");
+				if (expected == "<skip>")
+					continue;
+
+				var verifiedAttributesList = string.Join(",", oneEqatable.GetProperties().Select(x => SmartName(x)).ToArray());
+				verifiedAttributesList.Should().Be(expected, $"{oneEqatable.Name} accepted fields are to be considered");
+            }
+        }
+
+		private static Regex rNullable = new Regex("\\[\\[([^,]*),");
+
+        private string SmartName(PropertyInfo x)
+        {
+			var t = x.PropertyType.FullName.Replace("System.", "");
+			if (t.StartsWith("Nullable"))
+			{
+				var nM = rNullable.Match(t);
+				if (nM.Success)
+                {
+					return nM.Groups[1].Value + "? " + x.Name;
+                }
+			}
+			if (t.Contains("Collections.Generic.List"))
+            {
+				var nM = rNullable.Match(t);
+				if (nM.Success)
+				{
+					return "List<" + nM.Groups[1].Value + "> " + x.Name;
+				}
+			}
+			if (x.PropertyType.Name.Contains("`"))
+            {
+
+            }
+			return x.PropertyType.Name + " " + x.Name;
+		}
+
+        [Fact]
 		public void FacetEqualImplementation()
 		{
-			
 			TestAddRemove(new IfcClassificationFacet());
 			TestAddRemove(new IfcClassificationFacet()
 			{
@@ -68,9 +132,6 @@ namespace Xbim.InformationSpecifications.Tests
 			});
 
 		}
-
-
-
 
 		[Fact]
 		public void ValueEqualImplementationTest()
@@ -146,7 +207,7 @@ namespace Xbim.InformationSpecifications.Tests
 		}
 
 		// this one tests that the implementation of equals is correct on the object passed.
-		private static void TestAddRemove<T>(T c, bool testForRandom = true)
+		internal static void TestAddRemove<T>(T c, bool testForRandom = true)
 		{
 			var lst = new List<T>();
 			var s = c.ToString();

@@ -178,12 +178,7 @@ namespace Xbim.InformationSpecifications
                         xmlWriter.WriteStartElement("classification", IdsNamespace);
                         WriteFaceteBaseAttributes(cf, xmlWriter); // attribute
                         WriteConstraintValue(cf.Identification, xmlWriter);
-                        Dictionary<string, string> attributes = new Dictionary<string, string>();
-                        if (!string.IsNullOrWhiteSpace(cf.ClassificationSystemHref))
-                        {
-                            attributes.Add("href", cf.ClassificationSystemHref);
-                        }
-                        WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", attributes);
+                        WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system");
                         WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                         xmlWriter.WriteEndElement();
                         break;
@@ -909,14 +904,6 @@ namespace Xbim.InformationSpecifications
                 {
                     ret ??= new IfcClassificationFacet();
                     ret.ClassificationSystem = GetConstraint(sub, logger);
-                    // classification has href attribute under system
-                    foreach (var attribute in sub.Attributes())
-                    { 
-                        if (attribute.Name.LocalName == "href")
-						{
-                            ret.ClassificationSystemHref = attribute.Value;
-						}
-                    }
                 }
                 else if (sub.Name.LocalName == "value")
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Xbim.InformationSpecifications
@@ -32,10 +33,11 @@ namespace Xbim.InformationSpecifications
 		{
 			if (other == null)
 				return false;
-			// using true to use 
+			// using true to exploit feature of tuples
 			return (Pattern, true).Equals((other.Pattern, true));
 		}
 
+		[JsonIgnore]
 		public bool IsValidPattern
 		{
 			get

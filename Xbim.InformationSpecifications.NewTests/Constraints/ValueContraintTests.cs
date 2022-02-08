@@ -11,7 +11,6 @@ namespace Xbim.InformationSpecifications.Tests
 	
 	public class ValueContraintTests
 	{
-
 		[Fact]
 		public void IPersistValues()
         {
@@ -20,11 +19,9 @@ namespace Xbim.InformationSpecifications.Tests
 			var vc = new ValueConstraint(str);
 			vc.IsSatisfiedBy(i).Should().BeTrue();
 			
-
 			var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
 			var vc2 = new ValueConstraint(str2);
 			vc2.IsSatisfiedBy(i).Should().BeFalse();
-			
 		}
 
 		[Fact]
@@ -110,7 +107,6 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy(30L).Should().BeTrue("30L failure");
 			vc.IsSatisfiedBy(60).Should().BeTrue("60 failure");
 			vc.IsSatisfiedBy(60L).Should().BeTrue("60L failure");
-			
 		}
 	}
 }

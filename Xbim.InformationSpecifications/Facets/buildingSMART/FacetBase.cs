@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public string Uri { get; set; } = null; // attribute href
+		public string Uri { get; set; } = null; // attribute uri
 		public string Use { get; set; } = null; // attribute use
 		public string Instructions { get; set; } // element
 

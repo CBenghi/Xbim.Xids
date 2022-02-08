@@ -11,11 +11,6 @@ namespace Xbim.InformationSpecifications
 		/// A string identifying the relevant classification system
 		/// </summary>
 		public ValueConstraint ClassificationSystem { get; set; }
-		
-		/// <summary>
-		/// Uri of the classification system
-		/// </summary>
-		public string ClassificationSystemHref { get; set; }
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/>.
@@ -24,9 +19,10 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			if (ClassificationSystem == null
+			if (
+				ClassificationSystem == null
 				&& Identification == null
-				&& string.IsNullOrEmpty(ClassificationSystemHref))
+				)
 				return "Any valid classification";
 			List<string> desc = new List<string>();
 
@@ -44,6 +40,7 @@ namespace Xbim.InformationSpecifications
 
 		/// <summary>
 		/// Includes hierarchical values below the <see cref="Identification"/> element.
+		/// Defaults to false on newly created class.
 		/// </summary>
 		public bool IncludeSubClasses { get; set; }
 

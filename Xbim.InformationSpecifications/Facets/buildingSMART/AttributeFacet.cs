@@ -1,7 +1,10 @@
 using System;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
+	
+
 	public partial class AttributeFacet : IFacet, IEquatable<AttributeFacet>
 	{
 		public ValueConstraint AttributeName { get; set; } = "";
@@ -42,10 +45,11 @@ namespace Xbim.InformationSpecifications
 		{
 			if (other == null)
 				return false;
-			var thisEqual = (AttributeName, AttributeValue)
-				.Equals((other.AttributeName, other.AttributeValue));
+			var thisEqual = (AttributeName, AttributeValue, Location)
+				.Equals((other.AttributeName, other.AttributeValue, other.Location));
 			return thisEqual;
 		}
+
 		public override bool Equals(object obj)
 		{
 			return this.Equals(obj as AttributeFacet);
@@ -53,14 +57,17 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"{AttributeName}-{AttributeValue}";
+			return $"{AttributeName}-{AttributeValue}-{Location}";
 		}
 
-		public override int GetHashCode() => (AttributeName, AttributeValue).GetHashCode();
+		public override int GetHashCode() => (AttributeName, AttributeValue, Location).GetHashCode();
 
 		public string Short()
 		{
-			return $"attribute {AttributeName} = {AttributeValue}";
+			if (string.IsNullOrEmpty(Location))
+				return $"attribute {AttributeName} = {AttributeValue}";
+			else
+				return $"attribute {AttributeName} @ {Location} = {AttributeValue}";
 		}
 
 		public bool IsValid()

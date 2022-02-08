@@ -53,6 +53,8 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (!IFacetExtensions.CaseInsensitiveEquals(PropertyName, other.PropertyName))
                 return false;
+            if (!IFacetExtensions.CaseInsensitiveEquals(Measure, other.Measure))
+                return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
             return base.Equals(other);

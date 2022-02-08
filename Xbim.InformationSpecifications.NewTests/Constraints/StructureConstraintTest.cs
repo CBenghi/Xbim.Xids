@@ -16,9 +16,11 @@ namespace Xbim.InformationSpecifications.NewTests
 		public void StructureConstraintSatisfactionTest()
         {
             var vc = new ValueConstraint(TypeName.Decimal);
-            var sc = new StructureConstraint();
-            sc.FractionDigits = 2;
-            sc.TotalDigits = 5;
+            var sc = new StructureConstraint
+            {
+                FractionDigits = 2,
+                TotalDigits = 5
+            };
             vc.AddAccepted(sc);
             TestDirectAndAfterPersistence(vc, InitialPassAndFailTests);
 
@@ -115,7 +117,7 @@ namespace Xbim.InformationSpecifications.NewTests
             vc.IsSatisfiedBy(-214748364700.13m).Should().BeTrue(); // negative too
         }
 
-        private void TestDirectAndAfterPersistence(ValueConstraint vc, Action<ValueConstraint> testToRun)
+        private static void TestDirectAndAfterPersistence(ValueConstraint vc, Action<ValueConstraint> testToRun)
         {
             testToRun.Invoke(vc);
             var vc2 = GetAgainAfterPersistence(vc);
@@ -128,13 +130,14 @@ namespace Xbim.InformationSpecifications.NewTests
             vc.IsSatisfiedBy(-21474836470013m).Should().BeTrue(); // negative too
         }
 
-        private ValueConstraint GetAgainAfterPersistence(ValueConstraint vc)
+        private static ValueConstraint GetAgainAfterPersistence(ValueConstraint vc)
         {
-			MaterialFacet facet = new MaterialFacet();
-			facet.Value = vc;
-			Xids s = new Xids();
+            var facet = new MaterialFacet
+            {
+                Value = vc
+            };
+            var s = new Xids();
 			var t = s.PrepareSpecification(IfcSchemaVersion.IFC2X3);
-			var guid = t.Guid;
 			t.Requirement.Facets.Add(facet);
 
 			var tfn = Path.GetTempFileName();
