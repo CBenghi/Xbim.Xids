@@ -10,6 +10,7 @@
 		-->
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<Authors>Claudio Benghi</Authors>
+		<LangVersion>10.0</LangVersion>
 		<Description>Xbim's Information Delivery Specification format.</Description>
 		<PackageLicenseExpression>CDDL-1.0</PackageLicenseExpression>
 		<PackageIcon>xbim-toolkit-icon.png</PackageIcon>
