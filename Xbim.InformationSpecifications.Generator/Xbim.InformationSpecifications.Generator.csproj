@@ -10,4 +10,9 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Xbim.InformationSpecifications\Xbim.InformationSpecifications.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Files\Physical-Quantities-and-Units.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

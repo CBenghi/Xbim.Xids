@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Generator
 {
@@ -16,7 +17,12 @@ namespace Xbim.InformationSpecifications.Generator
 			// Console.Write(PropertyApplicabilityStudy.Execute());;
 			// Console.Write(ClassGenerator.Execute());
 			// Console.Write(AttributesGenerator.Execute()); 
-			Console.Write(AttributesValueGenerator.Execute());
+			// Console.Write(AttributesValueGenerator.Execute());
+
+			Console.Write(MeasureAutomation.Execute());
+#if true
+			
+#endif
 		}
 	}
 }
