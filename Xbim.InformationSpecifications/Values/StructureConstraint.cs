@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications
@@ -132,14 +133,20 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
 		{
 			if (TotalDigits.HasValue)
 			{
 				if (candiatateValue is float f)
-					candiatateValue = Convert.ToDecimal(f);		
+				{
+					// todo: should there be a warning for conversion here?
+					candiatateValue = Convert.ToDecimal(f);
+				}
 				else if (candiatateValue is double d)
+				{
+					// todo: should there be a warning for conversion here?
 					candiatateValue = Convert.ToDecimal(d);
+				}
 				if (candiatateValue is decimal dec)
 				{
 					var count = dec.Digits();
@@ -160,6 +167,7 @@ namespace Xbim.InformationSpecifications
 				}
 				else
 				{
+					logger.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
 					return false;
 				}
 			}
@@ -182,7 +190,10 @@ namespace Xbim.InformationSpecifications
 						return false;
 				}
 				else
+				{
+					logger.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
 					return false;
+				}
 			}
 			if (Length.HasValue || MinLength.HasValue || MaxLength.HasValue)
 			{
@@ -207,9 +218,9 @@ namespace Xbim.InformationSpecifications
 			if (Length.HasValue)
 				ret.Add($"is {Length.Value} characters long");
 			if (MinLength.HasValue)
-				ret.Add($"is minimum of {MinLength.Value} characters long");
+				ret.Add($"is minimum {MinLength.Value} characters long");
 			if (MaxLength.HasValue)
-				ret.Add($"is maximum of {MaxLength.Value} characters long");
+				ret.Add($"is maximum {MaxLength.Value} characters long");
 			return string.Join(" and ", ret.ToArray());
 		}
 	}

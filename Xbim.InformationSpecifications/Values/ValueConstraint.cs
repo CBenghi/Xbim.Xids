@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,7 +31,7 @@ namespace Xbim.InformationSpecifications
 
 		public List<IValueConstraint> AcceptedValues { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue)
+		public bool IsSatisfiedBy(object candiatateValue, ILogger logger = null)
 		{
 			if (BaseType != TypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
 				return false;
@@ -39,7 +40,7 @@ namespace Xbim.InformationSpecifications
 			var cand = GetObject(candiatateValue, BaseType);
 			foreach (var av in AcceptedValues)
 			{
-				if (av.IsSatisfiedBy(cand, this))
+				if (av.IsSatisfiedBy(cand, this, logger))
 					return true;
 			}
 			return false;
@@ -202,6 +203,7 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
+		[Obsolete("Is this even needed?")]
 		public static TypeName Resolve(Type t)
 		{
 			if (t == typeof(string))
@@ -213,7 +215,7 @@ namespace Xbim.InformationSpecifications
 			return TypeName.Undefined;
 		}
 
-		public static object GetDefault(TypeName tName)
+		public static object GetDefault(TypeName tName, ILogger logger = null)
 		{
 			if (tName == TypeName.String)
 				return "";
@@ -228,6 +230,7 @@ namespace Xbim.InformationSpecifications
 			}
 			catch
 			{
+				logger?.LogWarning("Default value for {0} provided as null for activator failure.", tName);
 				return null;
 			}
 		}

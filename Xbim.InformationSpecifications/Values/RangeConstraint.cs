@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -42,13 +43,16 @@ namespace Xbim.InformationSpecifications
 			return ToString().GetHashCode();
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
 		{
 			if (context == null)
 				return false;
 			var compe = candiatateValue as IComparable;
 			if (compe == null)
+			{
+				logger?.LogError("Failed to create a comparable value from {0} '{1}'", candiatateValue.GetType().Name, candiatateValue);
 				return false;
+			}
 			var minOk = true;
 			var maxOk = true;
 			if (!string.IsNullOrEmpty(MinValue))

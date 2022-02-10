@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -46,24 +47,26 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
 		{
-			if (!EnsureRegex())
+			if (!EnsureRegex(logger))
 				return false;
 			return compiledRegex.IsMatch(candiatateValue.ToString());
 		}
 
-		private bool EnsureRegex()
+		private bool EnsureRegex(ILogger logger = null)
 		{
 			if (compiledRegex != null)
 				return true;			
 			try
 			{
-				compiledRegex = new Regex(Pattern, RegexOptions.Compiled);
+				var preProcess = XmlRegex.Preprocess(Pattern);
+				compiledRegex = new Regex(preProcess, RegexOptions.Compiled | RegexOptions.Singleline);
 				return true;
 			}
 			catch (Exception)
 			{
+				logger?.LogError("Invalid pattern constraint: {pattern}", Pattern);
 				return false;
 			}
 		}

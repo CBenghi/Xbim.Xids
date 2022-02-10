@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 
 namespace Xbim.InformationSpecifications
 {
@@ -11,7 +12,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Value { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
 		{
 			return Value.Equals(candiatateValue.ToString());
 		}

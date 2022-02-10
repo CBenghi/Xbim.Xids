@@ -8,8 +8,8 @@ using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	
-	public class ValueContraintTests
+
+    public class ValueContraintTests
 	{
 		[Fact]
 		public void IPersistValues()
@@ -53,16 +53,7 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy(2d).Should().BeFalse();
 		}
 
-		[Fact]
-		public void PatternConstraintSatisfactionTest()
-		{
-			var vc = new ValueConstraint(TypeName.String);
-			vc.AddAccepted(new PatternConstraint() { Pattern = "[a-z]" });
-			vc.IsSatisfiedBy("a").Should().BeTrue();
-			vc.IsSatisfiedBy("z").Should().BeTrue();
-			vc.IsSatisfiedBy("A").Should().BeFalse();
-			vc.IsSatisfiedBy("Z").Should().BeFalse();
-		}
+		
 
 		[Fact]
 		public void RangeConstraintSatisfactionTest()

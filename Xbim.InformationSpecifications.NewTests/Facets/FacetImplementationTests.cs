@@ -189,7 +189,7 @@ namespace Xbim.InformationSpecifications.Tests
 				
 			
 				var newT = ValueConstraint.GetNetType(tName);
-				var defval = ValueConstraint.GetDefault(tName);
+				var defval = ValueConstraint.GetDefault(tName, null);
 				defval.Should().NotBeNull($"should be possible to have default type: {tName}, {newT}");
 				newT.Should().NotBeNull($"should be possible to create type: {tName}, {newT}");
 				defval.GetType().Should().Be(newT);
