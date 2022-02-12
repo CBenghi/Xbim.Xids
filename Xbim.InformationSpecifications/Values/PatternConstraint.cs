@@ -7,7 +7,8 @@ namespace Xbim.InformationSpecifications
 {
 	public class PatternConstraint : IValueConstraint, IEquatable<PatternConstraint>
 	{
-		private Regex compiledRegex;
+		private Regex compiledCaseSensitiveRegex;
+		private Regex compiledCaseInsensitiveRegex;
 
 		private string pattern;
 
@@ -15,7 +16,7 @@ namespace Xbim.InformationSpecifications
 		{
 			get { return pattern; }
 			set {
-				compiledRegex = null;
+				compiledCaseSensitiveRegex = null;
 				pattern = value;
 			}
 		}
@@ -43,29 +44,77 @@ namespace Xbim.InformationSpecifications
 		{
 			get
 			{
-				return EnsureRegex();
+				try
+				{
+					// we are running the test omitting boundaries that 
+					// might alter the nature of the result
+					// e.g. repetition on the initial boundary
+					var mod = XmlRegex.Preprocess(pattern, true);
+					var r = new Regex(mod);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+				return true;
 			}
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
+		[JsonIgnore]
+		public string PatternError
 		{
-			if (!EnsureRegex(logger))
-				return false;
-			return compiledRegex.IsMatch(candiatateValue.ToString());
+			get
+			{
+                try
+                {
+					var mod = XmlRegex.Preprocess(pattern, true);
+					var r = new Regex(mod);
+				}
+                catch (Exception ex)
+                {
+					return ex.Message;
+                }
+				return "";
+			}
 		}
 
-		private bool EnsureRegex(ILogger logger = null)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+        {
+			if (ignoreCase)
+			{
+				if (!EnsureRegex(out var _, ignoreCase, logger))
+					return false;
+				return compiledCaseInsensitiveRegex.IsMatch(candiatateValue.ToString());
+			}
+			else
+            {
+				if (!EnsureRegex(out var _, ignoreCase, logger))
+					return false;
+				return compiledCaseSensitiveRegex.IsMatch(candiatateValue.ToString());
+			}
+		}
+
+		private bool EnsureRegex(out string errorMessage, bool ignoreCase, ILogger logger = null)
 		{
-			if (compiledRegex != null)
-				return true;			
+			errorMessage = "";
+			if (
+				(ignoreCase && compiledCaseInsensitiveRegex != null)
+				||
+				(!ignoreCase && compiledCaseSensitiveRegex != null)
+				)
+				return true;
 			try
 			{
 				var preProcess = XmlRegex.Preprocess(Pattern);
-				compiledRegex = new Regex(preProcess, RegexOptions.Compiled | RegexOptions.Singleline);
+				if (!ignoreCase)
+					compiledCaseSensitiveRegex = new Regex(preProcess, RegexOptions.Compiled | RegexOptions.Singleline);				
+				else
+					compiledCaseInsensitiveRegex = new Regex(preProcess, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 				return true;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				errorMessage = ex.Message;
 				logger?.LogError("Invalid pattern constraint: {pattern}", Pattern);
 				return false;
 			}
@@ -73,12 +122,14 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"Pattern:{Pattern}";
+			if (pattern == null)
+				return $"Pattern: <null>";
+			return $"Pattern: '{Pattern}'";
 		}
 
 		public string Short()
 		{
-			return $"matches the regular pattern: '{Pattern}'";
+			return $"matches the pattern: '{Pattern}'";
 		}
 	}
 }

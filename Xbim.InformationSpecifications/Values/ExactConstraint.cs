@@ -12,19 +12,21 @@ namespace Xbim.InformationSpecifications
 
 		public string Value { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
-		{
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+        {
+			if (ignoreCase)
+				return Value.Equals(candiatateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
 			return Value.Equals(candiatateValue.ToString());
 		}
 
 		public override string ToString()
-		{
-			if (Value != null)
-				return Value;
-			return "<null>";
-		}
+        {
+            if (Value == null)
+                return "Exact: <null>";
+            return $"Exact: '{Value}'";
+        }
 
-		public override int GetHashCode()
+        public override int GetHashCode()
 		{
 			if (Value != null)
 				return Value.GetHashCode();

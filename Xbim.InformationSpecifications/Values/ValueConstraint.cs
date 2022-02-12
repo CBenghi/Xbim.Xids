@@ -31,19 +31,29 @@ namespace Xbim.InformationSpecifications
 
 		public List<IValueConstraint> AcceptedValues { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue, ILogger logger = null)
-		{
+		public bool IsSatisfiedBy(object candiatateValue, bool ignoreCase, ILogger logger = null)
+        {
 			if (BaseType != TypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
 				return false;
+			// if there are no constraints it's satisfied by default
 			if (AcceptedValues == null || !AcceptedValues.Any())
 				return true;
 			var cand = GetObject(candiatateValue, BaseType);
 			foreach (var av in AcceptedValues)
 			{
-				if (av.IsSatisfiedBy(cand, this, logger))
+				if (av.IsSatisfiedBy(cand, this, ignoreCase, logger))
 					return true;
 			}
 			return false;
+		}
+
+		public bool IsSatisfiedBy(object candiatateValue, ILogger logger = null)
+		{
+			return IsSatisfiedBy(candiatateValue, false, logger);
+		}
+		public bool IsSatisfiedIgnoringCaseBy(object candiatateValue, ILogger logger = null)
+		{
+			return IsSatisfiedBy(candiatateValue, true, logger);
 		}
 
 		private bool IsCompatible(Type destType, Type passedType)
@@ -201,18 +211,6 @@ namespace Xbim.InformationSpecifications
 				default:
 					return typeof(string);
 			}
-		}
-
-		[Obsolete("Is this even needed?")]
-		public static TypeName Resolve(Type t)
-		{
-			if (t == typeof(string))
-				return TypeName.String;
-			if (t == typeof(int))
-				return TypeName.Integer;
-			if (t == typeof(double) || t == typeof(float))
-				return TypeName.Floating;
-			return TypeName.Undefined;
 		}
 
 		public static object GetDefault(TypeName tName, ILogger logger = null)

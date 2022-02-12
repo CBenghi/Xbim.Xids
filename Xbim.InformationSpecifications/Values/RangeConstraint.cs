@@ -35,7 +35,7 @@ namespace Xbim.InformationSpecifications
 			var min = MinInclusive ? "<=" : "<";
 			var maxV = MaxValue ?? "undefined";
 			var max = MaxInclusive ? "<=" : "<";
-			return $"{minV} {min} .. {max} {maxV}";
+			return $"Range: {minV} {min} .. {max} {maxV}";
 		}
 
 		public override int GetHashCode()
@@ -43,8 +43,8 @@ namespace Xbim.InformationSpecifications
 			return ToString().GetHashCode();
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
-		{
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+        {
 			if (context == null)
 				return false;
 			var compe = candiatateValue as IComparable;

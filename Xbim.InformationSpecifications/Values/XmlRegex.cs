@@ -34,10 +34,12 @@ namespace Xbim.InformationSpecifications
             new Map('W', "\\P{_xmlW}"),
         };
 
-        internal static string Preprocess(string pattern)
+        
+        internal static string Preprocess(string pattern, bool omitBoundaries = false)
         {
             StringBuilder bufBld = new StringBuilder();
-            bufBld.Append("^");
+            if(!omitBoundaries)
+                bufBld.Append("^");
 
             char[] source = pattern.ToCharArray();
             int length = pattern.Length;
@@ -74,8 +76,8 @@ namespace Xbim.InformationSpecifications
             {
                 bufBld.Append(source, copyPosition, length - copyPosition);
             }
-
-            bufBld.Append("$");
+            if (!omitBoundaries)
+                bufBld.Append("$");
             return bufBld.ToString();
         }
 

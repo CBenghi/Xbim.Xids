@@ -6,10 +6,19 @@ namespace Xbim.InformationSpecifications
 {
     public partial class IfcTypeFacet : IFacet, IEquatable<IfcTypeFacet>
     {
+        /// <summary>
+        /// Required 
+        /// </summary>
         public ValueConstraint IfcType { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
         public ValueConstraint PredefinedType { get; set; } 
 
+        /// <summary>
+        /// Not part of buildingSmart specification
+        /// </summary>
         public bool IncludeSubtypes { get; set; } = true;
 
         public string Short()

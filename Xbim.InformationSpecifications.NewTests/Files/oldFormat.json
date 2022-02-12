@@ -1,0 +1,55 @@
+{
+	"Project": {},
+	"FacetRepository": {
+		"Collection": [
+			{
+				"Guid": "1578b340-4fb9-4f8c-9f0c-d6ea4c51b2fc",
+				"Name": "Tutti gli elementi",
+				"Facets": [
+					{
+						"IfcTypeFacet": {
+							"IfcType": "IfcBeam",
+							"PredefinedType": "",
+							"IncludeSubtypes": true
+						}
+					}
+				]
+			},
+			{
+				"Guid": "d9bd87b9-b6e0-44e0-8246-480ad17f9048",
+				"Name": "ID e PBS",
+				"Facets": [
+					{
+						"IfcPropertyFacet": {
+							"PropertySetName": "ArchiCADProperties",
+							"PropertyName": "ID Elemento",
+							"Location": "any"
+						}
+					},
+					{
+						"IfcPropertyFacet": {
+							"PropertySetName": "Classificazione",
+							"PropertyName": "PBS",
+							"PropertyValue": {
+								"BaseType": "string"
+							},
+							"Location": "any"
+						}
+					}
+				]
+			}
+		]
+	},
+	"SpecificationsGroups": [
+		{
+			"Specifications": [
+				{
+					"Name": "Identificazione",
+					"Applicability": "1578b340-4fb9-4f8c-9f0c-d6ea4c51b2fc",
+					"Requirement": "d9bd87b9-b6e0-44e0-8246-480ad17f9048",
+					"Guid": "9ec46ee6-e08b-44a5-ab53-70a3bc25d962"
+				}
+			]
+		}
+	]
+}

@@ -2,6 +2,7 @@
 {
     public class Measure
     {
+        public string Key { get; set; }
         public string PhysicalQuantity { get; set; }
         public string Unit { get; set; }
         public string UnitSymbol { get; set; }

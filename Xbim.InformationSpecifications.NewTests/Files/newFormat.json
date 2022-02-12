@@ -1,0 +1,72 @@
+{
+  "Project": {},
+  "FacetRepository": {
+    "Collection": [
+      {
+        "Guid": "a8e59587-5136-4193-8f1e-390f18b0fe76",
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "IfcWall"
+                    }
+                  }
+                ],
+                "BaseType": "undefined"
+              },
+              "IncludeSubtypes": true
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "b8c3a9c2-dc54-4013-af9e-65ef743a4715",
+        "Facets": [
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "Pset"
+                    }
+                  }
+                ],
+                "BaseType": "undefined"
+              },
+              "PropertyName": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "Prop"
+                    }
+                  }
+                ],
+                "BaseType": "undefined"
+              },
+              "Location": "any"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "SpecificationsGroups": [
+    {
+      "Specifications": [
+        {
+          "Use": "required",
+          "IfcVersion": [
+            "ifC2X3"
+          ],
+          "Applicability": "a8e59587-5136-4193-8f1e-390f18b0fe76",
+          "Requirement": "b8c3a9c2-dc54-4013-af9e-65ef743a4715",
+          "Guid": "980f07d7-4df7-452e-babf-16350c4ea878"
+        }
+      ]
+    }
+  ]
+}

@@ -3,22 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
 
-    public class ValueContraintTests
+	public class ValueContraintTests
 	{
 		[Fact]
 		public void IPersistValues()
-        {
+		{
 			var str = "2O2Fr$t4X7Zf8NOew3FLOH";
-            Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new Ifc2x3.UtilityResource.IfcGloballyUniqueId(str);
+			Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new Ifc2x3.UtilityResource.IfcGloballyUniqueId(str);
 			var vc = new ValueConstraint(str);
 			vc.IsSatisfiedBy(i).Should().BeTrue();
-			
+
 			var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
 			var vc2 = new ValueConstraint(str2);
 			vc2.IsSatisfiedBy(i).Should().BeFalse();
@@ -53,7 +54,29 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy(2d).Should().BeFalse();
 		}
 
-		
+		[Fact]
+		public void ConstraintFromBasicString()
+		{
+			ValueConstraint vc = "Some";
+			vc.IsSatisfiedBy("Some").Should().BeTrue();
+			vc.IsSatisfiedBy("SomeOther").Should().BeFalse();
+
+			vc.IsEmpty().Should().BeFalse();
+			vc.IsSingleExact(out var _).Should().BeTrue();
+		}
+
+		[Fact]
+		public void CaseSensitiviyTests()
+		{
+			ValueConstraint t2 = "ABC";
+			t2.IsSatisfiedBy("abc").Should().BeFalse();
+			t2.IsSatisfiedIgnoringCaseBy("abc").Should().BeTrue();
+
+			var t = ValueConstraint.CreatePattern("CDE");
+			t.IsSatisfiedBy("cde").Should().BeFalse();
+			t.IsSatisfiedIgnoringCaseBy("cde").Should().BeTrue();
+		}
+
 
 		[Fact]
 		public void RangeConstraintSatisfactionTest()

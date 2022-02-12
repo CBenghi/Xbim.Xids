@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Xbim.InformationSpecifications
 {
@@ -109,7 +110,32 @@ namespace Xbim.InformationSpecifications
 		public int? MinLength { get; set; }
 		public int? MaxLength { get; set; }
 
-		public override bool Equals(object obj)
+        public override string ToString()
+        {
+			if (
+				!TotalDigits.HasValue
+				&& FractionDigits.HasValue
+				&& Length.HasValue
+				&& MinLength.HasValue
+				&& MaxLength.HasValue
+				)
+				return "Structure: <empty>";
+			StringBuilder sb = new StringBuilder();
+			sb.Append("Structure:");
+			if (TotalDigits.HasValue)
+				sb.Append($" digits: {TotalDigits.Value}");
+			if (FractionDigits.HasValue)
+				sb.Append($" decimals: {FractionDigits.Value}");
+			if (Length.HasValue)
+				sb.Append($" length: {Length.Value}");
+			if (MinLength.HasValue)
+				sb.Append($" minlength: {MinLength.Value}");
+			if (MaxLength.HasValue)
+				sb.Append($" maxlength: {MaxLength.Value}");
+			return sb.ToString();
+		}
+
+        public override bool Equals(object obj)
 		{
 			return Equals(obj as StructureConstraint);
 		}
@@ -133,8 +159,8 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, ILogger logger = null)
-		{
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+        {
 			if (TotalDigits.HasValue)
 			{
 				if (candiatateValue is float f)

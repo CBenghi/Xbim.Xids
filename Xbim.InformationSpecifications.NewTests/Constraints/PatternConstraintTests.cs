@@ -13,8 +13,8 @@ namespace Xbim.InformationSpecifications.Tests
 		[MemberData(nameof(GetExamplePatterns))]
 		public void CanProcessExamplePatterns(string pattern, string[] expectTrue, string[] expectFalse)
         {
-			var vc = new ValueConstraint(TypeName.String);
-			vc.AddAccepted(new PatternConstraint() { Pattern = pattern });
+			var vc = ValueConstraint.CreatePattern(pattern);
+
             foreach (var val in expectTrue)
 				vc.IsSatisfiedBy(val).Should().BeTrue();
 			foreach (var val in expectFalse)

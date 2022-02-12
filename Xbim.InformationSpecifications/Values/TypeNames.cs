@@ -55,7 +55,19 @@ namespace Xbim.InformationSpecifications
 			return "";
 		}
 
-		public static Type GetNetType(TypeName baseType)
+		/// <summary>
+		/// Create a constraint pattern from a string.
+		/// </summary>
+		/// <param name="pattern">The regex value that needs to be matched.</param>
+		/// <returns>A value constraint, based on string type</returns>
+        public static ValueConstraint CreatePattern(string pattern)
+        {
+			var vc = new ValueConstraint(TypeName.String);
+			vc.AddAccepted(new PatternConstraint() { Pattern = pattern });
+			return vc;
+		}
+
+        public static Type GetNetType(TypeName baseType)
 		{
 			switch (baseType)
 			{

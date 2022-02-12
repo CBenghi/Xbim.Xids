@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Location,String Uri,String Use,String Instructions" },
 			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation" },
 			{ "ExactConstraint","String Value" },
-			{ "PatternConstraint","String Pattern,Boolean IsValidPattern" },
+			{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
@@ -224,7 +224,7 @@ namespace Xbim.InformationSpecifications.Tests
 				shortV.Should().NotBeNull();
 				if (testForRandom)
 				{
-					var any = vc.IsSatisfiedBy("random", null);
+					var any = vc.IsSatisfiedBy("random", null, false);
 					any.Should().BeFalse();
 				}
 			}

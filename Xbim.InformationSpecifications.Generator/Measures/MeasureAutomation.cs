@@ -16,22 +16,28 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             FileInfo f = new FileInfo("Files/Physical-Quantities-and-Units.md");
             var allWiki = File.ReadAllLines(f.FullName);
             var isParsing = false;
+            var tally = 0;
             foreach (var oneLine in allWiki)
             {
                 if (isParsing)
                 {
                     var parts = oneLine.Split(splitter, StringSplitOptions.TrimEntries);
-                    if (parts.Length < 7)
+                    if (parts.Length != 9)
+                    {
+                        Debug.Assert(tally == 51); // need to review the info from the wiki
                         yield break; // no more measures to find.
+                    }
                     var retMeasurement = new Measure()
                     {
                          PhysicalQuantity = parts[1],
-                         Unit = parts[2],
-                         UnitSymbol = parts[3],
-                         IfcMeasure = parts[4],
-                         DimensionalExponents = parts[5],
-                         QUDT = parts[6],
+                         Key = parts[2],
+                         Unit = parts[3],
+                         UnitSymbol = parts[4],
+                         IfcMeasure = parts[5],
+                         DimensionalExponents = parts[6],
+                         QUDT = parts[7],
                     };
+                    tally++;
                     yield return retMeasurement;
                 }
                 else
@@ -39,7 +45,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                     if (oneLine.Contains("-----"))
                     {
                         isParsing = true;
-                        continue;
+                        continue; // start parsing
                     }
                 }
             }

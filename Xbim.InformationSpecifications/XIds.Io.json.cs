@@ -47,15 +47,9 @@ namespace Xbim.InformationSpecifications
 				(nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
 				(nameof(MaterialFacet), typeof(MaterialFacet))
 			);
-			var constraintConverter = new HeterogenousListConverter<IValueConstraint, List<IValueConstraint>>(
-				(nameof(ExactConstraint), typeof(ExactConstraint)),
-				(nameof(PatternConstraint), typeof(PatternConstraint)),
-				(nameof(RangeConstraint), typeof(RangeConstraint)),
-				(nameof(StructureConstraint), typeof(StructureConstraint))
-				);
-
+			var vcConverter = new ValueConstraintConverter();
+			options.Converters.Add(vcConverter);
 			options.Converters.Add(facetConverter);
-			options.Converters.Add(constraintConverter);
 			options.Converters.Add(
 				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
 				);
