@@ -10,9 +10,16 @@ using Xbim.Properties;
 
 namespace Xbim.InformationSpecifications.Generator
 {
-	public class PropertyApplicabilityStudy
+	/// <summary>
+	/// Provides helpers to define what classes should be included in the treatment of the various schemas
+	/// </summary>
+	public class IfcClassStudy
 	{
 		private static Dictionary<Properties.Version, List<string>> includeTypes;
+	
+		/// <summary>
+		/// This determines the classes for each schema, methods below help visualise them.
+		/// </summary>
 		internal static Dictionary<Properties.Version, List<string>> IncludeTypes
 		{
 			get
@@ -28,6 +35,9 @@ namespace Xbim.InformationSpecifications.Generator
 			}
 		}
 
+		/// <summary>
+		/// Just a function to help make choices until bS makes a definitive list of accepted values.
+		/// </summary>
 		public static string Execute()
 		{
 			var dist = new StringBuilder();
@@ -57,7 +67,6 @@ namespace Xbim.InformationSpecifications.Generator
 
 				// trying to find a set of classes that matches the property types
 				List<string> HandledTypes = new List<string>();
-				// HandledTypes.AddRange(TreeOf(metaD.ExpressType("IFCROOT")));
 				foreach (var item in IncludeTypes[schema])
 				{
 					HandledTypes.AddRange(TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
@@ -110,11 +119,5 @@ namespace Xbim.InformationSpecifications.Generator
 			}
 			return $"{daType.Name} ({daType.AllSubTypes.Count()})";
 		}
-
-		private static string newStringArray(string[] classes)
-		{
-			return @$"new [] {{""{string.Join("\",\"", classes)}""}}";
-		}
-
 	}
 }

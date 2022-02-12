@@ -9,7 +9,11 @@ namespace Xbim.InformationSpecifications.Generator
 {
     public class PropertiesGenerator 
     {
-        public static string Execute()
+		/// <summary>
+		/// Computes the GetPropertiesIFC2x3 and GetPropertiesIFC4 of the PropertySetInfo.Generated.cs file 
+		/// Depends on the Xbim.Properties assembly.
+		/// </summary>
+		public static string Execute()
         {
 			var source = stub;
 			var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };		

@@ -12,6 +12,9 @@ namespace Xbim.InformationSpecifications.Generator
 {
 	class AttributesGenerator
 	{
+		/// <summary>
+		/// SchemaInfo.GeneratedAttributes.cs
+		/// </summary>
 		static public string Execute()
 		{
 			var source = "";
@@ -30,9 +33,9 @@ namespace Xbim.InformationSpecifications.Generator
 
 				// trying to find a set of classes that matches the property types
 				List<string> HandledTypes = new List<string>();
-				foreach (var item in PropertyApplicabilityStudy.IncludeTypes[schema]) // this determines the included types by schema
+				foreach (var item in IfcClassStudy.IncludeTypes[schema]) // this determines the included types by schema
 				{
-					HandledTypes.AddRange(PropertyApplicabilityStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
+					HandledTypes.AddRange(IfcClassStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
 				}
 				Dictionary<string, List<string>> typesByAttribute = new Dictionary<string, List<string>>();
 				foreach (var className in HandledTypes)

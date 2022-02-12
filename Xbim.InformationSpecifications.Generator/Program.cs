@@ -12,17 +12,31 @@ namespace Xbim.InformationSpecifications.Generator
 		public static void Main()
 		{
 			// NOTE: IN DEBUG MODE OUTPUT IS LIKELY REDIRECTED TO FILE (file.cs)
+			var avoid = false;
+			var study = false;
 
-			// Console.Write(PropertiesGenerator.Execute());
-			// Console.Write(PropertyApplicabilityStudy.Execute());;
-			// Console.Write(ClassGenerator.Execute());
-			// Console.Write(AttributesGenerator.Execute()); 
-			// Console.Write(AttributesValueGenerator.Execute());
+			// Initialization
+			if (study)
+			{
+				Console.Write(IfcClassStudy.Execute());  // relevant classes preview
+				Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
+				return;
+			}
 
-			Console.Write(MeasureAutomation.Execute());
-#if true
+			// Ifc classes and properties
+			if (avoid) Console.Write(PropertiesGenerator.Execute()); // depends on Xbim.Properties assembly
+			if (avoid) Console.Write(ClassGenerator.Execute()); // depends on ExpressMetaData and IfcClassStudy classes
+			if (avoid) Console.Write(AttributesGenerator.Execute()); // depends on ExpressMetaData and IfcClassStudy classes
+
+			// for the verification dll 
+			// it should be moved there
+			if (avoid) Console.Write(AttributesValueGenerator.Execute());
 			
-#endif
+			// wip
+			if (avoid) Console.Write(AttributesForIfcTypes.Execute());
+			
+			
+			
 		}
 	}
 }

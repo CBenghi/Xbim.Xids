@@ -51,6 +51,9 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             }
         }
 
+        /// <summary>
+        /// Gets measures from the wiki and tries to fill in missing dimensional exponents
+        /// </summary>
         public static string Execute()
         {
             MeasureCollection m = new MeasureCollection(MeasureAutomation.GetFromWiki());

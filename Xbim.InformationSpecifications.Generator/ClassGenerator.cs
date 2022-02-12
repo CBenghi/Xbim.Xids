@@ -11,7 +11,10 @@ namespace Xbim.InformationSpecifications.Generator
 {
     public class ClassGenerator
 	{
-        public static string Execute()
+		/// <summary>
+		/// SchemaInfo.GeneratedClass.cs
+		/// </summary>
+		public static string Execute()
         {
 			var source = stub;
 			var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };		
@@ -29,9 +32,9 @@ namespace Xbim.InformationSpecifications.Generator
 
 				// trying to find a set of classes that matches the property types
 				List<string> HandledTypes = new List<string>();
-				foreach (var item in PropertyApplicabilityStudy.IncludeTypes[schema]) // this determines the included types by schema
+				foreach (var item in IfcClassStudy.IncludeTypes[schema]) // this determines the included types by schema
 				{
-					HandledTypes.AddRange(PropertyApplicabilityStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
+					HandledTypes.AddRange(IfcClassStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
 				}
 
 				foreach (var className in HandledTypes)
