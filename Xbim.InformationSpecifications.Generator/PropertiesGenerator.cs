@@ -44,8 +44,8 @@ namespace Xbim.InformationSpecifications.Generator
 			return @$"new [] {{""{string.Join("\",\"", classes)}""}}";
 		}
 
-		private const string stub = @"
-// generated via source generation from xbim.xids.generator
+		private const string stub = @"// generated via source generation from xbim.xids.generator
+
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications.Helpers

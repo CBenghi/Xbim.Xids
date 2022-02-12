@@ -41,10 +41,6 @@ namespace Xbim.InformationSpecifications.Generator
             var tAttGen = AttributesGenerator.Execute();
 			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
 			File.WriteAllText(dest, tAttGen);
-			
-			// for the verification dll 
-			// it should be moved there
-			if (avoid) Console.Write(AttributesValueGenerator.Execute());
 
 			// wip
 			if (avoid) Console.Write(AttributesForIfcTypes.Execute());

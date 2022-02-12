@@ -1,5 +1,5 @@
-
 // generated via source generation from xbim.xids.generator
+
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications.Helpers
