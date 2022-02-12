@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
@@ -26,7 +27,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			get
 			{
 				if (schemaIFC4 == null)
-					schemaIFC4 = GetPropertiesIFC4();
+					schemaIFC4 = GetPropertiesIFC4().ToList();
 				return schemaIFC4;
 			}
 		}
@@ -37,7 +38,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			get
 			{
 				if (schemaIFC2x3 == null)
-					schemaIFC2x3 = GetPropertiesIFC2x3();
+					schemaIFC2x3 = GetPropertiesIFC2x3().ToList();
 				return schemaIFC2x3;
 			}
 		}

@@ -65,17 +65,18 @@ namespace Xbim.InformationSpecifications.Generator
 
 					sb.AppendLine($@"			schema{schema}.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""));");
 				}
-				source = source.Replace($"<PlaceHolder{schema}>", sb.ToString());
+				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
 			return source;
 		}
 
 		private static string newStringArray(string[] classes)
 		{
-			return @$"new [] {{""{string.Join("\",\"", classes)}""}}";
+			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
 		}
 
-		private const string stub = @"// generated via source generation from xbim.xids.generator
+		private const string stub = @"// generated code via xbim.xids.generator, any changes made directly here will be lost
+
 namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
@@ -83,12 +84,13 @@ namespace Xbim.InformationSpecifications.Helpers
 		static partial void GetClassesIFC2x3()
 		{
 			schemaIFC2x3 = new SchemaInfo();
-<PlaceHolderIFC2x3>			
+<PlaceHolderIFC2x3>
 		}
-	static partial void GetClassesIFC4()
-	{
-		schemaIFC4 = new SchemaInfo();
-<PlaceHolderIFC4>		
+		static partial void GetClassesIFC4()
+		{
+			schemaIFC4 = new SchemaInfo();
+<PlaceHolderIFC4>
+		}
 	}
 }
 ";

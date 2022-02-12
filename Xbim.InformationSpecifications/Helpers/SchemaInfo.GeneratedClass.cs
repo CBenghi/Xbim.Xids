@@ -1,4 +1,5 @@
-﻿// generated via source generation from xbim.xids.generator
+// generated code via xbim.xids.generator, any changes made directly here will be lost
+
 namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
@@ -237,7 +238,6 @@ namespace Xbim.InformationSpecifications.Helpers
 			schemaIFC2x3.Add(new ClassInfo("IfcTransportElementType", "IfcElementType", ClassType.Concrete, new[] { "ELEVATOR", "ESCALATOR", "MOVINGWALKWAY", "USERDEFINED", "NOTDEFINED" }, "Ifc2x3.ProductExtension"));
 			schemaIFC2x3.Add(new ClassInfo("IfcDoorStyle", "IfcTypeProduct", ClassType.Concrete, null, "Ifc2x3.SharedBldgElements"));
 			schemaIFC2x3.Add(new ClassInfo("IfcWindowStyle", "IfcTypeProduct", ClassType.Concrete, null, "Ifc2x3.SharedBldgElements"));
-
 		}
 		static partial void GetClassesIFC4()
 		{

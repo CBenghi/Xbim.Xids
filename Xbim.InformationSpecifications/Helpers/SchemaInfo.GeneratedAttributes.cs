@@ -1,4 +1,5 @@
-﻿// generated via source generation from xbim.xids.generator
+// generated code via xbim.xids.generator, any changes made directly here will be lost
+
 using System;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -186,7 +187,6 @@ namespace Xbim.InformationSpecifications.Helpers
 			schemaIFC2x3.AddAttribute("ElementType", new[] { "IfcElementType" }, new[] { "IfcElementType", "IfcDistributionElementType", "IfcDistributionFlowElementType", "IfcFlowTerminalType", "IfcFireSuppressionTerminalType", "IfcSanitaryTerminalType", "IfcStackTerminalType", "IfcWasteTerminalType", "IfcAirTerminalType", "IfcGasTerminalType", "IfcElectricApplianceType", "IfcElectricHeaterType", "IfcLampType", "IfcLightFixtureType", "IfcOutletType", "IfcDistributionChamberElementType", "IfcEnergyConversionDeviceType", "IfcAirToAirHeatRecoveryType", "IfcBoilerType", "IfcChillerType", "IfcCoilType", "IfcCondenserType", "IfcCooledBeamType", "IfcCoolingTowerType", "IfcEvaporativeCoolerType", "IfcEvaporatorType", "IfcHeatExchangerType", "IfcHumidifierType", "IfcSpaceHeaterType", "IfcTubeBundleType", "IfcUnitaryEquipmentType", "IfcElectricGeneratorType", "IfcElectricMotorType", "IfcMotorConnectionType", "IfcTransformerType", "IfcFlowControllerType", "IfcAirTerminalBoxType", "IfcDamperType", "IfcFlowMeterType", "IfcValveType", "IfcElectricTimeControlType", "IfcProtectiveDeviceType", "IfcSwitchingDeviceType", "IfcFlowFittingType", "IfcDuctFittingType", "IfcPipeFittingType", "IfcCableCarrierFittingType", "IfcJunctionBoxType", "IfcFlowMovingDeviceType", "IfcCompressorType", "IfcFanType", "IfcPumpType", "IfcFlowSegmentType", "IfcDuctSegmentType", "IfcPipeSegmentType", "IfcCableCarrierSegmentType", "IfcCableSegmentType", "IfcFlowStorageDeviceType", "IfcTankType", "IfcElectricFlowStorageDeviceType", "IfcFlowTreatmentDeviceType", "IfcDuctSilencerType", "IfcFilterType", "IfcDistributionControlElementType", "IfcActuatorType", "IfcAlarmType", "IfcControllerType", "IfcFlowInstrumentType", "IfcSensorType", "IfcElementComponentType", "IfcDiscreteAccessoryType", "IfcVibrationIsolatorType", "IfcFastenerType", "IfcMechanicalFastenerType", "IfcBuildingElementType", "IfcBeamType", "IfcColumnType", "IfcCurtainWallType", "IfcMemberType", "IfcPlateType", "IfcRailingType", "IfcRampFlightType", "IfcSlabType", "IfcStairFlightType", "IfcWallType", "IfcBuildingElementProxyType", "IfcCoveringType", "IfcFurnishingElementType", "IfcFurnitureType", "IfcSystemFurnitureElementType", "IfcSpatialStructureElementType", "IfcSpaceType", "IfcTransportElementType" });
 			schemaIFC2x3.AddAttribute("ParameterTakesPrecedence", new[] { "IfcDoorStyle", "IfcWindowStyle" }, new[] { "IfcDoorStyle", "IfcWindowStyle" });
 			schemaIFC2x3.AddAttribute("Sizeable", new[] { "IfcDoorStyle", "IfcWindowStyle" }, new[] { "IfcDoorStyle", "IfcWindowStyle" });
-
 		}
 
 		static partial void GetAttributesIFC4()
@@ -308,7 +308,6 @@ namespace Xbim.InformationSpecifications.Helpers
 			schemaIFC4.AddAttribute("Usage", new[] { "IfcConstructionResource" }, new[] { "IfcConstructionResource", "IfcConstructionEquipmentResource", "IfcConstructionMaterialResource", "IfcConstructionProductResource", "IfcCrewResource", "IfcLaborResource", "IfcSubContractResource" });
 			schemaIFC4.AddAttribute("BaseCosts", new[] { "IfcConstructionResource" }, new[] { "IfcConstructionResource", "IfcConstructionEquipmentResource", "IfcConstructionMaterialResource", "IfcConstructionProductResource", "IfcCrewResource", "IfcLaborResource", "IfcSubContractResource" });
 			schemaIFC4.AddAttribute("BaseQuantity", new[] { "IfcConstructionResource" }, new[] { "IfcConstructionResource", "IfcConstructionEquipmentResource", "IfcConstructionMaterialResource", "IfcConstructionProductResource", "IfcCrewResource", "IfcLaborResource", "IfcSubContractResource" });
-
 		}
 	}
 }

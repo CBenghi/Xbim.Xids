@@ -17,7 +17,7 @@ namespace Xbim.InformationSpecifications.Generator
 		/// </summary>
 		static public string Execute()
 		{
-			var source = "";
+			var source = stub;
 			var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
 
 			foreach (var schema in schemas)
@@ -70,15 +70,33 @@ namespace Xbim.InformationSpecifications.Generator
 
 					var classesInQuotes = pair.Value.Select(x=>$"\"{x}\"").ToArray();
 					var topClassesInQuotes = OnlyTopClasses.Select(x=>$"\"{x}\"").ToArray();
-					var line = $"schema{schema}.AddAttribute({attribute}, new[] {{{string.Join(",", topClassesInQuotes)}}}, new[] {{{string.Join(",", classesInQuotes)}}});";
-					Debug.WriteLine(line);
+					var line = $"\t\t\tschema{schema}.AddAttribute({attribute}, new[] {{ {string.Join(", ", topClassesInQuotes)} }}, new[] {{ {string.Join(", ", classesInQuotes)} }});";
+					
+					sb.AppendLine(line);
 				}
+				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
-			
-			
-			Debug.WriteLine("The content of output populates the file SchemaInfo.GeneratedAttributes.cs");
-			Debugger.Break();
 			return source;
 		}
+		private const string stub = @"// generated code via xbim.xids.generator, any changes made directly here will be lost
+
+using System;
+
+namespace Xbim.InformationSpecifications.Helpers
+{
+	public partial class SchemaInfo
+	{
+		static partial void GetAttributesIFC2x3()
+		{
+<PlaceHolderIFC2x3>
+		}
+
+		static partial void GetAttributesIFC4()
+		{
+<PlaceHolderIFC4>
+		}
+	}
+}
+";
 	}
 }
