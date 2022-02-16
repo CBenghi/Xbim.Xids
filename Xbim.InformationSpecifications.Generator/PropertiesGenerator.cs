@@ -31,9 +31,9 @@ namespace Xbim.InformationSpecifications.Generator
 					var cArr = newStringArray(classes);
 					var pArr = newStringArray(properties);
 					// sb.AppendLine($@"			// {string.Join(",", classes)}");
-					sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {pArr}, {cArr} );");
+					sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {pArr}, {cArr});");
 				}
-				source = source.Replace($"<PlaceHolder{schema}>", sb.ToString());
+				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
 			// context.AddSource("generated2.cs", source);
 			return source;
@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications.Generator
 
 		private static string newStringArray(string[] classes)
 		{
-			return @$"new [] {{""{string.Join("\",\"", classes)}""}}";
+			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
 		}
 
 		private const string stub = @"// generated via source generation from xbim.xids.generator

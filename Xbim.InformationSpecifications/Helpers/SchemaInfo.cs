@@ -83,6 +83,7 @@ namespace Xbim.InformationSpecifications.Helpers
 				if (schemaIFC4 == null)
 				{
 					GetClassesIFC4();
+					GetRelationTypesIFC4(schemaIFC4);
 					GetAttributesIFC4();
 				}
 				return schemaIFC4;
@@ -125,8 +126,19 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
-		static partial void GetRelationTypesIFC2x3(SchemaInfo schemaIFC2x3);
+		static partial void GetRelationTypesIFC2x3(SchemaInfo schema);
+		static partial void GetRelationTypesIFC4(SchemaInfo schema);
         
+		internal void SetRelationType(string objClass, IEnumerable<string> typeClasses)
+        {
+			var c = this[objClass];
+			if (c == null)
+            {
+				return;
+            }
+			c.SetTypeClasses(typeClasses);
+        }
+
 
         static partial void GetClassesIFC2x3();
 

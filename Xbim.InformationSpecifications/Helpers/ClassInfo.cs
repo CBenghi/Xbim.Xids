@@ -87,5 +87,12 @@ namespace Xbim.InformationSpecifications.Helpers
 			PredefinedTypeValues = predefined;
 			NameSpace = nameSpace;
 		}
-	}
+
+		public string[] RelationTypeClasses { get; private set;}
+
+		internal void SetTypeClasses(IEnumerable<string> typeClasses)
+        {
+            RelationTypeClasses = typeClasses.ToArray();
+        }
+    }
 }

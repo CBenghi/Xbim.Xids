@@ -12,21 +12,20 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
-			var avoid = true;
+			var wip = false;
 			// wip
-			if (avoid)
+			if (wip)
 			{
 				var schemas = new[] {
 					Properties.Version.IFC2x3,
 					Properties.Version.IFC4
 				};
 				foreach (var schema in schemas)
-					Console.Write(AttributesForIfcTypes.Execute(schema));
-				
+					Console.Write(ClassRelationTypes.Report(schema));
 				return;
 			}
 
-			var study = true;
+			var study = false;
 			var destPath = new DirectoryInfo(@"..\..\..\..\");
 			// Initialization
 			if (study)
@@ -52,7 +51,10 @@ namespace Xbim.InformationSpecifications.Generator
 			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
 			File.WriteAllText(dest, tAttGen);
 
-			
+			// depends on ExpressMetaData and IfcClassStudy classes
+			var tRelTypeGen = ClassRelationTypes.Execute();
+			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedRelTypes.cs");
+			File.WriteAllText(dest, tRelTypeGen);
 		}
 	}
 }
