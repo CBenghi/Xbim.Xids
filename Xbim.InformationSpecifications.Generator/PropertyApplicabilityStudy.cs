@@ -27,20 +27,19 @@ namespace Xbim.InformationSpecifications.Generator
 				if (includeTypes == null)
 				{
 					includeTypes = new Dictionary<Properties.Version, List<string>>();
-					// IncludeTypes.Add(Properties.Version.IFC2x3, new List<string>() { "IfcRoot" });
 					IncludeTypes.Add(Properties.Version.IFC2x3, new List<string>() { "IfcObject", "IfcTypeProduct" });
-					IncludeTypes.Add(Properties.Version.IFC4, new List<string>() { "IfcObject" });
+					IncludeTypes.Add(Properties.Version.IFC4, new List<string>() { "IfcObject", "IfcTypeObject" });
 				}
 				return includeTypes;
 			}
 		}
 
 		/// <summary>
-		/// Just a function to help make choices until bS makes a definitive list of accepted values.
+		/// Compares the classes included in the export with the ones taken from the defined property sets.
 		/// </summary>
-		public static string Execute()
+		public static string ReportMatchesToProperties()
 		{
-			var dist = new StringBuilder();
+			var report = new StringBuilder();
 			var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
 			foreach (var schema in schemas)
 			{
@@ -51,52 +50,61 @@ namespace Xbim.InformationSpecifications.Generator
 					module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
 				var metaD = ExpressMetaData.GetMetadata(module);
 
-				dist.AppendLine($"===================================================================================== {schema}");
-				dist.AppendLine($"= {schema}");
-				dist.AppendLine($"===================================================================================== {schema}");
-				var distinctClassesOfProperties = new List<string>();
+				report.AppendLine($"===================================================================================== {schema}");
+				report.AppendLine($"= {schema}");
+				report.AppendLine($"===================================================================================== {schema}");
+				
+				// start from the available properties, and get the classes that they apply to
+				var distinctClassesFromPropertySets = new List<string>();
 				var propertyDefinitions = new Definitions<PropertySetDef>(schema);
 				if (propertyDefinitions != null)
 					propertyDefinitions.LoadAllDefault();
 				foreach (var set in propertyDefinitions.DefinitionSets)
 				{
 					var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();
-					distinctClassesOfProperties = distinctClassesOfProperties.Concat(classes).ToList();
+					distinctClassesFromPropertySets = distinctClassesFromPropertySets.Concat(classes).ToList();
 				}
-				distinctClassesOfProperties = distinctClassesOfProperties.Distinct().ToList();
+				distinctClassesFromPropertySets = distinctClassesFromPropertySets.Distinct().ToList();
 
 				// trying to find a set of classes that matches the property types
 				List<string> HandledTypes = new List<string>();
+				if (!IncludeTypes.ContainsKey(schema))
+				{
+					report.AppendLine($"No included types for {schema}.");
+					continue;
+				}
 				foreach (var item in IncludeTypes[schema])
 				{
-					HandledTypes.AddRange(TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
+					var t = metaD.ExpressType(item.ToUpperInvariant());
+					if (t != null)
+						HandledTypes.AddRange(TreeOf(t));
+					else
+						report.AppendLine($"{item} not found");
 				}
 				
-				dist.AppendLine($"HandledTypes.Count: {HandledTypes.Count}");
-				dist.AppendLine($"distinctClassesOfProperties.Count: {distinctClassesOfProperties.Count}");
-				foreach (var className in distinctClassesOfProperties)
+				report.AppendLine($"HandledTypes.Count: {HandledTypes.Count}");
+				report.AppendLine($"distinctClassesFromPropertySets.Count: {distinctClassesFromPropertySets.Count}");
+				foreach (var className in distinctClassesFromPropertySets)
 				{
 					var daType = metaD.ExpressType(className.ToUpperInvariant());
 					if (HandledTypes.Contains(className))
 						continue;
 					var t = daType.Type;
-					// t.IsAbstract
 					var ft = FullH(daType);					
-					dist.AppendLine($"Missing: {className}\t{ft}");
+					report.AppendLine($"Has property but no class: {className}\t{ft}");
 				}
 
 				foreach (var className in HandledTypes)
 				{
 					var daType = metaD.ExpressType(className.ToUpperInvariant());
-					if (distinctClassesOfProperties.Contains(className))
+					if (distinctClassesFromPropertySets.Contains(className))
 						continue;
 					var t = daType.Type;
-					// t.IsAbstract
 					var ft = FullH(daType);
-					dist.AppendLine($"Extra: {className}\t{ft}");
+					report.AppendLine($"Has class but no property: {className}\t{ft}");
 				}
 			}
-			return dist.ToString();
+			return report.ToString();
 		}
 
 		internal static IEnumerable<string> TreeOf(ExpressType expressType)

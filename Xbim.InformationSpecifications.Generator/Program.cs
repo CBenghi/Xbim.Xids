@@ -12,17 +12,27 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
-			// NOTE: IN DEBUG MODE OUTPUT IS LIKELY REDIRECTED TO FILE (file.cs)
-			var avoid = false;
-			var study = false;
+			var avoid = true;
+			// wip
+			if (avoid)
+			{
+				var schemas = new[] {
+					Properties.Version.IFC2x3,
+					Properties.Version.IFC4
+				};
+				foreach (var schema in schemas)
+					Console.Write(AttributesForIfcTypes.Execute(schema));
+				
+				return;
+			}
+
+			var study = true;
 			var destPath = new DirectoryInfo(@"..\..\..\..\");
-
-
 			// Initialization
 			if (study)
 			{
-				Console.Write(IfcClassStudy.Execute());  // relevant classes preview
-				Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
+				Console.Write(IfcClassStudy.ReportMatchesToProperties());  // relevant classes preview
+				// Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
 				return;
 			}
 			string dest = "";
@@ -42,8 +52,7 @@ namespace Xbim.InformationSpecifications.Generator
 			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
 			File.WriteAllText(dest, tAttGen);
 
-			// wip
-			if (avoid) Console.Write(AttributesForIfcTypes.Execute());
+			
 		}
 	}
 }

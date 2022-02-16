@@ -118,13 +118,17 @@ namespace Xbim.InformationSpecifications.Helpers
 				if (schemaIFC2x3 == null)
 				{
 					GetClassesIFC2x3();
+					GetRelationTypesIFC2x3(schemaIFC2x3);
 					GetAttributesIFC2x3();
 				}
 				return schemaIFC2x3;
 			}
 		}
 
-		static partial void GetClassesIFC2x3();
+		static partial void GetRelationTypesIFC2x3(SchemaInfo schemaIFC2x3);
+        
+
+        static partial void GetClassesIFC2x3();
 
 		public IEnumerable<string> GetAttributeNames()
 		{

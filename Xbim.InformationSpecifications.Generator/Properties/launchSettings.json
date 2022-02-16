@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Xbim.Xids.Generator": {
-      "commandName": "Project",
-      "commandLineArgs": "> file.cs"
+      "commandName": "Project"
     }
   }
 }
