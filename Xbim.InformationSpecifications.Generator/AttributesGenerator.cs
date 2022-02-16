@@ -70,7 +70,7 @@ namespace Xbim.InformationSpecifications.Generator
 
 					var classesInQuotes = pair.Value.Select(x=>$"\"{x}\"").ToArray();
 					var topClassesInQuotes = OnlyTopClasses.Select(x=>$"\"{x}\"").ToArray();
-					var line = $"\t\t\tschema{schema}.AddAttribute({attribute}, new[] {{ {string.Join(", ", topClassesInQuotes)} }}, new[] {{ {string.Join(", ", classesInQuotes)} }});";
+					var line = $"\t\t\tdestinationSchema.AddAttribute({attribute}, new[] {{ {string.Join(", ", topClassesInQuotes)} }}, new[] {{ {string.Join(", ", classesInQuotes)} }});";
 					
 					sb.AppendLine(line);
 				}
@@ -86,12 +86,12 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		static partial void GetAttributesIFC2x3()
+		static partial void GetAttributesIFC2x3(SchemaInfo destinationSchema)
 		{
 <PlaceHolderIFC2x3>
 		}
 
-		static partial void GetAttributesIFC4()
+		static partial void GetAttributesIFC4(SchemaInfo destinationSchema)
 		{
 <PlaceHolderIFC4>
 		}

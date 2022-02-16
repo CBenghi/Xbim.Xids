@@ -27,7 +27,7 @@ namespace Xbim.InformationSpecifications.Generator
 				if (includeTypes == null)
 				{
 					includeTypes = new Dictionary<Properties.Version, List<string>>();
-					IncludeTypes.Add(Properties.Version.IFC2x3, new List<string>() { "IfcObject", "IfcTypeProduct" });
+					IncludeTypes.Add(Properties.Version.IFC2x3, new List<string>() { "IfcObject", "IfcTypeObject" });
 					IncludeTypes.Add(Properties.Version.IFC4, new List<string>() { "IfcObject", "IfcTypeObject" });
 				}
 				return includeTypes;

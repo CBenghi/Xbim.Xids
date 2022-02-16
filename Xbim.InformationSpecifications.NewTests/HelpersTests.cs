@@ -62,10 +62,10 @@ namespace Xbim.InformationSpecifications.Tests
 			attribs.Should().BeNull();
 			
 			attribs = Helpers.SchemaInfo.SchemaIfc4.GetAttributeClasses("UserDefinedOperationType");
-			attribs.Length.Should().Be(2);
+			attribs.Length.Should().Be(3);
 			
 			var attribNames = Helpers.SchemaInfo.SchemaIfc4.GetAttributeNames();
-			attribNames.Count().Should().Be(117);
+			attribNames.Count().Should().Be(128);
 		}
 	}
 }

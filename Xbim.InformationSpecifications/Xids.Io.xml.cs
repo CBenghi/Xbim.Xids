@@ -133,8 +133,8 @@ namespace Xbim.InformationSpecifications
                 xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", requirement.IfcVersion));
             else
                 xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
-            if (requirement.Name != null)
-                xmlWriter.WriteAttributeString("name", requirement.Name);
+            // if (requirement.Name != null)
+                xmlWriter.WriteAttributeString("name", requirement.Name ?? ""); // required
             if (requirement.Description != null)
                 xmlWriter.WriteAttributeString("description", requirement.Description);
             // instructions
@@ -758,6 +758,14 @@ namespace Xbim.InformationSpecifications
                         structure ??= new StructureConstraint();
                         structure.FractionDigits = ival;
                     }
+                }
+                else if (sub.Name.LocalName == "annotation") // todo: IDSTALK: review in the next IDS meeting
+                {
+                    // is the implementation of xs:annotation a big overkill for the app?
+                    // see  https://www.w3schools.com/xml/el_appinfo.asp
+                    //      https://www.w3schools.com/xml/el_annotation.asp
+                    //      xs:documentation also has any xml in the body... complicated.
+
                 }
                 else
                 {

@@ -82,21 +82,32 @@ namespace Xbim.InformationSpecifications.Helpers
 			{
 				if (schemaIFC4 == null)
 				{
-					GetClassesIFC4();
-					GetRelationTypesIFC4(schemaIFC4);
-					GetAttributesIFC4();
+					var t = GetClassesIFC4();
+					GetRelationTypesIFC4(t);
+					GetAttributesIFC4(t);
+					SetTypeObject(t, "IfcTypeObject");
+					schemaIFC4 = t;
 				}
 				return schemaIFC4;
 			}
 		}
 
-		/// <summary>
-		/// Returns information on the classes that have an attribute.
-		/// </summary>
-		/// <param name="attributeName">The attribute being sought</param>
-		/// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
-		/// <returns>enumeration of class names or null, if not found</returns>
-		public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
+        private static void SetTypeObject(SchemaInfo t, string topTypeObjectClass)
+        {
+            foreach (var cls in t.Classes.Values)
+            {
+				if (cls.Is(topTypeObjectClass))
+					cls.FunctionalType = FunctionalType.TypeOfElement;
+            }
+        }
+
+        /// <summary>
+        /// Returns information on the classes that have an attribute.
+        /// </summary>
+        /// <param name="attributeName">The attribute being sought</param>
+        /// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
+        /// <returns>enumeration of class names or null, if not found</returns>
+        public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
 		{
 			var toUse = onlyTopClasses
 				? AttributesToTopClasses
@@ -108,6 +119,46 @@ namespace Xbim.InformationSpecifications.Helpers
 			return null;
 		}
 
+		private Dictionary<string, ClassRelationInfo[]> relAttributes = new Dictionary<string, ClassRelationInfo[]>();
+
+		public IEnumerable<ClassRelationInfo> GetAttributeRelations(string attributeName)
+		{
+			if (relAttributes.TryGetValue(attributeName, out var ret))
+				return ret;
+			List<ClassRelationInfo> tmp = new List<ClassRelationInfo>();
+            foreach (var className in GetAttributeClasses(attributeName, true))
+            {
+				var cls = this[className];
+				if (cls == null)
+					continue;
+				var tp = cls.FunctionalType == FunctionalType.TypeOfElement
+					? ClassAttributeMode.ViaRelationType
+					: ClassAttributeMode.ViaElement;
+				tmp.Add(new ClassRelationInfo()
+					{
+						ClassName = className,
+						Connection = tp
+					}
+					);
+            }
+			var t = tmp.ToArray();
+			relAttributes.Add(attributeName, t);
+			return t;
+		}
+
+		
+		public enum ClassAttributeMode
+        {
+			ViaElement = 1,
+			ViaRelationType = 2,
+		}
+
+		public class ClassRelationInfo
+        {
+			public string ClassName { get; set; }
+			public ClassAttributeMode Connection { get; set; }
+        }
+
 		private static SchemaInfo schemaIFC2x3;
 		/// <summary>
 		/// Static property for the Ifc2x3 schema
@@ -118,9 +169,11 @@ namespace Xbim.InformationSpecifications.Helpers
 			{
 				if (schemaIFC2x3 == null)
 				{
-					GetClassesIFC2x3();
-					GetRelationTypesIFC2x3(schemaIFC2x3);
-					GetAttributesIFC2x3();
+					var t = GetClassesIFC2x3();
+					GetRelationTypesIFC2x3(t);
+					GetAttributesIFC2x3(t);
+					SetTypeObject(t, "IfcTypeObject");
+					schemaIFC2x3 = t;
 				}
 				return schemaIFC2x3;
 			}
@@ -132,25 +185,27 @@ namespace Xbim.InformationSpecifications.Helpers
 		internal void SetRelationType(string objClass, IEnumerable<string> typeClasses)
         {
 			var c = this[objClass];
-			if (c == null)
+			c?.SetTypeClasses(typeClasses);
+            foreach (var typeClass in typeClasses)
             {
-				return;
+				var tpC = this[typeClass];
+				if (tpC != null)
+					tpC.FunctionalType = FunctionalType.TypeOfElement;
             }
-			c.SetTypeClasses(typeClasses);
         }
 
 
-        static partial void GetClassesIFC2x3();
+		private static partial SchemaInfo GetClassesIFC2x3();
 
 		public IEnumerable<string> GetAttributeNames()
 		{
 			return AttributesToAllClasses?.Keys;
 		}
 
-		static partial void GetClassesIFC4();
+		private static partial SchemaInfo GetClassesIFC4();
 
-		static partial void GetAttributesIFC2x3();
-		static partial void GetAttributesIFC4();
+		static partial void GetAttributesIFC2x3(SchemaInfo destinationSchema);
+		static partial void GetAttributesIFC4(SchemaInfo destinationSchema);
 
 		private void AddAttribute(string attributeName, string[] topClassNames, string[] allClassNames)
 		{

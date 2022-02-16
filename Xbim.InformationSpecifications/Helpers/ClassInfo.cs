@@ -5,11 +5,19 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
+
 	public enum ClassType
 	{
 		Abstract,
 		Concrete,
 		Enumeration
+	}
+
+	public enum FunctionalType
+	{
+		Element,
+		ElementWithTypes, // not sure if it's needed.
+		TypeOfElement
 	}
 
 	/// <summary>
@@ -30,6 +38,8 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// Resolved parent Classinfo
 		/// </summary>
 		public ClassInfo Parent { get; internal set; }
+
+		public FunctionalType FunctionalType { get; internal set; } = FunctionalType.Element;
 
 		/// <summary>
 		/// List of predefined type strings from the schema
@@ -92,6 +102,8 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		internal void SetTypeClasses(IEnumerable<string> typeClasses)
         {
+			// if the object has type classes it's an entity
+			FunctionalType = FunctionalType.ElementWithTypes;
             RelationTypeClasses = typeClasses.ToArray();
         }
     }

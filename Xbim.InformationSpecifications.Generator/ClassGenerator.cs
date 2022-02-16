@@ -63,7 +63,7 @@ namespace Xbim.InformationSpecifications.Generator
 
 					var ns = t.Namespace.Substring(5);
 
-					sb.AppendLine($@"			schema{schema}.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""));");
+					sb.AppendLine($@"			schema.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""));");
 				}
 				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
@@ -81,15 +81,17 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		static partial void GetClassesIFC2x3()
+		private static partial SchemaInfo GetClassesIFC2x3()
 		{
-			schemaIFC2x3 = new SchemaInfo();
+			var schema = new SchemaInfo();
 <PlaceHolderIFC2x3>
+			return schema;
 		}
-		static partial void GetClassesIFC4()
+		private static partial SchemaInfo GetClassesIFC4()
 		{
-			schemaIFC4 = new SchemaInfo();
+			var schema = new SchemaInfo();
 <PlaceHolderIFC4>
+			return schema;
 		}
 	}
 }
