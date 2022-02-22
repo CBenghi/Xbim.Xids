@@ -36,18 +36,18 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="destinationFileName">the path of a writeable location on disk</param>
         /// <returns>An enum determining if XML or ZIP files were written</returns>
-        public ExportedFormat ExportBuildingSmartIDS(string destinationFileName)
+        public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger logger = null)
         {
             using FileStream fs = File.OpenWrite(destinationFileName);
-            return ExportBuildingSmartIDS(fs);
+            return ExportBuildingSmartIDS(fs, logger);
         }
 
-        public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream)
+        public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger logger = null)
         {
             if (SpecificationsGroups.Count == 1)
             {
                 using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
-                ExportBuildingSmartIDS(SpecificationsGroups.First(), writer);
+                ExportBuildingSmartIDS(SpecificationsGroups.First(), writer, logger);
                 return ExportedFormat.XML;
             }
 
@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications
                 var file = zipArchive.CreateEntry(name);
                 using var str = file.Open();
                 using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
-                ExportBuildingSmartIDS(specGroup, writer);
+                ExportBuildingSmartIDS(specGroup, writer, logger);
                 
             }
             return ExportedFormat.ZIP;
@@ -70,7 +70,7 @@ namespace Xbim.InformationSpecifications
 
         
 
-        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter)
+        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger logger)
         {
             xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
@@ -85,7 +85,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("specifications", IdsNamespace);
             foreach (var requirement in specGroup.Specifications)
             {
-                ExportBuildingSmartIDS(requirement, xmlWriter);
+                ExportBuildingSmartIDS(requirement, xmlWriter, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -126,7 +126,7 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
-        private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter)
+        private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter, ILogger logger)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
             if (requirement.IfcVersion != null)
@@ -146,7 +146,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
             foreach (var item in requirement.Applicability.Facets)
             {
-                ExportBuildingSmartIDS(item, xmlWriter);
+                ExportBuildingSmartIDS(item, xmlWriter, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -154,7 +154,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
             foreach (var item in requirement.Requirement.Facets)
             {
-                ExportBuildingSmartIDS(item, xmlWriter);
+                ExportBuildingSmartIDS(item, xmlWriter, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -163,7 +163,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter)
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, ILogger logger)
         {
             switch (item)
             {
@@ -208,8 +208,13 @@ namespace Xbim.InformationSpecifications
                     WriteConstraintValue(af.AttributeValue, xmlWriter);
                     xmlWriter.WriteEndElement();
                     break;
+                case PartOfFacet pof:
+                    xmlWriter.WriteStartElement("partOf", IdsNamespace);
+                    xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
+                    xmlWriter.WriteEndElement();
+                    break;
                 default:
-                    _logger?.LogWarning($"todo: missing case for {item.GetType()}.");
+                    logger?.LogWarning($"todo: missing case for {item.GetType()}.");
                     break;
             }
         }
@@ -221,19 +226,11 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value", Dictionary<string, string> attributes = null)
+        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value")
         {
             if (value == null)
-                return;
-            
+                return;            
             xmlWriter.WriteStartElement(name, IdsNamespace);
-            if (attributes != null)
-            {
-                foreach (var att in attributes)
-                {
-                    xmlWriter.WriteAttributeString(att.Key, att.Value);
-                }
-            }
             if (value.IsSingleUndefinedExact(out string exact))
             {
                 // xmlWriter.WriteString(exact);
@@ -847,7 +844,11 @@ namespace Xbim.InformationSpecifications
                     case "attribute":
                         t = GetAttribute(sub, logger);
                         break;
+                    case "partof":
+                        t = GetPartOf(sub, logger);
+                        break;
                     default:
+                        LogUnexpected(sub, elem, logger);
                         break;
                 }
                 if (t != null)
@@ -1024,6 +1025,36 @@ namespace Xbim.InformationSpecifications
             foreach (var attribute in elem.Attributes())
             {
                 logger?.LogWarning($"Unexpected attribute {attribute.Name} in IfcTypeFacet.");
+            }
+            return ret;
+        }
+
+        private static PartOfFacet GetPartOf(XElement elem, ILogger logger)
+        {
+            PartOfFacet ret = null;
+            foreach (var sub in elem.Elements())
+            {
+                var locName = sub.Name.LocalName.ToLowerInvariant();
+                switch (locName)
+                {
+                    default:
+                        LogUnexpected(sub, elem, logger);
+                        break;
+                }
+            }
+            foreach (var attribute in elem.Attributes())
+            {
+                var locName = attribute.Name.LocalName.ToLowerInvariant();
+                switch (locName)
+                {
+                    case "entity":
+                        ret ??= new PartOfFacet();
+                        ret.Entity = attribute.Value;
+                        break;
+                    default:
+                        logger?.LogWarning($"Unexpected attribute {attribute.Name} in PartOf facet.");
+                        break;
+                }
             }
             return ret;
         }

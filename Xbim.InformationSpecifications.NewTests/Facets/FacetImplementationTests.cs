@@ -28,7 +28,8 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
-			{ "","" },
+			{ "PartOfFacet","String Entity" },
+			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 
 		/// when adding properties to an iequatable we need to make sure that they
@@ -76,6 +77,25 @@ namespace Xbim.InformationSpecifications.Tests
             }
 			return x.PropertyType.Name + " " + x.Name;
 		}
+
+		[Fact]
+		public void PartOfEqualImplementation()
+        {
+			TestAddRemove(new PartOfFacet());
+			TestAddRemove(new PartOfFacet()
+			{
+				Entity = "IfcGroup"
+			});
+
+			var p1 = new PartOfFacet();
+			var p2 = new PartOfFacet() { Entity = "none" };
+			p1.Should().NotBeEquivalentTo(p2);
+
+			var p3 = new PartOfFacet() { Entity = "" };
+			p3.Should().BeEquivalentTo(p1);
+
+        }
+		
 
         [Fact]
 		public void FacetEqualImplementation()

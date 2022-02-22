@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications
 		{
 		}
 
-		public SpecificationUse Use { get; set; } = SpecificationUse.Required;
+		public SpecificationUse Use { get; set; } = SpecificationUse.Optional;
 			
 		[JsonIgnore]
 		SpecificationsGroup Parent { get; set; }

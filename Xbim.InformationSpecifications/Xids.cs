@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications
 
 	public partial class Xids // basic definition file
 	{
-		private ILogger<Xids> _logger;
+		// private ILogger<Xids> _logger;
 
 		public static bool HasData(Xids xidsToTest)
 		{
@@ -150,11 +150,7 @@ namespace Xbim.InformationSpecifications
 		{
 			FacetRepository = new FacetGroupRepository(this);
 		}
-		public Xids(ILogger<Xids> logger) : this()
-		{
-			_logger = logger;
-		}
-
+	
 		public IEnumerable<Specification> AllSpecifications()
 		{
 			foreach (var rg in SpecificationsGroups)

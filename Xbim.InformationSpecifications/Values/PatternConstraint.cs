@@ -103,6 +103,14 @@ namespace Xbim.InformationSpecifications
 				(!ignoreCase && compiledCaseSensitiveRegex != null)
 				)
 				return true;
+
+			if (string.IsNullOrEmpty(Pattern))
+            {
+				errorMessage = "Invalid null pattern constraint";
+				logger?.LogError(errorMessage);
+				return false;
+			}
+
 			try
 			{
 				var preProcess = XmlRegex.Preprocess(Pattern);

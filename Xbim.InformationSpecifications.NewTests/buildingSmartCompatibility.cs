@@ -1,5 +1,8 @@
 ﻿using FluentAssertions;
 using IdsLib;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,12 +12,19 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Xunit;
+using Xunit.Abstractions;
 using static Xbim.InformationSpecifications.Xids;
 
 namespace Xbim.InformationSpecifications.NewTests
 {
-    public class buildingSmartCompatibility
+    public class buildingSmartCompatibilityTests
     {
+        private ITestOutputHelper OutputHelper;
+
+        public buildingSmartCompatibilityTests(ITestOutputHelper outputHelper)
+        {
+            OutputHelper = outputHelper;
+        }
 
 
         [Fact]
@@ -81,6 +91,16 @@ namespace Xbim.InformationSpecifications.NewTests
             // todo: check that the file is a valid zip.
         }
 
+        internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()
+        {
+            var services = new ServiceCollection()
+                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
+            IServiceProvider provider = services.BuildServiceProvider();
+            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
+            Assert.NotNull(logg);
+            return logg;
+        }
+
         [Theory]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml")]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml")]
@@ -89,7 +109,13 @@ namespace Xbim.InformationSpecifications.NewTests
             Validate(fileName);
             var x = Xids.ImportBuildingSmartIDS(fileName);
             var exportedFile = Path.GetTempFileName();
-            var _ = x.ExportBuildingSmartIDS(exportedFile);
+
+            ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
+            var loggerMock = new Mock<ILogger<buildingSmartCompatibilityTests>>(); // this is to check events
+            _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock.Object);
+            _ = x.ExportBuildingSmartIDS(exportedFile, logg);
+            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
+            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
             Validate(exportedFile);
 
             // more checks
