@@ -118,6 +118,10 @@ namespace Xbim.InformationSpecifications.NewTests
             loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
             Validate(exportedFile);
 
+            // we should be able to save our format
+            var exportedJsonFile = Path.GetTempFileName();
+            x.SaveAsJson(exportedJsonFile);
+
             // more checks
             var outputCount = XmlReport(exportedFile);
             var inputCount = XmlReport(fileName);

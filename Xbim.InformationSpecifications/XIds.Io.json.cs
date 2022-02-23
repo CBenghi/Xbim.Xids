@@ -45,7 +45,9 @@ namespace Xbim.InformationSpecifications
 				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
 				(nameof(DocumentFacet), typeof(DocumentFacet)),
 				(nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
-				(nameof(MaterialFacet), typeof(MaterialFacet))
+				(nameof(MaterialFacet), typeof(MaterialFacet)),
+				(nameof(PartOfFacet), typeof(PartOfFacet)),
+				(nameof(AttributeFacet), typeof(AttributeFacet))
 			);
 			var vcConverter = new ValueConstraintConverter();
 			options.Converters.Add(vcConverter);
