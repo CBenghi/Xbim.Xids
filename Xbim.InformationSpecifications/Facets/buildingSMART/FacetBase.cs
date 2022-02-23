@@ -10,11 +10,15 @@ namespace Xbim.InformationSpecifications
 		type = 2,
 	}
 
+	// todo: IDSTALK: use enumeration? How to interpret for individual requirement facets?
+	// also see, what is the default value?
+
 	public enum Use
 	{
 		undefined,
 		required,
-		optional
+		optional,
+		prohibited
 	}
 
 	public abstract class FacetBase : IEquatable<FacetBase>
@@ -57,7 +61,10 @@ namespace Xbim.InformationSpecifications
 		}
 
 		public string Uri { get; set; } = null; // attribute uri
-		public string Use { get; set; } = null; // attribute use
+
+		// todo: IDSTALK: what is the default value for the optional `use` atribute?
+
+		public string Use { get; set; } = null; 
 		public string Instructions { get; set; } // element
 
 		public override string ToString()

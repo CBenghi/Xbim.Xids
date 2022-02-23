@@ -756,7 +756,7 @@ namespace Xbim.InformationSpecifications
                         structure.FractionDigits = ival;
                     }
                 }
-                else if (sub.Name.LocalName == "annotation") // todo: IDSTALK: review in the next IDS meeting
+                else if (sub.Name.LocalName == "annotation") // todo: IDSTALK: complexity of annotation
                 {
                     // is the implementation of xs:annotation a big overkill for the app?
                     // see  https://www.w3schools.com/xml/el_appinfo.asp

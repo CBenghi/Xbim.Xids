@@ -12,6 +12,13 @@ namespace Xbim.InformationSpecifications
         IfcSystem
     }
 
+    // todo: IDSTALK: partof asymmetry
+    //
+    // why is it that partof can only be in the requirement side of a specification?
+    // I can see the need to have a certain property/classification for anything belonging to a system
+     
+    // todo: IDSTALK: instuctions is missing only on partof facet
+    // 
     public class PartOfFacet : IFacet, IEquatable<PartOfFacet>
     {
         public string Entity { get; set; } = string.Empty;
