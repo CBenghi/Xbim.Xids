@@ -43,7 +43,8 @@ namespace Xbim.InformationSpecifications.NewTests
             var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
             loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
             var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
+            var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
+            errorAndWarnings.Should().BeEmpty("no calls to errors or warnings are expected");
             CheckCounts(specificationsCount, facetGroupsCount, loaded);
 
             var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
@@ -74,12 +75,12 @@ namespace Xbim.InformationSpecifications.NewTests
             c.InputSource = tmpFile;
 
             StringWriter s = new StringWriter();
-            var res = IdsLib.CheckOptions.Run(c, s);
-            if (res != IdsLib.CheckOptions.Status.Ok)
+            var varlidationResult = IdsLib.CheckOptions.Run(c, s);
+            if (varlidationResult != IdsLib.CheckOptions.Status.Ok)
             {
                 logg.LogError(s.ToString());
             }
-            res.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
+            varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
         }
 
         private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)

@@ -5,7 +5,7 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-	public partial class IfcClassificationFacet : FacetBase, IFacet, IEquatable<IfcClassificationFacet>
+	public partial class IfcClassificationFacet : LocatedFacet, IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system
@@ -16,6 +16,12 @@ namespace Xbim.InformationSpecifications
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/>.
 		/// </summary>
 		public ValueConstraint Identification { get; set; }
+
+		/// <summary>
+		/// Includes hierarchical values below the <see cref="Identification"/> element.
+		/// Defaults to false on newly created class.
+		/// </summary>
+		public bool IncludeSubClasses { get; set; }
 
 		public string Short()
 		{
@@ -38,11 +44,7 @@ namespace Xbim.InformationSpecifications
 			return tmp.FirstCharToUpper();
 		}
 
-		/// <summary>
-		/// Includes hierarchical values below the <see cref="Identification"/> element.
-		/// Defaults to false on newly created class.
-		/// </summary>
-		public bool IncludeSubClasses { get; set; }
+		
 
 		public bool Equals(IfcClassificationFacet other)
 		{
@@ -73,10 +75,8 @@ namespace Xbim.InformationSpecifications
 			return $"{ClassificationSystem}-{Identification}-{IncludeSubClasses}-{base.ToString()}";
 		}
 
-		public override int GetHashCode()
-		{
-			return ToString().GetHashCode();
-		}
+		public override int GetHashCode() => 23 + 31 * (ClassificationSystem, Identification, IncludeSubClasses).GetHashCode() + 31 * base.GetHashCode();
+		
 
 		public bool IsValid()
 		{

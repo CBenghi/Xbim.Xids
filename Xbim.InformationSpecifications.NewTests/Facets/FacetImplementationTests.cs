@@ -15,20 +15,21 @@ namespace Xbim.InformationSpecifications.Tests
 	{
 		private Dictionary<string, string> guaranteedStructures = new Dictionary<string, string>()
 		{
-			{ "AttributeFacet","ValueConstraint AttributeName,String Location,ValueConstraint AttributeValue" },
-			{ "FacetBase","String Location,String Uri,String Use,String Instructions" },
+			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Location,String Uri,String Use,String Instructions" },
+			{ "FacetBase","String Uri,String Use,String Instructions" },
 			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Location,String Uri,String Use,String Instructions" },
 			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Location,String Uri,String Use,String Instructions" },
-			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes" },
+			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes,String Uri,String Use,String Instructions" },
 			{ "MaterialFacet","ValueConstraint Value,String Location,String Uri,String Use,String Instructions" },
 			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Location,String Uri,String Use,String Instructions" },
-			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation" },
+			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation,String Uri,String Use,String Instructions" },
 			{ "ExactConstraint","String Value" },
 			{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
-			{ "PartOfFacet","String Entity" },
+			{ "PartOfFacet","String Entity,String Uri,String Use,String Instructions" },
+			{ "LocatedFacet","String Location,String Uri,String Use,String Instructions" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 
@@ -46,7 +47,7 @@ namespace Xbim.InformationSpecifications.Tests
 					continue;
 
 				var verifiedAttributesList = string.Join(",", oneEqatable.GetProperties().Select(x => SmartName(x)).ToArray());
-				verifiedAttributesList.Should().Be(expected, $"{oneEqatable.Name} accepted fields are to be considered");
+				verifiedAttributesList.Should().Be(expected, $"{oneEqatable.Name} must not have different properties to the ones guaranteed equatable");
             }
         }
 

@@ -146,7 +146,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
             foreach (var item in requirement.Applicability.Facets)
             {
-                ExportBuildingSmartIDS(item, xmlWriter, logger);
+                ExportBuildingSmartIDS(item, xmlWriter, false, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -154,7 +154,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
             foreach (var item in requirement.Requirement.Facets)
             {
-                ExportBuildingSmartIDS(item, xmlWriter, logger);
+                ExportBuildingSmartIDS(item, xmlWriter, true, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -163,29 +163,28 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, ILogger logger)
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger logger)
         {
             switch (item)
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
+                    WriteFaceteBaseAttributes(tf, xmlWriter, forRequirement);
                     WriteConstraintValue(tf.IfcType, xmlWriter, "name");
                     WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType");
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcClassificationFacet cf:
-                    {
-                        xmlWriter.WriteStartElement("classification", IdsNamespace);
-                        WriteFaceteBaseAttributes(cf, xmlWriter); // attribute
-                        WriteConstraintValue(cf.Identification, xmlWriter);
-                        WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system");
-                        WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
-                        xmlWriter.WriteEndElement();
-                        break;
-                    }
+                    xmlWriter.WriteStartElement("classification", IdsNamespace);
+                    WriteLocatedFaceteAttributes(cf, xmlWriter, forRequirement); 
+                    WriteConstraintValue(cf.Identification, xmlWriter);
+                    WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system");
+                    WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
+                    xmlWriter.WriteEndElement();
+                    break;                    
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
-                    WriteFaceteBaseAttributes(pf, xmlWriter);
+                    WriteLocatedFaceteAttributes(pf, xmlWriter, forRequirement);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet");
@@ -196,20 +195,21 @@ namespace Xbim.InformationSpecifications
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
-                    WriteFaceteBaseAttributes(mf, xmlWriter);
+                    WriteLocatedFaceteAttributes(mf, xmlWriter, forRequirement);
                     WriteConstraintValue(mf.Value, xmlWriter);
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
-                    xmlWriter.WriteAttributeString("location", af.Location.ToLowerInvariant());
+                    WriteLocatedFaceteAttributes(af, xmlWriter, forRequirement);
                     WriteConstraintValue(af.AttributeName, xmlWriter, "name");
                     WriteConstraintValue(af.AttributeValue, xmlWriter);
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
+                    WriteFaceteBaseAttributes(pof, xmlWriter, forRequirement);
                     xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
                     xmlWriter.WriteEndElement();
                     break;
@@ -314,20 +314,49 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter)
+        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, bool forRequirement)
         {
-            if (!string.IsNullOrWhiteSpace(cf.Location))
-                xmlWriter.WriteAttributeString("location", cf.Location);
-            if (!string.IsNullOrWhiteSpace(cf.Uri))
-                xmlWriter.WriteAttributeString("uri", cf.Uri);
-            if (!string.IsNullOrWhiteSpace(cf.Use))
-                xmlWriter.WriteAttributeString("use", cf.Use);
+            if (forRequirement)
+            {
+                if (
+                    cf is IfcPropertyFacet ||
+                    cf is AttributeFacet
+                )
+                {
+                    // use is required
+                    xmlWriter.WriteAttributeString("use", cf.Use);
+                }
+
+                if (!(cf is PartOfFacet))
+                {
+                    // instruction is optional
+                    if (!string.IsNullOrWhiteSpace(cf.Instructions))
+                        xmlWriter.WriteAttributeString("instructions", cf.Instructions);
+                }
+            }
+
+            if (
+                cf is IfcPropertyFacet ||
+                cf is IfcClassificationFacet ||
+                cf is MaterialFacet
+                )
+            {
+                if (!string.IsNullOrWhiteSpace(cf.Uri))
+                    xmlWriter.WriteAttributeString("uri", cf.Uri);
+            }
+
+            
+        }
+
+        private void WriteLocatedFaceteAttributes(LocatedFacet cf, XmlWriter xmlWriter, bool forRequirement)
+        {
+            xmlWriter.WriteAttributeString("location", cf.Location); // required
+            WriteFaceteBaseAttributes(cf, xmlWriter, forRequirement);
         }
 
         private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
         {
-            if (!string.IsNullOrWhiteSpace(cf.Instructions))
-                xmlWriter.WriteElementString("instructions", IdsNamespace, cf.Instructions);
+            // no known elements to write
         }
 
         public static Xids ImportBuildingSmartIDS(Stream stream)
@@ -505,6 +534,9 @@ namespace Xbim.InformationSpecifications
                         else
                             LogUnexpectedValue(att, spec, logger);
                         break;
+                    case "instructions":
+                        req.Instructions = att.Value;
+                        break;
                     default:
                         LogUnexpected(att, spec, logger);
                         break;
@@ -545,7 +577,7 @@ namespace Xbim.InformationSpecifications
             MaterialFacet ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (IsBaseEntity(sub))
+                if (IsFacetBaseEntity(sub))
                 {
                     ret ??= new MaterialFacet();
                     GetBaseEntity(sub, ret, logger);
@@ -585,7 +617,7 @@ namespace Xbim.InformationSpecifications
             IfcPropertyFacet ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (IsBaseEntity(sub))
+                if (IsFacetBaseEntity(sub))
                 {
                     ret ??= new IfcPropertyFacet();
                     GetBaseEntity(sub, ret, logger);
@@ -631,7 +663,7 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    logger?.LogWarning($"Unexpected attribute '{attribute.Name.LocalName}' in IfcPropertyFacet.");
+                    LogUnexpected(attribute, elem, logger);
                 }
             }
             return ret;
@@ -883,16 +915,10 @@ namespace Xbim.InformationSpecifications
             foreach (var sub in elem.Attributes())
             {
                 var subname = sub.Name.LocalName.ToLowerInvariant();
-                switch (subname)
+                if (IsBaseAttribute(sub))
                 {
-                    case "location":
-                        {
-                            ret.Location = sub.Value;
-                            break;
-                        }
-                    default:
-                        logger?.LogWarning($"Unexpected attribute '{subname}' in attribute facet.");
-                        break;
+                    ret ??= new AttributeFacet();
+                    GetBaseAttribute(sub, ret);
                 }
             }
             
@@ -904,7 +930,7 @@ namespace Xbim.InformationSpecifications
             IfcClassificationFacet ret = null;
             foreach (var sub in elem.Elements())
             {
-                if (IsBaseEntity(sub))
+                if (IsFacetBaseEntity(sub))
                 {
                     ret ??= new IfcClassificationFacet();
                     GetBaseEntity(sub, ret, logger);
@@ -939,32 +965,41 @@ namespace Xbim.InformationSpecifications
                 }
                 else
                 {
-                    logger?.LogWarning($"Unexpected attribute {locAtt} in Classification facet.");
+                    LogUnexpected(attribute, elem, logger);
                 }
             }
             return ret;
         }
 
-
-
         private static void GetBaseEntity(XElement sub, FacetBase ret, ILogger logger)
         {
             var local = sub.Name.LocalName.ToLowerInvariant();
-            if (local == "instructions")
-                ret.Instructions = sub.Value;
-            else
-                logger?.LogWarning($"Unexpected element 'local' reading base entity.");
-
+            //if (local == "instructions")
+            //    ret.Instructions = sub.Value;
+            //else
+            logger?.LogWarning($"Unexpected element {local} reading FacetBase.");
         }
 
-        private static bool IsBaseEntity(XElement sub)
+        private static bool IsFacetBaseEntity(XElement sub)
         {
-            switch (sub.Name.LocalName)
+            //switch (sub.Name.LocalName)
+            //{
+            //    case "instructions":
+            //        return true;
+            //    default:
+            //        return false;
+            //}
+            return false;
+        }
+
+        private static bool IsLocatedFacetAttribute(XAttribute attribute)
+        {
+            switch (attribute.Name.LocalName)
             {
-                case "instructions":
+                case "location":
                     return true;
                 default:
-                    return false;
+                    return IsBaseAttribute(attribute);
             }
         }
 
@@ -973,7 +1008,7 @@ namespace Xbim.InformationSpecifications
             switch (attribute.Name.LocalName)
             {
                 case "uri":
-                case "location":
+                case "instructions":
                 case "use":
                     return true;
                 default:
@@ -981,12 +1016,20 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        private static void GetLocatedFacetAttribute(XAttribute attribute, LocatedFacet ret)
+        {
+            if (attribute.Name.LocalName == "location")
+                ret.Location = attribute.Value;
+            else
+                GetBaseAttribute(attribute, ret);
+        }
+
         private static void GetBaseAttribute(XAttribute attribute, FacetBase ret)
         {
             if (attribute.Name.LocalName == "uri")
                 ret.Uri = attribute.Value;
-            else if (attribute.Name.LocalName == "location")
-                ret.Location = attribute.Value;
+            else if (attribute.Name.LocalName == "instructions")
+                ret.Instructions = attribute.Value;
             else if (attribute.Name.LocalName == "use")
                 ret.Use= attribute.Value;
         }
@@ -1024,10 +1067,18 @@ namespace Xbim.InformationSpecifications
             }
             foreach (var attribute in elem.Attributes())
             {
-                logger?.LogWarning($"Unexpected attribute {attribute.Name} in IfcTypeFacet.");
+                if (IsBaseAttribute(attribute))
+                {
+                    ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
+                    GetBaseAttribute(attribute, ret);
+                }
+                else
+                    LogUnexpected(attribute, elem, logger);
             }
             return ret;
         }
+
+        
 
         private static PartOfFacet GetPartOf(XElement elem, ILogger logger)
         {
@@ -1052,7 +1103,7 @@ namespace Xbim.InformationSpecifications
                         ret.Entity = attribute.Value;
                         break;
                     default:
-                        logger?.LogWarning($"Unexpected attribute {attribute.Name} in PartOf facet.");
+                        LogUnexpected(attribute, elem, logger);
                         break;
                 }
             }

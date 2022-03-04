@@ -10,11 +10,11 @@ using Xunit;
 
 namespace Xbim.InformationSpecifications.NewTests.Facets
 {
-    public class AttributeFacetTests
-    {
+    public class PartOfFacetTests
+	{
 		[Theory]
 		[MemberData(nameof(GetSingleAttributes))]
-		public void AttributeEqualMatchImplementation(AttributeFacet t, AttributeFacet tSame)
+		public void AttributeEqualMatchImplementation(PartOfFacet t, PartOfFacet tSame)
 		{
 			FacetImplementationTests.TestAddRemove(t);
 			var aresame = t.Equals(tSame);
@@ -28,9 +28,14 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 
 		[Theory]
 		[MemberData(nameof(GetDifferentAttributesPairs))]
-		public void AttributeEqualNotMatchImplementation(AttributeFacet one, AttributeFacet other)
+		public void AttributeEqualNotMatchImplementation(PartOfFacet one, PartOfFacet other)
 		{
-			one.Equals(other).Should().BeFalse();
+			var result = one.Equals(other);
+			if (result == true)
+			{
+				Debug.WriteLine($"{one} vs {other}");
+			}
+			result.Should().BeFalse();
 		}
 
 		public static IEnumerable<object[]> GetDifferentAttributesPairs()
@@ -59,26 +64,18 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 			}
 		}
 
-		public static IEnumerable<AttributeFacet> GetDifferentAttributes()
+		public static IEnumerable<PartOfFacet> GetDifferentAttributes()
 		{
-			yield return new AttributeFacet();
-			yield return new AttributeFacet() { Location = "2", };
-			yield return new AttributeFacet() { Location = "1", };
-			yield return new AttributeFacet() { AttributeName = "One" };
-			yield return new AttributeFacet() { AttributeName = "Two" };
-			yield return new AttributeFacet() { AttributeValue = "One" };
-			yield return new AttributeFacet() { AttributeValue = "Two" };
-			yield return new AttributeFacet() { Instructions = "Two" };
-			yield return new AttributeFacet() { Use = "optional" };
-			yield return new AttributeFacet() { Use = "required" };
-			yield return new AttributeFacet()
+			yield return new PartOfFacet();
+			yield return new PartOfFacet() { Instructions = "instr", };
+			yield return new PartOfFacet() { Uri = "uri", };
+			yield return new PartOfFacet() { Entity = PartOfFacet.Container.IfcElementAssembly.ToString()};
+			yield return new PartOfFacet()
 			{
-				AttributeName = "One",
-				AttributeValue = "Two",
-				Location = "None",
-				Instructions = "Some instructions",
-				Uri = "http://www.google.com",
-				Use = "required"
+				Instructions = "instr",
+				Uri = "uri",
+				Use = "use",
+				Entity = PartOfFacet.Container.IfcElementAssembly.ToString()
 			};
 		}
 	}

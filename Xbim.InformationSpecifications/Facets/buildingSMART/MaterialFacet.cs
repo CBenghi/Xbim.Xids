@@ -1,7 +1,7 @@
 using System;
 namespace Xbim.InformationSpecifications
 {
-	public partial class MaterialFacet : FacetBase,  IFacet, IEquatable<MaterialFacet>
+	public partial class MaterialFacet : LocatedFacet,  IFacet, IEquatable<MaterialFacet>
 	{
 		public ValueConstraint Value { get; set; } = null;
 
@@ -32,10 +32,8 @@ namespace Xbim.InformationSpecifications
 			return this.Equals(obj as MaterialFacet);
 		}
 
-		public override int GetHashCode()
-		{
-			return ToString().GetHashCode();
-		}
+		public override int GetHashCode() => 23 + 31 * (Value, true).GetHashCode() + 31 * base.GetHashCode();
+
 
 		public bool IsValid()
 		{

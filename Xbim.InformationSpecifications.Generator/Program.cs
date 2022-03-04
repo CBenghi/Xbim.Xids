@@ -12,6 +12,8 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
+			TestFilesGenerator.Execute();
+
 			var wip = false;
 			// wip
 			if (wip)

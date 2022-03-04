@@ -4,7 +4,9 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-    public partial class IfcTypeFacet : IFacet, IEquatable<IfcTypeFacet>
+    // todo: xxx: facetbase
+
+    public partial class IfcTypeFacet : FacetBase, IEquatable<IfcTypeFacet>, IFacet
     {
         /// <summary>
         /// Required 
@@ -46,17 +48,20 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-            return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}";
+            return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}-{base.ToString()}";
         }
 
-		public override int GetHashCode() => (IfcType, PredefinedType, IncludeSubtypes).GetHashCode();
+		public override int GetHashCode() => 23 + 31 * (IfcType, PredefinedType, IncludeSubtypes).GetHashCode() + 31 * base.GetHashCode();
 
 		public bool Equals(IfcTypeFacet other)
 		{
             if (other == null)
                 return false;
-            return (IfcType, PredefinedType, IncludeSubtypes)
+            var thisEq = (IfcType, PredefinedType, IncludeSubtypes)
                 .Equals((other.IfcType, other.PredefinedType, other.IncludeSubtypes));
+            if (!thisEq)
+                return false;
+            return base.Equals(other);
         }
 
         /// <summary>

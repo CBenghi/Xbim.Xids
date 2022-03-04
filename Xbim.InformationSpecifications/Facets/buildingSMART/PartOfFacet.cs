@@ -4,14 +4,6 @@ using System.Text;
 
 namespace Xbim.InformationSpecifications
 {
-    public enum Container
-    {
-        Undefined,
-        IfcElementAssembly,
-        IfcGroup,
-        IfcSystem
-    }
-
     // todo: IDSTALK: partof asymmetry
     //
     // why is it that partof can only be in the requirement side of a specification?
@@ -19,11 +11,19 @@ namespace Xbim.InformationSpecifications
      
     // todo: IDSTALK: instuctions is missing only on partof facet
     // 
-    public class PartOfFacet : IFacet, IEquatable<PartOfFacet>
+    public class PartOfFacet : FacetBase, IFacet, IEquatable<PartOfFacet>
     {
+        public enum Container
+        {
+            Undefined,
+            IfcElementAssembly,
+            IfcGroup,
+            IfcSystem
+        }
+
         public string Entity { get; set; } = string.Empty;
 
-        Container GetEntity()
+        public Container GetEntity()
         {
             if (Enum.TryParse<Container>(Entity, out var loc))
             {
@@ -31,20 +31,19 @@ namespace Xbim.InformationSpecifications
             }
             return Container.Undefined;
         }
-
-        void SetEntity(Container value)
+        public void SetEntity(Container value)
         {
             Entity = value.ToString();
         }
-
 
         public bool Equals(PartOfFacet other)
         {
             if (other == null)
                 return false;
-            var thisEqual = (Entity, true)
-                .Equals((other.Entity, true));
-            return thisEqual;
+            var thisEqual = (Entity, true).Equals((other.Entity, true));
+            if (thisEqual == false)
+                return false;
+            return base.Equals(other);
         }
 
         public override bool Equals(object obj)
@@ -69,6 +68,7 @@ namespace Xbim.InformationSpecifications
             return $"belongs to :'{Entity}'";
         }
 
-        public override int GetHashCode() => (Entity, true).GetHashCode();
+        public override int GetHashCode() => 23 + 31 * (Entity, true).GetHashCode() + 31 * base.GetHashCode();
+
     }
 }

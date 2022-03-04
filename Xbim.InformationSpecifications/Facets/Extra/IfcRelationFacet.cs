@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
-	public class IfcRelationFacet : IFacet, IRepositoryRef, IEquatable<IfcRelationFacet>
+	public class IfcRelationFacet : FacetBase, IFacet, IRepositoryRef, IEquatable<IfcRelationFacet>
 	{
 		public enum RelationType
 		{
@@ -64,7 +64,7 @@ namespace Xbim.InformationSpecifications
 
 		public override string ToString()
 		{
-			return $"{SourceId}-{Relation}";
+			return $"{SourceId}-{Relation}-{base.ToString()}";
 		}
 
 		public override bool Equals(object obj)
@@ -76,8 +76,11 @@ namespace Xbim.InformationSpecifications
 		{
 			if (other == null)
 				return false;
-			return (sourceId, Relation )
+			var thisEq = (sourceId, Relation)
 				.Equals((other.SourceId, other.Relation));
+			if (!thisEq)
+				return false;
+			return base.Equals(other);
 		}
 
 		public bool IsValid()
@@ -89,10 +92,8 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public override int GetHashCode()
-		{
-			return ToString().GetHashCode();
-		}
+		public override int GetHashCode() => 23 + 31 * (sourceId, relation).GetHashCode() + 31 * base.GetHashCode();
+
 
 		public string Short()
 		{

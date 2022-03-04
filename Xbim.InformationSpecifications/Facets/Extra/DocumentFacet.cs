@@ -35,7 +35,7 @@ namespace Xbim.InformationSpecifications
 	//	   () -> ReferencedDocument ADDED	
 
 
-	public partial class DocumentFacet : FacetBase, IFacet, IEquatable<DocumentFacet>
+	public partial class DocumentFacet : LocatedFacet, IFacet, IEquatable<DocumentFacet>
 	{
 		public ValueConstraint DocId { get; set; } // Ide
 		public ValueConstraint DocName { get; set; }

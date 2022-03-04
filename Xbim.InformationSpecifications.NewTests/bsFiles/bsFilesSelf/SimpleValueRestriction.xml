@@ -6,187 +6,13 @@
     <ids:copyright>string</ids:copyright>
     <ids:version>string</ids:version>
     <ids:description>string</ids:description>
-    <ids:author>F@).g</ids:author>
-    <ids:date>1993-04-23</ids:date>
+    <ids:author>$1@0.\x</ids:author>
+    <ids:date>1998-09-07</ids:date>
     <ids:purpose>string</ids:purpose>
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification name="string" use="optional" ifcVersion="IFC2X3 IFC4 IFC4_3 IFC2X3 IFC4">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="instance">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="instance">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="type">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="any">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="optional" ifcVersion="IFC4_3 IFC4 IFC4">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="instance">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="instance">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcElementAssembly" />
-        <ids:classification location="any">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="instance">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="type">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="optional" ifcVersion="IFC2X3 IFC4 IFC4 IFC4 IFC4_3 IFC2X3">
+    <ids:specification name="string" use="required" ifcVersion="IFC4" description="string" instructions="string">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -230,7 +56,7 @@
         </ids:material>
       </ids:applicability>
       <ids:requirements>
-        <ids:entity>
+        <ids:entity instructions="string">
           <ids:name>
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:name>
@@ -238,8 +64,8 @@
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="instance">
+        <ids:partOf entity="IfcSystem" />
+        <ids:classification uri="https://www.liquid-technologies.com" instructions="string" location="type">
           <ids:value>
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:value>
@@ -247,7 +73,7 @@
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:system>
         </ids:classification>
-        <ids:attribute location="type">
+        <ids:attribute use="optional" instructions="string" location="instance">
           <ids:name>
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:name>
@@ -255,7 +81,7 @@
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:value>
         </ids:attribute>
-        <ids:property location="any">
+        <ids:property uri="https://www.liquid-technologies.com" use="required" instructions="string" location="instance">
           <ids:propertySet>
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:propertySet>
@@ -266,94 +92,7 @@
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:value>
         </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="prohibited" ifcVersion="IFC4_3 IFC2X3 IFC4 IFC4 IFC4_3">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="any">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="instance">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="any">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:predefinedType>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="instance">
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-          <ids:system>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="any">
-          <ids:propertySet>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:propertySet>
-          <ids:name>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:name>
-          <ids:value>
-            <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
+        <ids:material uri="https://www.liquid-technologies.com" instructions="string" location="any">
           <ids:value>
             <xs:restriction base="xs:string"><xs:enumeration value="AlternativeOne"/><xs:enumeration value="AlternativeTwo"/></xs:restriction>
           </ids:value>

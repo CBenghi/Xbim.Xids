@@ -30,7 +30,7 @@ namespace Xbim.InformationSpecifications.NewTests
         [Fact]
         public void MinimalFileExportTest()
         {
-            Xids x = new Xids();
+            var x = new Xids();
             // at least one specification is needed
             //
             var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
@@ -136,12 +136,12 @@ namespace Xbim.InformationSpecifications.NewTests
         {
             var c = GetValidator(fileName);
             StringWriter s = new StringWriter();
-            var res = IdsLib.CheckOptions.Run(c, s);
-            if (res != IdsLib.CheckOptions.Status.Ok)
+            var validationResult = IdsLib.CheckOptions.Run(c, s);
+            if (validationResult != IdsLib.CheckOptions.Status.Ok)
             { 
                 Debug.WriteLine(s.ToString());
             }
-            res.Should().Be(IdsLib.CheckOptions.Status.Ok);
+            validationResult.Should().Be(IdsLib.CheckOptions.Status.Ok);
         }
 
         private XmlElementSummary XmlReport(string tmpFile)
@@ -174,7 +174,7 @@ namespace Xbim.InformationSpecifications.NewTests
             public string type;
             public XmlElementSummary parent;
             public int attributes = 0;
-            public List<XmlElementSummary> Subs = new List<XmlElementSummary>();
+            public List<XmlElementSummary> Subs = new();
 
             public XmlElementSummary(XElement main, XmlElementSummary parent)
             {

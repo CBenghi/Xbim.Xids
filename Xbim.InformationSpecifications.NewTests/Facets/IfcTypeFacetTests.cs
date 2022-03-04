@@ -65,6 +65,10 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 			yield return new IfcTypeFacet() { IfcType = "type", };
 			yield return new IfcTypeFacet() { PredefinedType = "predefined", };
 			yield return new IfcTypeFacet() { IncludeSubtypes = false, };
+			yield return new IfcTypeFacet() { Instructions = "someInstructions" };
+			yield return new IfcTypeFacet() { Uri = "someInstructions" };
+			yield return new IfcTypeFacet() { Use = "required" };
+			yield return new IfcTypeFacet() { Uri = "http://www.google.com" };
 			yield return new IfcTypeFacet() { 
 				IfcType = "type",
 				PredefinedType = "predType",
@@ -75,6 +79,15 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 				IfcType = "type",
 				PredefinedType = "predType",
 				IncludeSubtypes = true,
+			};
+			yield return new IfcTypeFacet()
+			{
+				IfcType = "type",
+				PredefinedType = "predType",
+				IncludeSubtypes = false,
+				Instructions = "SomeInstructions",
+				Uri = "http://www.google.com",
+				Use = "prohibited"
 			};
 		}
 	}

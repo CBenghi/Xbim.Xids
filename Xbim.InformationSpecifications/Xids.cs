@@ -22,7 +22,6 @@ namespace Xbim.InformationSpecifications
 		}
 	}
 
-
 	public partial class Xids // basic definition file
 	{
 		// private ILogger<Xids> _logger;

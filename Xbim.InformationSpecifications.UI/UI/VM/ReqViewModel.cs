@@ -11,7 +11,7 @@ namespace Xbim.InformationSpecifications.UI.VM
 {
 	class ReqViewModel : ViewModelBase
 	{
-		private Specification requirement;
+		private readonly Specification requirement;
 		
 		public ReqViewModel(Specification item)
 		{
@@ -44,10 +44,9 @@ namespace Xbim.InformationSpecifications.UI.VM
 
 		private void Change()
 		{
-			NotifyPropertyChanged("ModelPart");
-
-			NotifyPropertyChanged("Need");
-			NotifyPropertyChanged("Exp");
+			NotifyPropertyChanged(nameof(ModelPart));
+			NotifyPropertyChanged(nameof(Need));
+			NotifyPropertyChanged(nameof(Exp));
 		}
 
 		private ICommand editExpectationCommand;
@@ -70,8 +69,8 @@ namespace Xbim.InformationSpecifications.UI.VM
 				Exp = Exp
 			};
 			t.ShowDialog();
-			NotifyPropertyChanged("Need");
-			NotifyPropertyChanged("Exp");
+			NotifyPropertyChanged(nameof(Need));
+			NotifyPropertyChanged(nameof(Exp));
 		}
 
 		public FacetGroup Exp

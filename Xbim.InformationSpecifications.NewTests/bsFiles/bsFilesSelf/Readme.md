@@ -7,7 +7,9 @@ https://www.liquid-technologies.com/online-xsd-to-xml-converter
 To update the files with new versions:
 
 1. Get the xsd
-2. replace minOccurs="0" with minOccurs="1"
+2. replace 
+	2.1 minOccurs="0" with minOccurs="1"
+	2.1 use="optional" with use="required"
 3. Generate the xml sample.
 4. Replace `<restriction />` with `<ids:simpleValue>string</ids:simpleValue>`
 5. **Save as string values test file**

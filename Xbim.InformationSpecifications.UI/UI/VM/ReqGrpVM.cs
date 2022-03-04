@@ -8,10 +8,9 @@ namespace Xbim.InformationSpecifications.UI.VM
 {
 	internal class ReqGrpVM : ViewModelBase
 	{
-		private SpecificationsGroup requirementsCollection;
+		private readonly SpecificationsGroup requirementsCollection;
 
-		
-		private Xids ids;
+		private readonly Xids ids;
 
 		private ICommand addRequirementCommand;
 		public ICommand AddRequirementCommand

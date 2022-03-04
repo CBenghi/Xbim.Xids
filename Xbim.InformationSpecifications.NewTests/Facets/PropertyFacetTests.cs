@@ -30,7 +30,7 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 		[MemberData(nameof(GetDifferentAttributesPairs))]
 		public void AttributeEqualNotMatchImplementation(IfcPropertyFacet one, IfcPropertyFacet other)
 		{
-			var result =one.Equals(other);
+			var result = one.Equals(other);
 			if (result == true)
             {
 				Debug.WriteLine($"{one} vs {other}");

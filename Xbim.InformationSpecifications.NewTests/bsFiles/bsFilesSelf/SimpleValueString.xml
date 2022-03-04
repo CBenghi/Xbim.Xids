@@ -6,13 +6,13 @@
     <ids:copyright>string</ids:copyright>
     <ids:version>string</ids:version>
     <ids:description>string</ids:description>
-    <ids:author>F@).g</ids:author>
-    <ids:date>1993-04-23</ids:date>
+    <ids:author>$1@0.\x</ids:author>
+    <ids:date>1998-09-07</ids:date>
     <ids:purpose>string</ids:purpose>
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification name="string" use="optional" ifcVersion="IFC2X3 IFC4 IFC4_3 IFC2X3 IFC4">
+    <ids:specification name="string" use="required" ifcVersion="IFC4" description="string" instructions="string">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -22,7 +22,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:classification location="type">
+        <ids:classification location="instance">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -31,267 +31,6 @@
           </ids:system>
         </ids:classification>
         <ids:attribute location="any">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="any">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="instance">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="required" ifcVersion="IFC2X3 IFC4 IFC4_3 IFC4_3 IFC2X3 IFC4_3">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="type">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="instance">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="any">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="any">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="prohibited" ifcVersion="IFC2X3">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="instance">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcElementAssembly" />
-        <ids:classification location="type">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="any">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property location="type">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" use="optional" ifcVersion="IFC2X3 IFC4_3 IFC4 IFC4 IFC4_3 IFC2X3">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification location="any">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute location="type">
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
@@ -317,7 +56,7 @@
         </ids:material>
       </ids:applicability>
       <ids:requirements>
-        <ids:entity>
+        <ids:entity instructions="string">
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
@@ -325,8 +64,8 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification location="instance">
+        <ids:partOf entity="IfcSystem" />
+        <ids:classification uri="https://www.liquid-technologies.com" instructions="string" location="type">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -334,7 +73,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:system>
         </ids:classification>
-        <ids:attribute location="type">
+        <ids:attribute use="optional" instructions="string" location="instance">
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
@@ -342,7 +81,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
         </ids:attribute>
-        <ids:property location="instance">
+        <ids:property uri="https://www.liquid-technologies.com" use="required" instructions="string" location="instance">
           <ids:propertySet>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:propertySet>
@@ -353,7 +92,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
         </ids:property>
-        <ids:material location="instance">
+        <ids:material uri="https://www.liquid-technologies.com" instructions="string" location="any">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>

@@ -4,12 +4,28 @@ using System.Text;
 namespace Xbim.InformationSpecifications
 {
 
-	public partial class IfcPropertyFacet : FacetBase, IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : LocatedFacet, IFacet, IEquatable<IfcPropertyFacet>
     {
+
+        /// <summary>
+        /// Constraint that is applied to the name of the PropertySet.
+        /// </summary>
         public ValueConstraint PropertySetName { get; set; }
-		public ValueConstraint PropertyName { get; set; }
-		public string Measure { get; set; }
-		public ValueConstraint PropertyValue { get; set; } 
+
+        /// <summary>
+        /// Constraint that is applied to the name of the Property.
+        /// </summary>
+        public ValueConstraint PropertyName { get; set; }
+		
+        /// <summary>
+        /// Constrained type of the identified property value.
+        /// </summary>
+        public string Measure { get; set; }
+
+        /// <summary>
+        /// Constraint that is applied to the value of the Property.
+        /// </summary>
+        public ValueConstraint PropertyValue { get; set; } 
 
         public string Short()
         {
@@ -35,16 +51,10 @@ namespace Xbim.InformationSpecifications
             return this.Equals(obj as IfcPropertyFacet);
         }
 
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+        public override int GetHashCode() => 23 + 31 * (PropertySetName, PropertyName, PropertyValue, Measure).GetHashCode() + 31 * base.GetHashCode();
 
-		public override string ToString()
-		{
-            return $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{base.ToString()}";
-        }
-
+        public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{Measure}-{base.ToString()}";
+        
 		public bool Equals(IfcPropertyFacet other)
         {
             if (other == null)
@@ -53,9 +63,9 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (!IFacetExtensions.CaseInsensitiveEquals(PropertyName, other.PropertyName))
                 return false;
-            if (!IFacetExtensions.CaseInsensitiveEquals(Measure, other.Measure))
-                return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
+                return false;
+            if (!IFacetExtensions.CaseInsensitiveEquals(Measure, other.Measure))
                 return false;
             return base.Equals(other);
         }
