@@ -1,8 +1,14 @@
 using System;
 namespace Xbim.InformationSpecifications
 {
+	/// <summary>
+	/// Constrain model parts on the ground of a material identified through a relation.
+	/// </summary>
 	public partial class MaterialFacet : LocatedFacet,  IFacet, IEquatable<MaterialFacet>
 	{
+		/// <summary>
+		/// Constraint on the material's name
+		/// </summary>
 		public ValueConstraint Value { get; set; } = null;
 
 		public string Short()

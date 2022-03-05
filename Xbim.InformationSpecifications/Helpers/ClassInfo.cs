@@ -6,17 +6,43 @@ using System.Linq;
 namespace Xbim.InformationSpecifications.Helpers
 {
 
+	/// <summary>
+	/// Information on the potential use of the class
+	/// </summary>
 	public enum ClassType
 	{
+		/// <summary>
+		/// Will not have concrete instances
+		/// </summary>
 		Abstract,
+		/// <summary>
+		/// Can have a concrete instantiation
+		/// </summary>
 		Concrete,
+		/// <summary>
+		/// Is an enumeration or closed values
+		/// </summary>
 		Enumeration
 	}
 
+	/// <summary>
+	/// the IFC classes we present can be classified with regards to their potential role in the IfcRelDefinesByType relation.
+	/// </summary>
 	public enum FunctionalType
 	{
+		/// <summary>
+		/// Can be found in the RelatedObjects side of the relation.
+		/// Does not have a specific class defined in the RelatingType side of the relation.
+		/// </summary>
 		Element,
-		ElementWithTypes, // not sure if it's needed.
+		/// <summary>
+		/// Can be found in the RelatedObjects side of the relation.
+		/// Does have a specific class defined in the RelatingType side of the relation.
+		/// </summary>
+		ElementWithTypes,
+		/// <summary>
+		/// Can be found in the RelatingType side of the relation.
+		/// </summary>
 		TypeOfElement
 	}
 
@@ -39,6 +65,9 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// </summary>
 		public ClassInfo Parent { get; internal set; }
 
+		/// <summary>
+		/// Is the class 
+		/// </summary>
 		public FunctionalType FunctionalType { get; internal set; } = FunctionalType.Element;
 
 		/// <summary>

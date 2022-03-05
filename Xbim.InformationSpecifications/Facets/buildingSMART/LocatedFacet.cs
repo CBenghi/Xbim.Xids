@@ -5,11 +5,23 @@ namespace Xbim.InformationSpecifications
 	[Flags]
 	public enum Location
 	{
+		/// <summary>
+		/// Values can be found directly in the entity or via the IfcRelDefinesByType logic.
+		/// </summary>
 		any = 3,
+		/// <summary>
+		/// Value is defined directly in the entity.
+		/// </summary>
 		instance = 1,
+		/// <summary>
+		/// Value is defined via the IfcRelDefinesByType logic only.
+		/// </summary>
 		type = 2,
 	}
 
+	/// <summary>
+	/// A class extending the base facet with information about the value retrieval logic via the `IfcRelDefinesByType` logic.
+	/// </summary>
 	public abstract class LocatedFacet : FacetBase, IEquatable<LocatedFacet>
 	{
 		private string location = InformationSpecifications.Location.any.ToString();
@@ -29,8 +41,9 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// String value of location, use <see cref="GetLocation()"/> for the enum.
+		/// String value of location, use <see cref="GetLocation()"/> or <see cref="SetLocation(InformationSpecifications.Location)"/> for the enum.
 		/// Setting an invalid string will ignore the change.
+		/// The default value for location is <see cref="Location.any"/>
 		/// </summary>
 		public string Location
 		{

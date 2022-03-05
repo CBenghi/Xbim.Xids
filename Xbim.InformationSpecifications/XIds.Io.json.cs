@@ -82,7 +82,7 @@ namespace Xbim.InformationSpecifications
 				{
 					if (facet is IRepositoryRef repref)
 					{
-						repref.SetIds(unpersisted);
+						repref.SetContextIds(unpersisted);
 					}
 				}
 			}

@@ -10,9 +10,12 @@ using TextCopy;
 
 namespace Xbim.InformationSpecifications.Generator
 {
-    internal class TestFilesGenerator
+    internal class BuildingSmartSchema
     {
-        public static void Execute()
+        /// <summary>
+        /// Produces test files that allow to test all fields of the buildingSmart schema
+        /// </summary>
+        public static void GenerateFulltestFiles()
         {
             var schemaFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\ids_05.xsd";
             DirectoryInfo d = new DirectoryInfo(".");

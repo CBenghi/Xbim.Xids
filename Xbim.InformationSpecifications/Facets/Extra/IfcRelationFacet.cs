@@ -5,8 +5,14 @@ using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
+	/// <summary>
+	/// Constrain model parts on the ground of a related facet group.
+	/// </summary>
 	public class IfcRelationFacet : FacetBase, IFacet, IRepositoryRef, IEquatable<IfcRelationFacet>
 	{
+
+		// todo: the relationtype can be expanded to start directly from the same set (e.g., building up a constraint from summing other facetGroups).
+
 		public enum RelationType
 		{
 			Undefined,
@@ -101,7 +107,7 @@ namespace Xbim.InformationSpecifications
 		}
 
 		// IRepositoryRef
-		public void SetIds(Xids unpersisted)
+		public void SetContextIds(Xids unpersisted)
 		{
 			var t = unpersisted.GetFacetGroup(sourceId);
 			if (t != null)

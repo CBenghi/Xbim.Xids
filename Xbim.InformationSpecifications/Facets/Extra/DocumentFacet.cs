@@ -35,6 +35,9 @@ namespace Xbim.InformationSpecifications
 	//	   () -> ReferencedDocument ADDED	
 
 
+	/// <summary>
+	/// Constrain model parts on the ground of a document attached via relation.
+	/// </summary>
 	public partial class DocumentFacet : LocatedFacet, IFacet, IEquatable<DocumentFacet>
 	{
 		public ValueConstraint DocId { get; set; } // Ide

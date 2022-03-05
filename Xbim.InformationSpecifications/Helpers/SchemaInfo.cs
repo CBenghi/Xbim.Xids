@@ -101,13 +101,14 @@ namespace Xbim.InformationSpecifications.Helpers
             }
         }
 
-        /// <summary>
-        /// Returns information on the classes that have an attribute.
-        /// </summary>
-        /// <param name="attributeName">The attribute being sought</param>
-        /// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
-        /// <returns>enumeration of class names or null, if not found</returns>
-        public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
+		/// <summary>
+		/// Returns names of the classes that have an attribute.
+		/// /// See <seealso cref="GetAttributeRelations(string)"/> for similar function with different return type.
+		/// </summary>
+		/// <param name="attributeName">The attribute being sought</param>
+		/// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
+		/// <returns>enumeration of class names or null, if not found</returns>
+		public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
 		{
 			var toUse = onlyTopClasses
 				? AttributesToTopClasses
@@ -121,11 +122,17 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		private Dictionary<string, ClassRelationInfo[]> relAttributes = new Dictionary<string, ClassRelationInfo[]>();
 
+		/// <summary>
+		/// Provides information of classes that have an attribute and the form of the relation to it.
+		/// See <seealso cref="GetAttributeClasses(string, bool)"/> for similar function with different return type.
+		/// </summary>
+		/// <param name="attributeName">Name of the attribute in question</param>
+		/// <returns></returns>
 		public IEnumerable<ClassRelationInfo> GetAttributeRelations(string attributeName)
 		{
 			if (relAttributes.TryGetValue(attributeName, out var ret))
 				return ret;
-			List<ClassRelationInfo> tmp = new List<ClassRelationInfo>();
+			var tmp = new List<ClassRelationInfo>();
             foreach (var className in GetAttributeClasses(attributeName, true))
             {
 				var cls = this[className];
@@ -149,11 +156,20 @@ namespace Xbim.InformationSpecifications.Helpers
 		
 		public enum ClassAttributeMode
         {
+			/// <summary>
+			/// The attribute is directly defined in an IfcClass
+			/// </summary>
 			ViaElement = 1,
+			/// <summary>
+			/// The attribute is defined in the type that can be related to an IfcClass
+			/// </summary>
 			ViaRelationType = 2,
 		}
 
-		public class ClassRelationInfo
+		/// <summary>
+		/// A structure contianing information about the ways in which an attribute is related to a class
+		/// </summary>
+		public struct ClassRelationInfo
         {
 			public string ClassName { get; set; }
 			public ClassAttributeMode Connection { get; set; }
@@ -197,6 +213,9 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		private static partial SchemaInfo GetClassesIFC2x3();
 
+		/// <summary>
+		/// Returns all attribute names in the schema
+		/// </summary>
 		public IEnumerable<string> GetAttributeNames()
 		{
 			return AttributesToAllClasses?.Keys;
@@ -218,6 +237,9 @@ namespace Xbim.InformationSpecifications.Helpers
 			AttributesToTopClasses.Add(attributeName, topClassNames);
 		}
 
+		/// <summary>
+		/// The default enumerator for the schema returns the classes defined within
+		/// </summary>
 		public IEnumerator<ClassInfo> GetEnumerator()
 		{
 			if (!linked)
@@ -225,6 +247,9 @@ namespace Xbim.InformationSpecifications.Helpers
 			return Classes.Values.GetEnumerator();
 		}
 
+		/// <summary>
+		/// The default enumerator for the schema returns the classes defined within
+		/// </summary>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			if (!linked)

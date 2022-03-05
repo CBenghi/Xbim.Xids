@@ -4,8 +4,9 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-    // todo: xxx: facetbase
-
+    /// <summary>
+    /// Constrain model parts on the ground of their class and predefined type.
+    /// </summary>
     public partial class IfcTypeFacet : FacetBase, IEquatable<IfcTypeFacet>, IFacet
     {
         /// <summary>

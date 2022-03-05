@@ -3,12 +3,25 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-	
 
+	/// <summary>
+	/// Constrain model parts on the ground of class attributes.
+	/// Either directly or via a type relation (see <see cref="Location"/>).
+	/// </summary>
 	public partial class AttributeFacet : LocatedFacet, IEquatable<AttributeFacet>, IFacet
 	{
+		/// <summary>
+		/// Constraint that is applied to the value of the attribute (required).
+		/// </summary>
 		public ValueConstraint AttributeName { get; set; } = "";
 
+
+		// todo: IDSTALK: Left empty means any class that could have the attribute of the given match?
+		//       is this a valid way of identifying classes?
+
+		/// <summary>
+		/// Constraint that is applied to the value of the attribute (optional).
+		/// </summary>
 		public ValueConstraint AttributeValue { get; set; } 
 
 		public bool Equals(AttributeFacet other)

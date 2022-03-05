@@ -12,9 +12,14 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
-			TestFilesGenerator.Execute();
-
 			var wip = false;
+
+			// Whenever the schema changes
+			// 1. get the latest files with the batch command
+			// 2. execute the following function
+			if (wip)
+				BuildingSmartSchema.GenerateFulltestFiles();
+
 			// wip
 			if (wip)
 			{

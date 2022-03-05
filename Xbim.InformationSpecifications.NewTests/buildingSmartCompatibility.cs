@@ -135,11 +135,11 @@ namespace Xbim.InformationSpecifications.NewTests
         private static void Validate(string fileName)
         {
             var c = GetValidator(fileName);
-            StringWriter s = new StringWriter();
-            var validationResult = IdsLib.CheckOptions.Run(c, s);
+            StringWriter debugOutputWriter = new StringWriter();
+            var validationResult = IdsLib.CheckOptions.Run(c, debugOutputWriter);
             if (validationResult != IdsLib.CheckOptions.Status.Ok)
             { 
-                Debug.WriteLine(s.ToString());
+                Debug.WriteLine(debugOutputWriter.ToString());
             }
             validationResult.Should().Be(IdsLib.CheckOptions.Status.Ok);
         }
