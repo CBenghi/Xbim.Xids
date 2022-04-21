@@ -13,8 +13,7 @@ namespace Xbim.InformationSpecifications
 		/// <summary>
 		/// Constraint that is applied to the value of the attribute (required).
 		/// </summary>
-		public ValueConstraint AttributeName { get; set; } = "";
-
+		public ValueConstraint AttributeName { get; set; }
 
 		// todo: IDSTALK: Left empty means any class that could have the attribute of the given match?
 		//       is this a valid way of identifying classes?

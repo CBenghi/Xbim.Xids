@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications
         {
             get
             {
-                XmlWriterSettings settings = new XmlWriterSettings();
+                var settings = new XmlWriterSettings();
                 settings.Async = false;
 #if DEBUG
                 settings.Indent = true;
@@ -177,7 +177,7 @@ namespace Xbim.InformationSpecifications
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
                     WriteLocatedFaceteAttributes(cf, xmlWriter, forRequirement); 
-                    WriteConstraintValue(cf.Identification, xmlWriter);
+                    WriteConstraintValue(cf.Identification, xmlWriter, "value");
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system");
                     WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                     xmlWriter.WriteEndElement();
@@ -189,14 +189,14 @@ namespace Xbim.InformationSpecifications
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet");
                     WriteConstraintValue(pf.PropertyName, xmlWriter, "name");                  
-                    WriteConstraintValue(pf.PropertyValue, xmlWriter);
+                    WriteConstraintValue(pf.PropertyValue, xmlWriter, "value");
                     WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
                     WriteLocatedFaceteAttributes(mf, xmlWriter, forRequirement);
-                    WriteConstraintValue(mf.Value, xmlWriter);
+                    WriteConstraintValue(mf.Value, xmlWriter, "value");
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
@@ -204,7 +204,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
                     WriteLocatedFaceteAttributes(af, xmlWriter, forRequirement);
                     WriteConstraintValue(af.AttributeName, xmlWriter, "name");
-                    WriteConstraintValue(af.AttributeValue, xmlWriter);
+                    WriteConstraintValue(af.AttributeValue, xmlWriter, "value");
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
@@ -226,7 +226,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name = "value")
+        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name)
         {
             if (value == null)
                 return;            
