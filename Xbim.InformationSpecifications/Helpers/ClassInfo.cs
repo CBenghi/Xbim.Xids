@@ -63,7 +63,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// <summary>
 		/// Resolved parent Classinfo
 		/// </summary>
-		public ClassInfo Parent { get; internal set; }
+		public ClassInfo? Parent { get; internal set; }
 
 		/// <summary>
 		/// Is the class 
@@ -127,7 +127,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			NameSpace = nameSpace;
 		}
 
-		public string[] RelationTypeClasses { get; private set;}
+		public string[]? RelationTypeClasses { get; private set;}
 
 		internal void SetTypeClasses(IEnumerable<string> typeClasses)
         {

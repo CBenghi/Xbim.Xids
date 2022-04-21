@@ -14,19 +14,19 @@ namespace Xbim.InformationSpecifications
 	public partial class SpecificationsGroup : ISpecificationMetadata
 	{
 		// main properties
-		public string Name { get; set; } // also in bS -> Title
-		public string Copyright { get; set; } // bS
-		public string Version { get; set; } // bS
-		public string Description { get; set; } // bS
-		public string Author { get; set; } // bS
+		public string? Name { get; set; } // also in bS -> Title
+		public string? Copyright { get; set; } // bS
+		public string? Version { get; set; } // bS
+		public string? Description { get; set; } // bS
+		public string? Author { get; set; } // bS
 		public DateTime? Date { get; set; } // bS
-		public string Purpose { get; set; } // bS
-		public string Milestone { get; set; } // bS
+		public string? Purpose { get; set; }// bS
+		public string? Milestone { get; set; }// bS
 
 		// useful for LOIN
-		public string Provider { get; set; }
-		public List<string> Consumers { get; set; }
-		public List<string> Stages { get; set; }
+		public string? Provider { get; set; } 
+		public List<string>? Consumers { get; set; } 
+		public List<string>? Stages { get; set; }
 
 		// now the hierarchycal data
 		public List<Specification> Specifications { get; set; } = new List<Specification>();
@@ -35,8 +35,10 @@ namespace Xbim.InformationSpecifications
 		{
 			foreach (var spec in Specifications)
 			{
-				yield return spec.Applicability;
-				yield return spec.Requirement;
+				if (spec.Applicability is not null)
+					yield return spec.Applicability;
+				if (spec.Requirement is not null)
+					yield return spec.Requirement;
 			}
 		}
 

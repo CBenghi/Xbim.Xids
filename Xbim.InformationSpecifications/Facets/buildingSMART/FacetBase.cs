@@ -13,23 +13,23 @@ namespace Xbim.InformationSpecifications
 
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
-        internal static bool IsNullOrEmpty(ValueConstraint evaluatingConstraint)
+        internal static bool IsNullOrEmpty(ValueConstraint? evaluatingConstraint)
         {
 			if (evaluatingConstraint == null)
 				return true;
 			return evaluatingConstraint.IsEmpty();
         }
 
-		public string Uri { get; set; } = null; // attribute uri
-		public string Use { get; set; } = InformationSpecifications.Use.undefined.ToString(); 
-		public string Instructions { get; set; } // element
+		public string Uri { get; set; } = string.Empty; // attribute uri
+		public string Use { get; set; } = InformationSpecifications.Use.undefined.ToString();
+		public string Instructions { get; set; } = string.Empty; // element
 
 		public override string ToString()
 		{
 			return $"{Uri}-{Use}-{Instructions}";
 		}
 
-		public bool Equals(FacetBase other)
+		public bool Equals(FacetBase? other)
 		{
 			if (other == null)
 				return false;
@@ -42,7 +42,7 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as FacetBase);
 		}

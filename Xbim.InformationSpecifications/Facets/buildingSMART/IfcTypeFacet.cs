@@ -12,12 +12,12 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Required 
         /// </summary>
-        public ValueConstraint IfcType { get; set; }
+        public ValueConstraint? IfcType { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
-        public ValueConstraint PredefinedType { get; set; } 
+        public ValueConstraint? PredefinedType { get; set; } 
 
         /// <summary>
         /// Not part of buildingSmart specification
@@ -42,7 +42,7 @@ namespace Xbim.InformationSpecifications
             return tmp.FirstCharToUpper();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as IfcTypeFacet);
         }
@@ -54,7 +54,7 @@ namespace Xbim.InformationSpecifications
 
 		public override int GetHashCode() => 23 + 31 * (IfcType, PredefinedType, IncludeSubtypes).GetHashCode() + 31 * base.GetHashCode();
 
-		public bool Equals(IfcTypeFacet other)
+		public bool Equals(IfcTypeFacet? other)
 		{
             if (other == null)
                 return false;

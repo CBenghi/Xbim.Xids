@@ -58,7 +58,7 @@ namespace Xbim.InformationSpecifications
 			return options;
 		}
 
-		public static Xids LoadFromJson(string sourceFile)
+		public static Xids? LoadFromJson(string sourceFile)
 		{
 			// todo: 2021: json perhaps not efficient for large files.
 			if (!File.Exists(sourceFile))
@@ -68,7 +68,7 @@ namespace Xbim.InformationSpecifications
 			return Finalize(t);
 		}
 
-		public static Xids Finalize(Xids unpersisted)
+		public static Xids? Finalize(Xids? unpersisted)
 		{
 			if (unpersisted == null)
 				return null;
@@ -89,7 +89,7 @@ namespace Xbim.InformationSpecifications
 			return unpersisted;
 		}
 
-		public static async Task<Xids> LoadFromJsonAsync(Stream sourceStream)
+		public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream)
 		{
 			JsonSerializerOptions options = GetJsonSerializerOptions();
 			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;

@@ -42,7 +42,7 @@ namespace Xbim.InformationSpecifications.Generator
 					var daType = metaD.ExpressType(className.ToUpperInvariant());
 
 					var propPdefT = daType.Properties.Values.FirstOrDefault(x=>x.Name == "PredefinedType");
-					var predType = "null";
+					var predType = "Enumerable.Empty<string>()";
 					if (propPdefT != null)
 					{
 						var pt = propPdefT.PropertyInfo.PropertyType;
@@ -76,6 +76,8 @@ namespace Xbim.InformationSpecifications.Generator
 		}
 
 		private const string stub = @"// generated code via xbim.xids.generator, any changes made directly here will be lost
+
+using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {

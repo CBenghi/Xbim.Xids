@@ -52,7 +52,7 @@ namespace Xbim.InformationSpecifications
             Entity = value.ToString();
         }
 
-        public bool Equals(PartOfFacet other)
+        public bool Equals(PartOfFacet? other)
         {
             if (other == null)
                 return false;
@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications
             return base.Equals(other);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as PartOfFacet);
         }

@@ -45,7 +45,7 @@ namespace Xbim.InformationSpecifications.Tests
 		public void HasAttributesV2x3()
 		{
 			var attribs = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeClasses("NotExisting");
-			attribs.Should().BeNull();
+			attribs.Should().BeEmpty();
 			
 			attribs = Helpers.SchemaInfo.SchemaIfc2x3.GetAttributeClasses("ID");
 			attribs.Length.Should().Be(2);	
@@ -59,7 +59,7 @@ namespace Xbim.InformationSpecifications.Tests
 		public void HasAttributesV4()
 		{
 			var attribs = Helpers.SchemaInfo.SchemaIfc4.GetAttributeClasses("NotExisting");
-			attribs.Should().BeNull();
+			attribs.Should().BeEmpty();
 			
 			attribs = Helpers.SchemaInfo.SchemaIfc4.GetAttributeClasses("UserDefinedOperationType");
 			attribs.Length.Should().Be(3);

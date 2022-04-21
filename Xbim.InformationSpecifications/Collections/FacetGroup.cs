@@ -23,10 +23,10 @@ namespace Xbim.InformationSpecifications
 			Guid = System.Guid.NewGuid().ToString();
 		}
 
-		public string Guid { get; set; }
-		public string Name { get; set; }
-		public string Reference { get; set; }
-		public string Description { get; set; }
+		public string? Guid { get; set; }
+		public string? Name { get; set; }
+		public string? Reference { get; set; }
+		public string? Description { get; set; }
 
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 
@@ -113,7 +113,7 @@ namespace Xbim.InformationSpecifications
 			{
 				return string.Join(" and ", Facets.Select(x => x.Short()));
 			}
-			if (!string.IsNullOrWhiteSpace(Description))
+			if (Description is not null && !string.IsNullOrWhiteSpace(Description))
 				return Description;
 			return "<undefined>";
 		}

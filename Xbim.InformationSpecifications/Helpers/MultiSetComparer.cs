@@ -14,12 +14,12 @@ namespace Xbim.InformationSpecifications.Helpers
 	internal class MultiSetComparer<T> : IEqualityComparer<IEnumerable<T>>
     {
         private readonly IEqualityComparer<T> m_comparer;
-        public MultiSetComparer(IEqualityComparer<T> comparer = null)
+        public MultiSetComparer(IEqualityComparer<T>? comparer = null)
         {
             m_comparer = comparer ?? EqualityComparer<T>.Default;
         }
 
-        public bool Equals(IEnumerable<T> first, IEnumerable<T> second)
+        public bool Equals(IEnumerable<T>? first, IEnumerable<T>? second)
         {
             if (first == null)
                 return second == null;
@@ -39,13 +39,15 @@ namespace Xbim.InformationSpecifications.Helpers
                     return true;
             }
 
-            HashSet<int> prevMatch = new HashSet<int>();
+            var prevMatch = new HashSet<int>();
             var sList = second.ToList();
 			foreach (var firstItem in first)
 			{
                 int start = 0;
                 // todo: 2021: deal with objects that match multiple times
-                var found = sList.FindIndex(start, x => x.Equals(firstItem));
+                var found = (firstItem is null)
+                    ? sList.FindIndex(start, x => x is null)
+                    : sList.FindIndex(start, x => firstItem.Equals(x));
                 if (found == -1)
                     return false;
                 if (!prevMatch.Contains(found))

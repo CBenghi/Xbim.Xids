@@ -120,7 +120,7 @@ namespace Xbim.InformationSpecifications
 				&& MaxLength.HasValue
 				)
 				return "Structure: <empty>";
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			sb.Append("Structure:");
 			if (TotalDigits.HasValue)
 				sb.Append($" digits: {TotalDigits.Value}");
@@ -135,14 +135,14 @@ namespace Xbim.InformationSpecifications
 			return sb.ToString();
 		}
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
 		{
 			return Equals(obj as StructureConstraint);
 		}
 
 		public override int GetHashCode() => (TotalDigits, FractionDigits, Length, MinLength, MaxLength).GetHashCode();
 
-		public bool Equals(StructureConstraint other)
+		public bool Equals(StructureConstraint? other)
 		{
 			if (other == null)
 				return false;
@@ -159,70 +159,90 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+		public bool IsSatisfiedBy(object? candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
 			if (TotalDigits.HasValue)
 			{
-				if (candiatateValue is float f)
-				{
-					// todo: should there be a warning for conversion here?
-					candiatateValue = Convert.ToDecimal(f);
-				}
-				else if (candiatateValue is double d)
-				{
-					// todo: should there be a warning for conversion here?
-					candiatateValue = Convert.ToDecimal(d);
-				}
-				if (candiatateValue is decimal dec)
-				{
-					var count = dec.Digits();
-					if (count != TotalDigits.Value)
-						return false;
-				}
-				else if (candiatateValue is int i)
-				{
-					var count = i.Digits();
-					if (count != TotalDigits.Value)
-						return false;
-				}
-				else if (candiatateValue is long l)
-				{
-					var count = l.Digits();
-					if (count != TotalDigits.Value)
-						return false;
-				}
-				else
-				{
-					logger.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+				if (candiatateValue is null)
 					return false;
+				// first of all, if candidateValue is float or double we convert it to decimal to count the digits.
+				switch (candiatateValue)
+				{
+					case float f:
+						// todo: should there be a warning for conversion here?
+						candiatateValue = Convert.ToDecimal(f);
+						break;
+					case double d:
+						// todo: should there be a warning for conversion here?
+						candiatateValue = Convert.ToDecimal(d);
+						break;
 				}
-			}
+				switch (candiatateValue)
+                {
+                    case decimal dec:
+                        {
+                            var count = dec.Digits();
+                            if (count != TotalDigits.Value)
+                                return false;
+                            break;
+                        }
+                    case int i:
+                        {
+                            var count = i.Digits();
+                            if (count != TotalDigits.Value)
+                                return false;
+                            break;
+                        }
+                    case long l:
+                        {
+                            var count = l.Digits();
+                            if (count != TotalDigits.Value)
+                                return false;
+                            break;
+                        }
+                    default:
+                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+                        return false;
+                }
+            }
 			if (FractionDigits.HasValue)
 			{
-				if (candiatateValue is float f)
-					candiatateValue = Convert.ToDecimal(f);
-				else if (candiatateValue is double d)
-					candiatateValue = Convert.ToDecimal(d);
-				if (candiatateValue is decimal dec)
-				{
-					var exp = decimal.GetBits(dec)[3];
-					int count = BitConverter.GetBytes(exp)[2];
-					if (count != FractionDigits.Value)
-						return false;
-				}
-				else if (candiatateValue is int || candiatateValue is long)
-				{
-					if (FractionDigits.Value != 0)
-						return false;
-				}
-				else
-				{
-					logger.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+				if (candiatateValue is null)
 					return false;
+				// first of all, if candidateValue is float or double we convert it to decimal to count the digits.
+				switch (candiatateValue)
+				{
+					case float f:
+						candiatateValue = Convert.ToDecimal(f);
+						break;
+					case double d:
+						candiatateValue = Convert.ToDecimal(d);
+						break;
 				}
-			}
+				switch (candiatateValue)
+				{
+					case decimal dec:
+                        {
+                            var exp = decimal.GetBits(dec)[3];
+                            int count = BitConverter.GetBytes(exp)[2];
+                            if (count != FractionDigits.Value)
+                                return false;
+                            break;
+                        }
+                    case int:
+                    case long:
+                        if (FractionDigits.Value != 0)
+                            return false;
+                        break;
+                    default:
+                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+                        return false;
+                }
+            }
 			if (Length.HasValue || MinLength.HasValue || MaxLength.HasValue)
 			{
+				if (candiatateValue is null)
+					return false;
 				var l = candiatateValue.ToString().Length;
 				if (Length.HasValue && l != Length.Value)
 					return false;
@@ -236,7 +256,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			List<string> ret = new List<string>();
+			var ret = new List<string>();
 			if (TotalDigits.HasValue)
 				ret.Add($"has {TotalDigits.Value} digits in total");
 			if (FractionDigits.HasValue)

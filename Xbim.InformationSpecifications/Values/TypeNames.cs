@@ -67,64 +67,56 @@ namespace Xbim.InformationSpecifications
 			return vc;
 		}
 
-        public static Type GetNetType(TypeName baseType)
+        public static Type? GetNetType(TypeName baseType)
 		{
-			switch (baseType)
-			{
-				case TypeName.Integer:
-					return typeof(int);
-				case TypeName.String:
-					return typeof(string);
-				case TypeName.Boolean:
-					return typeof(bool);
-				case TypeName.Floating:
-					return typeof(float);
-				case TypeName.Double:
-					return typeof(double);
-				case TypeName.Decimal:
-					return typeof(decimal);
-				case TypeName.Date:
-				case TypeName.DateTime:
-					return typeof(DateTime);
-				case TypeName.Time:
-				case TypeName.Duration:
-					return typeof(TimeSpan);
-				case TypeName.Uri:
-					return typeof(Uri);
-				case TypeName.Undefined:
-					return null;
-				default:
-					return null;
-			}
-		}
+            return baseType switch
+            {
+                TypeName.Integer => typeof(int),
+                TypeName.String => typeof(string),
+                TypeName.Boolean => typeof(bool),
+                TypeName.Floating => typeof(float),
+                TypeName.Double => typeof(double),
+                TypeName.Decimal => typeof(decimal),
+                TypeName.Date or TypeName.DateTime => typeof(DateTime),
+                TypeName.Time or TypeName.Duration => typeof(TimeSpan),
+                TypeName.Uri => typeof(Uri),
+                TypeName.Undefined => null,
+                _ => null,
+            };
+        }
 
 
 
 		public static TypeName GetNamedTypeFromXsd(string tval)
 		{
-			if (tval == "xs:string")
-				return TypeName.String;
-			else if (tval == "xs:integer")
-				return TypeName.Integer;
-			else if (tval == "xs:boolean")
-				return TypeName.Boolean;
-			else if (tval == "xs:double")
-				return TypeName.Double;
-			else if (tval == "xs:decimal")
-				return TypeName.Decimal;
-			else if (tval == "xs:float")
-				return TypeName.Floating;
-			else if (tval == "xs:date")
-				return TypeName.Date;
-			else if (tval == "xs:dateTime")
-				return TypeName.DateTime;
-			else if (tval == "xs:duration")
-				return TypeName.Duration;
-			else if (tval == "xs:time")
-				return TypeName.Time;
-			else if (tval == "xs:anyURI")
-				return TypeName.Uri;
-			return TypeName.Undefined;
+            switch (tval)
+            {
+                case "xs:string":
+                    return TypeName.String;
+                case "xs:integer":
+                    return TypeName.Integer;
+                case "xs:boolean":
+                    return TypeName.Boolean;
+                case "xs:double":
+                    return TypeName.Double;
+                case "xs:decimal":
+                    return TypeName.Decimal;
+                case "xs:float":
+                    return TypeName.Floating;
+                case "xs:date":
+                    return TypeName.Date;
+                case "xs:dateTime":
+                    return TypeName.DateTime;
+                case "xs:duration":
+                    return TypeName.Duration;
+                case "xs:time":
+                    return TypeName.Time;
+                case "xs:anyURI":
+                    return TypeName.Uri;
+				default:
+					return TypeName.Undefined;
+			}
+            
 		}
 
 		public enum constraints
@@ -143,7 +135,7 @@ namespace Xbim.InformationSpecifications
 			maxInclusive,
 		}
 
-		public static object GetObject(object value, TypeName t)
+		public static object? GetObject(object value, TypeName t)
 		{
 			if (t == TypeName.Integer)
 				return Convert.ToInt32(value);
@@ -177,7 +169,7 @@ namespace Xbim.InformationSpecifications
 
 
 
-		public static object GetObject(string value, TypeName t)
+		public static object? GetObject(string? value, TypeName t)
 		{
 			switch (t)
 			{

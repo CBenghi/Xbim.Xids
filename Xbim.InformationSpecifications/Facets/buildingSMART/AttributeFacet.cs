@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications
 		/// <summary>
 		/// Constraint that is applied to the value of the attribute (required).
 		/// </summary>
-		public ValueConstraint AttributeName { get; set; }
+		public ValueConstraint? AttributeName { get; set; }
 
 		// todo: IDSTALK: Left empty means any class that could have the attribute of the given match?
 		//       is this a valid way of identifying classes?
@@ -21,9 +21,9 @@ namespace Xbim.InformationSpecifications
 		/// <summary>
 		/// Constraint that is applied to the value of the attribute (optional).
 		/// </summary>
-		public ValueConstraint AttributeValue { get; set; } 
+		public ValueConstraint? AttributeValue { get; set; }
 
-		public bool Equals(AttributeFacet other)
+		public bool Equals(AttributeFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -34,7 +34,7 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other as LocatedFacet);
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as AttributeFacet);
 		}

@@ -7,10 +7,10 @@ namespace Xbim.InformationSpecifications
 {
 	public class PatternConstraint : IValueConstraint, IEquatable<PatternConstraint>
 	{
-		private Regex compiledCaseSensitiveRegex;
-		private Regex compiledCaseInsensitiveRegex;
+		private Regex? compiledCaseSensitiveRegex;
+		private Regex? compiledCaseInsensitiveRegex;
 
-		private string pattern;
+		private string pattern = String.Empty;
 
 		public string Pattern
 		{
@@ -26,12 +26,12 @@ namespace Xbim.InformationSpecifications
 			return (Pattern, true).GetHashCode();
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return base.Equals(obj as PatternConstraint);
 		}
 
-		public bool Equals(PatternConstraint other)
+		public bool Equals(PatternConstraint? other)
 		{
 			if (other == null)
 				return false;
@@ -78,23 +78,39 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
 			if (ignoreCase)
 			{
 				if (!EnsureRegex(out var _, ignoreCase, logger))
 					return false;
-				return compiledCaseInsensitiveRegex.IsMatch(candiatateValue.ToString());
+				if (compiledCaseInsensitiveRegex is null) // this should never be the case
+				{
+					logger?.LogError("CaseInsensitiveRegex was unexpectedly null for pattern {pattern}.", pattern);
+					return false;
+				}
+				var str = candiatateValue.ToString();
+				if (str is null)
+					return false;
+				return compiledCaseInsensitiveRegex.IsMatch(str);
 			}
 			else
             {
 				if (!EnsureRegex(out var _, ignoreCase, logger))
 					return false;
-				return compiledCaseSensitiveRegex.IsMatch(candiatateValue.ToString());
+				if (compiledCaseSensitiveRegex is null) // this should never be the case
+				{
+					logger?.LogError("CaseSensitiveRegex was unexpectedly null for pattern {pattern}.", pattern);
+					return false;
+				}
+				var str = candiatateValue.ToString();
+				if (str is null)
+					return false;
+				return compiledCaseSensitiveRegex.IsMatch(str);
 			}
 		}
 
-		private bool EnsureRegex(out string errorMessage, bool ignoreCase, ILogger logger = null)
+		private bool EnsureRegex(out string errorMessage, bool ignoreCase, ILogger? logger = null)
 		{
 			errorMessage = "";
 			if (

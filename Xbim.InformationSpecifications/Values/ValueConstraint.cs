@@ -15,30 +15,34 @@ namespace Xbim.InformationSpecifications
 	/// </summary>
 	public partial class ValueConstraint : IEquatable<ValueConstraint>
 	{
-		public ValueConstraint() {}
+		public ValueConstraint() { }
 
 		public void Add(IValueConstraint newConstraint)
 		{
-			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues ??= new List<IValueConstraint>();
 			AcceptedValues.Add(newConstraint);
 		}
 
 		public void AddAccepted(IValueConstraint constraint)
 		{
-			AcceptedValues = AcceptedValues ?? new List<IValueConstraint>();
+			AcceptedValues ??= new List<IValueConstraint>();
 			AcceptedValues.Add(constraint);
 		}
 
-		public List<IValueConstraint> AcceptedValues { get; set; }
+		public List<IValueConstraint>? AcceptedValues { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue, bool ignoreCase, ILogger logger = null)
-        {
+		public bool IsSatisfiedBy(object? candiatateValue, bool ignoreCase, ILogger? logger = null)
+		{
+			if (candiatateValue is null)
+				return false;
 			if (BaseType != TypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
 				return false;
 			// if there are no constraints it's satisfied by default
 			if (AcceptedValues == null || !AcceptedValues.Any())
 				return true;
 			var cand = GetObject(candiatateValue, BaseType);
+			if (cand is null)
+				return false;
 			foreach (var av in AcceptedValues)
 			{
 				if (av.IsSatisfiedBy(cand, this, ignoreCase, logger))
@@ -47,19 +51,21 @@ namespace Xbim.InformationSpecifications
 			return false;
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ILogger logger = null)
+		public bool IsSatisfiedBy(object candiatateValue, ILogger? logger = null)
 		{
 			return IsSatisfiedBy(candiatateValue, false, logger);
 		}
-		public bool IsSatisfiedIgnoringCaseBy(object candiatateValue, ILogger logger = null)
+		public bool IsSatisfiedIgnoringCaseBy(object candiatateValue, ILogger? logger = null)
 		{
 			return IsSatisfiedBy(candiatateValue, true, logger);
 		}
 
-		private bool IsCompatible(Type destType, Type passedType)
+		private bool IsCompatible(Type? destType, Type passedType)
 		{
+			if (destType is null)
+				return false;
 			if (
-				destType == typeof(Int64) 
+				destType == typeof(long) // int64
 				)
 			{
 				if (typeof(double) == passedType)
@@ -82,11 +88,11 @@ namespace Xbim.InformationSpecifications
 		/// <param name="value">The value to set as exact string constraint</param>
 		public ValueConstraint(string value)
 		{
-            AcceptedValues = new List<IValueConstraint>
-            {
-                new ExactConstraint(value)
-            };
-            BaseType = TypeName.String;
+			AcceptedValues = new List<IValueConstraint>
+			{
+				new ExactConstraint(value)
+			};
+			BaseType = TypeName.String;
 		}
 
 
@@ -98,8 +104,10 @@ namespace Xbim.InformationSpecifications
 
 		public ValueConstraint(TypeName valueType, string value)
 		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value));
+			AcceptedValues = new List<IValueConstraint>
+			{
+				new ExactConstraint(value)
+			};
 			BaseType = valueType;
 		}
 
@@ -109,8 +117,10 @@ namespace Xbim.InformationSpecifications
 		/// <param name="value">The value to set as exact int constraint</param>
 		public ValueConstraint(int value)
 		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value.ToString()));
+			AcceptedValues = new List<IValueConstraint>
+			{
+				new ExactConstraint(value.ToString())
+			};
 			BaseType = TypeName.Integer;
 		}
 
@@ -120,8 +130,10 @@ namespace Xbim.InformationSpecifications
 		/// <param name="value">The value to set as exact decimal constraint</param>
 		public ValueConstraint(decimal value)
 		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value.ToString()));
+			AcceptedValues = new List<IValueConstraint>
+			{
+				new ExactConstraint(value.ToString())
+			};
 			BaseType = TypeName.Decimal;
 		}
 
@@ -131,8 +143,10 @@ namespace Xbim.InformationSpecifications
 		/// <param name="value">The value to set as exact double constraint</param>
 		public ValueConstraint(double value)
 		{
-			AcceptedValues = new List<IValueConstraint>();
-			AcceptedValues.Add(new ExactConstraint(value.ToString()));
+			AcceptedValues = new List<IValueConstraint>
+			{
+				new ExactConstraint(value.ToString())
+			};
 			BaseType = TypeName.Double;
 		}
 
@@ -143,11 +157,23 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		/// <param name="value">the constraint to check</param>
 		/// <returns>true if meaningful, false otherwise</returns>
-		public static bool IsNotEmpty(ValueConstraint value)
+		public static bool IsNotEmpty(ValueConstraint? value)
 		{
 			if (value == null)
 				return false;
 			return !value.IsEmpty(); 
+		}
+
+		/// <summary>
+		/// checks if the value has no meaningful constraint (includes null check)
+		/// </summary>
+		/// <param name="value">the constraint to check</param>
+		/// <returns>true if meaningful, false otherwise</returns>
+		public static bool IsEmpty(ValueConstraint value)
+		{
+			if (value == null)
+				return true;
+			return value.IsEmpty();
 		}
 
 		/// <summary>
@@ -163,7 +189,7 @@ namespace Xbim.InformationSpecifications
 				(AcceptedValues == null || !AcceptedValues.Any());
 		}
 		
-		public bool Equals(ValueConstraint other)
+		public bool Equals(ValueConstraint? other)
 		{
 			if (other == null)
 				return false;
@@ -176,44 +202,31 @@ namespace Xbim.InformationSpecifications
 			if (AcceptedValues != null)
 			{
 				var comp = new Helpers.MultiSetComparer<IValueConstraint>();
-				if (!comp.Equals(this.AcceptedValues, other.AcceptedValues))
+				if (!comp.Equals(AcceptedValues, other.AcceptedValues))
 					return false;
 			}
 			return true;
 		}
 
-		public static Type ResolvedType(TypeName Name)
+		public static Type? ResolvedType(TypeName Name)
 		{
-			switch (Name)
-			{
-				case TypeName.Floating:
-					return typeof(float);
-				case TypeName.Double:
-					return typeof(double);
-				case TypeName.Integer:
-					return typeof(long);
-				case TypeName.Decimal:
-					return typeof(decimal);
-				case TypeName.Date:
-				case TypeName.DateTime:
-					return typeof(DateTime);
-				case TypeName.Time:
-				case TypeName.Duration:
-					return typeof(TimeSpan);
-				case TypeName.String:
-					return typeof(string);
-				case TypeName.Boolean:
-					return typeof(bool);
-				case TypeName.Uri:
-					return typeof(Uri);
-				case TypeName.Undefined:
-					return null;
-				default:
-					return typeof(string);
-			}
-		}
+            return Name switch
+            {
+                TypeName.Floating => typeof(float),
+                TypeName.Double => typeof(double),
+                TypeName.Integer => typeof(long),
+                TypeName.Decimal => typeof(decimal),
+                TypeName.Date or TypeName.DateTime => typeof(DateTime),
+                TypeName.Time or TypeName.Duration => typeof(TimeSpan),
+                TypeName.String => typeof(string),
+                TypeName.Boolean => typeof(bool),
+                TypeName.Uri => typeof(Uri),
+                TypeName.Undefined => null,
+                _ => typeof(string),
+            };
+        }
 
-		public static object GetDefault(TypeName tName, ILogger logger = null)
+		public static object? GetDefault(TypeName tName, ILogger? logger = null)
 		{
 			if (tName == TypeName.String)
 				return "";
@@ -233,9 +246,9 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
-			return this.Equals(obj as ValueConstraint);
+			return Equals(obj as ValueConstraint);
 		}
 
 		public override int GetHashCode()
@@ -257,11 +270,11 @@ namespace Xbim.InformationSpecifications
 		/// <returns>A description string</returns>
 		public string Short()
 		{
-			if (this.IsSingleUndefinedExact(out var exact))
+			if (IsSingleUndefinedExact(out var exact))
 			{
 				return $"of value '{exact}'";
 			}
-			List<string> ret= new List<string>();
+			var ret = new List<string>();
 			if (BaseType != TypeName.Undefined)
 				ret.Add($"of type {BaseType.ToString().ToLowerInvariant()}");
 			else
@@ -274,46 +287,47 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Ensure that the constraint type is udenfined and there's a single exactConstraint in the accepted values list.
+		/// Tests that the constraint type is undefined and there's a single exactConstraint in the accepted values list.
 		/// </summary>
-		/// <param name="exact">the exact single constraint defined, converted to string, or null if the test is not passed</param>
+		/// <param name="exact">the exact single constraint defined, converted to string, or null if the return is false</param>
 		/// <returns>the boolean result of the test</returns>
-		public bool IsSingleUndefinedExact(out string exact)
+		public bool IsSingleUndefinedExact(out string? exact)
 		{
 			if (BaseType != TypeName.Undefined || AcceptedValues == null || AcceptedValues.Count != 1)
 			{
 				exact = null;
 				return false;
 			}
-			var unique = AcceptedValues.FirstOrDefault() as ExactConstraint;
-			if (unique == null)
-			{
-				exact = null;
-				return false;
-			}
-			exact = unique.Value.ToString();
+            if (AcceptedValues.FirstOrDefault() is not ExactConstraint unique)
+            {
+                exact = null;
+                return false;
+            }
+            exact = unique.Value.ToString();
 			return true;
 		}
 
 		/// <summary>
-		/// Checks that there'a single exactConstraint in the accepted values, and provides it for consumption
-		/// </summary>
-		/// <param name="exact">The single exact constraint value defining the constraint, null if the check is not passed</param>
+		/// Tests that there'a single exactConstraint in the accepted values, and provides it for consumption.
+				/// </summary>
+		/// <param name="exact">
+		/// The single exact constraint value defining the constraint, null if the test is not passed and return value is false.
+		/// This is always a string.
+		/// </param>
 		/// <returns>true if check is passed, false otherwise</returns>
-		public bool IsSingleExact(out object exact)
+		public bool IsSingleExact(out object? exact)
 		{
 			if (AcceptedValues == null || AcceptedValues.Count != 1)
 			{
 				exact = null;
 				return false;
 			}
-			var unique = AcceptedValues.FirstOrDefault() as ExactConstraint;
-			if (unique == null)
-			{
-				exact = null;
-				return false;
-			}
-			exact = unique.Value;
+            if (AcceptedValues.FirstOrDefault() is not ExactConstraint unique)
+            {
+                exact = null;
+                return false;
+            }
+            exact = unique.Value; 
 			return true;
 		}
 
@@ -322,26 +336,28 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		/// <param name="exact">The single exact constraint value defining the constraint, null if the check is not passed</param>
 		/// <returns>true if check is passed, false otherwise</returns>
-		public bool IsSingleExact<RequiredType>(out RequiredType exact) 
-        {
-            exact = default;
-            if (!IsSingleExact(out var val))
-                return false;
+		public bool IsSingleExact<RequiredType>(out RequiredType? exact) 
+		{
+			exact = default;
+			if (!IsSingleExact(out var val))
+				return false;
+			if (val is null)
+				return false;
 			var vbt = GetObject(val, BaseType);
-            if (vbt is RequiredType exactAs)
-            {
-                exact = exactAs;
-                return true;
-            }
-            return false;
-        }
+			if (vbt is RequiredType exactAs)
+			{
+				exact = exactAs;
+				return true;
+			}
+			return false;
+		}
 
 
-        public static implicit operator ValueConstraint(string singleUndefinedExact) => SingleUndefinedExact(singleUndefinedExact);
+		public static implicit operator ValueConstraint(string singleUndefinedExact) => SingleUndefinedExact(singleUndefinedExact);
 
 		public static ValueConstraint SingleUndefinedExact(string content)
 		{
-			ValueConstraint ret = new ValueConstraint()
+			var ret = new ValueConstraint()
 			{
 				BaseType = TypeName.Undefined,
 				AcceptedValues = new List<IValueConstraint>() { new ExactConstraint(content) }

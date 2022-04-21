@@ -7,12 +7,12 @@ namespace Xbim.InformationSpecifications
 {
 	public class RangeConstraint : IValueConstraint, IEquatable<RangeConstraint>
 	{
-		public string MinValue { get; set; }
+		public string? MinValue { get; set; }
 		public bool MinInclusive { get; set; }
-		public string MaxValue { get; set; }
+		public string? MaxValue { get; set; }
 		public bool MaxInclusive { get; set; }
 
-		public bool Equals(RangeConstraint other)
+		public bool Equals(RangeConstraint? other)
 		{
 			if (other == null)
 				return false;
@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications
 				MaxInclusive == other.MaxInclusive;
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as RangeConstraint);
 		}
@@ -43,7 +43,7 @@ namespace Xbim.InformationSpecifications
 			return ToString().GetHashCode();
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
 			if (context == null)
 				return false;
@@ -55,19 +55,19 @@ namespace Xbim.InformationSpecifications
 			}
 			var minOk = true;
 			var maxOk = true;
-			if (!string.IsNullOrEmpty(MinValue))
+			if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
 			{
 				var mn = ValueConstraint.GetObject(MinValue, context.BaseType);
 				minOk = MinInclusive
 					? compe.CompareTo(mn) >= 0
 					: compe.CompareTo(mn) > 0;
 			}
-			if (!string.IsNullOrEmpty(MaxValue))
+			if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
 			{
-				var mx = (IComparable)ValueConstraint.GetObject(MaxValue, context.BaseType);
+				var mx = ValueConstraint.GetObject(MaxValue, context.BaseType);
 				maxOk = MaxInclusive
-					? mx.CompareTo(compe) >= 0
-					: mx.CompareTo(compe) > 0;
+					? compe.CompareTo(mx) <= 0
+					: compe.CompareTo(mx) < 0;
 			}
 			return minOk && maxOk;
 		}

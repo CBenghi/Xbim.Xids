@@ -13,11 +13,13 @@ namespace Xbim.InformationSpecifications.Helpers
     /// </summary>
     internal class ValueConstraintConverter : JsonConverter<ValueConstraint>
     {
-        private static JsonSerializerOptions _options;
-        private static JsonSerializerOptions GetOptions(JsonSerializerOptions options)
+        private static JsonSerializerOptions? _options;
+        private static JsonSerializerOptions GetOptions(JsonSerializerOptions? options)
         {
             if (_options == null)
             {
+                if (options == null)    
+                    options = new JsonSerializerOptions();  
                 _options = new JsonSerializerOptions()
                 {
                     DefaultIgnoreCondition = options.DefaultIgnoreCondition
@@ -40,13 +42,18 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// When reading we accept either a full serialization or a plain string
         /// </summary>
-        public override ValueConstraint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ValueConstraint? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions? options)
         {
-            ValueConstraint read;
+            ValueConstraint? read = null;
             if (reader.TokenType == JsonTokenType.String)
-                read = reader.GetString(); // there's an implicit conversion operator
+            {
+                var readStr = reader.GetString();
+                if (readStr is not null) // this is always true because getString() returns null only if tokentype is null, but it's String here.
+                    read = readStr; // there's an implicit conversion operator from string
+            }
             else
-                read = JsonSerializer.Deserialize<ValueConstraint>(ref reader, GetOptions(options));            
+                read = JsonSerializer.Deserialize<ValueConstraint>(ref reader, GetOptions(options));
+            // todo: implement logger for conversion
             return read;
         }
 
@@ -55,7 +62,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// </summary>
         public override void Write(Utf8JsonWriter writer, ValueConstraint value, JsonSerializerOptions options)
         {
-            if (value.IsSingleUndefinedExact(out string exact))
+            if (value.IsSingleUndefinedExact(out var exact))
             {
                 writer.WriteStringValue(exact);
             }

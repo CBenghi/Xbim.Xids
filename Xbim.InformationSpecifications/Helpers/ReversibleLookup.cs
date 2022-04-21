@@ -6,7 +6,9 @@ using System.Diagnostics;
 namespace Xbim.InformationSpecifications.Helpers
 {
 	// part of the serialization solution at for HeterogenousListConverter
-	public class ReversibleLookup<T1, T2> : ReadOnlyDictionary<T1, T2>
+	public class ReversibleLookup<T1, T2> : ReadOnlyDictionary<T1, T2> 
+		where T1 : notnull
+		where T2 : notnull
 	{
 
 		public ReversibleLookup(params (T1, T2)[] mappings)

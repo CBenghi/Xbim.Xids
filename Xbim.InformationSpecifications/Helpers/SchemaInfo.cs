@@ -6,10 +6,17 @@ using System.Linq;
 namespace Xbim.InformationSpecifications.Helpers
 {
 	/// <summary>
-	/// Provides static methods to get the collection of classe in the pubblished schemas.
+	/// Provides static methods to get the collection of classes in the published schemas.
 	/// </summary>
-	public partial class SchemaInfo: IEnumerable<ClassInfo>
+	public partial class SchemaInfo : IEnumerable<ClassInfo>
 	{
+        public SchemaInfo()
+        {
+			Classes = new Dictionary<string, ClassInfo>();
+			AttributesToAllClasses = new Dictionary<string, string[]>();
+			AttributesToTopClasses = new Dictionary<string, string[]>();
+        }
+
 		/// <summary>
 		/// Ensures that the information up to date.
 		/// </summary>
@@ -29,7 +36,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// <summary>
 		/// Get the classinfo by name string.
 		/// </summary>
-		public ClassInfo this[string className]
+		public ClassInfo? this[string className]
 		{
 			get
 			{
@@ -72,7 +79,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			linked = true;
 		}
 
-		private static SchemaInfo schemaIFC4;
+		private static SchemaInfo? schemaIFC4;
 		/// <summary>
 		/// Static property for the Ifc4 schema
 		/// </summary>
@@ -107,17 +114,15 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// </summary>
 		/// <param name="attributeName">The attribute being sought</param>
 		/// <param name="onlyTopClasses">reduces the return to the minimum set of top level classes that have the attribute (no subclasses)</param>
-		/// <returns>enumeration of class names or null, if not found</returns>
+		/// <returns>enumeration of class names, possibly empty, if not found</returns>
 		public string[] GetAttributeClasses(string attributeName, bool onlyTopClasses = false)
 		{
 			var toUse = onlyTopClasses
 				? AttributesToTopClasses
 				: AttributesToAllClasses;
-			if (toUse == null)
-				return null;
 			if (toUse.TryGetValue(attributeName, out var ret))
 				return ret;
-			return null;
+			return new string[] { };
 		}
 
 		private Dictionary<string, ClassRelationInfo[]> relAttributes = new Dictionary<string, ClassRelationInfo[]>();
@@ -175,7 +180,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			public ClassAttributeMode Connection { get; set; }
         }
 
-		private static SchemaInfo schemaIFC2x3;
+		private static SchemaInfo? schemaIFC2x3;
 		/// <summary>
 		/// Static property for the Ifc2x3 schema
 		/// </summary>
@@ -218,7 +223,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// </summary>
 		public IEnumerable<string> GetAttributeNames()
 		{
-			return AttributesToAllClasses?.Keys;
+			return AttributesToAllClasses.Keys;
 		}
 
 		private static partial SchemaInfo GetClassesIFC4();

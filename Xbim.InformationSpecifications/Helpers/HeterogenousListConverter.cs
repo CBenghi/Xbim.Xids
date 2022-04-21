@@ -15,6 +15,7 @@ namespace Xbim.InformationSpecifications.Helpers
 	//
 	public class HeterogenousListConverter<TItem, TList> : JsonConverter<TList>
 	where TList : IList<TItem>, new()
+	where TItem : class
 	{
 		public HeterogenousListConverter(params (string key, Type type)[] mappings)
 		{
@@ -29,7 +30,6 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		public override TList Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-
 			// Helper function for validating where you are in the JSON    
 			void validateToken(Utf8JsonReader innerReader, JsonTokenType tokenType)
 			{
@@ -50,14 +50,18 @@ namespace Xbim.InformationSpecifications.Helpers
 				validateToken(reader, JsonTokenType.PropertyName);
 
 				var typeKey = reader.GetString();
-
+				if (typeKey is null)
+					continue;
 				reader.Read(); // Move to start of object (stored in this property)
 				validateToken(reader, JsonTokenType.StartObject); // Start of vehicle
 
 				if (KeyTypeLookup.TryGetValue(typeKey, out var concreteItemType))
 				{
-					var item = (TItem)JsonSerializer.Deserialize(ref reader, concreteItemType, options);
-					results.Add(item);
+					var item = JsonSerializer.Deserialize(ref reader, concreteItemType, options) as TItem;
+					if (item != null)
+						results.Add(item);
+					else
+						throw new JsonException($"Invalid token: Was expecting a '{concreteItemType}' token but received a '{reader.TokenType}' token");
 				}
 				else
 				{
@@ -75,14 +79,12 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		public override void Write(Utf8JsonWriter writer, TList items, JsonSerializerOptions options)
 		{
-
 			writer.WriteStartArray();
-
 			foreach (var item in items)
 			{
-
+				if (item is null)
+					continue;
 				var itemType = item.GetType();
-
 				writer.WriteStartObject();
 
 				if (KeyTypeLookup.ReverseLookup.TryGetValue(itemType, out var typeKey))

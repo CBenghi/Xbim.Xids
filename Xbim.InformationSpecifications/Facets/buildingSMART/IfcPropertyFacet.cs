@@ -13,26 +13,26 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Constraint that is applied to the name of the PropertySet.
         /// </summary>
-        public ValueConstraint PropertySetName { get; set; }
+        public ValueConstraint? PropertySetName { get; set; }
 
         /// <summary>
         /// Constraint that is applied to the name of the Property.
         /// </summary>
-        public ValueConstraint PropertyName { get; set; }
+        public ValueConstraint? PropertyName { get; set; }
 		
         /// <summary>
         /// Constrained type of the identified property value.
         /// </summary>
-        public string Measure { get; set; }
+        public string? Measure { get; set; }
 
         /// <summary>
         /// Constraint that is applied to the value of the Property.
         /// </summary>
-        public ValueConstraint PropertyValue { get; set; } 
+        public ValueConstraint? PropertyValue { get; set; } 
 
         public string Short()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (!FacetBase.IsNullOrEmpty(PropertyName))
                 sb.Append($"Has property '{PropertyName}'");
             else
@@ -49,7 +49,7 @@ namespace Xbim.InformationSpecifications
             return sb.ToString();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as IfcPropertyFacet);
         }
@@ -58,7 +58,7 @@ namespace Xbim.InformationSpecifications
 
         public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{Measure}-{base.ToString()}";
         
-		public bool Equals(IfcPropertyFacet other)
+		public bool Equals(IfcPropertyFacet? other)
         {
             if (other == null)
                 return false;

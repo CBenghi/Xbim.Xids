@@ -21,7 +21,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			ApplicableClasses = applicableClasses;
 		}
 
-		private static IList<PropertySetInfo> schemaIFC4;
+		private static IList<PropertySetInfo>? schemaIFC4;
 		public static IList<PropertySetInfo> SchemaIfc4
 		{
 			get
@@ -32,7 +32,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
-		private static IList<PropertySetInfo> schemaIFC2x3;
+		private static IList<PropertySetInfo>? schemaIFC2x3;
 		public static IList<PropertySetInfo> SchemaIfc2x3
 		{
 			get

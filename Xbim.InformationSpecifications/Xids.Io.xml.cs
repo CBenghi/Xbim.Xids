@@ -36,13 +36,13 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="destinationFileName">the path of a writeable location on disk</param>
         /// <returns>An enum determining if XML or ZIP files were written</returns>
-        public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger logger = null)
+        public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger? logger = null)
         {
             using FileStream fs = File.OpenWrite(destinationFileName);
             return ExportBuildingSmartIDS(fs, logger);
         }
 
-        public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger logger = null)
+        public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger? logger = null)
         {
             if (SpecificationsGroups.Count == 1)
             {
@@ -51,12 +51,11 @@ namespace Xbim.InformationSpecifications
                 return ExportedFormat.XML;
             }
 
-            ZipArchive zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true);
+            var zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true);
             int i = 0;
             foreach (var specGroup in SpecificationsGroups)
             {
-                var name =
-                    (!string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
                     ? $"{++i} - {specGroup.Name}.xml"
                     : $"{++i}.xml";
                 var file = zipArchive.CreateEntry(name);
@@ -70,7 +69,7 @@ namespace Xbim.InformationSpecifications
 
         
 
-        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger logger)
+        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
@@ -126,7 +125,7 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
-        private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter, ILogger logger)
+        private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
             if (requirement.IfcVersion != null)
@@ -144,17 +143,23 @@ namespace Xbim.InformationSpecifications
             
             // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
-            foreach (var item in requirement.Applicability.Facets)
+            if (requirement.Applicability is not null)
             {
-                ExportBuildingSmartIDS(item, xmlWriter, false, logger);
+                foreach (var item in requirement.Applicability.Facets)
+                {
+                    ExportBuildingSmartIDS(item, xmlWriter, false, logger);
+                }
             }
             xmlWriter.WriteEndElement();
 
             // requirements
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
-            foreach (var item in requirement.Requirement.Facets)
+            if (requirement.Requirement is not null)
             {
-                ExportBuildingSmartIDS(item, xmlWriter, true, logger);
+                foreach (var item in requirement.Requirement.Facets)
+                {
+                    ExportBuildingSmartIDS(item, xmlWriter, true, logger);
+                }
             }
             xmlWriter.WriteEndElement();
 
@@ -163,22 +168,22 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger logger)
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger)
         {
             switch (item)
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
                     WriteFaceteBaseAttributes(tf, xmlWriter, forRequirement);
-                    WriteConstraintValue(tf.IfcType, xmlWriter, "name");
-                    WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType");
+                    WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger);
+                    WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
                     WriteLocatedFaceteAttributes(cf, xmlWriter, forRequirement); 
-                    WriteConstraintValue(cf.Identification, xmlWriter, "value");
-                    WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system");
+                    WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
+                    WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
                     WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                     xmlWriter.WriteEndElement();
                     break;                    
@@ -187,24 +192,24 @@ namespace Xbim.InformationSpecifications
                     WriteLocatedFaceteAttributes(pf, xmlWriter, forRequirement);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
-                    WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet");
-                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name");                  
-                    WriteConstraintValue(pf.PropertyValue, xmlWriter, "value");
+                    WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
+                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);                  
+                    WriteConstraintValue(pf.PropertyValue, xmlWriter, "value", logger);
                     WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
                     WriteLocatedFaceteAttributes(mf, xmlWriter, forRequirement);
-                    WriteConstraintValue(mf.Value, xmlWriter, "value");
+                    WriteConstraintValue(mf.Value, xmlWriter, "value", logger);
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
                     WriteLocatedFaceteAttributes(af, xmlWriter, forRequirement);
-                    WriteConstraintValue(af.AttributeName, xmlWriter, "name");
-                    WriteConstraintValue(af.AttributeValue, xmlWriter, "value");
+                    WriteConstraintValue(af.AttributeName, xmlWriter, "name", logger);
+                    WriteConstraintValue(af.AttributeValue, xmlWriter, "value", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
@@ -226,15 +231,21 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteConstraintValue(ValueConstraint value, XmlWriter xmlWriter, string name)
+        private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger)
         {
             if (value == null)
                 return;            
             xmlWriter.WriteStartElement(name, IdsNamespace);
-            if (value.IsSingleUndefinedExact(out string exact))
+            if (value.IsSingleUndefinedExact(out string? exact))
             {
-                // xmlWriter.WriteString(exact);
-                WriteSimpleValue(xmlWriter, exact);
+                if (exact is null)
+                {
+                    logger?.LogError("Invalid null constraint found, added comment in exported file.");
+                    xmlWriter.WriteComment("Invalid null constraint found at this position"); // not sure this might even ever happen
+                }
+                else
+                    WriteSimpleValue(xmlWriter, exact);
+
             }
             else if (value.AcceptedValues != null)
             {
@@ -327,7 +338,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteAttributeString("use", cf.Use);
                 }
 
-                if (!(cf is PartOfFacet))
+                if (cf is not PartOfFacet)
                 {
                     // instruction is optional
                     if (!string.IsNullOrWhiteSpace(cf.Instructions))
@@ -354,31 +365,50 @@ namespace Xbim.InformationSpecifications
             WriteFaceteBaseAttributes(cf, xmlWriter, forRequirement);
         }
 
+#pragma warning disable IDE0060 // Remove unused parameter
         private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
         {
-            // no known elements to write
+            // function is kept in case it's gonna be useful again for structure purposes
         }
+#pragma warning restore IDE0060 // Remove unused parameter
 
-        public static Xids ImportBuildingSmartIDS(Stream stream)
+
+        /// <summary>
+        /// Attempts to unpersist an XIDS from a stream.
+        /// </summary>
+        /// <param name="stream">The source stream to parse.</param>
+        /// <param name="logger">The logger to send any errors and warnings to.</param>
+        /// <returns>an XIDS or null if it could not be read.</returns>
+        public static Xids? ImportBuildingSmartIDS(Stream stream, ILogger? logger = null)
         {
             var t = XElement.Load(stream);
-            return ImportBuildingSmartIDS(t);
+            return ImportBuildingSmartIDS(t, logger);
         }
 
-        public static Xids ImportBuildingSmartIDS(string fileName, ILogger logger = null)
+        /// <summary>
+        /// Attempts to unpersist an XIDS from a file, given the file name.
+        /// </summary>
+        /// <param name="logger">The logger to send any errors and warnings to.</param>
+        /// <returns>an XIDS or null if it could not be read.</returns>
+        public static Xids? ImportBuildingSmartIDS(string fileName, ILogger? logger = null)
         {
             if (!File.Exists(fileName))
             {
-                DirectoryInfo d = new DirectoryInfo(".");
+                var d = new DirectoryInfo(".");
                 logger?.LogError($"File '{fileName}' not found from executing directory '{d.FullName}'");
                 return null;
             }
-            
             var main = XElement.Parse(File.ReadAllText(fileName));
             return ImportBuildingSmartIDS(main, logger);
         }
 
-        public static Xids ImportBuildingSmartIDS(XElement main, ILogger logger = null)
+        /// <summary>
+        /// Attempts to unpersist an XIDS from an XML element.
+        /// </summary>
+        /// <param name="main"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        public static Xids? ImportBuildingSmartIDS(XElement main, ILogger? logger = null)
         {
             if (main.Name.LocalName == "ids")
             {
@@ -410,8 +440,11 @@ namespace Xbim.InformationSpecifications
             return null;
         }
 
-        private static void AddInfo(Xids ret, SpecificationsGroup grp, XElement info, ILogger logger)
+        private static void AddInfo(Xids ret, SpecificationsGroup grp, XElement info, ILogger? logger)
         {
+            if (ret is null)
+                throw new ArgumentNullException(nameof(ret));
+
             foreach (var elem in info.Elements())
             {
                 var name = elem.Name.LocalName.ToLowerInvariant();
@@ -448,22 +481,22 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void LogUnexpected(XElement unepected, XElement parent, ILogger logger)
+        private static void LogUnexpected(XElement unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected element '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
         }
 
-        private static void LogUnexpected(XAttribute unepected, XElement parent, ILogger logger)
+        private static void LogUnexpected(XAttribute unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected attribute '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
         }
 
-        private static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger logger)
+        private static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected value '{unexpValue}' attribute '{unexpected}' in '{parentName}'.", unepected.Value, unepected.Name.LocalName, parent.Name.LocalName);
         }
 
-        private static DateTime ReadDate(XElement elem, ILogger logger)
+        private static DateTime ReadDate(XElement elem, ILogger? logger)
         {
             try
             {
@@ -478,7 +511,7 @@ namespace Xbim.InformationSpecifications
             
         }
 
-        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications, ILogger logger)
+        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications, ILogger? logger)
         {
             foreach (var elem in specifications.Elements())
             {
@@ -495,7 +528,7 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec, ILogger logger)
+        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec, ILogger? logger)
         {
             var req = new Specification(ids, destGroup);
             destGroup.Specifications.Add(req);
@@ -572,9 +605,9 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static IFacet GetMaterial(XElement elem, ILogger logger)
+        private static IFacet? GetMaterial(XElement elem, ILogger? logger)
         {
-            MaterialFacet ret = null;
+            MaterialFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -612,9 +645,9 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static IFacet GetProperty(XElement elem, ILogger logger)
+        private static IFacet? GetProperty(XElement elem, ILogger? logger)
         {
-            IfcPropertyFacet ret = null;
+            IfcPropertyFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -628,10 +661,13 @@ namespace Xbim.InformationSpecifications
                 {
                     case "propertyset":
                         ret ??= new IfcPropertyFacet();
-                        ret.PropertySetName = GetFirstString(sub);
+                        ret.PropertySetName = GetConstraint(sub, logger);
                         break;
-                    case "property":
-                    case "name":
+                    case "property": // either property or name is redundant
+                        ret ??= new IfcPropertyFacet();
+                        ret.PropertyName = sub.Value;
+                        break;
+                    case "name": // either property or name is redundant
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyName = sub.Value;
                         break;
@@ -669,7 +705,7 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static ValueConstraint GetConstraint(XElement elem, ILogger logger)
+        private static ValueConstraint? GetConstraint(XElement elem, ILogger? logger)
         {
             XNamespace ns = "http://www.w3.org/2001/XMLSchema";
             var restriction = elem.Element(ns + "restriction");
@@ -691,10 +727,10 @@ namespace Xbim.InformationSpecifications
             // we prepare the different possible scenarios, but then check in the end that the 
             // xml encountered is solid.
             //
-            List<string> enumeration = null;
-            RangeConstraint range = null;
-            PatternConstraint patternc = null;
-            StructureConstraint structure = null;
+            List<string>? enumeration = null;
+            RangeConstraint? range = null;
+            PatternConstraint? patternc = null;
+            StructureConstraint? structure = null;
 
             foreach (var sub in restriction.Elements())
             {
@@ -852,12 +888,12 @@ namespace Xbim.InformationSpecifications
 
 
 
-        private static List<IFacet> GetFacets(XElement elem, ILogger logger)
+        private static List<IFacet> GetFacets(XElement elem, ILogger? logger)
         {
             var fs = new List<IFacet>();
             foreach (var sub in elem.Elements())
             {
-                IFacet t = null;
+                IFacet? t = null;
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
                 {
@@ -890,9 +926,9 @@ namespace Xbim.InformationSpecifications
             return fs;
         }
 
-        private static AttributeFacet GetAttribute(XElement elem, ILogger logger)
+        private static IFacet? GetAttribute(XElement elem, ILogger? logger)
         {
-            AttributeFacet ret = null;
+            AttributeFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 var subname = sub.Name.LocalName.ToLowerInvariant();
@@ -921,13 +957,12 @@ namespace Xbim.InformationSpecifications
                     GetBaseAttribute(sub, ret);
                 }
             }
-            
             return ret;
         }
 
-        private static IfcClassificationFacet GetClassification(XElement elem, ILogger logger)
+        private static IFacet? GetClassification(XElement elem, ILogger? logger)
         {
-            IfcClassificationFacet ret = null;
+            IfcClassificationFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -971,7 +1006,8 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static void GetBaseEntity(XElement sub, FacetBase ret, ILogger logger)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private static void GetBaseEntity(XElement sub, FacetBase ret, ILogger? logger)
         {
             var local = sub.Name.LocalName.ToLowerInvariant();
             //if (local == "instructions")
@@ -979,6 +1015,7 @@ namespace Xbim.InformationSpecifications
             //else
             logger?.LogWarning($"Unexpected element {local} reading FacetBase.");
         }
+#pragma warning restore IDE0060 // Remove unused parameter
 
         private static bool IsFacetBaseEntity(XElement sub)
         {
@@ -1037,9 +1074,9 @@ namespace Xbim.InformationSpecifications
 
         private const bool defaultSubTypeInclusion = false;
 
-        private static IfcTypeFacet GetEntity(XElement elem, ILogger logger)
+        private static IFacet? GetEntity(XElement elem, ILogger? logger)
         {
-            IfcTypeFacet ret = null;
+            IfcTypeFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 var locName = sub.Name.LocalName.ToLowerInvariant();
@@ -1047,11 +1084,10 @@ namespace Xbim.InformationSpecifications
                 {
                     case "name":
                         ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                        // todo: dealing with uncomprehensible v0.5 values
-                        // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
                         if (string.IsNullOrEmpty(sub.Value))
                         {
-                            ret.IfcType = GetFirstString(sub);
+                            ret.IfcType = GetFirstString(sub);  // todo: dealing with uncomprehensible v0.5 values
+                                                                // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
                         }
                         else
                             ret.IfcType = sub.Value;
@@ -1080,9 +1116,9 @@ namespace Xbim.InformationSpecifications
 
         
 
-        private static PartOfFacet GetPartOf(XElement elem, ILogger logger)
+        private static IFacet? GetPartOf(XElement elem, ILogger? logger)
         {
-            PartOfFacet ret = null;
+            PartOfFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 var locName = sub.Name.LocalName.ToLowerInvariant();
@@ -1121,13 +1157,17 @@ namespace Xbim.InformationSpecifications
                     {
                         var val = sub.Attribute("value");
                         if (!string.IsNullOrEmpty(val?.Value))
+                        {
+#pragma warning disable CS8602 // Dereference of a possibly null reference. 
                             return val.Value;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                        }
                         break;
                     }
             }
             foreach (var sub2 in sub.Elements())
             {
-                var subS = GetFirstString(sub2);
+                var subS = GetFirstString(sub2); // recursive
                 if (!string.IsNullOrEmpty(subS))
                     return subS;
             }

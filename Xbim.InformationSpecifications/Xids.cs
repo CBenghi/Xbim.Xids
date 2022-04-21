@@ -50,8 +50,8 @@ namespace Xbim.InformationSpecifications
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
 			IfcSchemaVersion ifcVersion,
-			FacetGroup applicability = null,
-			FacetGroup requirement = null
+			FacetGroup? applicability = null,
+			FacetGroup? requirement = null
 			)
 		{
 			return PrepareSpecification(ifcVersion.Yield(), applicability, requirement);
@@ -68,8 +68,8 @@ namespace Xbim.InformationSpecifications
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
 			IEnumerable<IfcSchemaVersion> ifcVersion,
-			FacetGroup applicability = null,
-			FacetGroup requirement = null
+			FacetGroup? applicability = null,
+			FacetGroup? requirement = null
 		)
 		{
 			var destinationGroup = SpecificationsGroups.FirstOrDefault();
@@ -92,8 +92,8 @@ namespace Xbim.InformationSpecifications
 		public Specification PrepareSpecification(
 			SpecificationsGroup destinationGroup,
 			IfcSchemaVersion ifcVersion,
-			FacetGroup applicability = null,
-			FacetGroup requirement = null
+			FacetGroup? applicability = null,
+			FacetGroup? requirement = null
 			)
 		{
 			return PrepareSpecification(destinationGroup, ifcVersion.Yield(), applicability, requirement);
@@ -108,11 +108,11 @@ namespace Xbim.InformationSpecifications
 		/// <param name="requirement"></param>
 		/// <returns>The initialised specification</returns>
 		public Specification PrepareSpecification(
-		SpecificationsGroup destinationGroup,
-		IEnumerable<IfcSchemaVersion> ifcVersion,
-		FacetGroup applicability = null,
-		FacetGroup requirement = null
-		)
+			SpecificationsGroup? destinationGroup,
+			IEnumerable<IfcSchemaVersion> ifcVersion,
+			FacetGroup? applicability = null,
+			FacetGroup? requirement = null
+			)
 		{
 			if (applicability == null)
 				applicability = new FacetGroup(FacetRepository);
@@ -140,7 +140,7 @@ namespace Xbim.InformationSpecifications
 			return t;
 		}
 
-		public static Xids FromStream(Stream s)
+		public static Xids? FromStream(Stream s)
 		{
 			return Xids.ImportBuildingSmartIDS(s);
 		}
@@ -185,12 +185,14 @@ namespace Xbim.InformationSpecifications
 
 		public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
 
-		internal FacetGroup GetFacetGroup(string guid)
+		internal FacetGroup? GetFacetGroup(string? guid)
 		{
-			return FacetRepository.FirstOrDefault(x => x.Guid.ToString() == guid);
+			if (guid is null)
+				return null;
+			return FacetRepository.FirstOrDefault(x => x?.Guid is not null && x.Guid.ToString() == guid);
 		}
 
-		internal FacetGroup GetFacetGroup(List<IFacet> fs)
+		internal FacetGroup? GetFacetGroup(List<IFacet> fs)
 		{
 			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
 		}

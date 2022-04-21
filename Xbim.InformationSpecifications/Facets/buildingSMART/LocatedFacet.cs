@@ -60,7 +60,7 @@ namespace Xbim.InformationSpecifications
 			return $"{Location}-{base.ToString()}";
 		}
 
-		public bool Equals(LocatedFacet other)
+		public bool Equals(LocatedFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -69,7 +69,7 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other);
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as LocatedFacet);
 		}

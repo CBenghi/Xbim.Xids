@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Value { get; set; }
 
-		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger logger = null)
+		public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
 			if (ignoreCase)
 				return Value.Equals(candiatateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
@@ -33,12 +33,12 @@ namespace Xbim.InformationSpecifications
 			return base.GetHashCode();
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return Equals(obj as ExactConstraint);
 		}
 
-		public bool Equals(ExactConstraint other)
+		public bool Equals(ExactConstraint? other)
 		{
 			if (other == null)
 				return false;

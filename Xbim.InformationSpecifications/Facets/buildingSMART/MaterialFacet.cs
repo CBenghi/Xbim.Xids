@@ -9,7 +9,7 @@ namespace Xbim.InformationSpecifications
 		/// <summary>
 		/// Constraint on the material's name
 		/// </summary>
-		public ValueConstraint Value { get; set; } = null;
+		public ValueConstraint? Value { get; set; } = null;
 
 		public string Short()
 		{
@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications
 			return $"{Value}-{base.ToString()}";
 		}
 
-		public bool Equals(MaterialFacet other)
+		public bool Equals(MaterialFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -33,7 +33,7 @@ namespace Xbim.InformationSpecifications
 				return false;
 			return base.Equals(other);
 		}
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as MaterialFacet);
 		}

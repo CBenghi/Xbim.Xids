@@ -26,10 +26,10 @@ namespace Xbim.InformationSpecifications
 
 		}
 
-		private string sourceId;
+		private string? sourceId;
 
 		[JsonPropertyName("Source")]
-		public string SourceId
+		public string? SourceId
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications
         }
 
         [JsonIgnore]
-		public FacetGroup Source { get; set; }
+		public FacetGroup? Source { get; set; }
 
 		private string relation = RelationType.Undefined.ToString();
 
@@ -73,12 +73,12 @@ namespace Xbim.InformationSpecifications
 			return $"{SourceId}-{Relation}-{base.ToString()}";
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as IfcRelationFacet);
 		}
 
-		public bool Equals(IfcRelationFacet other)
+		public bool Equals(IfcRelationFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -98,7 +98,7 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public override int GetHashCode() => 23 + 31 * (sourceId, relation).GetHashCode() + 31 * base.GetHashCode();
+		public override int GetHashCode() => 23 + 31 * (sourceId, relation).GetHashCode() + 53 * base.GetHashCode();
 
 
 		public string Short()
@@ -109,15 +109,13 @@ namespace Xbim.InformationSpecifications
 		// IRepositoryRef
 		public void SetContextIds(Xids unpersisted)
 		{
-			var t = unpersisted.GetFacetGroup(sourceId);
-			if (t != null)
-				Source = t;
+			Source = unpersisted.GetFacetGroup(sourceId);
 		}
 
 		// IRepositoryRef
 		public IEnumerable<FacetGroup> UsedGroups()
 		{
-			if (Source != null)
+			if (Source is not null)
 				yield return Source;
 		}
 	}

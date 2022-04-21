@@ -40,14 +40,14 @@ namespace Xbim.InformationSpecifications
 	/// </summary>
 	public partial class DocumentFacet : LocatedFacet, IFacet, IEquatable<DocumentFacet>
 	{
-		public ValueConstraint DocId { get; set; } // Ide
-		public ValueConstraint DocName { get; set; }
-		public ValueConstraint DocLocation { get; set; }
-		public ValueConstraint DocPurpose { get; set; }
-		public ValueConstraint DocIntendedUse { get; set; }
+		public ValueConstraint? DocId { get; set; } // Ide
+		public ValueConstraint? DocName { get; set; }
+		public ValueConstraint? DocLocation { get; set; }
+		public ValueConstraint? DocPurpose { get; set; }
+		public ValueConstraint? DocIntendedUse { get; set; }
 
 
-		public bool Equals(DocumentFacet other)
+		public bool Equals(DocumentFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -57,7 +57,7 @@ namespace Xbim.InformationSpecifications
 				return false;
 			return base.Equals(other);
 		}
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as DocumentFacet);
 		}

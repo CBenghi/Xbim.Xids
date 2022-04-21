@@ -1,25 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-	/// <summary>
-	/// Constrain model parts on the ground of how classifications are applied to them
-	/// Either directly or via a type relation.
-	/// </summary>
-	public partial class IfcClassificationFacet : LocatedFacet, IFacet, IEquatable<IfcClassificationFacet>
+    /// <summary>
+    /// Constrain model parts on the ground of how classifications are applied to them
+    /// Either directly or via a type relation.
+    /// </summary>
+    public partial class IfcClassificationFacet : LocatedFacet, IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system
 		/// </summary>
-		public ValueConstraint ClassificationSystem { get; set; }
+		public ValueConstraint? ClassificationSystem { get; set; }
 
 		/// <summary>
 		/// The specific class element within the tree of the <see cref="ClassificationSystem"/>.
 		/// </summary>
-		public ValueConstraint Identification { get; set; }
+		public ValueConstraint? Identification { get; set; }
 
 		/// <summary>
 		/// Includes hierarchical values below the <see cref="Identification"/> element.
@@ -34,7 +33,7 @@ namespace Xbim.InformationSpecifications
 				&& Identification == null
 				)
 				return "Any valid classification";
-			List<string> desc = new List<string>();
+			var desc = new List<string>();
 
 			if (ClassificationSystem != null)
 			{
@@ -50,7 +49,7 @@ namespace Xbim.InformationSpecifications
 
 		
 
-		public bool Equals(IfcClassificationFacet other)
+		public bool Equals(IfcClassificationFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -69,7 +68,7 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other);
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as IfcClassificationFacet);
 		}
@@ -79,7 +78,7 @@ namespace Xbim.InformationSpecifications
 			return $"{ClassificationSystem}-{Identification}-{IncludeSubClasses}-{base.ToString()}";
 		}
 
-		public override int GetHashCode() => 23 + 31 * (ClassificationSystem, Identification, IncludeSubClasses).GetHashCode() + 31 * base.GetHashCode();
+		public override int GetHashCode() => 23 + 31 * (ClassificationSystem, Identification, IncludeSubClasses).GetHashCode() + 53 * base.GetHashCode();
 		
 
 		public bool IsValid()

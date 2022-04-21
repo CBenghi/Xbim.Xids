@@ -26,6 +26,9 @@ namespace Xbim.InformationSpecifications
 		[Obsolete("Only for persistence, use the Xids.NewSpecification() method, instead.")]
 		public Specification()
 		{
+			Parent = new SpecificationsGroup();
+			ids = new Xids();
+
 		}
 
 		public SpecificationUse Use { get; set; } = SpecificationUse.Optional;
@@ -33,7 +36,7 @@ namespace Xbim.InformationSpecifications
 		[JsonIgnore]
 		SpecificationsGroup Parent { get; set; }
 
-		public List<IfcSchemaVersion> IfcVersion { get; set; } // bS
+		public List<IfcSchemaVersion>? IfcVersion { get; set; } // bS
 
 		public Specification(Xids ids, SpecificationsGroup parent)
 		{
@@ -46,9 +49,9 @@ namespace Xbim.InformationSpecifications
 		/// Used to set the provider directly on this instance, otherwise inherited.
 		/// Use <see cref="GetProvider"/>.
 		/// </summary>
-		public string Provider { get; set; }
+		public string? Provider { get; set; }
 
-		public string GetProvider()
+		public string? GetProvider()
 		{
 			if (!string.IsNullOrWhiteSpace(Provider))
 				return Provider;
@@ -61,7 +64,7 @@ namespace Xbim.InformationSpecifications
 		/// Used to set the consumers directly on this instance, otherwise inherited.
 		/// Use <see cref="GetConsumers"/>.
 		/// </summary>
-		public List<string> Consumers { get; set; }
+		public List<string>? Consumers { get; set; }
 
 		public IEnumerable<string> GetConsumers()
 		{
@@ -76,7 +79,7 @@ namespace Xbim.InformationSpecifications
 		/// Used to set the stages directly on this instance, otherwise inherited.
 		/// Use <see cref="GetStages"/>.
 		/// </summary>
-		public List<string> Stages { get; set; }
+		public List<string>? Stages { get; set; }
 
 		public IEnumerable<string> GetStages()
 		{
@@ -87,35 +90,35 @@ namespace Xbim.InformationSpecifications
 			return Enumerable.Empty<string>();
 		}
 
-		public string Name { get; set; } // bS
-		public string Description { get; set; } // bS
+		public string? Name { get; set; } // bS
+		public string? Description { get; set; } // bS
 
 		[JsonIgnore]
-		public FacetGroup Applicability { get; set; }
+		public FacetGroup? Applicability { get; set; }
 
-		private string applicabilityId;
+		private string? applicabilityId;
 
 		[JsonPropertyName("Applicability")]
-		public string ApplicabilityId
+		public string? ApplicabilityId
 		{
-			get => Applicability?.Guid.ToString();
+			get => Applicability?.Guid?.ToString();
 			set => applicabilityId = value;
 		}
 
 		[JsonIgnore]
-		public FacetGroup Requirement { get; set; }
+		public FacetGroup? Requirement { get; set; }
 
-		private string requirementId;
+		private string? requirementId;
 
 		[JsonPropertyName("Requirement")]
-		public string RequirementId {
-			get => Requirement?.Guid.ToString();
+		public string? RequirementId {
+			get => Requirement?.Guid?.ToString();
 			set => requirementId = value;
 		}
 
-		public string Instructions { get; set; }
+		public string? Instructions { get; set; }
 
-		public string Guid { get; set; }
+		public string? Guid { get; set; }
 
 		internal void SetExpectations(List<IFacet> fs)
 		{
@@ -151,7 +154,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			if (!string.IsNullOrWhiteSpace(Name))
+			if (Name is not null && !string.IsNullOrWhiteSpace(Name))
 				return Name;
 			return "<Unnamed>";
 		}

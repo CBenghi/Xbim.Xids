@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications
 		[JsonConstructor]
 		public FacetGroupRepository()
 		{
-
+			ids = new Xids();
 		}
 
 		public FacetGroupRepository(Xids ids)
@@ -34,7 +34,7 @@ namespace Xbim.InformationSpecifications
 			Collection.Add(group);
 		}
 
-		internal FacetGroup FirstOrDefault(Func<FacetGroup, bool> p)
+		internal FacetGroup? FirstOrDefault(Func<FacetGroup, bool> p)
 		{
 			return Collection.FirstOrDefault(p);
 		}
