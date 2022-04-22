@@ -243,7 +243,8 @@ namespace Xbim.InformationSpecifications
 			{
 				if (candiatateValue is null)
 					return false;
-				var l = candiatateValue.ToString().Length;
+				var eval = candiatateValue.ToString() ?? string.Empty;
+				var l = eval.Length;
 				if (Length.HasValue && l != Length.Value)
 					return false;
 				if (MinLength.HasValue && l < MinLength.Value)

@@ -78,7 +78,7 @@ namespace Xbim.InformationSpecifications.NewTests
             var varlidationResult = IdsLib.CheckOptions.Run(c, s);
             if (varlidationResult != IdsLib.CheckOptions.Status.Ok)
             {
-                logg.LogError(s.ToString());
+                logg?.LogError(s.ToString());
             }
             varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
         }
@@ -86,6 +86,7 @@ namespace Xbim.InformationSpecifications.NewTests
         private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)
         {
             Assert.NotNull(loaded);
+
             if (specificationsCount != -1)
                 Assert.Equal(specificationsCount, loaded.AllSpecifications().Count());
             if (facetGroupsCount != -1)

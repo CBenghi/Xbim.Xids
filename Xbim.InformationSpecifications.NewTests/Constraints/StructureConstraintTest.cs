@@ -138,7 +138,8 @@ namespace Xbim.InformationSpecifications.NewTests
             };
             var s = new Xids();
 			var t = s.PrepareSpecification(IfcSchemaVersion.IFC2X3);
-			t.Requirement.Facets.Add(facet);
+            if (t.Requirement is not null)
+			    t.Requirement.Facets.Add(facet);
 
 			var tfn = Path.GetTempFileName();
 			s.ExportBuildingSmartIDS(tfn);

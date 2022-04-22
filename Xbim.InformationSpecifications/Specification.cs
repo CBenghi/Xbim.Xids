@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -28,7 +29,6 @@ namespace Xbim.InformationSpecifications
 		{
 			Parent = new SpecificationsGroup();
 			ids = new Xids();
-
 		}
 
 		public SpecificationUse Use { get; set; } = SpecificationUse.Optional;
@@ -94,7 +94,8 @@ namespace Xbim.InformationSpecifications
 		public string? Description { get; set; } // bS
 
 		[JsonIgnore]
-		public FacetGroup? Applicability { get; set; }
+		[AllowNull]
+		public FacetGroup Applicability { get; set; }
 
 		private string? applicabilityId;
 

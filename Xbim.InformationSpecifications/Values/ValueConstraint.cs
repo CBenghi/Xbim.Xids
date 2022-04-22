@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -157,7 +159,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		/// <param name="value">the constraint to check</param>
 		/// <returns>true if meaningful, false otherwise</returns>
-		public static bool IsNotEmpty(ValueConstraint? value)
+		public static bool IsNotEmpty([NotNullWhen(true)] ValueConstraint? value)
 		{
 			if (value == null)
 				return false;
@@ -169,7 +171,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		/// <param name="value">the constraint to check</param>
 		/// <returns>true if meaningful, false otherwise</returns>
-		public static bool IsEmpty(ValueConstraint value)
+		public static bool IsEmpty(ValueConstraint? value)
 		{
 			if (value == null)
 				return true;
@@ -233,6 +235,8 @@ namespace Xbim.InformationSpecifications
 			if (tName == TypeName.Uri)
 				return new Uri(".", UriKind.Relative);
 			var newT = GetNetType(tName);
+			if (newT is null)
+				return null;
 			if (newT == typeof(string))
 				return "";
 			try
