@@ -291,11 +291,29 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// Helper function for nullable support. 
+		/// Pass a possibly null <see cref="ValueConstraint"/> asserting non null out exact values, if appropriate.
+		/// See <see cref=" IsSingleUndefinedExact(out string?)"/>
+		/// </summary>
+		/// <param name="value">The constraint to check</param>
+		/// <param name="exact">the exact single constraint defined, converted to string, or null if the return is false</param>
+		/// <returns>true if the test is passed.</returns>
+		public static bool IsSingleUndefinedExact(ValueConstraint? value, [NotNullWhen(true)] out string? exact)
+        {
+			if (value is null)
+            {
+				exact = null;
+				return false;
+            }
+			return value.IsSingleUndefinedExact(out exact);
+        }
+
+		/// <summary>
 		/// Tests that the constraint type is undefined and there's a single exactConstraint in the accepted values list.
 		/// </summary>
 		/// <param name="exact">the exact single constraint defined, converted to string, or null if the return is false</param>
 		/// <returns>the boolean result of the test</returns>
-		public bool IsSingleUndefinedExact(out string? exact)
+		public bool IsSingleUndefinedExact([NotNullWhen(true)] out string? exact)
 		{
 			if (BaseType != TypeName.Undefined || AcceptedValues == null || AcceptedValues.Count != 1)
 			{
@@ -311,15 +329,25 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
+		public static bool IsSingleExact(ValueConstraint? value, [NotNullWhen(true)] out object? exact)
+        {
+			if (value is null)
+			{
+				exact = null;
+				return false;
+			}
+			return value.IsSingleExact(out exact);
+		}
+
 		/// <summary>
 		/// Tests that there'a single exactConstraint in the accepted values, and provides it for consumption.
-				/// </summary>
+		/// </summary>
 		/// <param name="exact">
 		/// The single exact constraint value defining the constraint, null if the test is not passed and return value is false.
 		/// This is always a string.
 		/// </param>
 		/// <returns>true if check is passed, false otherwise</returns>
-		public bool IsSingleExact(out object? exact)
+		public bool IsSingleExact([NotNullWhen(true)] out object? exact)
 		{
 			if (AcceptedValues == null || AcceptedValues.Count != 1)
 			{
@@ -335,12 +363,22 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
+		public static bool IsSingleExact<RequiredType>(ValueConstraint? value, [NotNullWhen(true)] out RequiredType? exact)
+		{
+			if (value is null)
+			{
+				exact = default;
+				return false;
+			}
+			return value.IsSingleExact<RequiredType?>(out exact);
+		}
+
 		/// <summary>
 		/// Checks that there'a single exactConstraint in the accepted values and its value is of <see cref="RequiredType"/>, and provides it for consumption 
 		/// </summary>
 		/// <param name="exact">The single exact constraint value defining the constraint, null if the check is not passed</param>
 		/// <returns>true if check is passed, false otherwise</returns>
-		public bool IsSingleExact<RequiredType>(out RequiredType? exact) 
+		public bool IsSingleExact<RequiredType>([NotNullWhen(true)] out RequiredType? exact) 
 		{
 			exact = default;
 			if (!IsSingleExact(out var val))
