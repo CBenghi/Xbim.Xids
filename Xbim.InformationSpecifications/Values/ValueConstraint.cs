@@ -33,7 +33,7 @@ namespace Xbim.InformationSpecifications
 
 		public List<IValueConstraint>? AcceptedValues { get; set; }
 
-		public bool IsSatisfiedBy(object? candiatateValue, bool ignoreCase, ILogger? logger = null)
+		public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, bool ignoreCase, ILogger? logger = null)
 		{
 			if (candiatateValue is null)
 				return false;
@@ -53,16 +53,16 @@ namespace Xbim.InformationSpecifications
 			return false;
 		}
 
-		public bool IsSatisfiedBy(object candiatateValue, ILogger? logger = null)
+		public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
 		{
 			return IsSatisfiedBy(candiatateValue, false, logger);
 		}
-		public bool IsSatisfiedIgnoringCaseBy(object candiatateValue, ILogger? logger = null)
+		public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
 		{
 			return IsSatisfiedBy(candiatateValue, true, logger);
 		}
 
-		private bool IsCompatible(Type? destType, Type passedType)
+		private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
 		{
 			if (destType is null)
 				return false;
@@ -191,7 +191,7 @@ namespace Xbim.InformationSpecifications
 				(AcceptedValues == null || !AcceptedValues.Any());
 		}
 		
-		public bool Equals(ValueConstraint? other)
+		public bool Equals([NotNullWhen(true)] ValueConstraint? other)
 		{
 			if (other == null)
 				return false;
@@ -329,7 +329,7 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public static bool IsSingleExact(ValueConstraint? value, [NotNullWhen(true)] out object? exact)
+		public static bool IsSingleExact([NotNullWhen(true)] ValueConstraint? value, [NotNullWhen(true)] out object? exact)
         {
 			if (value is null)
 			{
@@ -363,7 +363,7 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-		public static bool IsSingleExact<RequiredType>(ValueConstraint? value, [NotNullWhen(true)] out RequiredType? exact)
+		public static bool IsSingleExact<RequiredType>([NotNullWhen(true)] ValueConstraint? value, [NotNullWhen(true)] out RequiredType? exact)
 		{
 			if (value is null)
 			{
