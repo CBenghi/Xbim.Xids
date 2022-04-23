@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -104,6 +105,13 @@ namespace Xbim.InformationSpecifications
 			}
 			return true;
 		}
+
+		public static bool IsValid([NotNullWhen(true)] FacetGroup? facetGroup)
+        {
+			if (facetGroup is null)
+				return false;
+			return facetGroup.IsValid();	
+        }
 
 		public string Short()
 		{
