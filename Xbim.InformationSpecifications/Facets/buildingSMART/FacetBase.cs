@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Xbim.InformationSpecifications
 {
@@ -13,7 +14,7 @@ namespace Xbim.InformationSpecifications
 
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
-        internal static bool IsNullOrEmpty(ValueConstraint? evaluatingConstraint)
+        internal static bool IsNullOrEmpty([NotNullWhen(false)] ValueConstraint? evaluatingConstraint)
         {
 			if (evaluatingConstraint == null)
 				return true;

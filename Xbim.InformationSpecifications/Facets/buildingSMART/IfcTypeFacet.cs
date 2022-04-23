@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -69,6 +70,7 @@ namespace Xbim.InformationSpecifications
         /// Valid if at least IfcType is meaningful
         /// </summary>
         /// <returns>true if valid</returns>
+        [MemberNotNullWhen(true, nameof(IfcType))]
         public bool IsValid()
 		{
             if (FacetBase.IsNullOrEmpty(IfcType))

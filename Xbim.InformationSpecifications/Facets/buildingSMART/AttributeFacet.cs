@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -54,6 +55,7 @@ namespace Xbim.InformationSpecifications
 				return $"attribute {AttributeName} @ {Location} = {AttributeValue}";
 		}
 
+		[MemberNotNullWhen(true, nameof(AttributeValue))]
 		public bool IsValid()
 		{
 			return !FacetBase.IsNullOrEmpty(AttributeName);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -89,6 +90,7 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other);
 		}
 
+		[MemberNotNullWhen(true, nameof(Source))]
 		public bool IsValid()
 		{
 			if (Source == null)

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Xbim.InformationSpecifications
@@ -73,7 +74,9 @@ namespace Xbim.InformationSpecifications
             return base.Equals(other);
         }
 
-		public bool IsValid()
+        [MemberNotNullWhen(true, nameof(PropertySetName))]
+        [MemberNotNullWhen(true, nameof(PropertyName))]
+        public bool IsValid()
 		{
             if (FacetBase.IsNullOrEmpty(PropertySetName))
                 return false;
