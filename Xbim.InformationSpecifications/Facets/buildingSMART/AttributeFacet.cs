@@ -55,7 +55,7 @@ namespace Xbim.InformationSpecifications
 				return $"attribute {AttributeName} @ {Location} = {AttributeValue}";
 		}
 
-		[MemberNotNullWhen(true, nameof(AttributeValue))]
+		[MemberNotNullWhen(true, nameof(AttributeName))]
 		public bool IsValid()
 		{
 			return !FacetBase.IsNullOrEmpty(AttributeName);
