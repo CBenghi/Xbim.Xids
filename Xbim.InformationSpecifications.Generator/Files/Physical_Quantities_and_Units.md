@@ -2,7 +2,7 @@ Numerical values of physical quantities are represented using SI units. The foll
 
 | Physical Quantity description | Name to be used in IDS     | Unit         | Unit Symbol | Ifc Measure                          | Dimensional exponents   | QUDT                                  |
 | ----------------------------- | -------------------------- | ------------ | ----------- | ------------------------------------ | ----------------------- | ------------------------------------- |
-| Amount of substance           | AreaDensity                | mole         | mol         | IfcAmountOfSubstanceMeasure          | (0, 0, 0, 0, 0, 1, 0)   | quantitykind:MassPerArea              |
+| Amount of substance           | AmountOfSubstance                | mole         | mol         | IfcAmountOfSubstanceMeasure          | (0, 0, 0, 0, 0, 1, 0)   | quantitykind:MassPerArea              |
 | Area density                  | AreaDensity                |              | Kg/m2       | IfcAreaDensityMeasure                | (-2, 1, 0, 0, 0, 0, 0)  | quantitykind:MassPerArea              |
 | Area                          | Area                       | square meter | m2          | IfcAreaMeasure                       | (2, 0, 0, 0, 0, 0, 0)   | quantitykind:Area                     |
 | Dynamic viscosity             | DynamicViscosity           |              | Pa s        | IfcDynamicViscosityMeasure           | (-1, 1, -1, 0, 0, 0, 0) | quantitykind:DynamicViscosity         |
