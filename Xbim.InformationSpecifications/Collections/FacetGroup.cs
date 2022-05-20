@@ -6,6 +6,13 @@ using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
+
+	public enum RequirementOptions
+	{
+		Expected,
+		Prohibited
+	}
+
 	public partial class FacetGroup
 	{
 		[Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
@@ -28,6 +35,11 @@ namespace Xbim.InformationSpecifications
 		public string? Name { get; set; }
 		public string? Reference { get; set; }
 		public string? Description { get; set; }
+
+		/// <summary>
+		/// Determines options associated with the collection of facets, when used as a requirement
+		/// </summary>
+		public ObservableCollection<RequirementOptions>? RequirementOptions { get; set; }
 
 		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
 

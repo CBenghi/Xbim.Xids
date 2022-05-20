@@ -145,8 +145,6 @@ namespace Xbim.InformationSpecifications
                 logger?.LogError("Cardinality is required for specification '{specname}' ({guid}).", spec.Name, spec.Guid);
             else
                 spec.Cardinality.ExportBuildingSmartIDS(xmlWriter, logger);
-
-            // xmlWriter.WriteAttributeString("use", spec.Use.ToString().ToLowerInvariant());
             
             // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
@@ -500,7 +498,12 @@ namespace Xbim.InformationSpecifications
 
         private static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger? logger)
         {
-            logger?.LogWarning("Unexpected value '{unexpValue}' attribute '{unexpected}' in '{parentName}'.", unepected.Value, unepected.Name.LocalName, parent.Name.LocalName);
+            logger?.LogWarning("Unexpected value '{unexpValue}' for attribute '{unexpected}' in '{parentName}'.", unepected.Value, unepected.Name.LocalName, parent.Name.LocalName);
+        }
+
+        private static void LogUnsupportedOccurValue(XElement parent, ILogger? logger)
+        {
+            logger?.LogError("Unsupported values for cardinality in '{parentName}'. Defaulting to expected.", parent.Name.LocalName);
         }
 
         private static DateTime ReadDate(XElement elem, ILogger? logger)
@@ -515,7 +518,6 @@ namespace Xbim.InformationSpecifications
                 logger?.LogError(ex, $"Invalid value for date: {elem.Value}.");
                 return DateTime.MinValue;
             }
-            
         }
 
         private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications, ILogger? logger)
@@ -566,13 +568,13 @@ namespace Xbim.InformationSpecifications
                             tmp2.Add(IfcSchemaVersion.IFC2X3);
                         ret.IfcVersion = tmp2;
                         break;
-                    case "minOccurs":
+                    case "minoccurs":
                         if (int.TryParse(att.Value, out int tmpMin))
                             cardinality.MinOccurs = tmpMin;
                         else
                             LogUnexpectedValue(att, specificationElement, logger);
                         break;
-                    case "maxOccurs":
+                    case "maxoccurs":
                         if (att.Value == "unbounded")
                             cardinality.MaxOccurs = null;
                         else if (int.TryParse(att.Value, out int tmpMax))
@@ -596,16 +598,20 @@ namespace Xbim.InformationSpecifications
                 {
                     case "applicability":
                         {
-                            var fs = GetFacets(sub, logger);
+                            var fs = GetFacets(sub, logger, out _);
                             if (fs.Any())
                                 ret.SetFilters(fs);
                             break;
                         }
                     case "requirements":
                         {
-                            var fs = GetFacets(sub, logger);
+                            var fs = GetFacets(sub, logger, out var options);
                             if (fs.Any())
+                            {
                                 ret.SetExpectations(fs);
+                                if (options.Any(x => x != RequirementOptions.Expected))
+                                    ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementOptions>(options);
+                            }
                             break;
                         }
                     case "instructions":
@@ -619,7 +625,7 @@ namespace Xbim.InformationSpecifications
             ret.Cardinality = cardinality.Simplify();
         }
 
-        private static IFacet? GetMaterial(XElement elem, ILogger? logger)
+        private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementOptions opt)
         {
             MaterialFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -639,12 +645,17 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(sub, elem, logger);
                 }
             }
+            var mmax = new bsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new MaterialFacet();
                     GetBaseAttribute(attribute, ret);
+                }
+                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                {
+                    // nothing to do, IsRelevant takes care of mmax
                 }
                 else if (attribute.Name.LocalName == "location")
                 {
@@ -656,10 +667,11 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
+            opt = mmax.Evaluate(elem, logger);
             return ret;
         }
 
-        private static IFacet? GetProperty(XElement elem, ILogger? logger)
+        private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementOptions opt)
         {
             IfcPropertyFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -694,6 +706,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
+            var mmax = new bsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -711,11 +724,16 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     ret.Measure = attribute.Value;
                 }
+                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                {
+                    // nothing to do, IsRelevant takes care of mmax
+                }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
+            opt = mmax.Evaluate(elem, logger);
             return ret;
         }
 
@@ -900,14 +918,14 @@ namespace Xbim.InformationSpecifications
             return null;
         }
 
-
-
-        private static List<IFacet> GetFacets(XElement elem, ILogger? logger)
+        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, out IEnumerable<RequirementOptions> options)
         {
             var fs = new List<IFacet>();
+            var opts = new List<RequirementOptions>();
             foreach (var sub in elem.Elements())
             {
                 IFacet? t = null;
+                RequirementOptions opt = RequirementOptions.Expected;
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
                 {
@@ -915,13 +933,13 @@ namespace Xbim.InformationSpecifications
                         t = GetEntity(sub, logger);
                         break;
                     case "classification":
-                        t = GetClassification(sub, logger);
+                        t = GetClassification(sub, logger, out opt);
                         break;
                     case "property":
-                        t = GetProperty(sub, logger);
+                        t = GetProperty(sub, logger, out opt);
                         break;
                     case "material":
-                        t = GetMaterial(sub, logger);
+                        t = GetMaterial(sub, logger, out opt);
                         break;
                     case "attribute":
                         t = GetAttribute(sub, logger);
@@ -934,9 +952,12 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
                 if (t != null)
+                {
                     fs.Add(t);
+                    opts.Add(opt);
+                }
             }
-
+            options = opts;
             return fs;
         }
 
@@ -974,7 +995,58 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static IFacet? GetClassification(XElement elem, ILogger? logger)
+        private class bsMinMaxOccur
+        {
+            public string Min { get; set; } = "";
+            public string Max { get; set; } = "";
+
+            internal static bool IsRelevant(XAttribute attribute, ref bsMinMaxOccur mmax)
+            {
+                if (attribute.Name == "minOccurs")
+                {
+                    mmax.Min = attribute.Value;
+                    return true;
+                }
+                if (attribute.Name == "maxOccurs")
+                {
+                    mmax.Max = attribute.Value;
+                    return true;
+                }
+                return false;
+            }
+
+            internal RequirementOptions Evaluate(XElement elem, ILogger? logger)
+            {
+                if (Min == "" && Max == "")
+                    return RequirementOptions.Expected; // default value
+
+                // managed min values
+                if (Min != "1" && Min != "0")
+                {
+                    LogUnsupportedOccurValue(elem, logger);
+                    return RequirementOptions.Expected;
+                }
+
+                // managed max values
+                if (Max != "0" && Max != "unbounded" && Max != "")
+                {
+                    LogUnsupportedOccurValue(elem, logger);
+                    return RequirementOptions.Expected;
+                }
+
+                if (Min == "0" && Max == "0")
+                    return RequirementOptions.Prohibited;
+                if (Min == "1" && 
+                    (Max == "unbounded" || Max == "")
+                    )
+                    return RequirementOptions.Expected;
+
+                LogUnsupportedOccurValue(elem, logger);
+                return RequirementOptions.Expected;
+            }
+        }
+
+        private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementOptions opt)
         {
             IfcClassificationFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -999,6 +1071,8 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(sub, elem, logger);
                 }
             }
+
+            var mmax = new bsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 var locAtt = attribute.Name.LocalName;
@@ -1007,16 +1081,16 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret);
                 }
-                else if (locAtt == "location")
+                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
-                    ret ??= new IfcClassificationFacet();
-                    ret.Location = attribute.Value;
+                    // nothing to do, IsRelevant takes care of mmax
                 }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
+            opt = mmax.Evaluate(elem, logger);
             return ret;
         }
 
@@ -1060,7 +1134,6 @@ namespace Xbim.InformationSpecifications
             {
                 case "uri":
                 case "instructions":
-                case "use":
                     return true;
                 default:
                     return false;

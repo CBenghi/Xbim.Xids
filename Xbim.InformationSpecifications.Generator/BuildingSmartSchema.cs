@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TextCopy;
 
@@ -31,6 +32,34 @@ namespace Xbim.InformationSpecifications.Generator
 
             // first conversion
             string inst = RequestConversion(fullSchema);
+
+
+            // we start by removing all values in min and max occurs, so they are easier to fix
+            var re = new Regex(@"minOccurs=""[-\d]*""");
+            inst = re.Replace(inst, "minOccurs");
+
+            re = new Regex(@"maxOccurs=""[-\d]*""");
+            inst = re.Replace(inst, "maxOccurs");
+
+            // now get the min and max occur for specifications right
+            var SpecOptions = new[] {
+                @"minOccurs=""0""", // optional
+                @"minOccurs=""1""", // required
+                @"minOccurs=""0"" maxOccurs=""0""", // prohibited
+            };
+            inst = FixOccur(inst, "specification", SpecOptions);
+
+            // then the facets
+            SpecOptions = new[] {
+                @"minOccurs=""1""", // required
+                @"minOccurs=""0"" maxOccurs=""0""", // prohibited
+            };
+            inst = FixOccur(inst, "classification", SpecOptions);
+            inst = FixOccur(inst, "property", SpecOptions);
+            inst = FixOccur(inst, "material", SpecOptions);
+            inst = FixOccur(inst, "attribute", SpecOptions);
+            // done min and max occur
+
             string simpleValueSignature = "<ids:simpleValue>string</ids:simpleValue>";
             inst = inst.Replace("<restriction />", simpleValueSignature);
             var sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueString.xml";
@@ -38,20 +67,30 @@ namespace Xbim.InformationSpecifications.Generator
 
             // second conversion
             // place a restriction wherever possible
-            // 
-
             // previously done via schema modification, now a simple replacement
-            //
-            //var simpleValueDef = @"<xs:element name=""simpleValue"" type=""xs:string"" minOccurs=""1"" maxOccurs=""1""/>";
-            //if (!schemaFile.Contains(simpleValueDef))
-            //    Console.WriteLine("ERROR: simple value definition not found");
-            //fullSchema = fullSchema.Replace(simpleValueDef, "");
-            //inst = RequestConversion(fullSchema);
             //
             inst = inst.Replace(simpleValueSignature, @"<xs:restriction base=""xs:string""><xs:enumeration value=""AlternativeOne""/><xs:enumeration value=""AlternativeTwo""/></xs:restriction>");
             sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueRestriction.xml";
             File.WriteAllText(sampleFile, inst);
             Debug.WriteLine(inst);
+        }
+
+        private static string FixOccur(string inst, string typecontraint, string[] replaceOptions)
+        {
+            int i  = 0;
+            Regex r = new Regex(typecontraint + "[^>]* minOccurs maxOccurs");
+            var m = r.Match(inst);
+            while (m.Success)
+            {
+                var value = m.Value.Replace("minOccurs maxOccurs", replaceOptions[i++%replaceOptions.Length]);
+                var prev = inst.Substring(0, m.Index);
+                var post = inst.Substring(m.Index + m.Value.Length);
+                inst = prev + value + post;
+                m = r.Match(inst);
+            }
+
+
+            return inst;
         }
 
         private static string RequestConversion(string fullSchema)
