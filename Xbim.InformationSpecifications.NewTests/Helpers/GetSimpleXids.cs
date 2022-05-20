@@ -13,7 +13,6 @@ namespace Xbim.InformationSpecifications.NewTests.Helpers
             var x = new Xids();
             var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
             newspec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
-
             newspec.Requirement.Facets.Add(
                 new IfcPropertyFacet()
                 {

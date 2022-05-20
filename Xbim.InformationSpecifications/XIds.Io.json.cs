@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
@@ -11,19 +12,19 @@ namespace Xbim.InformationSpecifications
 {
 	public partial class Xids
 	{
-		public void SaveAsJson(string destinationFile)
+		public void SaveAsJson(string destinationFile, ILogger? logger = null)
 		{
 			if (File.Exists(destinationFile))
 				File.Delete(destinationFile);
 			using (var s = File.OpenWrite(destinationFile))
 			{
-				SaveAsJson(s);
+				SaveAsJson(s, logger);
 			}
 		}
 
-		public void SaveAsJson(Stream sw)
+		public void SaveAsJson(Stream sw, ILogger? logger = null)
 		{
-			JsonSerializerOptions options = GetJsonSerializerOptions();
+			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
 #if DEBUG
 			var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
 #else
@@ -33,7 +34,7 @@ namespace Xbim.InformationSpecifications
 
 		}
 
-		private static JsonSerializerOptions GetJsonSerializerOptions()
+		private static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
 		{
 			JsonSerializerOptions options = new JsonSerializerOptions()
 			{
@@ -49,22 +50,20 @@ namespace Xbim.InformationSpecifications
 				(nameof(PartOfFacet), typeof(PartOfFacet)),
 				(nameof(AttributeFacet), typeof(AttributeFacet))
 			);
-			var vcConverter = new ValueConstraintConverter();
-			options.Converters.Add(vcConverter);
 			options.Converters.Add(facetConverter);
-			options.Converters.Add(
-				new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-				);
+			options.Converters.Add(new ValueConstraintConverter());
+			options.Converters.Add(new CardinalityConverter(logger));
+			options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 			return options;
 		}
 
-		public static Xids? LoadFromJson(string sourceFile)
+		public static Xids? LoadFromJson(string sourceFile, ILogger? logger = null)
 		{
 			// todo: 2021: json perhaps not efficient for large files.
 			if (!File.Exists(sourceFile))
 				throw new FileNotFoundException($"File missing: '{sourceFile}'");
 			var allfile = File.ReadAllText(sourceFile);
-			var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions());
+			var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions(logger));
 			return Finalize(t);
 		}
 
@@ -89,9 +88,9 @@ namespace Xbim.InformationSpecifications
 			return unpersisted;
 		}
 
-		public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream)
+		public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
 		{
-			JsonSerializerOptions options = GetJsonSerializerOptions();
+			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
 			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;
 			return Finalize(t);
 		}

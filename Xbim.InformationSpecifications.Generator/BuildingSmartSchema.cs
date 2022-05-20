@@ -17,7 +17,7 @@ namespace Xbim.InformationSpecifications.Generator
         /// </summary>
         public static void GenerateFulltestFiles()
         {
-            var schemaFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\ids_05.xsd";
+            var schemaFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\ids_06.xsd";
             DirectoryInfo d = new DirectoryInfo(".");
             // Debug.WriteLine(d.FullName);
             OpenUrl("https://www.liquid-technologies.com/online-xsd-to-xml-converter");
@@ -57,7 +57,7 @@ namespace Xbim.InformationSpecifications.Generator
         private static string RequestConversion(string fullSchema)
         {
             ClipboardService.SetText(fullSchema);
-            Console.WriteLine("Please convert xsd from clipboard, then press any key.");
+            Console.WriteLine("Please convert xsd currently in clipboard, then copy the converted to clipboard, finally press any key.");
             _ = Console.ReadKey();
             var inst = ClipboardService.GetText();
             var idsSignature = @"<ids:ids xmlns:xml=""http://www.w3.org/XML/1998/namespace"" xmlns:xhtml=""http://www.w3.org/1999/xhtml"" xmlns:ids=""http://standards.buildingsmart.org/IDS"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:hfp=""http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"" xmlns=""http://www.w3.org/2001/XMLSchema"" xsi:schemaLocation=""http://standards.buildingsmart.org/IDS schema.xsd"">";

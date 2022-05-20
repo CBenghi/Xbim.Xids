@@ -6,6 +6,7 @@ using System.Diagnostics;
 using FluentAssertions;
 using System.Linq;
 using Xbim.InformationSpecifications.NewTests.Helpers;
+using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications.NewTests
 {
@@ -51,6 +52,29 @@ namespace Xbim.InformationSpecifications.NewTests
 				var fn2 = Path.ChangeExtension(file.FullName, ".2.json");
 				reloaded.SaveAsJson(fn2);
 			}
+		}
+
+		[Fact]
+		public void CanSerializeCardinality()
+		{
+			var tmpFile = Path.GetTempFileName();
+			Xids x = XidsTestHelpers.GetSimpleXids();
+			var OneSpec = x.AllSpecifications().FirstOrDefault();
+			
+			// testing simple cardinality
+			OneSpec.Cardinality = new SimpleCardinality() { ApplicabilityCardinality = CardinalityEnum.Prohibited };
+			x.SaveAsJson(tmpFile);
+			var reload = Xids.LoadFromJson(tmpFile);
+			var simple = reload.AllSpecifications().FirstOrDefault().Cardinality as SimpleCardinality;
+			simple.ApplicabilityCardinality.Should().Be(CardinalityEnum.Prohibited);
+
+			// testing minmax
+			OneSpec.Cardinality = new MinMaxCardinality() { MinOccurs = 4, MaxOccurs = 5 };
+			x.SaveAsJson(tmpFile);
+			reload = Xids.LoadFromJson(tmpFile);
+			var mmax = reload.AllSpecifications().FirstOrDefault().Cardinality as MinMaxCardinality;
+			mmax.MinOccurs.Should().Be(4);
+			mmax.MaxOccurs.Should().Be(5);
 		}
 
 		[Fact]

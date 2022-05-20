@@ -3,21 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
-	public enum SpecificationUse
-    {
-		Required,
-		Optional,
-		Prohibited
-    }
-
 	public enum IfcSchemaVersion
     {
+        Undefined,
 		IFC2X3,
 		IFC4,
-		IFC4_3,
+		IFC4X3,
 	}
 
     public partial class Specification : ISpecificationMetadata
@@ -29,9 +24,10 @@ namespace Xbim.InformationSpecifications
         {
             Parent = new SpecificationsGroup();
             ids = new Xids();
+            Cardinality = new SimpleCardinality();
         }
 
-        public SpecificationUse Use { get; set; } = SpecificationUse.Optional;
+        public ICardinality Cardinality { get; set; } 
 
         [JsonIgnore]
         SpecificationsGroup Parent { get; set; }
@@ -43,6 +39,7 @@ namespace Xbim.InformationSpecifications
             this.ids = ids;
             Parent = parent;
             Guid = System.Guid.NewGuid().ToString();
+            Cardinality = new SimpleCardinality();
         }
 
         /// <summary>

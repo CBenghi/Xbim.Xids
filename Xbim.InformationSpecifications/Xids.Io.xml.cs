@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
@@ -125,27 +126,33 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
-        private void ExportBuildingSmartIDS(Specification requirement, XmlWriter xmlWriter, ILogger? logger)
+        private void ExportBuildingSmartIDS(Specification spec, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
-            if (requirement.IfcVersion != null)
-                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", requirement.IfcVersion));
+            if (spec.IfcVersion != null)
+                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", spec.IfcVersion));
             else
                 xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
             // if (requirement.Name != null)
-                xmlWriter.WriteAttributeString("name", requirement.Name ?? ""); // required
-            if (requirement.Description != null)
-                xmlWriter.WriteAttributeString("description", requirement.Description);
+                xmlWriter.WriteAttributeString("name", spec.Name ?? ""); // required
+            if (spec.Description != null)
+                xmlWriter.WriteAttributeString("description", spec.Description);
             // instructions
-            if (requirement.Instructions != null)
-                xmlWriter.WriteAttributeString("instructions", requirement.Instructions);
-            xmlWriter.WriteAttributeString("use", requirement.Use.ToString().ToLowerInvariant());
+            if (spec.Instructions != null)
+                xmlWriter.WriteAttributeString("instructions", spec.Instructions);
+
+            if (spec.Cardinality is null)
+                logger?.LogError("Cardinality is required for specification '{specname}' ({guid}).", spec.Name, spec.Guid);
+            else
+                spec.Cardinality.ExportBuildingSmartIDS(xmlWriter, logger);
+
+            // xmlWriter.WriteAttributeString("use", spec.Use.ToString().ToLowerInvariant());
             
             // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
-            if (requirement.Applicability is not null)
+            if (spec.Applicability is not null)
             {
-                foreach (var item in requirement.Applicability.Facets)
+                foreach (var item in spec.Applicability.Facets)
                 {
                     ExportBuildingSmartIDS(item, xmlWriter, false, logger);
                 }
@@ -154,9 +161,9 @@ namespace Xbim.InformationSpecifications
 
             // requirements
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
-            if (requirement.Requirement is not null)
+            if (spec.Requirement is not null)
             {
-                foreach (var item in requirement.Requirement.Facets)
+                foreach (var item in spec.Requirement.Facets)
                 {
                     ExportBuildingSmartIDS(item, xmlWriter, true, logger);
                 }
@@ -528,20 +535,22 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement spec, ILogger? logger)
+        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement specificationElement, ILogger? logger)
         {
-            var req = new Specification(ids, destGroup);
-            destGroup.Specifications.Add(req);
-            foreach (var att in spec.Attributes())
+            var ret = new Specification(ids, destGroup);
+            var cardinality = new MinMaxCardinality();
+            destGroup.Specifications.Add(ret);
+            
+            foreach (var att in specificationElement.Attributes())
             {
                 var attName = att.Name.LocalName.ToLower();
                 switch (attName)
                 {
                     case "name":
-                        req.Name = att.Value;
+                        ret.Name = att.Value;
                         break;
                     case "description":
-                        req.Description = att.Value;
+                        ret.Description = att.Value;
                         break;
                     case "ifcversion":
                         var tmp = att.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -551,32 +560,36 @@ namespace Xbim.InformationSpecifications
                             if (Enum.TryParse(tmpIter, out IfcSchemaVersion tmpIter2))
                                 tmp2.Add(tmpIter2);
                             else
-                                LogUnexpectedValue(att, spec, logger);
+                                LogUnexpectedValue(att, specificationElement, logger);
                         }
                         if (!tmp2.Any())
                             tmp2.Add(IfcSchemaVersion.IFC2X3);
-                        req.IfcVersion = tmp2;
+                        ret.IfcVersion = tmp2;
                         break;
-                    case "use":
-                        if (att.Value.ToLowerInvariant() == "required")
-                            req.Use = SpecificationUse.Required;
-                        else if (att.Value.ToLowerInvariant() == "optional")
-                            req.Use = SpecificationUse.Optional;
-                        else if (att.Value.ToLowerInvariant() == "prohibited")
-                            req.Use = SpecificationUse.Prohibited;
+                    case "minOccurs":
+                        if (int.TryParse(att.Value, out int tmpMin))
+                            cardinality.MinOccurs = tmpMin;
                         else
-                            LogUnexpectedValue(att, spec, logger);
+                            LogUnexpectedValue(att, specificationElement, logger);
+                        break;
+                    case "maxOccurs":
+                        if (att.Value == "unbounded")
+                            cardinality.MaxOccurs = null;
+                        else if (int.TryParse(att.Value, out int tmpMax))
+                            cardinality.MaxOccurs = tmpMax;
+                        else
+                            LogUnexpectedValue(att, specificationElement, logger);
                         break;
                     case "instructions":
-                        req.Instructions = att.Value;
+                        ret.Instructions = att.Value;
                         break;
                     default:
-                        LogUnexpected(att, spec, logger);
+                        LogUnexpected(att, specificationElement, logger);
                         break;
                 }
 
             }
-            foreach (var sub in spec.Elements())
+            foreach (var sub in specificationElement.Elements())
             {
                 var name = sub.Name.LocalName.ToLowerInvariant();
                 switch (name)
@@ -585,24 +598,25 @@ namespace Xbim.InformationSpecifications
                         {
                             var fs = GetFacets(sub, logger);
                             if (fs.Any())
-                                req.SetFilters(fs);
+                                ret.SetFilters(fs);
                             break;
                         }
                     case "requirements":
                         {
                             var fs = GetFacets(sub, logger);
                             if (fs.Any())
-                                req.SetExpectations(fs);
+                                ret.SetExpectations(fs);
                             break;
                         }
                     case "instructions":
-                        req.Instructions = sub.Value;
+                        ret.Instructions = sub.Value;
                         break;
                     default:
-                        LogUnexpected(sub, spec, logger);
+                        LogUnexpected(sub, specificationElement, logger);
                         break;
                 }
             }
+            ret.Cardinality = cardinality.Simplify();
         }
 
         private static IFacet? GetMaterial(XElement elem, ILogger? logger)

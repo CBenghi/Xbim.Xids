@@ -9,7 +9,7 @@ namespace Xbim.InformationSpecifications.Helpers
 {
     /// <summary>
     /// This class manages the json conversion of ValueConstraint and its <see cref="ValueConstraint.AcceptedValues"/>.
-    /// It reuses the converters passes from the main <see cref="JsonSerializerOptions"/> removing itself from the list.
+    /// It reuses the converters passed from the main <see cref="JsonSerializerOptions"/> removing itself from the list.
     /// </summary>
     internal class ValueConstraintConverter : JsonConverter<ValueConstraint>
     {
