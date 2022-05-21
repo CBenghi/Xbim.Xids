@@ -14,30 +14,30 @@ namespace Xbim.InformationSpecifications.NewTests
 	{
 		[Fact]
 		public void CanWriteSimpleFormat()
-        {
-            var d = new DirectoryInfo(".");
-            Debug.WriteLine(d.FullName);
+		{
+			var d = new DirectoryInfo(".");
+			Debug.WriteLine(d.FullName);
 
-            Xids x = XidsTestHelpers.GetSimpleXids();
-            var filename = @"temp.json";
-            x.SaveAsJson(filename);
-            Assert.True(File.Exists(filename));
+			Xids x = XidsTestHelpers.GetSimpleXids();
+			var filename = @"temp.json";
+			x.SaveAsJson(filename);
+			Assert.True(File.Exists(filename));
 
-            var readBack = Xids.LoadFromJson(filename);
-            Assert.NotNull(readBack);
-            x.SaveAsJson(@"temp2.json");
+			var readBack = Xids.LoadFromJson(filename);
+			Assert.NotNull(readBack);
+			x.SaveAsJson(@"temp2.json");
 
-            Xids x2 = null;
-            using (var s = File.OpenRead(@"temp2.json"))
-            {
-                x2 = Xids.LoadFromJsonAsync(s).GetAwaiter().GetResult();
-            }
-            Assert.NotNull(x2);
-        }
+			Xids x2 = null;
+			using (var s = File.OpenRead(@"temp2.json"))
+			{
+				x2 = Xids.LoadFromJsonAsync(s).GetAwaiter().GetResult();
+			}
+			Assert.NotNull(x2);
+		}
 
-        
 
-        [Fact]
+
+		[Fact]
 		public void CanSerializeRicherFormat()
 		{
 			DirectoryInfo d = new DirectoryInfo(@"Files");
@@ -60,7 +60,7 @@ namespace Xbim.InformationSpecifications.NewTests
 			var tmpFile = Path.GetTempFileName();
 			Xids x = XidsTestHelpers.GetSimpleXids();
 			var OneSpec = x.AllSpecifications().FirstOrDefault();
-			
+
 			// testing simple cardinality
 			OneSpec.Cardinality = new SimpleCardinality() { ApplicabilityCardinality = CardinalityEnum.Prohibited };
 			x.SaveAsJson(tmpFile);
@@ -81,7 +81,7 @@ namespace Xbim.InformationSpecifications.NewTests
 		public void CanSerializeExtraFacets()
 		{
 			var x = new Xids();
-			
+
 			// relation: furniture contained in spaces
 			//
 			var spec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
@@ -110,9 +110,9 @@ namespace Xbim.InformationSpecifications.NewTests
 			var h1 = FileHashing.GetFileHash(fname);
 			var h2 = FileHashing.GetFileHash(fname2);
 			if (h1 != h2)
-            {
+			{
 				Debug.Write(@"""C:\Program Files (x86)\WinMerge\WinMergeU.exe"" ");
-				Debug.Write($"\"{new FileInfo(fname).FullName}\" "); 
+				Debug.Write($"\"{new FileInfo(fname).FullName}\" ");
 				Debug.Write($"\"{new FileInfo(fname2).FullName}\" ");
 				Debug.WriteLine("");
 
@@ -128,16 +128,35 @@ namespace Xbim.InformationSpecifications.NewTests
 		[InlineData("Files/oldformat.json")]
 		[InlineData("Files/newformat.json")]
 		public void CanReadOldFile(string fileName)
-        {
+		{
 			var t = Xids.LoadFromJson(fileName);
-        }
+		}
 
 		[Fact]
 		public void CanWriteSimpleFile()
-        {
+		{
 			var tmpFile = Path.GetTempFileName();
 			Xids x = XidsTestHelpers.GetSimpleXids();
 			x.SaveAsJson(tmpFile);
+		}
+
+		[Fact]
+		public void CanSerializeFacetGroups()
+		{
+			var x = new Xids();
+			var spaces = new FacetGroup(x.FacetRepository);
+			spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IfcSpace" });
+			spaces.Facets.Add(new MaterialFacet() { Value = "Concrete" });
+
+			var tmpFile = Path.GetTempFileName();
+			spaces.SaveAsJson(tmpFile);
+			var reloaded = FacetGroupExtensions.LoadFromJson(tmpFile);
+
+			reloaded.Facets.Should().HaveCount(2);
+			reloaded.Facets.OfType<IfcTypeFacet>().FirstOrDefault().IfcType = "IfcSpace";
+			reloaded.Facets.OfType<MaterialFacet>().FirstOrDefault().Value = "Concrete";
+
+			File.Delete(tmpFile);
 		}
 	}
 }

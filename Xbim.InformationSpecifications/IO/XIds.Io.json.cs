@@ -34,7 +34,7 @@ namespace Xbim.InformationSpecifications
 
 		}
 
-		private static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
+		internal static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
 		{
 			JsonSerializerOptions options = new JsonSerializerOptions()
 			{
@@ -61,7 +61,10 @@ namespace Xbim.InformationSpecifications
 		{
 			// todo: 2021: json perhaps not efficient for large files.
 			if (!File.Exists(sourceFile))
-				throw new FileNotFoundException($"File missing: '{sourceFile}'");
+			{
+				logger?.LogError("Json file not found: '{sourceFile}'", sourceFile);
+				return null;
+			}
 			var allfile = File.ReadAllText(sourceFile);
 			var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions(logger));
 			return Finalize(t);
