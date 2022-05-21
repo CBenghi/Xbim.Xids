@@ -8,7 +8,7 @@ namespace Xbim.InformationSpecifications
     /// Constrain model parts on the ground of how classifications are applied to them
     /// Either directly or via a type relation.
     /// </summary>
-    public partial class IfcClassificationFacet : LocatedFacet, IFacet, IEquatable<IfcClassificationFacet>
+    public partial class IfcClassificationFacet : FacetBase, IFacet, IEquatable<IfcClassificationFacet>
 	{
 		/// <summary>
 		/// A string identifying the relevant classification system

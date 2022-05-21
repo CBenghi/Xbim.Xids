@@ -68,7 +68,6 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 		{
 			yield return new IfcPropertyFacet() { };
 			yield return new IfcPropertyFacet() { Instructions = "1" };
-			yield return new IfcPropertyFacet() { Location = "2" };
 			yield return new IfcPropertyFacet() { Measure = "3" };
 			yield return new IfcPropertyFacet() { PropertyName = "4" };
 			yield return new IfcPropertyFacet() { PropertySetName = "5" };
@@ -78,7 +77,6 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 			yield return new IfcPropertyFacet()
 			{
 				Instructions = "Some",
-				Location = "SomeLoc",
 				Measure = "meas",
 				PropertyName = "name",
 				PropertySetName = "psetname",

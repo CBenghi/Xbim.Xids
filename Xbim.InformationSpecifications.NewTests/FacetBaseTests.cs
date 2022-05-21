@@ -16,11 +16,6 @@ namespace Xbim.InformationSpecifications.NewTests
 
 			f1.Should().Be(f2);
 
-			f1.Location = Location.instance.ToString();
-			f1.Should().NotBe(f2);
-			f2.Location = Location.instance.ToString();
-			f1.Should().Be(f2);
-
 			f1.Use = Use.required.ToString();
 			f1.Should().NotBe(f2);
 			f2.Use= Use.required.ToString();

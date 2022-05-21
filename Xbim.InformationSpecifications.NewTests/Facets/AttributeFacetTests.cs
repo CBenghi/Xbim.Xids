@@ -61,9 +61,8 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 
 		public static IEnumerable<AttributeFacet> GetDifferentAttributes()
 		{
+			// this enumeration is all facets that are not consiered equal
 			yield return new AttributeFacet();
-			yield return new AttributeFacet() { Location = "2", };
-			yield return new AttributeFacet() { Location = "1", };
 			yield return new AttributeFacet() { AttributeName = "One" };
 			yield return new AttributeFacet() { AttributeName = "Two" };
 			yield return new AttributeFacet() { AttributeValue = "One" };
@@ -75,7 +74,6 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 			{
 				AttributeName = "One",
 				AttributeValue = "Two",
-				Location = "None",
 				Instructions = "Some instructions",
 				Uri = "http://www.google.com",
 				Use = "required"

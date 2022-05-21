@@ -15,13 +15,13 @@ namespace Xbim.InformationSpecifications.Tests
 	{
 		private Dictionary<string, string> guaranteedStructures = new Dictionary<string, string>()
 		{
-			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Location,String Uri,String Use,String Instructions" },
+			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Use,String Instructions" },
 			{ "FacetBase","String Uri,String Use,String Instructions" },
-			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Location,String Uri,String Use,String Instructions" },
-			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Location,String Uri,String Use,String Instructions" },
+			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Uri,String Use,String Instructions" },
+			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Uri,String Use,String Instructions" },
 			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes,String Uri,String Use,String Instructions" },
-			{ "MaterialFacet","ValueConstraint Value,String Location,String Uri,String Use,String Instructions" },
-			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Location,String Uri,String Use,String Instructions" },
+			{ "MaterialFacet","ValueConstraint Value,String Uri,String Use,String Instructions" },
+			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Uri,String Use,String Instructions" },
 			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation,String Uri,String Use,String Instructions" },
 			{ "ExactConstraint","String Value" },
 			{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
@@ -29,7 +29,6 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
 			{ "PartOfFacet","String Entity,String Uri,String Use,String Instructions" },
-			{ "LocatedFacet","String Location,String Uri,String Use,String Instructions" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 
@@ -105,7 +104,6 @@ namespace Xbim.InformationSpecifications.Tests
 			TestAddRemove(new IfcClassificationFacet()
 			{
 				ClassificationSystem = new ValueConstraint("2"),
-				Location = "2",
 				Identification = new ValueConstraint(12)
 			});
 
@@ -113,7 +111,6 @@ namespace Xbim.InformationSpecifications.Tests
 			TestAddRemove(new IfcPropertyFacet());
 			TestAddRemove(new IfcPropertyFacet()
 			{
-				Location = "1",
 				PropertyName = "2",
 				PropertySetName = "3",
 			});
@@ -127,12 +124,7 @@ namespace Xbim.InformationSpecifications.Tests
 			});
 
 			TestAddRemove(new MaterialFacet());
-			TestAddRemove(new MaterialFacet()
-			{
-				Location = "1",
-			});
-
-
+			
 			TestAddRemove(new IfcRelationFacet());
 			TestAddRemove(new IfcRelationFacet()
 			{

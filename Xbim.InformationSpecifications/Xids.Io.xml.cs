@@ -186,7 +186,7 @@ namespace Xbim.InformationSpecifications
                     break;
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
-                    WriteLocatedFaceteAttributes(cf, xmlWriter, forRequirement); 
+                    WriteFaceteBaseAttributes(cf, xmlWriter, forRequirement); 
                     WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
                     WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
@@ -194,7 +194,7 @@ namespace Xbim.InformationSpecifications
                     break;                    
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
-                    WriteLocatedFaceteAttributes(pf, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(pf, xmlWriter, forRequirement);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
@@ -205,14 +205,14 @@ namespace Xbim.InformationSpecifications
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
-                    WriteLocatedFaceteAttributes(mf, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(mf, xmlWriter, forRequirement);
                     WriteConstraintValue(mf.Value, xmlWriter, "value", logger);
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
-                    WriteLocatedFaceteAttributes(af, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(af, xmlWriter, forRequirement);
                     WriteConstraintValue(af.AttributeName, xmlWriter, "name", logger);
                     WriteConstraintValue(af.AttributeValue, xmlWriter, "value", logger);
                     xmlWriter.WriteEndElement();
@@ -362,12 +362,6 @@ namespace Xbim.InformationSpecifications
             }
 
             
-        }
-
-        private void WriteLocatedFaceteAttributes(LocatedFacet cf, XmlWriter xmlWriter, bool forRequirement)
-        {
-            xmlWriter.WriteAttributeString("location", cf.Location); // required
-            WriteFaceteBaseAttributes(cf, xmlWriter, forRequirement);
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
@@ -654,11 +648,6 @@ namespace Xbim.InformationSpecifications
                 {
                     // nothing to do, IsRelevant takes care of mmax
                 }
-                else if (attribute.Name.LocalName == "location")
-                {
-                    ret ??= new MaterialFacet();
-                    ret.Location = attribute.Value;
-                }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
@@ -710,11 +699,6 @@ namespace Xbim.InformationSpecifications
                 {
                     ret ??= new IfcPropertyFacet();
                     GetBaseAttribute(attribute, ret);
-                }
-                else if (attribute.Name.LocalName == "location")
-                {
-                    ret ??= new IfcPropertyFacet();
-                    ret.Location = attribute.Value;
                 }
                 else if (attribute.Name.LocalName == "measure")
                 {
@@ -1124,14 +1108,6 @@ namespace Xbim.InformationSpecifications
                 default:
                     return false;
             }
-        }
-
-        private static void GetLocatedFacetAttribute(XAttribute attribute, LocatedFacet ret)
-        {
-            if (attribute.Name.LocalName == "location")
-                ret.Location = attribute.Value;
-            else
-                GetBaseAttribute(attribute, ret);
         }
 
         private static void GetBaseAttribute(XAttribute attribute, FacetBase ret)

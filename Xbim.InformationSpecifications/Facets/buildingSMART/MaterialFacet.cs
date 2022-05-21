@@ -4,7 +4,7 @@ namespace Xbim.InformationSpecifications
 	/// <summary>
 	/// Constrain model parts on the ground of a material identified through a relation.
 	/// </summary>
-	public partial class MaterialFacet : LocatedFacet,  IFacet, IEquatable<MaterialFacet>
+	public partial class MaterialFacet : FacetBase,  IFacet, IEquatable<MaterialFacet>
 	{
 		/// <summary>
 		/// Constraint on the material's name

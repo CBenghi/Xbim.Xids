@@ -61,6 +61,7 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 
 		public static IEnumerable<DocumentFacet> GetDifferentAttributes()
 		{
+			// this enumeration is all facets that are not consiered equal
 			yield return new DocumentFacet();
 			yield return new DocumentFacet() { DocId = "1", };
 			yield return new DocumentFacet() { DocIntendedUse = "2", };
@@ -68,12 +69,10 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 			yield return new DocumentFacet() { DocName = "4", };
 			yield return new DocumentFacet() { DocPurpose = "5", };
 			yield return new DocumentFacet() { Instructions = "6", };
-			yield return new DocumentFacet() { Location = "7", };
 			yield return new DocumentFacet() { Uri = "8", };
 			yield return new DocumentFacet() { Use = "9", };
 			yield return new DocumentFacet()
 			{
-				Location = "9",
 				Use = "10",
 				Uri = "11",
 

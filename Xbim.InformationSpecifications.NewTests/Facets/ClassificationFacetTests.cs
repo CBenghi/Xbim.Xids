@@ -66,8 +66,8 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 
 		public static IEnumerable<IfcClassificationFacet> GetDifferentAttributes()
 		{
+			// this enumeration is all facets that are not consiered equal
 			yield return new IfcClassificationFacet() { };
-			yield return new IfcClassificationFacet() { Location = "2", };
 			yield return new IfcClassificationFacet() { ClassificationSystem = "2", };
 			yield return new IfcClassificationFacet() { Identification = "2", };
 			yield return new IfcClassificationFacet() { IncludeSubClasses = true, };
@@ -80,7 +80,6 @@ namespace Xbim.InformationSpecifications.NewTests.Facets
 				Identification = "href",
 				IncludeSubClasses = true,
 				Instructions = "some",
-				Location = "instance",
 				Uri = "some",
 				Use = "use",
 			};

@@ -9,7 +9,7 @@ namespace Xbim.InformationSpecifications
 	/// Constrain model parts on the ground of class attributes.
 	/// Either directly or via a type relation (see <see cref="Location"/>).
 	/// </summary>
-	public partial class AttributeFacet : LocatedFacet, IEquatable<AttributeFacet>, IFacet
+	public partial class AttributeFacet : FacetBase, IEquatable<AttributeFacet>, IFacet
 	{
 		/// <summary>
 		/// Constraint that is applied to the value of the attribute (required).
@@ -32,12 +32,12 @@ namespace Xbim.InformationSpecifications
 				.Equals((other.AttributeName, other.AttributeValue));
 			if (!thisEqual)
 				return false;
-			return base.Equals(other as LocatedFacet);
+			return base.Equals(other);
 		}
 
 		public override bool Equals(object? obj)
 		{
-			return this.Equals(obj as AttributeFacet);
+			return Equals(obj as AttributeFacet);
 		}
 
 		public override string ToString()
@@ -49,10 +49,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			if (string.IsNullOrEmpty(Location))
-				return $"attribute {AttributeName} = {AttributeValue}";
-			else
-				return $"attribute {AttributeName} @ {Location} = {AttributeValue}";
+			return $"attribute {AttributeName} = {AttributeValue}";
 		}
 
 		[MemberNotNullWhen(true, nameof(AttributeName))]

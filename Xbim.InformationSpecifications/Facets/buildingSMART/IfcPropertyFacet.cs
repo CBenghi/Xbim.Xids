@@ -8,7 +8,7 @@ namespace Xbim.InformationSpecifications
     /// Constrain model parts on the ground of properties (of type IfcSingleProperty) associated via PropertySets
     /// Either directly or via a type relation.
     /// </summary>
-	public partial class IfcPropertyFacet : LocatedFacet, IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : FacetBase, IFacet, IEquatable<IfcPropertyFacet>
     {
 
         /// <summary>
