@@ -576,7 +576,7 @@ namespace Xbim.InformationSpecifications
                         break;
                     case "maxoccurs":
                         if (att.Value == "unbounded")
-                            cardinality.MaxOccurs = null;
+                            cardinality.MaxOccurs = null; // null is considered to mean unbounded
                         else if (int.TryParse(att.Value, out int tmpMax))
                             cardinality.MaxOccurs = tmpMax;
                         else
@@ -614,9 +614,6 @@ namespace Xbim.InformationSpecifications
                             }
                             break;
                         }
-                    case "instructions":
-                        ret.Instructions = sub.Value;
-                        break;
                     default:
                         LogUnexpected(sub, specificationElement, logger);
                         break;
@@ -1115,17 +1112,6 @@ namespace Xbim.InformationSpecifications
             //        return false;
             //}
             return false;
-        }
-
-        private static bool IsLocatedFacetAttribute(XAttribute attribute)
-        {
-            switch (attribute.Name.LocalName)
-            {
-                case "location":
-                    return true;
-                default:
-                    return IsBaseAttribute(attribute);
-            }
         }
 
         private static bool IsBaseAttribute(XAttribute attribute)
