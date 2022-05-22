@@ -20,6 +20,11 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public int? MaxOccurs { get; set; } = null;
 
+        /// <summary>
+        /// No requirement needed if maxoccurs is set to 0.
+        /// </summary>
+        public bool ExpectsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
+
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteAttributeString("minOccurs", MinOccurs.ToString());

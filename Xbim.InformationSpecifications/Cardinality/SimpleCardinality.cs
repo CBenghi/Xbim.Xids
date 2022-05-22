@@ -30,6 +30,11 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public CardinalityEnum ApplicabilityCardinality { get; set; } = CardinalityEnum.Optional;
 
+        /// <summary>
+        /// If a facetgroup is prohibited, it does not make sens to have requirements assoiated with it.
+        /// </summary>
+        public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
+
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             switch (ApplicabilityCardinality)
