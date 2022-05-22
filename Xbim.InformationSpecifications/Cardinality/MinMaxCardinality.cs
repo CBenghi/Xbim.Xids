@@ -25,6 +25,23 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public bool ExpectsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
 
+        public string Description
+        {
+            get
+            {
+                var smp = Simplify();
+                if (smp is SimpleCardinality smp2)
+                {
+                    return smp2.Description;
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.Append(MinOccurs.ToString());
+                if (MaxOccurs.HasValue)
+                    sb.Append($"..{MaxOccurs}");
+                return sb.ToString();
+            }
+        }
+
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteAttributeString("minOccurs", MinOccurs.ToString());

@@ -19,5 +19,10 @@ namespace Xbim.InformationSpecifications
         /// Determines if a requirement is expected for the specication, given the values in the ICardinality instance.
         /// </summary>
         bool ExpectsRequirements { get; }
+
+        /// <summary>
+        /// A string describing the nature of the cardinality.
+        /// </summary>
+        string Description { get; } 
     }
 }

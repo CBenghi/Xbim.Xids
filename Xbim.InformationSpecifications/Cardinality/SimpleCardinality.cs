@@ -35,6 +35,8 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
 
+        public string Description => ApplicabilityCardinality.ToString();
+
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             switch (ApplicabilityCardinality)
