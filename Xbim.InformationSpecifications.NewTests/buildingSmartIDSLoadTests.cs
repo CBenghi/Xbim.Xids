@@ -23,13 +23,14 @@ namespace Xbim.InformationSpecifications.Tests
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]
-        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2, 0)]
-        [InlineData("bsFiles/IDS_Aedes_example.xml", 1, 7, 0)]
-        [InlineData("bsFiles/IDS_ArcDox.xml", 5, 7, 0)]
-        [InlineData("bsFiles/IDS_random_example.xml", 2, 7, 1)]
-        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9, 0)]
+        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 1, 0)]
+        [InlineData("bsFiles/IDS_Aedes_example.xml", 1, 0, 0)]
+        [InlineData("bsFiles/IDS_ArcDox.xml", 5, 16, 0)]
+        [InlineData("bsFiles/IDS_random_example.xml", 2, 4, 1)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 4, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 14, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 8, 0)]
+        [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 25, 3)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
@@ -38,7 +39,6 @@ namespace Xbim.InformationSpecifications.Tests
             Debug.WriteLine(d.FullName);
             ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
             CheckSchema(fileName, logg);
-            
 
             var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
 
@@ -90,9 +90,9 @@ namespace Xbim.InformationSpecifications.Tests
             Assert.NotNull(loaded);
             if (specificationsCount != -1)
                 Assert.Equal(specificationsCount, loaded.AllSpecifications().Count());
-            if (false && facetGroupsCount != -1) // todo: restore
+            if (facetGroupsCount != -1) 
             {
-                var grps = loaded.FacetGroups(FacetGroup.FacetUse.All).ToArray();
+                var grps = loaded.FacetGroups(FacetGroup.FacetUse.All);
                 var tally = 0;
                 foreach (var item in grps)
                 {

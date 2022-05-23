@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -61,7 +62,7 @@ namespace Xbim.InformationSpecifications.Tests
         private static CheckOptions GetValidator(string tmpFile)
         {
             CheckOptions c = new CheckOptions();
-            c.CheckSchema = new[] { "bsFiles\\ids_05.xsd" };
+            c.CheckSchema = new[] { "bsFiles\\ids_06.xsd" };
             c.InputSource = tmpFile;
             return c;
         }
@@ -88,7 +89,8 @@ namespace Xbim.InformationSpecifications.Tests
             var type = x.ExportBuildingSmartIDS(tmpFile);
             type.Should().Be(ExportedFormat.ZIP, "multiple groups are defined in the file");
 
-            // todo: check that the file is a valid zip.
+            using var archive = ZipFile.OpenRead(tmpFile);
+            archive.Entries.Count.Should().Be(2);               
         }
 
         internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()

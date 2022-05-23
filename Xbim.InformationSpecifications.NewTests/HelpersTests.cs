@@ -4,6 +4,7 @@ using System.Linq;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using System.Text;
+using System.IO;
 
 namespace Xbim.InformationSpecifications.Tests
 {
@@ -87,6 +88,22 @@ namespace Xbim.InformationSpecifications.Tests
 
 			var all = x.FacetGroups(FacetGroup.FacetUse.All);
 			all.Count().Should().Be(2);
+		}
+
+		[Fact]
+		public void CanEnumerateFacetGroupsByUse()
+        {
+			var fSpec = @"bsFiles\IDS_wooden-windows.xml";
+			// open the specs
+			var t = Xids.ImportBuildingSmartIDS(fSpec);
+			t.Should().NotBeNull("file should be able to load");
+
+			var tmpFile = Path.GetTempFileName();
+			t.SaveAsJson(tmpFile);
+
+			// can select all elements
+			var all = t.FacetGroups(FacetGroup.FacetUse.All);
+			all.Count().Should().BeGreaterThan(0);
 		}
 	}
 }

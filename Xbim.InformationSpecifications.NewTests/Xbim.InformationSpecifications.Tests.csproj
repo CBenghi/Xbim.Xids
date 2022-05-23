@@ -71,6 +71,9 @@
     <None Update="bsFiles\IDS_ucms_prefab_pipes_IFC4.3.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="bsFiles\IDS_wooden-windows.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Files\newFormat.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

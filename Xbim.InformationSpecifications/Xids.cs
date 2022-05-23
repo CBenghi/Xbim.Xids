@@ -163,7 +163,7 @@ namespace Xbim.InformationSpecifications
 
 		public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
 		{
-			foreach (var fg in FacetRepository.Collection)
+			foreach (var fg in FacetRepository.Collection.ToArray())
 			{
 				if (fg.IsUsed(this, use))
 					yield return fg;

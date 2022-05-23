@@ -18,7 +18,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
-		<AssemblyVersion>0.2.83</AssemblyVersion>
+		<AssemblyVersion>0.2.84</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<RepositoryUrl>https://github.com/CBenghi/Xbim.Xids</RepositoryUrl>

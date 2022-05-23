@@ -52,18 +52,20 @@ namespace Xbim.InformationSpecifications
                 return ExportedFormat.XML;
             }
 
-            var zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true);
-            int i = 0;
-            foreach (var specGroup in SpecificationsGroups)
+            using (var zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true))
             {
-                var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
-                    ? $"{++i} - {specGroup.Name}.xml"
-                    : $"{++i}.xml";
-                var file = zipArchive.CreateEntry(name);
-                using var str = file.Open();
-                using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
-                ExportBuildingSmartIDS(specGroup, writer, logger);
-                
+                int i = 0;
+                foreach (var specGroup in SpecificationsGroups)
+                {
+                    var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                        ? $"{++i} - {specGroup.Name}.xml"
+                        : $"{++i}.xml";
+                    var file = zipArchive.CreateEntry(name);
+                    using var str = file.Open();
+                    using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
+                    ExportBuildingSmartIDS(specGroup, writer, logger);
+
+                }
             }
             return ExportedFormat.ZIP;
         }

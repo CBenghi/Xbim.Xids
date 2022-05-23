@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,13 @@ namespace Xbim.InformationSpecifications.Helpers
     internal class ValueConstraintConverter : JsonConverter<ValueConstraint>
     {
         private static JsonSerializerOptions? _options;
+        private ILogger? logger;
+
+        public ValueConstraintConverter(ILogger? logger)
+        {
+            this.logger = logger;
+        }
+
         private static JsonSerializerOptions GetOptions(JsonSerializerOptions? options)
         {
             if (_options == null)
@@ -53,7 +61,6 @@ namespace Xbim.InformationSpecifications.Helpers
             }
             else
                 read = JsonSerializer.Deserialize<ValueConstraint>(ref reader, GetOptions(options));
-            // todo: implement logger for conversion
             return read;
         }
 

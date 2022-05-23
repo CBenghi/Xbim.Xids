@@ -51,7 +51,7 @@ namespace Xbim.InformationSpecifications
 				(nameof(AttributeFacet), typeof(AttributeFacet))
 			);
 			options.Converters.Add(facetConverter);
-			options.Converters.Add(new ValueConstraintConverter());
+			options.Converters.Add(new ValueConstraintConverter(logger));
 			options.Converters.Add(new CardinalityConverter(logger));
 			options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 			return options;
