@@ -102,7 +102,7 @@ namespace Xbim.InformationSpecifications.Tests
 			t.SaveAsJson(tmpFile);
 
 			// can select all elements
-			var all = t.FacetGroups(FacetGroup.FacetUse.All);
+			var all = t.FacetGroups(FacetGroup.FacetUse.Applicability);
 			all.Count().Should().BeGreaterThan(0);
 		}
 	}

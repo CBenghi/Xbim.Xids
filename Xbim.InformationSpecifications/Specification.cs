@@ -97,8 +97,14 @@ namespace Xbim.InformationSpecifications
         [JsonIgnore]
         [AllowNull] // allows setting null, but always return not null
         public FacetGroup Applicability {
-            get => applicability ?? new FacetGroup(ids.FacetRepository);
+            get
+            {
+                if (applicability == null)
+                    applicability = new FacetGroup(ids.FacetRepository);
+                return applicability;
+            }
             set => applicability = value;
+
         }
 
         private string? applicabilityId;

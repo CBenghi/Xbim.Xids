@@ -23,14 +23,14 @@ namespace Xbim.InformationSpecifications.Tests
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]
-        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 1, 0)]
-        [InlineData("bsFiles/IDS_Aedes_example.xml", 1, 0, 0)]
-        [InlineData("bsFiles/IDS_ArcDox.xml", 5, 16, 0)]
-        [InlineData("bsFiles/IDS_random_example.xml", 2, 4, 1)]
-        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 4, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 14, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 8, 0)]
-        [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 25, 3)]
+        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2, 0)]
+        [InlineData("bsFiles/IDS_Aedes_example.xml", 1, 2, 0)]
+        [InlineData("bsFiles/IDS_ArcDox.xml", 5, 21, 0)]
+        [InlineData("bsFiles/IDS_random_example.xml", 2, 7, 1)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9, 0)]
+        [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 31, 3)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
