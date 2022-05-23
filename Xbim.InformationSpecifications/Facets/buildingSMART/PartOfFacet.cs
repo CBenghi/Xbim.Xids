@@ -22,7 +22,13 @@ namespace Xbim.InformationSpecifications
             Undefined,
             IfcElementAssembly,
             IfcGroup,
-            IfcSystem
+            IfcSystem,
+            IfcBuildingSystem,
+            IfcBuiltSystem,
+            IfcDistributionSystem,
+            IfcZone,
+            IfcAsset,
+            IfcInventory
         }
 
         /// <summary>
