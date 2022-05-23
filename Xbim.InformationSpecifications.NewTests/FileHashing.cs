@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Xbim.InformationSpecifications.NewTests
+namespace Xbim.InformationSpecifications.Tests
 {
 	class FileHashing
 	{

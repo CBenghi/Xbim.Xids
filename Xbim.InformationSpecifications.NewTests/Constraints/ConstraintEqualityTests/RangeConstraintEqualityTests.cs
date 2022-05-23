@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Tests;
 using Xunit;
 
-namespace Xbim.InformationSpecifications.NewTests.Facets
+namespace Xbim.InformationSpecifications.Tests.Facets
 {
     public class RangeConstraintEqualityTests
     {

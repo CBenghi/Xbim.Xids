@@ -11,7 +11,7 @@ using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Xbim.InformationSpecifications.NewTests
+namespace Xbim.InformationSpecifications.Tests
 {
     public class buildingSmartIDSLoadTests
     {

@@ -15,7 +15,7 @@ using Xunit;
 using Xunit.Abstractions;
 using static Xbim.InformationSpecifications.Xids;
 
-namespace Xbim.InformationSpecifications.NewTests
+namespace Xbim.InformationSpecifications.Tests
 {
     public class buildingSmartCompatibilityTests
     {

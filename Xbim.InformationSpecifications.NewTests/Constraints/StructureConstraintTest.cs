@@ -7,7 +7,7 @@ using System.Text;
 using Xunit;
 
 
-namespace Xbim.InformationSpecifications.NewTests
+namespace Xbim.InformationSpecifications.Tests
 {
 	public class StructureConstraintTests
 	{

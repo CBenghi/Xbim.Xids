@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecificati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.Generator", "Xbim.InformationSpecifications.Generator\Xbim.InformationSpecifications.Generator.csproj", "{04B5FC8A-2815-4335-BC15-7319AA1C5BF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.NewTests", "Xbim.InformationSpecifications.NewTests\Xbim.InformationSpecifications.NewTests.csproj", "{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.Tests", "Xbim.InformationSpecifications.NewTests\Xbim.InformationSpecifications.Tests.csproj", "{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.UI", "Xbim.InformationSpecifications.UI\Xbim.InformationSpecifications.UI.csproj", "{9E8B5E07-66A5-4223-9DED-38E830E895DF}"
 EndProject

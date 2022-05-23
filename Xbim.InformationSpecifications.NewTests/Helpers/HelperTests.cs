@@ -1,14 +1,10 @@
 ﻿using FluentAssertions;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Helpers;
 using Xunit;
 
-namespace Xbim.InformationSpecifications.NewTests.Helpers
+namespace Xbim.InformationSpecifications.Tests.Helpers
 {
     public class GeneratedCodeTests
     {

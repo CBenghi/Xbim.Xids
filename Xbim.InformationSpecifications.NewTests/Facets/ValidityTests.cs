@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Xbim.InformationSpecifications.NewTests.Facets
+namespace Xbim.InformationSpecifications.Tests.Facets
 {
     public class ValidityTests
     {

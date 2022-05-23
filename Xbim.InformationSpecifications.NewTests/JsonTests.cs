@@ -5,10 +5,10 @@ using System.IO;
 using System.Diagnostics;
 using FluentAssertions;
 using System.Linq;
-using Xbim.InformationSpecifications.NewTests.Helpers;
+using Xbim.InformationSpecifications.Tests.Helpers;
 using Xbim.InformationSpecifications.Cardinality;
 
-namespace Xbim.InformationSpecifications.NewTests
+namespace Xbim.InformationSpecifications.Tests
 {
 	public class JsonTests
 	{
