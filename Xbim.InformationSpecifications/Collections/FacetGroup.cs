@@ -106,6 +106,7 @@ namespace Xbim.InformationSpecifications
 			return directSpecificationUse + relatedUse;
 		}
 
+		/// <returns>False if any of the facets is invalid or the list is empty.</returns>
 		public bool IsValid()
 		{
 			if (!Facets.Any())
@@ -118,6 +119,11 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
+		/// <summary>
+		/// Ensure that a <see cref="FacetGroup"/>
+		/// </summary>
+		/// <param name="facetGroup">The grout to be checed, if null, returns false.</param>
+		/// <returns>true if the <see cref="facetGroup"/> is not null and all its facets are valid.</returns>
 		public static bool IsValid([NotNullWhen(true)] FacetGroup? facetGroup)
         {
 			if (facetGroup is null)

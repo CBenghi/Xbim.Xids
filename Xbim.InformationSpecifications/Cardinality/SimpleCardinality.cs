@@ -35,7 +35,14 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
 
+        /// <summary>
+        /// A string describing the nature of the cardinality.
+        /// </summary>
         public string Description => ApplicabilityCardinality.ToString();
+        /// <summary>
+        /// True if the cardinality requires the entire model for evaluation.
+        /// </summary>
+        public bool IsModelConstraint => ApplicabilityCardinality != CardinalityEnum.Optional;
 
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {

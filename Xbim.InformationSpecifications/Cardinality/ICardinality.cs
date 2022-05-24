@@ -23,6 +23,11 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// A string describing the nature of the cardinality.
         /// </summary>
-        string Description { get; } 
+        string Description { get; }
+
+        /// <summary>
+        /// True if the cardinality requires the entire model for evaluation.
+        /// </summary>
+        bool IsModelConstraint { get; }
     }
 }

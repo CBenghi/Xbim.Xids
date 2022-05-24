@@ -25,6 +25,9 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public bool ExpectsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
 
+        /// <summary>
+        /// A string describing the nature of the cardinality.
+        /// </summary>
         public string Description
         {
             get
@@ -40,6 +43,21 @@ namespace Xbim.InformationSpecifications.Cardinality
                     sb.Append($"..{MaxOccurs}");
                 return sb.ToString();
             }
+        }
+
+        /// <summary>
+        /// True if the cardinality requires the entire model for evaluation.
+        /// </summary>
+        public bool IsModelConstraint
+        {
+            get {
+                if (MinOccurs != 0)
+                    return true;
+                if (MaxOccurs.HasValue)
+                    return true;
+                return false;
+            }
+
         }
 
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
