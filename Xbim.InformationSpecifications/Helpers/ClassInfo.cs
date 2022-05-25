@@ -96,7 +96,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// <summary>
 		/// List of all subclasses.
 		/// </summary>
-		public List<ClassInfo> SubClasses = new List<ClassInfo>();
+		public List<ClassInfo> SubClasses = new();
 		
 		
 		/// <summary>

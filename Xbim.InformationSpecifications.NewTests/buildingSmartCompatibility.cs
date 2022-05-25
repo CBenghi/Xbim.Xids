@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Tests
             //
             var c = GetValidator(tmpFile);
 
-            StringWriter s = new StringWriter();
+            StringWriter s = new();
             var res = IdsLib.CheckOptions.Run(c, s);
             if (res != IdsLib.CheckOptions.Status.Ok)
             {
@@ -61,7 +61,7 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static CheckOptions GetValidator(string tmpFile)
         {
-            CheckOptions c = new CheckOptions();
+            CheckOptions c = new();
             c.CheckSchema = new[] { "bsFiles\\ids_06.xsd" };
             c.InputSource = tmpFile;
             return c;
@@ -70,7 +70,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void DoubleFileExportTest()
         {
-            Xids x = new Xids();
+            Xids x = new();
             // at least one specification is needed
             //
             var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
@@ -137,7 +137,7 @@ namespace Xbim.InformationSpecifications.Tests
         private static void Validate(string fileName)
         {
             var c = GetValidator(fileName);
-            StringWriter debugOutputWriter = new StringWriter();
+            StringWriter debugOutputWriter = new();
             var validationResult = IdsLib.CheckOptions.Run(c, debugOutputWriter);
             if (validationResult != IdsLib.CheckOptions.Status.Ok)
             { 
@@ -149,7 +149,7 @@ namespace Xbim.InformationSpecifications.Tests
         private XmlElementSummary XmlReport(string tmpFile)
         {
             var main = XElement.Parse(File.ReadAllText(tmpFile));
-            XmlElementSummary summary = new XmlElementSummary(main, null);
+            XmlElementSummary summary = new(main, null);
             return summary;
         }
 
@@ -207,9 +207,9 @@ namespace Xbim.InformationSpecifications.Tests
 
             private string ReportDifference(string message)
             {
-                StringBuilder sb = new StringBuilder(); 
+                StringBuilder sb = new(); 
                 
-                Stack<XmlElementSummary> parents = new Stack<XmlElementSummary>();
+                Stack<XmlElementSummary> parents = new();
                 var running = this;
                 while (running.parent != null)
                 {

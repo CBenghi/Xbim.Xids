@@ -5,7 +5,7 @@ namespace Xbim.InformationSpecifications
 {
     public class CompatibleSchemaAttribute : Attribute
     {
-        private IfcSchemaVersion[] vs;
+        private readonly IfcSchemaVersion[] vs;
 
         public CompatibleSchemaAttribute(IfcSchemaVersion[] vs)
         {

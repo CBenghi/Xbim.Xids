@@ -49,6 +49,10 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public string? Provider { get; set; }
 
+        /// <summary>
+        /// Get the planned provider of the specification (direct or inherited) 
+        /// </summary>
+        /// <returns>A string identifying the provider</returns>
         public string? GetProvider()
         {
             if (!string.IsNullOrWhiteSpace(Provider))
@@ -64,6 +68,10 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public List<string>? Consumers { get; set; }
 
+        /// <summary>
+        /// Get consumers of the specification (direct or inherited) 
+        /// </summary>
+        /// <returns>A list of strings identifying the consumers</returns>
         public IEnumerable<string> GetConsumers()
         {
             if (Consumers != null && Consumers.Any())
@@ -104,7 +112,6 @@ namespace Xbim.InformationSpecifications
                 return applicability;
             }
             set => applicability = value;
-
         }
 
         private string? applicabilityId;
@@ -162,6 +169,22 @@ namespace Xbim.InformationSpecifications
             {
                 Applicability.Facets.Add(item);
             }
+        }
+
+        /// <returns>False if any of the specification's data is not suitable for testing.</returns>
+        public bool IsValid()
+        {
+            if (!Applicability.IsValid())
+                return false;
+            if (
+                Cardinality.ExpectsRequirements 
+                && 
+                    (Requirement == null
+                    ||
+                    !Requirement.IsValid())
+                )
+                return false;
+            return true;
         }
 
         public string Short()

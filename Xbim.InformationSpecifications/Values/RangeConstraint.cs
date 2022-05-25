@@ -74,7 +74,7 @@ namespace Xbim.InformationSpecifications
 
 		public string Short()
 		{
-			List<string> ret = new List<string>();
+			var ret = new List<string>();
 			if (!string.IsNullOrEmpty(MinValue))
 				ret.Add(MinInclusive
 					? $"is equal or more than '{MinValue}'"

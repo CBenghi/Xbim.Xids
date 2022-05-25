@@ -7,7 +7,7 @@ namespace Xbim.InformationSpecifications
 {
 	public class FacetGroupRepository
 	{
-		private Xids ids;
+		private readonly Xids ids;
 
 		[Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
 		[JsonConstructor]

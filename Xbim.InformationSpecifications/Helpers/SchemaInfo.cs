@@ -122,10 +122,10 @@ namespace Xbim.InformationSpecifications.Helpers
 				: AttributesToAllClasses;
 			if (toUse.TryGetValue(attributeName, out var ret))
 				return ret;
-			return new string[] { };
+            return Array.Empty<string>();
 		}
 
-		private Dictionary<string, ClassRelationInfo[]> relAttributes = new Dictionary<string, ClassRelationInfo[]>();
+		private readonly Dictionary<string, ClassRelationInfo[]> relAttributes = new();
 
 		/// <summary>
 		/// Provides information of classes that have an attribute and the form of the relation to it.

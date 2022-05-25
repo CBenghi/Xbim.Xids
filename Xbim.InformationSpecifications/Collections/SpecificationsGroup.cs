@@ -51,7 +51,7 @@ namespace Xbim.InformationSpecifications
 		{
 			// todo: 2021: improve documentation to clarify the use paramter (only starting from applic and requirement).
 
-			HashSet<FacetGroup> returned = new HashSet<FacetGroup>();
+			var returned = new HashSet<FacetGroup>();
 			foreach (var fg in UsedFacetGroups())
 			{
 				if (fg.IsUsed(this, use))

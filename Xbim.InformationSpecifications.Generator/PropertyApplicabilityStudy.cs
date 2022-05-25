@@ -67,7 +67,7 @@ namespace Xbim.InformationSpecifications.Generator
 				distinctClassesFromPropertySets = distinctClassesFromPropertySets.Distinct().ToList();
 
 				// trying to find a set of classes that matches the property types
-				List<string> HandledTypes = new List<string>();
+				List<string> HandledTypes = new();
 				if (!IncludeTypes.ContainsKey(schema))
 				{
 					report.AppendLine($"No included types for {schema}.");

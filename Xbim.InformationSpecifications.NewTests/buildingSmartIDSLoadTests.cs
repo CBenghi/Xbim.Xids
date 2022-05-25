@@ -35,7 +35,7 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
         public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
         {
-            DirectoryInfo d = new DirectoryInfo(".");
+            DirectoryInfo d = new(".");
             Debug.WriteLine(d.FullName);
             ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
             CheckSchema(fileName, logg);
@@ -72,11 +72,11 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static void CheckSchema(string tmpFile, ILogger<buildingSmartIDSLoadTests> logg = null)
         {
-            IdsLib.CheckOptions c = new IdsLib.CheckOptions();
+            IdsLib.CheckOptions c = new();
             c.CheckSchema = new[] { "bsFiles\\ids_06.xsd" };
             c.InputSource = tmpFile;
 
-            StringWriter s = new StringWriter();
+            StringWriter s = new();
             var varlidationResult = IdsLib.CheckOptions.Run(c, s);
             if (varlidationResult != IdsLib.CheckOptions.Status.Ok)
             {

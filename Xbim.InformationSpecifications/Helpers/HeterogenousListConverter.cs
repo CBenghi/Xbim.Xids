@@ -23,15 +23,15 @@ namespace Xbim.InformationSpecifications.Helpers
 				KeyTypeLookup.Add(key, type);
 		}
 
-		public ReversibleLookup<string, Type> KeyTypeLookup = new ReversibleLookup<string, Type>();
+		public ReversibleLookup<string, Type> KeyTypeLookup = new();
 
 		public override bool CanConvert(Type typeToConvert)
 			=> typeof(TList).IsAssignableFrom(typeToConvert);
 
 		public override TList Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			// Helper function for validating where you are in the JSON    
-			void validateToken(Utf8JsonReader innerReader, JsonTokenType tokenType)
+            // Helper function for validating where you are in the JSON    
+            static void validateToken(Utf8JsonReader innerReader, JsonTokenType tokenType)
 			{
 				if (innerReader.TokenType != tokenType)
 					throw new JsonException($"Invalid token: Was expecting a '{tokenType}' token but received a '{innerReader.TokenType}' token");

@@ -31,7 +31,7 @@ namespace Xbim.InformationSpecifications.Generator
 				var sb = new StringBuilder();
 
 				// trying to find a set of classes that matches the property types
-				List<string> HandledTypes = new List<string>();
+				List<string> HandledTypes = new();
 				foreach (var item in IfcClassStudy.IncludeTypes[schema]) // this determines the included types by schema
 				{
 					HandledTypes.AddRange(IfcClassStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Generator
 						var vals = Enum.GetValues(pt);
 
 
-						List<string> pdtypes = new List<string>();
+						List<string> pdtypes = new();
 						foreach (var val in vals)
 						{
 							pdtypes.Add(val.ToString());
@@ -63,7 +63,7 @@ namespace Xbim.InformationSpecifications.Generator
 
 					var ns = t.Namespace.Substring(5);
 
-					sb.AppendLine($@"			schema.Add(new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""));");
+					sb.AppendLine($@"				new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""),");
 				}
 				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
@@ -85,14 +85,16 @@ namespace Xbim.InformationSpecifications.Helpers
 	{
 		private static partial SchemaInfo GetClassesIFC2x3()
 		{
-			var schema = new SchemaInfo();
+			var schema = new SchemaInfo() {
 <PlaceHolderIFC2x3>
+			};
 			return schema;
 		}
-		private static partial SchemaInfo GetClassesIFC4()
+		private static partial SchemaInfo GetClassesIFC4() 
 		{
-			var schema = new SchemaInfo();
+			var schema = new SchemaInfo() {
 <PlaceHolderIFC4>
+			};
 			return schema;
 		}
 	}

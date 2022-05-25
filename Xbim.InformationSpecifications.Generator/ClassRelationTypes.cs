@@ -18,7 +18,7 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		internal static ClassRelationTypeInfo GetRelationTypes(Properties.Version schema)
 		{
-			ClassRelationTypeInfo c = new ClassRelationTypeInfo();
+			ClassRelationTypeInfo c = new();
             string mainTypeObjectName;
             System.Reflection.Module module;
             if (schema == Properties.Version.IFC2x3)
@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications.Generator
 
         internal static string Report(Properties.Version schema)
         {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.AppendLine("## SHEMA START ========================");
 			sb.AppendLine($"# Schema {schema}");
 			var c = GetRelationTypes(schema);

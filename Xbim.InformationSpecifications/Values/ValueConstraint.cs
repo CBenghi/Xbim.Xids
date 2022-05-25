@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications
 			return IsSatisfiedBy(candiatateValue, true, logger);
 		}
 
-		private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
+		static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
 		{
 			if (destType is null)
 				return false;

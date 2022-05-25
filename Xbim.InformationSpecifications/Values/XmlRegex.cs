@@ -37,9 +37,9 @@ namespace Xbim.InformationSpecifications
         
         internal static string Preprocess(string pattern, bool omitBoundaries = false)
         {
-            StringBuilder bufBld = new StringBuilder();
+            var bufBld = new StringBuilder();
             if(!omitBoundaries)
-                bufBld.Append("^");
+                bufBld.Append('^');
 
             char[] source = pattern.ToCharArray();
             int length = pattern.Length;
@@ -77,7 +77,7 @@ namespace Xbim.InformationSpecifications
                 bufBld.Append(source, copyPosition, length - copyPosition);
             }
             if (!omitBoundaries)
-                bufBld.Append("$");
+                bufBld.Append('$');
             return bufBld.ToString();
         }
 

@@ -8,7 +8,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         public string UnitSymbol { get; set; }
         public int Exponent { get; set; } = 1;
 
-        static Regex reUnitAndExponent = new Regex("([a-zA-Z]+)(\\d*)");
+        static Regex reUnitAndExponent = new("([a-zA-Z]+)(\\d*)");
 
         public UnitFactor(string unitAndExponent)
         {

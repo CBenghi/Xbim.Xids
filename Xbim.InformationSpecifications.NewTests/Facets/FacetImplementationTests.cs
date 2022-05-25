@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications.Tests
 {
 	public class FacetImplementationTests
 	{
-		private Dictionary<string, string> guaranteedStructures = new Dictionary<string, string>()
+		private Dictionary<string, string> guaranteedStructures = new()
 		{
 			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Use,String Instructions" },
 			{ "FacetBase","String Uri,String Use,String Instructions" },
@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Tests
             }
         }
 
-		private static Regex rNullable = new Regex("\\[\\[([^,]*),");
+		private static Regex rNullable = new("\\[\\[([^,]*),");
 
         private string SmartName(PropertyInfo x)
         {
@@ -153,17 +153,17 @@ namespace Xbim.InformationSpecifications.Tests
 			var pc = new PatternConstraint();
 			TestAddRemove(pc);
 
-			List<ValueConstraint> vals = new List<ValueConstraint>();
+			List<ValueConstraint> vals = new();
 			var val = new ValueConstraint();
 			TestAddRemove(val);
 			val = MakeEnumVal();
 			TestAddRemove(val);
 
-			List<RangeConstraint> rcl = new List<RangeConstraint>();
+			List<RangeConstraint> rcl = new();
 			var rc = new RangeConstraint();
 			TestAddRemove(rc);
 
-			List<StructureConstraint> scl = new List<StructureConstraint>();
+			List<StructureConstraint> scl = new();
 			var sc = new StructureConstraint();
 			var t = sc.GetHashCode();
 			TestAddRemove(sc, false);

@@ -40,7 +40,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void CanSerializeRicherFormat()
 		{
-			DirectoryInfo d = new DirectoryInfo(@"Files");
+			DirectoryInfo d = new(@"Files");
 			foreach (var file in d.GetFiles("*.xml"))
 			{
 				var s = Xids.ImportBuildingSmartIDS(file.FullName);

@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         static public IEnumerable<Measure> GetFromWiki()
         {
             var splitter = new string[] { "|" };
-            FileInfo f = new FileInfo("Files/Physical_Quantities_and_Units.md");
+            FileInfo f = new("Files/Physical_Quantities_and_Units.md");
             var allWiki = File.ReadAllLines(f.FullName);
             var isParsing = false;
             var tally = 0;
@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// </summary>
         public static string Execute()
         {
-            MeasureCollection m = new MeasureCollection(MeasureAutomation.GetFromWiki());
+            MeasureCollection m = new(MeasureAutomation.GetFromWiki());
 
             bool tryImprove = true;
             while (tryImprove)

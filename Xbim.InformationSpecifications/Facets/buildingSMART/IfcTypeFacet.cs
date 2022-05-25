@@ -27,7 +27,7 @@ namespace Xbim.InformationSpecifications
 
         public string Short()
         {
-            List<string> desc = new List<string>();
+            var desc = new List<string>();
             if (!FacetBase.IsNullOrEmpty(IfcType))
             {
                 var tmpT = $"is of type {IfcType}";

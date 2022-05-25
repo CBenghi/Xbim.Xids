@@ -21,7 +21,7 @@ namespace Xbim.InformationSpecifications.Helpers
 				Add(mapping.Item1, mapping.Item2);
 		}
 
-		private readonly Dictionary<T2, T1> reverseLookup = new Dictionary<T2, T1>();
+		private readonly Dictionary<T2, T1> reverseLookup = new();
 		public ReadOnlyDictionary<T2, T1> ReverseLookup { get; }
 
 		[DebuggerHidden]

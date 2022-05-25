@@ -119,7 +119,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 
         private string GetMultiplier(int[] asArray, bool numerator)
         {
-            List<string> vals  = new List<string>();
+            List<string> vals  = new();
             for (int i = 0; i < asArray.Length; i++)
             {
                 if (asArray[i] == 0)

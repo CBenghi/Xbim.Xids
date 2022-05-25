@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Helpers
     internal class ValueConstraintConverter : JsonConverter<ValueConstraint>
     {
         private static JsonSerializerOptions? _options;
-        private ILogger? logger;
+        private readonly ILogger? logger;
 
         public ValueConstraintConverter(ILogger? logger)
         {

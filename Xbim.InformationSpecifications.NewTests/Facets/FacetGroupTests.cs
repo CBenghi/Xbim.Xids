@@ -8,7 +8,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void FacetGroupUseCount()
 		{
-			Xids t = new Xids();
+			Xids t = new();
 			var spec = t.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 			var group = spec.Applicability;
 			group.UseCount(t).Should().Be(1);

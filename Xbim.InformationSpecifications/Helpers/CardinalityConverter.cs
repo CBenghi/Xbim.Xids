@@ -10,7 +10,7 @@ namespace Xbim.InformationSpecifications.Helpers
 {
     internal class CardinalityConverter : JsonConverter<ICardinality>
     {
-        private ILogger? logger;
+        private readonly ILogger? logger;
 
         public CardinalityConverter(ILogger? logger)
         {

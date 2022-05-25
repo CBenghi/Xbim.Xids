@@ -19,7 +19,7 @@ namespace Xbim.InformationSpecifications.Generator
         public static void GenerateFulltestFiles()
         {
             var schemaFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\ids_06.xsd";
-            DirectoryInfo d = new DirectoryInfo(".");
+            DirectoryInfo d = new(".");
             // Debug.WriteLine(d.FullName);
             OpenUrl("https://www.liquid-technologies.com/online-xsd-to-xml-converter");
 
@@ -78,7 +78,7 @@ namespace Xbim.InformationSpecifications.Generator
         private static string FixOccur(string inst, string typecontraint, string[] replaceOptions)
         {
             int i  = 0;
-            Regex r = new Regex(typecontraint + "[^>]* minOccurs maxOccurs");
+            Regex r = new(typecontraint + "[^>]* minOccurs maxOccurs");
             var m = r.Match(inst);
             while (m.Success)
             {

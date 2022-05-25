@@ -11,8 +11,8 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		void DoesTest()
 		{
-			DocumentFacet f1 = new DocumentFacet();
-			DocumentFacet f2 = new DocumentFacet();
+			DocumentFacet f1 = new();
+			DocumentFacet f2 = new();
 
 			f1.Should().Be(f2);
 

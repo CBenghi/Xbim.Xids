@@ -36,7 +36,7 @@ namespace Xbim.InformationSpecifications
 
 		internal static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
 		{
-			JsonSerializerOptions options = new JsonSerializerOptions()
+			var options = new JsonSerializerOptions()
 			{
 				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 			};

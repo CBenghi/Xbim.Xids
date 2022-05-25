@@ -32,12 +32,12 @@ namespace Xbim.InformationSpecifications.Generator
 				var sb = new StringBuilder();
 
 				// trying to find a set of classes that matches the property types
-				List<string> HandledTypes = new List<string>();
+				List<string> HandledTypes = new();
 				foreach (var item in IfcClassStudy.IncludeTypes[schema]) // this determines the included types by schema
 				{
 					HandledTypes.AddRange(IfcClassStudy.TreeOf(metaD.ExpressType(item.ToUpperInvariant())));
 				}
-				Dictionary<string, List<string>> typesByAttribute = new Dictionary<string, List<string>>();
+				Dictionary<string, List<string>> typesByAttribute = new();
 				foreach (var className in HandledTypes)
 				{
 					var daType = metaD.ExpressType(className.ToUpperInvariant());

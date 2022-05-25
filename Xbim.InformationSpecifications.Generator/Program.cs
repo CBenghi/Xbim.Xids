@@ -12,13 +12,16 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		public static void Main()
 		{
-			var wip = true;
+			var wip = false;
+			Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
 
-			// Whenever the schema changes
-			// 1. get the latest files with the batch command
-			// 2. execute the following function
-			if (wip)
+			if (Console.ReadKey().Key == ConsoleKey.T)
+			{
+				// Whenever the schema changes
+				// 1. get the latest files with the batch command
+				// 2. execute the following function
 				BuildingSmartSchema.GenerateFulltestFiles();
+			}
 
 			// wip
 			if (wip)
@@ -32,6 +35,8 @@ namespace Xbim.InformationSpecifications.Generator
 				return;
 			}
 
+			Console.WriteLine("Running code generation...");
+
 			var study = false;
 			var destPath = new DirectoryInfo(@"..\..\..\..\");
 			// Initialization
@@ -43,25 +48,35 @@ namespace Xbim.InformationSpecifications.Generator
 			}
 			string dest = "";
 
-            // depends on Xbim.Properties assembly
-            var tPropGen = PropertiesGenerator.Execute();
+			// depends on Xbim.Properties assembly
+			Console.WriteLine("Running properties generation...");
+			var tPropGen = PropertiesGenerator.Execute();
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\PropertySetInfo.Generated.cs");
             File.WriteAllText(dest, tPropGen);
 
-            // depends on ExpressMetaData and IfcClassStudy classes
-            var tClassGen = ClassGenerator.Execute();
+			// depends on ExpressMetaData and IfcClassStudy classes
+			Console.WriteLine("Running class generation...");
+			var tClassGen = ClassGenerator.Execute();
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedClass.cs");
             File.WriteAllText(dest, tClassGen);
 
-            // depends on ExpressMetaData and IfcClassStudy classes
-            var tAttGen = AttributesGenerator.Execute();
+			// depends on ExpressMetaData and IfcClassStudy classes
+			Console.WriteLine("Running attributes generation...");
+			var tAttGen = AttributesGenerator.Execute();
 			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
 			File.WriteAllText(dest, tAttGen);
 
 			// depends on ExpressMetaData and IfcClassStudy classes
 			var tRelTypeGen = ClassRelationTypes.Execute();
+			Console.WriteLine("Running generation of class relationships...");
 			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedRelTypes.cs");
 			File.WriteAllText(dest, tRelTypeGen);
+
+			// end
+			var bkp = Console.ForegroundColor;
+			Console.ForegroundColor = ConsoleColor.DarkGreen;
+			Console.WriteLine("Completed");
+			Console.ForegroundColor = bkp;
 		}
 	}
 }

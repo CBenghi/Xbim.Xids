@@ -16,7 +16,7 @@ namespace Xbim.InformationSpecifications.Tests
 		public void IPersistValues()
 		{
 			var str = "2O2Fr$t4X7Zf8NOew3FLOH";
-			Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new Ifc2x3.UtilityResource.IfcGloballyUniqueId(str);
+			Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new(str);
 			var vc = new ValueConstraint(str);
 			vc.IsSatisfiedBy(i).Should().BeTrue();
 

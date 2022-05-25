@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Obsolete]
 		public void FacetGroupValidityTests()
 		{
-			FacetGroup g = new FacetGroup();
+			FacetGroup g = new();
 			g.IsValid().Should().BeFalse();
 			new IfcClassificationFacet() { }.IsValid().Should().BeTrue();	
 			

@@ -11,7 +11,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void ValueConstraintIsExact()
         {
-            ValueConstraint constraint = new ValueConstraint();
+            ValueConstraint constraint = new();
 
             var stringValue = "Gatto";
             constraint = new ValueConstraint(stringValue);
@@ -48,7 +48,7 @@ namespace Xbim.InformationSpecifications.Tests
             retVal.Should().Be(stringV);
             
 
-            ValueConstraint t = new ValueConstraint(2d);
+            ValueConstraint t = new(2d);
             t.IsSingleUndefinedExact(out var _).Should().BeFalse();
             
 

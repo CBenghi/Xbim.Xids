@@ -46,7 +46,7 @@ namespace Xbim.InformationSpecifications
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
             
-            sb.Append(".");
+            sb.Append('.');
             return sb.ToString();
         }
 

@@ -37,8 +37,8 @@ namespace Xbim.InformationSpecifications.Cardinality
                 {
                     return smp2.Description;
                 }
-                StringBuilder sb = new StringBuilder();
-                sb.Append(MinOccurs.ToString());
+                var sb = new StringBuilder();
+                sb.Append(MinOccurs);
                 if (MaxOccurs.HasValue)
                     sb.Append($"..{MaxOccurs}");
                 return sb.ToString();
