@@ -19,16 +19,56 @@ namespace Xbim.InformationSpecifications
     {
         public enum Container
         {
+            [CompatibleSchema(new string[] { })]
             Undefined,
-            IfcElementAssembly,
-            IfcGroup,
-            IfcSystem,
-            IfcBuildingSystem,
-            IfcBuiltSystem,
-            IfcDistributionSystem,
-            IfcZone,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
             IfcAsset,
-            IfcInventory
+            
+            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+            IfcBuildingSystem,
+            
+            [CompatibleSchema(new[] { "Ifc4x3" })]
+            IfcBuiltSystem,
+            
+            [CompatibleSchema(new[] { "Ifc2x3" })]
+            IfcCondition,
+            
+            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+            IfcDistributionCircuit,
+            
+            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+            IfcDistributionSystem,
+            
+            [CompatibleSchema(new[] { "Ifc2x3" })]
+            IfcElectricalCircuit,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcElementAssembly,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcGroup,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcInventory,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcStructuralAnalysisModel,
+            
+            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+            IfcStructuralLoadCase,
+            
+            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+            IfcStructuralLoadGroup,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcStructuralResultGroup,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcSystem,
+            
+            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+            IfcZone
         }
 
         /// <summary>

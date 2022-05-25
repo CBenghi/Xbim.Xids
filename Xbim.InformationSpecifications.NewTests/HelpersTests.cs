@@ -5,6 +5,8 @@ using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using System.Text;
 using System.IO;
+using System;
+using System.Diagnostics;
 
 namespace Xbim.InformationSpecifications.Tests
 {
@@ -50,10 +52,10 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			var attribs = SchemaInfo.SchemaIfc2x3.GetAttributeClasses("NotExisting");
 			attribs.Should().BeEmpty();
-			
+
 			attribs = SchemaInfo.SchemaIfc2x3.GetAttributeClasses("ID");
-			attribs.Length.Should().Be(2);	
-				
+			attribs.Length.Should().Be(2);
+
 
 			var attribNames = SchemaInfo.SchemaIfc2x3.GetAttributeNames();
 			attribNames.Count().Should().Be(179);
@@ -64,10 +66,10 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			var attribs = SchemaInfo.SchemaIfc4.GetAttributeClasses("NotExisting");
 			attribs.Should().BeEmpty();
-			
+
 			attribs = SchemaInfo.SchemaIfc4.GetAttributeClasses("UserDefinedOperationType");
 			attribs.Length.Should().Be(3);
-			
+
 			var attribNames = SchemaInfo.SchemaIfc4.GetAttributeNames();
 			attribNames.Count().Should().Be(128);
 		}
@@ -75,9 +77,9 @@ namespace Xbim.InformationSpecifications.Tests
 
 		[Fact]
 		public void FacetGroupUse()
-        {
+		{
 			var x = XidsTestHelpers.GetSimpleXids();
-			
+
 			var usedForApplicability = x.FacetGroups(FacetGroup.FacetUse.Applicability);
 			usedForApplicability.Should().NotBeNull();
 			usedForApplicability.Should().ContainSingle();
@@ -92,7 +94,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 		[Fact]
 		public void CanEnumerateFacetGroupsByUse()
-        {
+		{
 			var fSpec = @"bsFiles\IDS_wooden-windows.xml";
 			// open the specs
 			var t = Xids.ImportBuildingSmartIDS(fSpec);
@@ -104,6 +106,39 @@ namespace Xbim.InformationSpecifications.Tests
 			// can select all elements
 			var all = t.FacetGroups(FacetGroup.FacetUse.Applicability);
 			all.Count().Should().BeGreaterThan(0);
+		}
+
+
+		[Fact]
+		public void EnumCompatibilityTests()
+		{
+			PartOfFacet.Container.IfcAsset.IsCompatibleSchema("unexpected").Should().BeFalse();
+			PartOfFacet.Container.IfcAsset.IsCompatibleSchema("Ifc2x3").Should().BeTrue();
+
+			PartOfFacet.Container.Undefined.IsCompatibleSchema("Ifc2x3").Should().BeFalse();
+
+			var schemas = new[]
+			{
+				("Ifc2x3", 10),
+				("Ifc4", 13),
+				("Ifc4x3", 14)
+			};
+
+            foreach (var schema in schemas)
+            {
+				var schemaName = schema.Item1;
+				var expected = schema.Item2;
+				var cnt = 0;
+				foreach (var val in Enum.GetValues<PartOfFacet.Container>())
+				{
+					if (val.IsCompatibleSchema(schemaName))
+					{
+						Debug.WriteLine(val);
+						cnt++;
+					}
+				}
+				cnt.Should().Be(expected, $"there's an error on {schemaName}");
+            }
 		}
 	}
 }
