@@ -112,16 +112,15 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void EnumCompatibilityTests()
 		{
-			PartOfFacet.Container.IfcAsset.IsCompatibleSchema("unexpected").Should().BeFalse();
-			PartOfFacet.Container.IfcAsset.IsCompatibleSchema("Ifc2x3").Should().BeTrue();
-
-			PartOfFacet.Container.Undefined.IsCompatibleSchema("Ifc2x3").Should().BeFalse();
+			PartOfFacet.Container.IfcAsset.IsCompatibleSchema(IfcSchemaVersion.Undefined).Should().BeFalse();
+			PartOfFacet.Container.IfcAsset.IsCompatibleSchema(IfcSchemaVersion.IFC2X3).Should().BeTrue();
+			PartOfFacet.Container.Undefined.IsCompatibleSchema(IfcSchemaVersion.IFC2X3).Should().BeFalse();
 
 			var schemas = new[]
 			{
-				("Ifc2x3", 10),
-				("Ifc4", 13),
-				("Ifc4x3", 14)
+				(IfcSchemaVersion.IFC2X3, 10),
+				(IfcSchemaVersion.IFC4, 13),
+				(IfcSchemaVersion.IFC4X3, 14)
 			};
 
             foreach (var schema in schemas)

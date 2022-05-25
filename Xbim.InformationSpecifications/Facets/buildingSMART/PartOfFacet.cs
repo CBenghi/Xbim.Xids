@@ -19,57 +19,57 @@ namespace Xbim.InformationSpecifications
     {
         public enum Container
         {
-            [CompatibleSchema(new string[] { })]
+            [CompatibleSchema(new IfcSchemaVersion[] { })]
             Undefined,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcAsset,
-            
-            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcBuildingSystem,
-            
-            [CompatibleSchema(new[] { "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4X3 })]
             IfcBuiltSystem,
-            
-            [CompatibleSchema(new[] { "Ifc2x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3 })]
             IfcCondition,
-            
-            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcDistributionCircuit,
-            
-            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcDistributionSystem,
-            
-            [CompatibleSchema(new[] { "Ifc2x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3 })]
             IfcElectricalCircuit,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcElementAssembly,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcGroup,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcInventory,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralAnalysisModel,
-            
-            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralLoadCase,
-            
-            [CompatibleSchema(new[] { "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralLoadGroup,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralResultGroup,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcSystem,
-            
-            [CompatibleSchema(new[] { "Ifc2x3", "Ifc4", "Ifc4x3" })]
+
+            [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcZone
-        }
+        } 
 
         /// <summary>
         /// Constraints the containing entity type to one of <see cref="Container"/> enum.

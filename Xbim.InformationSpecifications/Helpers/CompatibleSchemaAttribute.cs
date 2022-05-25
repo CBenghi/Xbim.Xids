@@ -5,14 +5,14 @@ namespace Xbim.InformationSpecifications
 {
     public class CompatibleSchemaAttribute : Attribute
     {
-        private string[] vs;
+        private IfcSchemaVersion[] vs;
 
-        public CompatibleSchemaAttribute(string[] vs)
+        public CompatibleSchemaAttribute(IfcSchemaVersion[] vs)
         {
             this.vs = vs;
         }
 
-        public bool IsCompatibleSchema(string s)
+        public bool IsCompatibleSchema(IfcSchemaVersion s)
         {
             return vs.Contains(s);
         }
@@ -20,7 +20,14 @@ namespace Xbim.InformationSpecifications
 
     public static class CompatibleSchemaHelpers
     {
-        public static bool IsCompatibleSchema(this PartOfFacet.Container container, string s)
+        public static bool IsCompatibleSchema(this PartOfFacet.Container container, string schemaVersionString)
+        {
+            if (Enum.TryParse<IfcSchemaVersion>(schemaVersionString, out var version))
+                return IsCompatibleSchema(container, version);
+            return false;
+        }
+
+        public static bool IsCompatibleSchema(this PartOfFacet.Container container, IfcSchemaVersion s)
         {
             try
             {
@@ -37,7 +44,6 @@ namespace Xbim.InformationSpecifications
             {
                 return false;
             }
-            
         }
 
     }
