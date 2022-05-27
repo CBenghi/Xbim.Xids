@@ -73,7 +73,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new IfcPropertyFacet() { PropertySetName = "5" };
 			yield return new IfcPropertyFacet() { PropertyValue = "6" };
 			yield return new IfcPropertyFacet() { Uri = "7" };
-			yield return new IfcPropertyFacet() { Use = "8" };
 			yield return new IfcPropertyFacet()
 			{
 				Instructions = "Some",
@@ -82,10 +81,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 				PropertySetName = "psetname",
 				PropertyValue = "pvalue",
 				Uri = "uri",
-				Use = "use",
 			};
-
-
 		}
 	}
 }

@@ -15,20 +15,20 @@ namespace Xbim.InformationSpecifications.Tests
 	{
 		private Dictionary<string, string> guaranteedStructures = new()
 		{
-			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Use,String Instructions" },
-			{ "FacetBase","String Uri,String Use,String Instructions" },
-			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Uri,String Use,String Instructions" },
-			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Uri,String Use,String Instructions" },
-			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes,String Uri,String Use,String Instructions" },
-			{ "MaterialFacet","ValueConstraint Value,String Uri,String Use,String Instructions" },
-			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Uri,String Use,String Instructions" },
-			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation,String Uri,String Use,String Instructions" },
+			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Instructions" },
+			{ "FacetBase","String Uri,String Instructions" },
+			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Uri,String Instructions" },
+			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Uri,String Instructions" },
+			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes,String Uri,String Instructions" },
+			{ "MaterialFacet","ValueConstraint Value,String Uri,String Instructions" },
+			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Uri,String Instructions" },
+			{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation,String Uri,String Instructions" },
 			{ "ExactConstraint","String Value" },
 			{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
-			{ "PartOfFacet","String Entity,String Uri,String Use,String Instructions" },
+			{ "PartOfFacet","String Entity,String Uri,String Instructions" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 

@@ -13,14 +13,7 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			DocumentFacet f1 = new();
 			DocumentFacet f2 = new();
-
 			f1.Should().Be(f2);
-
-			f1.Use = Use.required.ToString();
-			f1.Should().NotBe(f2);
-			f2.Use= Use.required.ToString();
-			f1.Should().Be(f2);
-
 
 			f1.Instructions = "some";
 			f1.Should().NotBe(f2);

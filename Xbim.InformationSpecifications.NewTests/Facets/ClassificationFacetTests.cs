@@ -73,7 +73,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new IfcClassificationFacet() { IncludeSubClasses = true, };
 			yield return new IfcClassificationFacet() { Instructions = "some", };
 			yield return new IfcClassificationFacet() { Uri = "some", };
-			yield return new IfcClassificationFacet() { Use = "some", };
 			yield return new IfcClassificationFacet()
 			{
 				ClassificationSystem = "A",
@@ -81,7 +80,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 				IncludeSubClasses = true,
 				Instructions = "some",
 				Uri = "some",
-				Use = "use",
 			};
 
 		}

@@ -70,16 +70,12 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new DocumentFacet() { DocPurpose = "5", };
 			yield return new DocumentFacet() { Instructions = "6", };
 			yield return new DocumentFacet() { Uri = "8", };
-			yield return new DocumentFacet() { Use = "9", };
 			yield return new DocumentFacet()
 			{
-				Use = "10",
 				Uri = "11",
-
 				Instructions = "13",
 				DocPurpose = "purp",
 				DocName = "name",
-
 				DocLocation = "docloc",
 				DocIntendedUse = "intuse",
 				DocId = "id",

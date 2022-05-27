@@ -68,15 +68,12 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new AttributeFacet() { AttributeValue = "One" };
 			yield return new AttributeFacet() { AttributeValue = "Two" };
 			yield return new AttributeFacet() { Instructions = "Two" };
-			yield return new AttributeFacet() { Use = "optional" };
-			yield return new AttributeFacet() { Use = "required" };
 			yield return new AttributeFacet()
 			{
 				AttributeName = "One",
 				AttributeValue = "Two",
 				Instructions = "Some instructions",
 				Uri = "http://www.google.com",
-				Use = "required"
 			};
 		}
 	}

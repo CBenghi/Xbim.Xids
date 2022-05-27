@@ -69,13 +69,11 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new MaterialFacet();
 			yield return new MaterialFacet() { Instructions = "instr", };
 			yield return new MaterialFacet() { Uri = "uri", };
-			yield return new MaterialFacet() { Use = "use", };
 			yield return new MaterialFacet() { Value = "value", };
 			yield return new MaterialFacet()
 			{
 				Instructions = "instr",
 				Uri = "uri",
-				Use = "use",
 				Value = "value",
 			};
 		}

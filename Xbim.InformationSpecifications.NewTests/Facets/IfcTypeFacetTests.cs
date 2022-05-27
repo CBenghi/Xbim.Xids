@@ -67,7 +67,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new IfcTypeFacet() { IncludeSubtypes = false, };
 			yield return new IfcTypeFacet() { Instructions = "someInstructions" };
 			yield return new IfcTypeFacet() { Uri = "someInstructions" };
-			yield return new IfcTypeFacet() { Use = "required" };
 			yield return new IfcTypeFacet() { Uri = "http://www.google.com" };
 			yield return new IfcTypeFacet() { 
 				IfcType = "type",
@@ -87,7 +86,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 				IncludeSubtypes = false,
 				Instructions = "SomeInstructions",
 				Uri = "http://www.google.com",
-				Use = "prohibited"
 			};
 		}
 	}

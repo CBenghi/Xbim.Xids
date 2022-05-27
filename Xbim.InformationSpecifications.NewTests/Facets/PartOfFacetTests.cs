@@ -74,7 +74,6 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			{
 				Instructions = "instr",
 				Uri = "uri",
-				Use = "use",
 				Entity = PartOfFacet.Container.IfcElementAssembly.ToString()
 			};
 		}

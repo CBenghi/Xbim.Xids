@@ -22,19 +22,16 @@ namespace Xbim.InformationSpecifications
         }
 
 		public string Uri { get; set; } = string.Empty; // attribute uri
-		public string Use { get; set; } = InformationSpecifications.Use.undefined.ToString(); // todo: remove use attribute
 		public string Instructions { get; set; } = string.Empty; // element
 
 		public override string ToString()
 		{
-			return $"{Uri}-{Use}-{Instructions}";
+			return $"{Uri}-{Instructions}";
 		}
 
 		public bool Equals(FacetBase? other)
 		{
 			if (other == null)
-				return false;
-			if (!IFacetExtensions.CaseInsensitiveEquals(Use, other.Use))
 				return false;
 			if (!IFacetExtensions.CaseInsensitiveEquals(Instructions, other.Instructions))
 				return false;
