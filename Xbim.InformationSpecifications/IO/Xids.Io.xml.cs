@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -154,7 +155,7 @@ namespace Xbim.InformationSpecifications
             {
                 foreach (var item in spec.Applicability.Facets)
                 {
-                    ExportBuildingSmartIDS(item, xmlWriter, false, logger);
+                    ExportBuildingSmartIDS(item, xmlWriter, false, logger, null);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -163,32 +164,41 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteStartElement("requirements", IdsNamespace);
             if (spec.Requirement is not null)
             {
-                foreach (var item in spec.Requirement.Facets)
+                var opts = spec.Requirement.RequirementOptions;
+                for (int i = 0; i < spec.Requirement.Facets.Count; i++)
                 {
-                    ExportBuildingSmartIDS(item, xmlWriter, true, logger);
+                    var option = GetProgressive(opts, i, RequirementOptions.Expected);
+                    IFacet? item = spec.Requirement.Facets[i];
+                    ExportBuildingSmartIDS(item, xmlWriter, true, logger, option);
                 }
             }
             xmlWriter.WriteEndElement();
-
-           
-
             xmlWriter.WriteEndElement();
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger)
+        private RequirementOptions GetProgressive(ObservableCollection<RequirementOptions>? opts, int i, RequirementOptions defaultValue)
+        {
+            if (opts is null)
+                return defaultValue;
+            if (i >= opts.Count)
+                return defaultValue;
+            return opts[i];
+        }
+
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, RequirementOptions? requirementOption = null)
         {
             switch (item)
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
-                    WriteFaceteBaseAttributes(tf, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger);
                     WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
-                    WriteFaceteBaseAttributes(cf, xmlWriter, forRequirement); 
+                    WriteFaceteBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption); 
                     WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
                     WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
@@ -196,7 +206,7 @@ namespace Xbim.InformationSpecifications
                     break;                    
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
-                    WriteFaceteBaseAttributes(pf, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
@@ -207,21 +217,21 @@ namespace Xbim.InformationSpecifications
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
-                    WriteFaceteBaseAttributes(mf, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(mf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(mf.Value, xmlWriter, "value", logger);
                     WriteFaceteBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
-                    WriteFaceteBaseAttributes(af, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(af, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(af.AttributeName, xmlWriter, "name", logger);
                     WriteConstraintValue(af.AttributeValue, xmlWriter, "value", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
-                    WriteFaceteBaseAttributes(pof, xmlWriter, forRequirement);
+                    WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
                     xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
                     xmlWriter.WriteEndElement();
                     break;
@@ -332,17 +342,33 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, bool forRequirement)
+        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementOptions? option)
         {
             if (forRequirement)
             {
+                if (!option.HasValue)
+                    option = RequirementOptions.Expected; // should be redundant, but makes some be not null
+
                 if (
                     cf is IfcPropertyFacet ||
                     cf is AttributeFacet
                 )
                 {
                     // use is required
-                    xmlWriter.WriteAttributeString("use", cf.Use);
+                    switch (option.Value)
+                    {
+                        case RequirementOptions.Prohibited:
+                            xmlWriter.WriteAttributeString("minOccurs", "0");
+                            xmlWriter.WriteAttributeString("maxOccurs", "0");
+                            break;
+                        case RequirementOptions.Expected:
+                            xmlWriter.WriteAttributeString("minOccurs", "1");
+                            xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
+                            break;
+                        default:
+                            logger?.LogError("Invalid RequirementOption persistence for '{option}'", option);
+                            break;
+                    }   
                 }
 
                 if (cf is not PartOfFacet)
@@ -363,7 +389,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteAttributeString("uri", cf.Uri);
             }
 
-            
+
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
@@ -644,7 +670,7 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new MaterialFacet();
-                    GetBaseAttribute(attribute, ret);
+                    GetBaseAttribute(attribute, ret, logger);
                 }
                 else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
@@ -700,7 +726,7 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new IfcPropertyFacet();
-                    GetBaseAttribute(attribute, ret);
+                    GetBaseAttribute(attribute, ret, logger);
                 }
                 else if (attribute.Name.LocalName == "measure")
                 {
@@ -925,7 +951,7 @@ namespace Xbim.InformationSpecifications
                         t = GetMaterial(sub, logger, out opt);
                         break;
                     case "attribute":
-                        t = GetAttribute(sub, logger);
+                        t = GetAttribute(sub, logger, out opt);
                         break;
                     case "partof":
                         t = GetPartOf(sub, logger);
@@ -944,7 +970,7 @@ namespace Xbim.InformationSpecifications
             return fs;
         }
 
-        private static IFacet? GetAttribute(XElement elem, ILogger? logger)
+        private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementOptions opt)
         {
             AttributeFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -965,16 +991,25 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            
-            foreach (var sub in elem.Attributes())
+            var mmax = new bsMinMaxOccur();
+            foreach (var attribute in elem.Attributes())
             {
-                var subname = sub.Name.LocalName.ToLowerInvariant();
-                if (IsBaseAttribute(sub))
+                var subname = attribute.Name.LocalName.ToLowerInvariant();
+                if (IsBaseAttribute(attribute))
                 {
                     ret ??= new AttributeFacet();
-                    GetBaseAttribute(sub, ret);
+                    GetBaseAttribute(attribute, ret, logger);
+                }
+                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                {
+                    // nothing to do, IsRelevant takes care of mmax
+                }
+                else
+                {
+                    LogUnexpected(attribute, elem, logger);
                 }
             }
+            opt = mmax.Evaluate(elem, logger);
             return ret;
         }
 
@@ -1062,7 +1097,7 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new IfcClassificationFacet();
-                    GetBaseAttribute(attribute, ret);
+                    GetBaseAttribute(attribute, ret, logger);
                 }
                 else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
@@ -1112,14 +1147,16 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void GetBaseAttribute(XAttribute attribute, FacetBase ret)
+        private static void GetBaseAttribute(XAttribute attribute, FacetBase ret, ILogger? logger)
         {
             if (attribute.Name.LocalName == "uri")
                 ret.Uri = attribute.Value;
             else if (attribute.Name.LocalName == "instructions")
                 ret.Instructions = attribute.Value;
-            else if (attribute.Name.LocalName == "use")
-                ret.Use= attribute.Value;
+            else
+            {
+                logger?.LogError("Unrecognised base attribute {0}", attribute.Name);
+            }
         }
 
 
@@ -1157,7 +1194,7 @@ namespace Xbim.InformationSpecifications
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                    GetBaseAttribute(attribute, ret);
+                    GetBaseAttribute(attribute, ret, logger);
                 }
                 else
                     LogUnexpected(attribute, elem, logger);

@@ -24,5 +24,18 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             }            
         }
 
+        [Fact]
+        public void IfcMeasure_Helpers_Populated()
+        {
+            var area = SchemaInfo.IfcMeasures["Area"];
+            area.Should().NotBeNull();  
+            area.Exponents.Should().NotBeNull();
+            area.Exponents.ToUnitSymbol().Should().Be("m2");
+
+            foreach (var item in Enum.GetValues<IfcMeasures>())
+            {
+                SchemaInfo.IfcMeasures[item.ToString()].Should().NotBeNull($"{item} is a valid key in the schema.");
+            }
+        }
     }
 }

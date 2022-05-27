@@ -22,7 +22,7 @@ namespace Xbim.InformationSpecifications
         }
 
 		public string Uri { get; set; } = string.Empty; // attribute uri
-		public string Use { get; set; } = InformationSpecifications.Use.undefined.ToString();
+		public string Use { get; set; } = InformationSpecifications.Use.undefined.ToString(); // todo: remove use attribute
 		public string Instructions { get; set; } = string.Empty; // element
 
 		public override string ToString()
@@ -45,7 +45,7 @@ namespace Xbim.InformationSpecifications
 
 		public override bool Equals(object? obj)
 		{
-			return this.Equals(obj as FacetBase);
+			return Equals(obj as FacetBase);
 		}
 
 		public override int GetHashCode()

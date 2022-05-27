@@ -4,79 +4,107 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Generator
 {
 	class Program
 	{
-		public static void Main()
+		internal static XmlDocument GetBuildingSmartSchemaXML()
 		{
-			var wip = false;
-			Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
+			XmlDocument doc = new XmlDocument();
+			doc.LoadXml(File.ReadAllText(@"Files\ids_06.xsd"));
+			return doc;
+		}
 
-			if (Console.ReadKey().Key == ConsoleKey.T)
-			{
-				// Whenever the schema changes
-				// 1. get the latest files with the batch command
-				// 2. execute the following function
-				BuildingSmartSchema.GenerateFulltestFiles();
-			}
+		public static void Main()
+        {
+            Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
 
-			// wip
-			if (wip)
-			{
-				var schemas = new[] {
-					Properties.Version.IFC2x3,
-					Properties.Version.IFC4
-				};
-				foreach (var schema in schemas)
-					Console.Write(ClassRelationTypes.Report(schema));
-				return;
-			}
+            if (Console.ReadKey().Key == ConsoleKey.T)
+            {
+                // Whenever the schema changes
+                // 1. get the latest files with the batch command
+                // 2. execute the following function
+                BuildingSmartSchema.GenerateFulltestFiles();
+            }
 
-			Console.WriteLine("Running code generation...");
+            // wip
+            var wip = false;
+            if (wip)
+            {
+                var schemas = new[] {
+                    Properties.Version.IFC2x3,
+                    Properties.Version.IFC4
+                };
+                foreach (var schema in schemas)
+                    Console.Write(ClassRelationTypes.Report(schema));
+                return;
+            }
 
-			var study = false;
-			var destPath = new DirectoryInfo(@"..\..\..\..\");
-			// Initialization
-			if (study)
-			{
-				Console.Write(IfcClassStudy.ReportMatchesToProperties());  // relevant classes preview
-				// Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
-				return;
-			}
-			string dest = "";
+            Console.WriteLine("Running code generation...");
 
-			// depends on Xbim.Properties assembly
-			Console.WriteLine("Running properties generation...");
-			var tPropGen = PropertiesGenerator.Execute();
+            var study = false;
+            var destPath = new DirectoryInfo(@"..\..\..\..\");
+            // Initialization
+            if (study)
+            {
+                Console.Write(IfcClassStudy.ReportMatchesToProperties());  // relevant classes preview
+                                                                           // Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
+                return;
+            }
+            string dest = "";
+
+            // depends on Xbim.Properties assembly
+            Console.WriteLine("Running properties generation...");
+            var tPropGen = PropertiesGenerator.Execute();
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\PropertySetInfo.Generated.cs");
             File.WriteAllText(dest, tPropGen);
 
-			// depends on ExpressMetaData and IfcClassStudy classes
-			Console.WriteLine("Running class generation...");
-			var tClassGen = ClassGenerator.Execute();
+            // depends on ExpressMetaData and IfcClassStudy classes
+            Console.WriteLine("Running class generation...");
+            var tClassGen = ClassGenerator.Execute();
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedClass.cs");
             File.WriteAllText(dest, tClassGen);
 
-			// depends on ExpressMetaData and IfcClassStudy classes
-			Console.WriteLine("Running attributes generation...");
-			var tAttGen = AttributesGenerator.Execute();
-			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
-			File.WriteAllText(dest, tAttGen);
+            // depends on documentation markdown
+            Console.WriteLine("Ifc measure dictionary generation...");
+            var tMeasures = MeasureAutomation.Execute_GenerateIfcMeasureDictionary();
+            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.IfcMeasures.cs");
+            File.WriteAllText(dest, tMeasures);
 
-			// depends on ExpressMetaData and IfcClassStudy classes
-			var tRelTypeGen = ClassRelationTypes.Execute();
-			Console.WriteLine("Running generation of class relationships...");
-			dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedRelTypes.cs");
-			File.WriteAllText(dest, tRelTypeGen);
+            // depends on schema
+            Console.WriteLine("Ifc ifcMeasure enum generation...");
+            var tEnum = MeasureAutomation.Execute_GenerateIfcMeasureEnum();
+            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\Measures\Enums.cs");
+            File.WriteAllText(dest, tEnum);
 
-			// end
-			var bkp = Console.ForegroundColor;
-			Console.ForegroundColor = ConsoleColor.DarkGreen;
-			Console.WriteLine("Completed");
-			Console.ForegroundColor = bkp;
-		}
-	}
+            // depends on ExpressMetaData and IfcClassStudy classes
+            Console.WriteLine("Running attributes generation...");
+            var tAttGen = AttributesGenerator.Execute();
+            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedAttributes.cs");
+            File.WriteAllText(dest, tAttGen);
+
+            // depends on ExpressMetaData and IfcClassStudy classes
+            var tRelTypeGen = ClassRelationTypes.Execute();
+            Console.WriteLine("Running generation of class relationships...");
+            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedRelTypes.cs");
+            File.WriteAllText(dest, tRelTypeGen);
+
+            if (MeasureAutomation.Execute_CheckMeasureEnumeration())
+            {
+                Message(ConsoleColor.Red, "Errors in measure helpers, try running again once, it might get fixed by code generation.");
+            }
+            Message(ConsoleColor.DarkGreen, "Completed");
+        }
+
+        internal static void Message(ConsoleColor t, string msg)
+        {
+            var bkp = Console.ForegroundColor;
+            Console.ForegroundColor = t;
+            Console.WriteLine(msg);
+            Console.ForegroundColor = bkp;
+        }
+    }
 }

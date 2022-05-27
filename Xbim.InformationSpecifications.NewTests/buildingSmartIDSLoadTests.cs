@@ -33,7 +33,7 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 31, 3)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
-        public void CanLoadFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
+        public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
         {
             DirectoryInfo d = new(".");
             Debug.WriteLine(d.FullName);

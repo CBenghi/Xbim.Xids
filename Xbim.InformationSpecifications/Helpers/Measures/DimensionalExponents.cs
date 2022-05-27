@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Xbim.InformationSpecifications.Generator.Measures
+namespace Xbim.InformationSpecifications.Helpers
 {
     public class DimensionalExponents
     {
@@ -47,12 +47,16 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         }
 
 
-        public static DimensionalExponents FromString(string str)
+        public static DimensionalExponents? FromString(string str)
         {
             str = str.Trim();
             str = str.Trim('(');
             str = str.Trim(')');
+#if NETSTANDARD2_0 
+            var arr = str.Split(new string[] { "," }, System.StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+#else
             var arr = str.Split(new string[] { "," }, System.StringSplitOptions.TrimEntries);
+#endif
             if (arr.Length != 7)
                 return null;
             var res = new int[arr.Length];
@@ -96,9 +100,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             "m", "kg", "s", "A", "K", "mol", "cd"
         };
 
-
-
-        internal string ToUnitSymbol()
+        public string ToUnitSymbol()
         {
             int[] asArray = ValuesAsArray();
 

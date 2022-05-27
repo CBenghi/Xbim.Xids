@@ -1,64 +1,65 @@
-﻿// generated via source generation from xbim.xids.generator
-using System;
+// generated running xbim.xids.generator
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		public static IEnumerable<IfcMeasureInfo> GetIfcMeasures()
+		public static Dictionary<string, IfcMeasureInfo> IfcMeasures = new()
 		{
-			yield return new IfcMeasureInfo("IfcAreaDensityMeasure", "Area density", "", "Kg/m2");
-			yield return new IfcMeasureInfo("IfcAreaMeasure", "Area", "square meter", "m2");
-			yield return new IfcMeasureInfo("IfcDynamicViscosityMeasure", "Dynamic viscosity", "", "Pa s");
-			yield return new IfcMeasureInfo("IfcElectricCapacitanceMeasure", "Electric capacitance", "farad", "F");
-			yield return new IfcMeasureInfo("IfcElectricChargeMeasure", "Electric charge", "coulomb", "C");
-			yield return new IfcMeasureInfo("IfcElectricConductanceMeasure", "Electric conductance", "siemens", "S");
-			yield return new IfcMeasureInfo("IfcElectricCurrentMeasure", "Electric current", "ampere", "A");
-			yield return new IfcMeasureInfo("IfcElectricResistanceMeasure", "Electric resistance", "ohm", "Ω");
-			yield return new IfcMeasureInfo("IfcElectricVoltageMeasure", "Electric voltage", "volt", "V");
-			yield return new IfcMeasureInfo("IfcEnergyMeasure", "Energy", "joule", "J");
-			yield return new IfcMeasureInfo("IfcForceMeasure", "Force", "newton", "N");
-			yield return new IfcMeasureInfo("IfcFrequencyMeasure", "Frequency", "hertz", "Hz");
-			yield return new IfcMeasureInfo("IfcHeatFluxDensityMeasure", "Heat flux density", "", "W/m2");
-			yield return new IfcMeasureInfo("IfcHeatingValueMeasure", "Heating", "", "J/Kg");
-			yield return new IfcMeasureInfo("IfcIlluminanceMeasure", "Illuminance", "lux", "lx");
-			yield return new IfcMeasureInfo("IfcIonConcentrationMeasure", "Ion concentration measure", "", "Kg/m3");
-			yield return new IfcMeasureInfo("IfcIsothermalMoistureCapacityMeasure", "Iso thermal moisture capacity", "", "m3/Kg");
-			yield return new IfcMeasureInfo("IfcLengthMeasure", "Length", "meter", "m");
-			yield return new IfcMeasureInfo("IfcLinearVelocityMeasure", "Speed", "", "m/s");
-			yield return new IfcMeasureInfo("IfcLuminousFluxMeasure", "Luminous flux", "Lumen", "lm");
-			yield return new IfcMeasureInfo("IfcLuminousIntensityMeasure", "Luminous intensity", "candela", "cd");
-			yield return new IfcMeasureInfo("IfcMassDensityMeasure", "Mass density", "", "Kg/m3");
-			yield return new IfcMeasureInfo("IfcMassFlowRateMeasure", "Mass flow rate", "", "Kg/s");
-			yield return new IfcMeasureInfo("IfcMassMeasure", "Mass", "kilogram", "Kg");
-			yield return new IfcMeasureInfo("IfcMassPerLengthMeasure", "Mass per length", "", "Kg/m");
-			yield return new IfcMeasureInfo("IfcModulusOfElasticityMeasure", "Modulus of elasticity", "", "N/m2");
-			yield return new IfcMeasureInfo("IfcMoistureDiffusivityMeasure", "Moisture diffusivity", "", "m3/s");
-			yield return new IfcMeasureInfo("IfcMolecularWeightMeasure", "Molecular weight", "", "Kg/mole");
-			yield return new IfcMeasureInfo("IfcMomentOfInertiaMeasure", "Moment of inertia", "", "m4");
-			yield return new IfcMeasureInfo("IfcPHMeasure", "PH", "", "PH");
-			yield return new IfcMeasureInfo("IfcPlanarForceMeasure", "Planar force", "", "Pa");
-			yield return new IfcMeasureInfo("IfcPlaneAngleMeasure", "Angle", "radian", "rad");
-			yield return new IfcMeasureInfo("IfcPlaneAngleMeasure", "Plane angle", "radian", "rad");
-			yield return new IfcMeasureInfo("IfcPowerMeasure", "Power", "watt", "W");
-			yield return new IfcMeasureInfo("IfcPressureMeasure", "Pressure", "pascal", "Pa");
-			yield return new IfcMeasureInfo("IfcRadioActivityMeasure", "Radio activity", "Becqurel", "Bq");
-			yield return new IfcMeasureInfo("IfcRatioMeasure", "Ratio", "Percent", "%");
-			yield return new IfcMeasureInfo("IfcRotationalFrequencyMeasure", "Rotational frequency", "hertz", "Hz");
-			yield return new IfcMeasureInfo("IfcSectionModulusMeasure", "Section modulus", "", "m3");
-			yield return new IfcMeasureInfo("IfcSoundPowerMeasure", "Sound power", "decibel", "db");
-			yield return new IfcMeasureInfo("IfcSoundPressureMeasure", "Sound pressure", "decibel", "db");
-			yield return new IfcMeasureInfo("IfcSpecificHeatCapacityMeasure", "Specific heat capacity", "", "J/Kg K");
-			yield return new IfcMeasureInfo("IfcTemperatureRateOfChangeMeasure", "Temperature rate of change", "", "K/s");
-			yield return new IfcMeasureInfo("IfcThermalConductivityMeasure", "Thermal conductivity", "", "W/m K");
-			yield return new IfcMeasureInfo("IfcThermodynamicTemperatureMeasure", "Temperature", "kelvin", "K");
-			yield return new IfcMeasureInfo("IfcTimeMeasure", "Time", "second", "s");
-			yield return new IfcMeasureInfo("IfcTorqueMeasure", "Torque", "", "N m");
-			yield return new IfcMeasureInfo("IfcVaporPermeabilityMeasure", "Vapor permeability", "", "Kg / s m Pa");
-			yield return new IfcMeasureInfo("IfcVolumeMeasure", "Volume", "cubic meter", "m3");
-			yield return new IfcMeasureInfo("IfcVolumetricFlowRateMeasure", "Volumetric flow rate", "", "m3/s");
-			yield return new IfcMeasureInfo("IfcWarpingConstantMeasure", "Warping constant", "", "m6");
-		}
+			{ "AmountOfSubstance", new IfcMeasureInfo("AmountOfSubstance", "IfcAmountOfSubstanceMeasure", "Amount of substance", "mole", "mol", "(0, 0, 0, 0, 0, 1, 0)") },
+			{ "AreaDensity", new IfcMeasureInfo("AreaDensity", "IfcAreaDensityMeasure", "Area density", "", "Kg/m2", "(-2, 1, 0, 0, 0, 0, 0)") },
+			{ "Area", new IfcMeasureInfo("Area", "IfcAreaMeasure", "Area", "square meter", "m2", "(2, 0, 0, 0, 0, 0, 0)") },
+			{ "DynamicViscosity", new IfcMeasureInfo("DynamicViscosity", "IfcDynamicViscosityMeasure", "Dynamic viscosity", "", "Pa s", "(-1, 1, -1, 0, 0, 0, 0)") },
+			{ "ElectricCapacitance", new IfcMeasureInfo("ElectricCapacitance", "IfcElectricCapacitanceMeasure", "Electric capacitance", "farad", "F", "(-2, 1, 4, 1, 0, 0, 0)") },
+			{ "ElectricCharge", new IfcMeasureInfo("ElectricCharge", "IfcElectricChargeMeasure", "Electric charge", "coulomb", "C", "(0, 0, 1, 1, 0, 0, 0)") },
+			{ "ElectricConductance", new IfcMeasureInfo("ElectricConductance", "IfcElectricConductanceMeasure", "Electric conductance", "siemens", "S", "(-2, -1, 3, 2, 0, 0, 0)") },
+			{ "ElectricCurrent", new IfcMeasureInfo("ElectricCurrent", "IfcElectricCurrentMeasure", "Electric current", "ampere", "A", "(0, 0, 0, 1, 0, 0, 0)") },
+			{ "ElectricResistance", new IfcMeasureInfo("ElectricResistance", "IfcElectricResistanceMeasure", "Electric resistance", "ohm", "Ω", "(2, 1, -3, -2, 0, 0, 0)") },
+			{ "ElectricVoltage", new IfcMeasureInfo("ElectricVoltage", "IfcElectricVoltageMeasure", "Electric voltage", "volt", "V", "(2, 1, -3, -1, 0, 0, 0)") },
+			{ "Energy", new IfcMeasureInfo("Energy", "IfcEnergyMeasure", "Energy", "joule", "J", "(2, 1, -2, 0, 0, 0, 0)") },
+			{ "Force", new IfcMeasureInfo("Force", "IfcForceMeasure", "Force", "newton", "N", "(1, 1, -2, 0, 0, 0, 0)") },
+			{ "Frequency", new IfcMeasureInfo("Frequency", "IfcFrequencyMeasure", "Frequency", "hertz", "Hz", "(0, 0, -1, 0, 0, 0, 0)") },
+			{ "HeatFluxDensity", new IfcMeasureInfo("HeatFluxDensity", "IfcHeatFluxDensityMeasure", "Heat flux density", "", "W/m2", "(0, 1, -3, 0, 0, 0, 0)") },
+			{ "Heating", new IfcMeasureInfo("Heating", "IfcHeatingValueMeasure", "Heating", "", "J/K", "(2, 1, -2, 0, -1, 0, 0)") },
+			{ "Illuminance", new IfcMeasureInfo("Illuminance", "IfcIlluminanceMeasure", "Illuminance", "lux", "lx", "(-2, 0, 0, 0, 0, 0, 1)") },
+			{ "IonConcentration", new IfcMeasureInfo("IonConcentration", "IfcIonConcentrationMeasure", "Ion concentration measure", "", "mol/m3", "(-3, 1, 0, 0, 0, 0, 0)") },
+			{ "IsoThermalMoistureCapacity", new IfcMeasureInfo("IsoThermalMoistureCapacity", "IfcIsothermalMoistureCapacityMeasure", "Iso thermal moisture capacity", "", "m3/Kg", "(3, -1, 0, 0, 0, 0, 0)") },
+			{ "Length", new IfcMeasureInfo("Length", "IfcLengthMeasure", "Length", "meter", "m", "(1, 0, 0, 0, 0, 0, 0)") },
+			{ "Speed", new IfcMeasureInfo("Speed", "IfcLinearVelocityMeasure", "Speed", "", "m/s", "(1, 0, -1, 0, 0, 0, 0)") },
+			{ "LuminousFlux", new IfcMeasureInfo("LuminousFlux", "IfcLuminousFluxMeasure", "Luminous flux", "Lumen", "lm", "(0, 0, 0, 0, 0, 0, 1)") },
+			{ "LuminousIntensity", new IfcMeasureInfo("LuminousIntensity", "IfcLuminousIntensityMeasure", "Luminous intensity", "candela", "cd", "(0, 0, 0, 0, 0, 0, 1)") },
+			{ "MassDensity", new IfcMeasureInfo("MassDensity", "IfcMassDensityMeasure", "Mass density", "", "Kg/m3", "(-3, 1, 0, 0, 0, 0, 0)") },
+			{ "MassFlowRate", new IfcMeasureInfo("MassFlowRate", "IfcMassFlowRateMeasure", "Mass flow rate", "", "Kg/s", "(0, 1, -1, 0, 0, 0, 0)") },
+			{ "Mass", new IfcMeasureInfo("Mass", "IfcMassMeasure", "Mass", "kilogram", "Kg", "(0, 1, 0, 0, 0, 0, 0)") },
+			{ "MassPerLength", new IfcMeasureInfo("MassPerLength", "IfcMassPerLengthMeasure", "Mass per length", "", "Kg/m", "(-1, 1, 0, 0, 0, 0, 0)") },
+			{ "ModulusOfElasticity", new IfcMeasureInfo("ModulusOfElasticity", "IfcModulusOfElasticityMeasure", "Modulus of elasticity", "", "N/m2", "(-1, 1, -2, 0, 0, 0, 0)") },
+			{ "MoistureDiffusivity", new IfcMeasureInfo("MoistureDiffusivity", "IfcMoistureDiffusivityMeasure", "Moisture diffusivity", "", "m3/s", "(3, 0, -1, 0, 0, 0, 0)") },
+			{ "MolecularWeight", new IfcMeasureInfo("MolecularWeight", "IfcMolecularWeightMeasure", "Molecular weight", "", "Kg/mol", "(0, 1, 0, 0, 0, -1, 0)") },
+			{ "MomentOfInertia", new IfcMeasureInfo("MomentOfInertia", "IfcMomentOfInertiaMeasure", "Moment of inertia", "", "m4", "(4, 0, 0, 0, 0, 0, 0)") },
+			{ "PH", new IfcMeasureInfo("PH", "IfcPHMeasure", "PH", "", "PH", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "PlanarForce", new IfcMeasureInfo("PlanarForce", "IfcPlanarForceMeasure", "Planar force", "", "Pa", "(-1, 1, -2, 0, 0, 0, 0)") },
+			{ "Angle", new IfcMeasureInfo("Angle", "IfcPlaneAngleMeasure", "Angle", "radian", "rad", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "PlaneAngle", new IfcMeasureInfo("PlaneAngle", "IfcPlaneAngleMeasure", "Plane angle", "radian", "rad", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "Power", new IfcMeasureInfo("Power", "IfcPowerMeasure", "Power", "watt", "W", "(2, 1, -3, 0, 0, 0, 0") },
+			{ "Pressure", new IfcMeasureInfo("Pressure", "IfcPressureMeasure", "Pressure", "pascal", "Pa", "(-1, 1, -2, 0, 0, 0, 0)") },
+			{ "RadioActivity", new IfcMeasureInfo("RadioActivity", "IfcRadioActivityMeasure", "Radio activity", "Becqurel", "Bq", "(0, 0, -1, 0, 0, 0, 0)") },
+			{ "Ratio", new IfcMeasureInfo("Ratio", "IfcRatioMeasure", "Ratio", "Percent", "%", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "RotationalFrequency", new IfcMeasureInfo("RotationalFrequency", "IfcRotationalFrequencyMeasure", "Rotational frequency", "hertz", "Hz", "(0, 0, -1, 0, 0, 0, 0)") },
+			{ "SectionModulus", new IfcMeasureInfo("SectionModulus", "IfcSectionModulusMeasure", "Section modulus", "", "m3", "(3, 0, 0, 0, 0, 0, 0)") },
+			{ "SoundPower", new IfcMeasureInfo("SoundPower", "IfcSoundPowerMeasure", "Sound power", "decibel", "db", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "SoundPressure", new IfcMeasureInfo("SoundPressure", "IfcSoundPressureMeasure", "Sound pressure", "decibel", "db", "(0, 0, 0, 0, 0, 0, 0)") },
+			{ "SpecificHeatCapacity", new IfcMeasureInfo("SpecificHeatCapacity", "IfcSpecificHeatCapacityMeasure", "Specific heat capacity", "", "J/Kg K", "(2, 0, -2, 0, -1, 0, 0)") },
+			{ "TemperatureRateOfChange", new IfcMeasureInfo("TemperatureRateOfChange", "IfcTemperatureRateOfChangeMeasure", "Temperature rate of change", "", "K/s", "(0, 0, -1, 0, 1, 0, 0)") },
+			{ "ThermalConductivity", new IfcMeasureInfo("ThermalConductivity", "IfcThermalConductivityMeasure", "Thermal conductivity", "", "W/m K", "(1, 1, -3, 0, -1, 0, 0)") },
+			{ "Temperature", new IfcMeasureInfo("Temperature", "IfcThermodynamicTemperatureMeasure", "Temperature", "kelvin", "K", "(0, 0, 0, 0, 1, 0, 0)") },
+			{ "Time", new IfcMeasureInfo("Time", "IfcTimeMeasure", "Time", "second", "s", "(0, 0, 1, 0, 0, 0, 0)") },
+			{ "Torque", new IfcMeasureInfo("Torque", "IfcTorqueMeasure", "Torque", "", "N m", "(2, 1, -2, 0, 0, 0, 0)") },
+			{ "VaporPermeability", new IfcMeasureInfo("VaporPermeability", "IfcVaporPermeabilityMeasure", "Vapor permeability", "", "Kg / s m Pa", "(0, 0, 1, 0, 0, 0, 0)") },
+			{ "Volume", new IfcMeasureInfo("Volume", "IfcVolumeMeasure", "Volume", "cubic meter", "m3", "(3, 0, 0, 0, 0, 0, 0)") },
+			{ "VolumetricFlowRate", new IfcMeasureInfo("VolumetricFlowRate", "IfcVolumetricFlowRateMeasure", "Volumetric flow rate", "", "m3/s", "(3, 0, -1, 0, 0, 0, 0)") },
+			{ "String", new IfcMeasureInfo("String", "", "", "", "", "") },
+			{ "Number", new IfcMeasureInfo("Number", "", "", "", "", "") },
+		};
 	}
 }
