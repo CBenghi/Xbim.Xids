@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,11 +29,78 @@ namespace Xbim.InformationSpecifications.Generator
 				foreach (var set in propertyDefinitions.DefinitionSets)
 				{
 					var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();
-					var properties = set.PropertyDefinitions.Select(x => x.Name).ToArray();
+					var richProp = new List<string>();
+                    foreach (var prop in set.PropertyDefinitions)
+                    {
+						string def = "";
+						if (!string.IsNullOrWhiteSpace(prop.Definition))
+                        {
+							def = $" {{ Definition = \"{FixForCode(prop.Definition)}\"}}";
+                        }
+						if (prop.PropertyType.PropertyValueType is TypePropertySingleValue singleV)
+						{
+							var t = $"new SingleValuePropertyType(\"{prop.Name}\", \"{singleV.DataType.Type}\"){def}";
+							richProp.Add(t);
+						}
+						else if (prop.PropertyType.PropertyValueType is TypePropertyBoundedValue range)
+                        {
+							// todo: this case would have a range for value, that we are ignoring.
+							var t = $"new SingleValuePropertyType(\"{prop.Name}\", \"{range.DataType.Type}\"){def}";
+							richProp.Add(t);
+						}
+						else if (prop.PropertyType.PropertyValueType is TypePropertyEnumeratedValue enumV)
+						{
+							if (enumV.ConstantList.Any())
+							{
+								throw new Exception("Not implemented data structure.");
+							}
+							else
+							{
+								richProp.Add($"new EnumerationPropertyType(\"{prop.Name}\", {newStringArray(enumV.EnumList.Items)} ){def}");
+							}
+						}
+						else if (prop.PropertyType.PropertyValueType is TypePropertyReferenceValue refP)
+						{
+							// reference values do not have a testing method, and are ignored
+							// e.g. they would refer to an IfcMaterial or IfcPerson
+						}
+						else if (prop.PropertyType.PropertyValueType is TypePropertyListValue lst)
+						{
+							// list values do not have a testing method, and are ignored
+							// e.g. they could have multiple values for the property
+						}
+						else if (prop.PropertyType.PropertyValueType is TypeSimpleProperty simple)
+						{
+							// todo: maybe some SimpleProperties can be added to the list, this would need a review
+							// list values do not have a testing method, and are ignored
+							// e.g. they could have multiple values for the property
+						}
+						else if (prop.PropertyType.PropertyValueType is TypePropertyTableValue table)
+						{
+							// list values do not have a testing method, and are ignored
+							// e.g. they could have multiple values for the property
+						}
+						else if (prop.PropertyType.PropertyValueType is TypeComplexProperty cmplex)
+						{
+							// complex types do not have a testing method, and are ignored
+							// e.g. they could have multiple values for the property
+						}
+						else
+						{
+							var t = $"new NamedPropertyType(/* {prop.PropertyType.PropertyValueType?.GetType().Name} */\"{prop.Name}\"){def}";
+							richProp.Add(t);
+						}
+			
+
+						// prop.PropertyType
+                    }
 					var cArr = newStringArray(classes);
-					var pArr = newStringArray(properties);
+					
+					var rpArr = newArray("IPropertyTypeInfo", richProp);
+
 					// sb.AppendLine($@"			// {string.Join(",", classes)}");
-					sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {pArr}, {cArr});");
+					// sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {pArr}, {cArr});");
+					sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {rpArr}, {cArr});");
 				}
 				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}
@@ -39,9 +108,25 @@ namespace Xbim.InformationSpecifications.Generator
 			return source;
 		}
 
-		private static string newStringArray(string[] classes)
+        private static string FixForCode(string definition)
+        {
+			var tmp = definition;
+			tmp = tmp.Replace("\t", "\\t");
+			tmp = tmp.Replace("\r", "\\r");
+			tmp = tmp.Replace("\n", "\\n");
+			tmp = tmp.Replace("\"", "\\\"");
+			return tmp;
+        }
+
+        private static string newStringArray(IEnumerable<string> values)
 		{
-			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
+			var strippedValues = values.Select(x => x.Trim(' ', '\r', '\n'));
+			return @$"new [] {{ ""{string.Join("\", \"", strippedValues)}"" }}";
+		}
+
+		private static string newArray(string type, IEnumerable<string> values)
+		{
+			return @$"new {type}[] {{ {string.Join(", ", values)} }}";
 		}
 
 		private const string stub = @"// generated via source generation from xbim.xids.generator

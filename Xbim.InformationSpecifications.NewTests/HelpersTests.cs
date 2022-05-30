@@ -7,8 +7,9 @@ using System.Text;
 using System.IO;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
-namespace Xbim.InformationSpecifications.Tests
+namespace Xbim.InformationSpecifications.Test.Helpers
 {
 
 	public class HelpersTests
@@ -123,8 +124,8 @@ namespace Xbim.InformationSpecifications.Tests
 				(IfcSchemaVersion.IFC4X3, 14)
 			};
 
-            foreach (var schema in schemas)
-            {
+			foreach (var schema in schemas)
+			{
 				var schemaName = schema.Item1;
 				var expected = schema.Item2;
 				var cnt = 0;
@@ -137,7 +138,48 @@ namespace Xbim.InformationSpecifications.Tests
 					}
 				}
 				cnt.Should().Be(expected, $"there's an error on {schemaName}");
-            }
+			}
 		}
+
+		[Fact]
+		public void PropMeasureTest()
+		{
+			var prop = PropertySetInfo.Get(IfcSchemaVersion.IFC2X3, "Pset_DuctFittingTypeCommon", "SubType");
+			prop.Should().NotBeNull();
+
+			var t = prop.IsMeasureProperty(out var measure);
+			t.Should().BeTrue();
+			measure.Should().Be(IfcMeasures.String);
+
+            foreach (var item in FindMeasureTypes())
+            {
+				item.IsMeasureProperty(out _);
+            }
+
+		}
+
+		private IEnumerable<IPropertyTypeInfo> FindMeasureTypes()
+		{
+			HashSet<string> done = new HashSet<string>();
+            foreach (var item in new [] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4 })
+            {
+				var schema = PropertySetInfo.GetSchema(item);
+				schema.Should().NotBeNull();
+                foreach (var propSet in schema)
+                {
+                    foreach (var prop in propSet.Properties.OfType<SingleValuePropertyType>().Where(x=>x.DataType != null))
+                    {
+						if (done.Contains(prop.DataType))
+							continue;
+						done.Add(prop.DataType);	
+						yield return prop;
+                    }
+                }
+			}
+
+			
+		}
+
+
 	}
 }

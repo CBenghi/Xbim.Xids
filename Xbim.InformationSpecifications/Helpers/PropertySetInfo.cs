@@ -6,19 +6,21 @@ namespace Xbim.InformationSpecifications.Helpers
 	public partial class PropertySetInfo
 	{
 		public string Name { get; set; }
-		public IList<string> PropertyNames { get; set; }
+		public IEnumerable<string> PropertyNames => Properties.Select(p => p.Name);
 		public IList<string> ApplicableClasses { get; set; }
+		public IList<IPropertyTypeInfo> Properties { get; set; } 
 
+		public IPropertyTypeInfo? GetProperty(string name) => Properties.FirstOrDefault(p => p.Name == name);
 
 		public PropertySetInfo(
 			string propertySetName,
-			IList<string> propertyNames,
-			IList<string> applicableClasses
+			IEnumerable<IPropertyTypeInfo> properties,
+			IEnumerable<string> applicableClasses
 			)
 		{
 			Name = propertySetName;
-			PropertyNames = propertyNames;
-			ApplicableClasses = applicableClasses;
+			Properties = properties.ToList();
+			ApplicableClasses = applicableClasses.ToList();
 		}
 
 		private static IList<PropertySetInfo>? schemaIFC4;
@@ -32,7 +34,38 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
-		private static IList<PropertySetInfo>? schemaIFC2x3;
+		public static IPropertyTypeInfo? Get(IfcSchemaVersion version, string propertySetName, string propertyName)
+        {
+            IList<PropertySetInfo>? schema = GetSchema(version);
+			if (schema == null)
+				return null;
+            var set = schema.Where(x => x.Name == propertySetName).FirstOrDefault();
+            if (set is null)
+                return null;
+            return set.GetProperty(propertyName);
+        }
+
+        public static IList<PropertySetInfo>? GetSchema(IfcSchemaVersion version)
+        {
+            IList<PropertySetInfo>? schema;
+            switch (version)
+            {
+                case IfcSchemaVersion.IFC2X3:
+                    schema = SchemaIfc2x3;
+                    break;
+                case IfcSchemaVersion.IFC4:
+                    schema = SchemaIfc4;
+                    break;
+                case IfcSchemaVersion.Undefined:
+                case IfcSchemaVersion.IFC4X3:
+                default:
+                    schema = null;
+                    break;
+            }
+            return schema;
+        }
+
+        private static IList<PropertySetInfo>? schemaIFC2x3;
 		public static IList<PropertySetInfo> SchemaIfc2x3
 		{
 			get

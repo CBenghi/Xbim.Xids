@@ -6,7 +6,7 @@
 	<ItemGroup>
 		<PackageReference Include="TextCopy" Version="6.1.0" />
 		<PackageReference Include="Xbim.Essentials" Version="5.1.341" />
-		<PackageReference Include="Xbim.Properties" Version="5.0.0" />
+		<PackageReference Include="Xbim.Properties" Version="5.0.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Xbim.InformationSpecifications\Xbim.InformationSpecifications.csproj" />

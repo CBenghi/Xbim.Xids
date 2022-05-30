@@ -99,6 +99,11 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
+		public static IfcMeasureInfo? GetMeasure(string type)
+        {
+			return IfcMeasures.Values.FirstOrDefault(x => x.IfcMeasure == type);
+		}
+
         private static void SetTypeObject(SchemaInfo t, string topTypeObjectClass)
         {
             foreach (var cls in t.Classes.Values)
