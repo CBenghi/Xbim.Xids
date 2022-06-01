@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -23,14 +24,29 @@ namespace Xbim.InformationSpecifications
 		
         /// <summary>
         /// Constrained type of the identified property value.
+        /// Use the <see cref="HasMeasure(out IfcMeasures?)"/> method to test for the enumeration.
         /// </summary>
         public string? Measure { get; set; }
 
         /// <summary>
         /// Constraint that is applied to the value of the Property.
         /// </summary>
-        public ValueConstraint? PropertyValue { get; set; } 
+        public ValueConstraint? PropertyValue { get; set; }
 
+        public bool HasMeasure([NotNullWhen(true)] out IfcMeasures? measure)
+        {
+            if (Measure is not null && Enum.TryParse<IfcMeasures>(Measure, out var found))
+            {
+                measure = found;
+                return true;
+            }
+            measure = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Textual facet description
+        /// </summary>
         public string Short()
         {
             var sb = new StringBuilder();
@@ -42,10 +58,8 @@ namespace Xbim.InformationSpecifications
                 sb.Append($" in property set '{PropertySetName}'");
             if (Measure != null)
                 sb.Append($" containing '{Measure}'");
-            
             if (PropertyValue != null)
-                sb.Append($" {PropertyValue.Short()}");
-            
+                sb.Append($" {PropertyValue.Short()}");            
             sb.Append('.');
             return sb.ToString();
         }
