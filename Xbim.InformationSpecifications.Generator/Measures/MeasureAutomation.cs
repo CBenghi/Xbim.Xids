@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Xbim.Common.Metadata;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications.Generator.Measures
@@ -126,15 +127,50 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			return sb.ToString();
 		}
 
+		private static string newStringArray(string[] classes)
+		{
+			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
+		}
+
 		public static string Execute_GenerateIfcMeasureDictionary()
 		{
 			var source = stub;
 			var sb = new StringBuilder();
 
+			var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+			var meta = new List<ExpressMetaData>();
+
+			foreach (var schema in schemas)
+			{
+				System.Reflection.Module module = null;
+				if (schema == Properties.Version.IFC2x3)
+					module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
+				else if (schema == Properties.Version.IFC4)
+					module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
+				var metaD = ExpressMetaData.GetMetadata(module);
+				meta.Add(metaD);
+			}
+
 			MeasureCollection mCollection = new(GetFromDocumentation().Concat(ExtraMeaures()));
 			foreach (var measure in mCollection.MeasureList)
 			{
-				sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\") }},");
+				var concreteClasses = new List<string>();	
+				var ifcType = measure.IfcMeasure;
+				if (ifcType != null)
+				{
+					for (int i = 0; i < schemas.Length; i++)
+					{
+						Properties.Version schema = schemas[i];
+						var metaD = meta[i];
+						var tp = metaD.ExpressType(ifcType.ToUpperInvariant());
+						if (tp != null)
+						{
+							var cClass = tp.Type.FullName.Replace("Xbim.", "");
+							concreteClasses.Add(cClass);
+						}
+					}
+				}
+				sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {newStringArray(concreteClasses.ToArray())}) }},");
 			}
 
 			source = source.Replace($"\t\t\t<PlaceHolder>\r\n", sb.ToString());
