@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static Xbim.InformationSpecifications.FacetGroup;
@@ -148,6 +149,7 @@ namespace Xbim.InformationSpecifications
 		public Xids()
 		{
 			FacetRepository = new FacetGroupRepository(this);
+			_readVersion = "not read";
 		}
 	
 		public IEnumerable<Specification> AllSpecifications()
@@ -178,6 +180,24 @@ namespace Xbim.InformationSpecifications
 				FacetRepository.Collection.Remove(unused);
 			}
 		}
+
+		private string _readVersion;
+
+		internal string ReadVersion { get { return _readVersion; } }
+
+		public string Version
+        {
+			get
+            {
+				var assembly = typeof(Xids).Assembly;
+				FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
+				return fileVersion.FileVersion ?? "Undefined";
+			}
+			set
+            {
+				_readVersion = value;
+            }
+        }
 
 		public Project Project { get; set; } = new Project();
 

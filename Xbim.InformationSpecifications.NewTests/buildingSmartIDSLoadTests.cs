@@ -35,29 +35,34 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
         public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
         {
-            DirectoryInfo d = new(".");
-            Debug.WriteLine(d.FullName);
-            ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
-            CheckSchema(fileName, logg);
-
-            var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
-
-            var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
-            loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
-            errorAndWarnings.Count().Should().Be(err, "mismatch with expected value");
-            CheckCounts(specificationsCount, facetGroupsCount, loaded);
-
             var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
-            outputFile = Path.GetTempFileName(); 
-
-            Debug.WriteLine(outputFile);
-            loaded.ExportBuildingSmartIDS(outputFile);
-            CheckSchema(outputFile, logg);
-
-            var reloaded = Xids.ImportBuildingSmartIDS(outputFile);
-            CheckCounts(specificationsCount, facetGroupsCount, reloaded);
+            outputFile = Path.GetTempFileName();
+            try
+            {
+                DirectoryInfo d = new(".");
+                Debug.WriteLine(d.FullName);
+                ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
+                CheckSchema(fileName, logg);
+                var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
+                var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+                loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
+                var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
+                var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
+                errorAndWarnings.Count().Should().Be(err, "mismatch with expected value");
+                CheckCounts(specificationsCount, facetGroupsCount, loaded);
+                loaded.ExportBuildingSmartIDS(outputFile);
+                CheckSchema(outputFile, logg);
+                var reloaded = Xids.ImportBuildingSmartIDS(outputFile);
+                CheckCounts(specificationsCount, facetGroupsCount, reloaded);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                File.Delete(outputFile);
+            }
         }
 
         internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()

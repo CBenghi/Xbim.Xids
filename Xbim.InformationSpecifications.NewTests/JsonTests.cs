@@ -158,5 +158,14 @@ namespace Xbim.InformationSpecifications.Tests
 
 			File.Delete(tmpFile);
 		}
+
+		[Fact]
+		public void FileVersionWorks()
+		{
+			var x = new Xids();
+			Debug.WriteLine(x.Version);
+			x.Version.Should().NotBeEmpty();
+
+		}
 	}
 }
