@@ -189,9 +189,9 @@ namespace Xbim.InformationSpecifications
         {
 			get
             {
-				var assembly = typeof(Xids).Assembly;
-				FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
-				return fileVersion.FileVersion ?? "Undefined";
+				// doint it dynamically breaks under some scenarios (see blazor in webassembly)
+				// so we hardcode it
+				return AssemblyVersion;
 			}
 			set
             {

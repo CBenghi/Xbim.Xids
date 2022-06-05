@@ -19,7 +19,7 @@ namespace Xbim.InformationSpecifications.Generator
         public static void GenerateFulltestFiles()
         {
             var schemaFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\ids_06.xsd";
-            DirectoryInfo d = new(".");
+            // DirectoryInfo d = new(".");
             // Debug.WriteLine(d.FullName);
             OpenUrl("https://www.liquid-technologies.com/online-xsd-to-xml-converter");
 
