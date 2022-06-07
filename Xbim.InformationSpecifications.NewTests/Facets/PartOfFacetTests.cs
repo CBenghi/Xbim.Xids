@@ -67,11 +67,13 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 		public static IEnumerable<PartOfFacet> GetDifferentAttributes()
 		{
 			yield return new PartOfFacet();
+			yield return new PartOfFacet() { EntityName = "name", };
 			yield return new PartOfFacet() { Instructions = "instr", };
 			yield return new PartOfFacet() { Uri = "uri", };
 			yield return new PartOfFacet() { Entity = PartOfFacet.Container.IfcElementAssembly.ToString()};
 			yield return new PartOfFacet()
 			{
+				EntityName = "name",
 				Instructions = "instr",
 				Uri = "uri",
 				Entity = PartOfFacet.Container.IfcElementAssembly.ToString()

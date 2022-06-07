@@ -78,6 +78,11 @@ namespace Xbim.InformationSpecifications
         public string Entity { get; set; } = string.Empty;
 
         /// <summary>
+        /// Filter on the name of the collecting entity.
+        /// </summary>
+        public string? EntityName { get; set; }
+
+        /// <summary>
         /// Returns the enum value of <see cref="Entity"/>.
         /// </summary>
         /// <returns></returns>
@@ -104,6 +109,8 @@ namespace Xbim.InformationSpecifications
                 return false;
             var thisEqual = (Entity, true).Equals((other.Entity, true));
             if (thisEqual == false)
+                return false;
+            if (!IFacetExtensions.NullEquals(EntityName, other.EntityName))
                 return false;
             return base.Equals(other);
         }
