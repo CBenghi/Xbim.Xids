@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
-			{ "PartOfFacet","String Entity,String EntityName,String Uri,String Instructions" },
+			{ "PartOfFacet","String Entity,ValueConstraint EntityName,String Uri,String Instructions" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 

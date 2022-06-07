@@ -80,7 +80,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Filter on the name of the collecting entity.
         /// </summary>
-        public string? EntityName { get; set; }
+        public ValueConstraint? EntityName { get; set; }
 
         /// <summary>
         /// Returns the enum value of <see cref="Entity"/>.
