@@ -67,7 +67,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 				tryImprove = false;
 				foreach (var missingExp in m.MeasureList.Where(x => x.DimensionalExponents == ""))
 				{
-					var neededSymbols = SymbolBreakDown(missingExp.UnitSymbol);
+					var neededSymbols = UnitFactor.SymbolBreakDown(missingExp.UnitSymbol);
 					var allSym = true;
 					foreach (var sym in neededSymbols)
 					{
@@ -76,7 +76,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 						{
 							if (found.DimensionalExponents != "")
 							{
-								var tde = sym.GetDimensionalExponents(m);
+								_ = sym.TryGetDimensionalExponents(out var tde, out _, out _);
 								Debug.WriteLine($"Found '{found.UnitSymbol}' - {found.DimensionalExponents} - {tde.ToUnitSymbol()}");
 							}
 							else
@@ -99,9 +99,12 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 						{
 							var found = m.GetByUnit(sym.UnitSymbol);
 							if (d == null)
-								d = sym.GetDimensionalExponents(m);
+								sym.TryGetDimensionalExponents(out d, out _, out _);
 							else
-								d = d.Multiply(sym.GetDimensionalExponents(m));
+							{
+								if (sym.TryGetDimensionalExponents(out var t, out _, out _))
+									d = d.Multiply(t);
+							}
 						}
 						if (d != null)
 						{
@@ -232,23 +235,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 				yield return item.Attributes[0].Value;
 			}
 		}
-
-
-		private static IEnumerable<UnitFactor> SymbolBreakDown(string unitSymbol)
-		{
-			var fraction = unitSymbol.Split('/');
-			var num = fraction[0];
-			var den = fraction.Length == 2 ? fraction[1] : "";
-
-			var numUnits = num.Split(' ');
-			var denUnits = den.Split(' ');
-
-			foreach (var item in numUnits.Where(x => x != ""))
-				yield return  new UnitFactor(item);
-			foreach (var item in denUnits.Where(x=>x!=""))
-				yield return new UnitFactor(item).Invert();
-		}
- 
+		 
 		private const string stub = @"// generated running xbim.xids.generator
 using System.Collections.Generic;
 

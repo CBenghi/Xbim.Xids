@@ -21,7 +21,6 @@ namespace Xbim.InformationSpecifications.Generator
 		public static void Main()
         {
             Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
-
             if (Console.ReadKey().Key == ConsoleKey.T)
             {
                 // Whenever the schema changes

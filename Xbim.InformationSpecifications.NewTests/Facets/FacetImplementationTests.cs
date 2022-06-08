@@ -29,6 +29,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,TypeName BaseType" },
 			{ "PartOfFacet","String Entity,ValueConstraint EntityName,String Uri,String Instructions" },
+			{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
 
@@ -41,7 +42,7 @@ namespace Xbim.InformationSpecifications.Tests
             foreach (var oneEqatable in allEquatables)
             {
 				var foundInDictionary = guaranteedStructures.TryGetValue(oneEqatable.Name, out var expected);
-				foundInDictionary.Should().BeTrue($"{oneEqatable.Name} should be a guaranteed equatable");
+				foundInDictionary.Should().BeTrue($"'{oneEqatable.Name}' should be a guaranteed equatable");
 				if (expected == "<skip>")
 					continue;
 

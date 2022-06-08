@@ -47,6 +47,13 @@ namespace Xbim.InformationSpecifications.Helpers
         /// </summary>
         public string[] ConcreteClasses { get; }
 
-
+        public string GetUnit()
+        {
+            if (!string.IsNullOrEmpty(Unit))
+                return Unit;
+            if (Exponents is not null)
+                return Exponents.ToUnitSymbol();
+            return "";
+        }
     }
 }

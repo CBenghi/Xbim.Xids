@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -265,6 +266,30 @@ namespace Xbim.InformationSpecifications.Helpers
 			if (!linked)
 				LinkTree();
 			return Classes.Values.GetEnumerator();
+		}
+
+		private static Dictionary<string, object>? _dicUnits;
+
+		public static bool TryGetUnit(string unit, [NotNullWhen(true)] out object? found)
+		{
+			if (_dicUnits == null)
+			{
+				_dicUnits = new Dictionary<string, object>();
+				foreach (var item in IfcMeasures.Values)
+				{
+					if (!_dicUnits.ContainsKey(item.UnitSymbol))
+					{
+						_dicUnits.Add(item.UnitSymbol, item);
+					}
+				}
+			}
+			if (_dicUnits.ContainsKey(unit))
+			{
+				found = _dicUnits[unit];
+				return true;
+			}
+			found = null;
+			return false;
 		}
 	}
 }
