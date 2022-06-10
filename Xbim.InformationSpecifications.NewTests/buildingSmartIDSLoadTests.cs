@@ -19,7 +19,6 @@ namespace Xbim.InformationSpecifications.Tests
         {
             OutputHelper = outputHelper;
         }
-
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]

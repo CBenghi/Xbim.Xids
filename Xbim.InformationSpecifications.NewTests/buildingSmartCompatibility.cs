@@ -241,10 +241,43 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
-        public void NotifiesErrorOnCompatibility()
+        public void NotifiesErrorOnCompatibilityExport()
         {
 
+            var tpFacet = new IfcTypeFacet() { IfcType = "IfcWall" };
+
+            var partFacet = new PartOfFacet();
+            partFacet.SetEntity(PartOfFacet.Container.IfcGroup);
+            partFacet.EntityName = "SomeName";
+
+            Xids x = GetSpec(tpFacet, partFacet);
+            RequiresErrors(x, 1);
+
+            partFacet.EntityName = null;
+            RequiresErrors(x, 0);
+
+            x = GetSpec(partFacet, tpFacet);
+            RequiresErrors(x, 1);
         }
 
+        private static Xids GetSpec(IFacet tpFacet, IFacet partFacet)
+        {
+            Xids x = new Xids();
+            var t = x.PrepareSpecification(IfcSchemaVersion.IFC4);
+            t.Applicability.Facets.Add(tpFacet);
+            t.Requirement.Facets.Add(partFacet);
+            return x;
+        }
+
+        private void RequiresErrors(Xids x, int v)
+        {
+            var loggerMock = new Mock<ILogger<buildingSmartCompatibilityTests>>();
+            var file = Path.GetTempFileName();
+            x.ExportBuildingSmartIDS(file, loggerMock.Object);
+            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
+            var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
+            errorAndWarnings.Count().Should().Be(v, $"{nameof(PartOfFacet.EntityName)} is not exportable to bS IDS in this scenario");
+            File.Delete(file);
+        }
     }
 }

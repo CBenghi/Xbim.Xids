@@ -230,24 +230,31 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
-                    xmlWriter.WriteStartElement("partOf", IdsNamespace);
-                    WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
-                    xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
-                    if (ValueConstraint.IsNotEmpty(pof.EntityName))
+                    if (forRequirement)
                     {
-                        LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName));
+                        xmlWriter.WriteStartElement("partOf", IdsNamespace);
+                        WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
+                        xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
+                        if (ValueConstraint.IsNotEmpty(pof.EntityName))
+                        {
+                            LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName), forRequirement);
+                        }
+                        xmlWriter.WriteEndElement();
                     }
-                    xmlWriter.WriteEndElement();
+                    else
+                    {
+                        // partOf is not supported for applicability in bS
+                        LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName), forRequirement);
+                    }
                     break;
                 default:
                     logger?.LogWarning($"todo: missing case for {item.GetType()}.");
                     break;
             }
         }
-
-        private void LogDataLoss(ILogger? logger, FacetGroup context, IFacet facet, string propertyName)
+        private void LogDataLoss(ILogger? logger, FacetGroup context, IFacet facet, string propertyName, bool forRequirement)
         {
-            logger?.LogError("Loss of data exporting group {grp}: property {prop} {tp} on ", facet.GetType().Name, propertyName);
+            logger?.LogError("Loss of data exporting group {grp}: property {prop} not available in {tp} for {ctx}.", context.Guid, propertyName, facet.GetType().Name, forRequirement ? "requirement" : "applicability");
         }
 
         private void WriteSimpleValue(XmlWriter xmlWriter, string stringValue)
