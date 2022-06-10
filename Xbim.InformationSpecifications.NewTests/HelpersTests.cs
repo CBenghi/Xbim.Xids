@@ -176,9 +176,16 @@ namespace Xbim.InformationSpecifications.Test.Helpers
                     }
                 }
 			}
-
-			
 		}
+
+        [Fact]
+		public void MeasureInfoNeverNull()
+        {
+            foreach (var m in Enum.GetValues<IfcMeasures>())
+            {
+				SchemaInfo.GetMeasure(m).Should().NotBeNull($"{m} is needed.");
+            }
+        }
 
 
 	}

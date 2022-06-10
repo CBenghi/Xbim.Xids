@@ -5,8 +5,6 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		
-
 		public static Dictionary<string, IfcMeasureInfo> IfcMeasures = new()
 		{
 			{ "AmountOfSubstance", new IfcMeasureInfo("AmountOfSubstance", "IfcAmountOfSubstanceMeasure", "Amount of substance", "mole", "mol", "(0, 0, 0, 0, 0, 1, 0)", new[] { "Ifc2x3.MeasureResource.IfcAmountOfSubstanceMeasure", "Ifc4.MeasureResource.IfcAmountOfSubstanceMeasure" }) },

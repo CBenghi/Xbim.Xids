@@ -6,6 +6,6 @@ namespace Xbim.InformationSpecifications
 {
     public partial class Xids
     {
-        public static string AssemblyVersion => "0.2.99";
+        public static string AssemblyVersion => "0.3.1";
     }
 }
