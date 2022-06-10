@@ -86,9 +86,9 @@ namespace Xbim.InformationSpecifications
 
             // then the specifications
             xmlWriter.WriteStartElement("specifications", IdsNamespace);
-            foreach (var requirement in specGroup.Specifications)
+            foreach (var spec in specGroup.Specifications)
             {
-                ExportBuildingSmartIDS(requirement, xmlWriter, logger);
+                ExportBuildingSmartIDS(spec, xmlWriter, logger);
             }
             xmlWriter.WriteEndElement();
 
@@ -155,7 +155,7 @@ namespace Xbim.InformationSpecifications
             {
                 foreach (var item in spec.Applicability.Facets)
                 {
-                    ExportBuildingSmartIDS(item, xmlWriter, false, logger, null);
+                    ExportBuildingSmartIDS(item, xmlWriter, false, logger, spec.Applicability, null);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -169,7 +169,7 @@ namespace Xbim.InformationSpecifications
                 {
                     var option = GetProgressive(opts, i, RequirementOptions.Expected);
                     IFacet? item = spec.Requirement.Facets[i];
-                    ExportBuildingSmartIDS(item, xmlWriter, true, logger, option);
+                    ExportBuildingSmartIDS(item, xmlWriter, true, logger, spec.Requirement, option);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -185,7 +185,7 @@ namespace Xbim.InformationSpecifications
             return opts[i];
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, RequirementOptions? requirementOption = null)
+        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementOptions? requirementOption = null)
         {
             switch (item)
             {
@@ -233,12 +233,21 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
                     WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
                     xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
+                    if (ValueConstraint.IsNotEmpty(pof.EntityName))
+                    {
+                        LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName));
+                    }
                     xmlWriter.WriteEndElement();
                     break;
                 default:
                     logger?.LogWarning($"todo: missing case for {item.GetType()}.");
                     break;
             }
+        }
+
+        private void LogDataLoss(ILogger? logger, FacetGroup context, IFacet facet, string propertyName)
+        {
+            logger?.LogError("Loss of data exporting group {grp}: property {prop} {tp} on ", facet.GetType().Name, propertyName);
         }
 
         private void WriteSimpleValue(XmlWriter xmlWriter, string stringValue)

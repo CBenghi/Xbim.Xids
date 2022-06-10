@@ -240,6 +240,11 @@ namespace Xbim.InformationSpecifications.Tests
             //}
         }
 
+        [Fact]
+        public void NotifiesErrorOnCompatibility()
+        {
+
+        }
 
     }
 }
