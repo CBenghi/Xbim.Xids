@@ -16,6 +16,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
         public MeasureUnit(string unitString)
         {
             Exponent = new DimensionalExponents();
+            if (unitString == "1")
+                unitString = "";
             foreach (var item in UnitFactor.SymbolBreakDown(unitString))
             {
                 if (item.TryGetDimensionalExponents(out var exp, out var ratio, out var off))

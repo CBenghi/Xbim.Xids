@@ -282,11 +282,15 @@ namespace Xbim.InformationSpecifications.Helpers
 				_dicUnits = new Dictionary<string, object>();
 				foreach (var item in IfcMeasures.Values)
 				{
-					if (!_dicUnits.ContainsKey(item.UnitSymbol))
-					{
+                    if (!string.IsNullOrWhiteSpace(item.UnitSymbol) && !_dicUnits.ContainsKey(item.UnitSymbol))
+                    {
 						_dicUnits.Add(item.UnitSymbol, item);
-					}
-				}
+					}					
+					if (!string.IsNullOrWhiteSpace(item.Unit) && !_dicUnits.ContainsKey(item.Unit))
+                    {
+                        _dicUnits.Add(item.Unit, item);
+                    }
+                }
 			}
 			if (_dicUnits.ContainsKey(unit))
 			{

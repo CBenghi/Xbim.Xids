@@ -60,8 +60,24 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             return false;
         }
 
+        public static List<(Regex rex, string replace)> Replacements = new List<(Regex, string)>
+        {
+            (new Regex("square (\\w+)\\b"), "$1 2"), // $1 is the group, 2 is the square, the space will be removed later $12 does not work
+            (new Regex("cubic (\\w+)\\b"), "$1 3"), // $1 is the group, 3 is the cube, the space will be removed later
+        };
+            
+
+
         public static IEnumerable<UnitFactor> SymbolBreakDown(string unitSymbol)
         {
+            var t = unitSymbol;
+            foreach (var item in Replacements)
+            {
+                t = item.rex.Replace(t, item.replace);
+            }
+            t = Regex.Replace(t, " +(\\d+)", "$1");
+            unitSymbol = t;
+
             var fraction = unitSymbol.Split('/');
             var num = fraction[0];
             var den = fraction.Length == 2 ? fraction[1] : "";

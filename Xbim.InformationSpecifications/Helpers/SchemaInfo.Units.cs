@@ -56,6 +56,8 @@ namespace Xbim.InformationSpecifications.Helpers
 			yield return new UnitConversion(1000, "mm", 1, "m");
 			yield return new UnitConversion(100, "cm", 1, "m");
 			yield return new UnitConversion(1, "daN", 10, "N");
+			//yield return new UnitConversion(1, "mole", 10, "mol");
+			yield return new UnitConversion(1, "kg", 1, "Kg");
 			yield return new UnitConversion(1, "kgf", 9.80665, "N",
 				"kg-force");
 		}

@@ -67,7 +67,9 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(1.0, "ft lbf", IfcMeasures.Torque, 1.3558180656)]  //Foot pound torque X 1.356 = Newton meter	N-m
         [InlineData(1.0, "kip ft", IfcMeasures.Torque, 1355.8180656000002)]  //Kip foot X 1.355 = Kilonewton meter	LN-m
         [InlineData(1.0, "kip / in2", IfcMeasures.Pressure, 6894757.889515781)]  //Kip per square inch X 6.89 = Megapascal	MPa	
-        [InlineData(1.0, "cm2", IfcMeasures.Area, 0.0001)]  
+        [InlineData(1.0, "cm2", IfcMeasures.Area, 0.0001)]
+        [InlineData(1.0, "mol", IfcMeasures.AmountOfSubstance, 1)]
+        [InlineData(1.0, "kg", IfcMeasures.Mass, 1)]
         public void CheckUnit(double originalUnit, string complexUnit, IfcMeasures measure, double expected)
         {
             MeasureUnit sourceUnit = new MeasureUnit(complexUnit);
@@ -78,6 +80,20 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
             sourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true); 
             cnvBack.Should().Be(originalUnit);
+        }
+
+        public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcMeasures>().Select(x => new object[] { x }).ToArray();
+        
+        [Theory]
+        [MemberData(nameof(GetMeasures))]
+        public void VerifyMeasureUnit(IfcMeasures item)
+        {
+            var measUnit = SchemaInfo.GetMeasure(item);
+            if (measUnit.Exponents is null)
+                return;
+            var standard = measUnit.GetUnit();
+            var works = new MeasureUnit(standard);
+            works.IsValid.Should().BeTrue($"'{standard}' is expected to be equivalent to '{measUnit.Exponents.ToUnitSymbol()}'");
         }
     }
 }
