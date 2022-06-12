@@ -29,9 +29,10 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
                 Debug.WriteLine($"=== {item}");
                 var t = SchemaInfo.IfcMeasures.Values.Where(x => x.Exponents is not null && x.Exponents.Equals(DimensionalExponents.GetUnit(item))).ToList();
                 // t.Count().Should().Be(1, $"{item} is expected");
+
                 foreach (var meas in t)
                 {
-                    Debug.WriteLine($"{meas.ID} {meas.Exponents} - {meas.Exponents.ToUnitSymbol()}");
+                    Debug.WriteLine($"{meas.ID} {meas.Exponents} - {meas.Exponents!.ToUnitSymbol()}");
                 }
             }
         }
@@ -44,7 +45,6 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
             var unit2 = new MeasureUnit("lb/pizza2");
             unit2.IsValid.Should().BeFalse();
-
         }
 
         //Foot per second squared to Meter per second squared 1 ft² = 0. 3048 m² - acceleration is not defined
@@ -70,6 +70,9 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(1.0, "cm2", IfcMeasures.Area, 0.0001)]
         [InlineData(1.0, "mol", IfcMeasures.AmountOfSubstance, 1)]
         [InlineData(1.0, "kg", IfcMeasures.Mass, 1)]
+        [InlineData(12.0, "°F/s", IfcMeasures.TemperatureRateOfChange, 6.666666666666667)]
+        [InlineData(5.0, "m2 / s2 °F", IfcMeasures.SpecificHeatCapacity, 9)]
+        [InlineData(5.0, "J / kg °F", IfcMeasures.SpecificHeatCapacity, 9)]
         public void CheckUnit(double originalUnit, string complexUnit, IfcMeasures measure, double expected)
         {
             MeasureUnit sourceUnit = new MeasureUnit(complexUnit);
@@ -78,8 +81,8 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             sourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);
             convertedToSI.Should().Be(expected, $"source is {complexUnit} (to {t.GetUnit()})");
 
-            sourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true); 
-            cnvBack.Should().Be(originalUnit);
+            sourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true);
+            cnvBack.Should().BeApproximately(originalUnit, 1.0E-07);
         }
 
         public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcMeasures>().Select(x => new object[] { x }).ToArray();

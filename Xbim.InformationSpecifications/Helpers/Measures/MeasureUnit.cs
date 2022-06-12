@@ -31,6 +31,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                     IsValid = false;
                 }
             }
+            if (!Exponent.Equals(new DimensionalExponents(0, 0, 0, 0, 1, 0, 0)))
+                Offset = 0;
         }
 
         public bool TryConvertToSI(double valueSourceUnit, out double valueSI)

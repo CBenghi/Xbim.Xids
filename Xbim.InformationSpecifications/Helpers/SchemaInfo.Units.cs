@@ -10,26 +10,26 @@ namespace Xbim.InformationSpecifications.Helpers
 		private static Dictionary<string, UnitConversion>? _units = null;
 
 		public static bool TryGetConversion(string unit, [NotNullWhen(true)] out UnitConversion? Conversion)
-        {
+		{
 			if (_units is null)
-            {
+			{
 				_units = new Dictionary<string, UnitConversion>();
-                foreach (var item in units())
-                {
+				foreach (var item in units())
+				{
 					_units.Add(item.Name, item);
-                    foreach (var alias in item.Aliases)
-                    {
+					foreach (var alias in item.Aliases)
+					{
 						_units.Add(alias, item);
-                    }
-                }
-            }
+					}
+				}
+			}
 			return _units.TryGetValue(unit, out Conversion);
-        }
+		}
 
 		private static IEnumerable<UnitConversion> units()
 		{
 			yield return new UnitConversion(1, "in", 0.0254, "m",
-                "inches", "''", "\"");
+				"inches", "''", "\"");
 			yield return new UnitConversion(1, "ft", 0.3048, "m",
 				"feet", "'");
 			yield return new UnitConversion(1, "yd", 0.9144, "m",
@@ -50,6 +50,8 @@ namespace Xbim.InformationSpecifications.Helpers
 			yield return new UnitConversion(1, "sec", 1, "s");
 			yield return new UnitConversion(1, "gal", 0.00378542, "m3",
 				"gallon");
+			yield return new UnitConversion(1, "Fahrenheit", 1, "°F");
+			yield return new UnitConversion(1, "Celsius", 1, "°C");
 			yield return new UnitConversion(1, "day", 86400, "s");
 			yield return new UnitConversion(1, "kip", 1000, "lbf");
 			yield return new UnitConversion(1, "hour", 3600, "s");
