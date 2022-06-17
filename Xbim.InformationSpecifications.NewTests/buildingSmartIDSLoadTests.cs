@@ -76,9 +76,11 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static void CheckSchema(string tmpFile, ILogger<buildingSmartIDSLoadTests> logg = null)
         {
-            IdsLib.CheckOptions c = new();
-            c.CheckSchema = new[] { "bsFiles\\ids_06.xsd" };
-            c.InputSource = tmpFile;
+            IdsLib.CheckOptions c = new()
+            {
+                CheckSchema = new[] { "bsFiles\\ids_06.xsd" },
+                InputSource = tmpFile
+            };
 
             StringWriter s = new();
             var varlidationResult = IdsLib.CheckOptions.Run(c, s);

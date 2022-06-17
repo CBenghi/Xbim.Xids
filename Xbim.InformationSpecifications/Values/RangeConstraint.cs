@@ -47,13 +47,12 @@ namespace Xbim.InformationSpecifications
         {
 			if (context == null)
 				return false;
-			var compe = candiatateValue as IComparable;
-			if (compe == null)
-			{
-				logger?.LogError("Failed to create a comparable value from {0} '{1}'", candiatateValue.GetType().Name, candiatateValue);
-				return false;
-			}
-			var minOk = true;
+            if (candiatateValue is not IComparable compe)
+            {
+                logger?.LogError("Failed to create a comparable value from {0} '{1}'", candiatateValue.GetType().Name, candiatateValue);
+                return false;
+            }
+            var minOk = true;
 			var maxOk = true;
 			if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
 			{

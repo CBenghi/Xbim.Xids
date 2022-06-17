@@ -9,7 +9,7 @@ namespace Xbim.InformationSpecifications.Tests
 	public class FacetBaseTests
 	{
 		[Fact]
-		void DoesTest()
+		public void DoesTest()
 		{
 			DocumentFacet f1 = new();
 			DocumentFacet f2 = new();

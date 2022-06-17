@@ -18,14 +18,14 @@ namespace Xbim.InformationSpecifications.Test.Helpers
 		public void HasPropV4()
 		{
 			PropertySetInfo.SchemaIfc4.Any().Should().BeTrue();
-			PropertySetInfo.SchemaIfc4.Count().Should().NotBe(1);
+			PropertySetInfo.SchemaIfc4.Count.Should().NotBe(1);
 		}
 
 		[Fact]
 		public void HasPropV2x3()
 		{
 			PropertySetInfo.SchemaIfc2x3.Any().Should().BeTrue();
-			PropertySetInfo.SchemaIfc2x3.Count().Should().NotBe(1);
+			PropertySetInfo.SchemaIfc2x3.Count.Should().NotBe(1);
 		}
 
 		[Fact]
@@ -158,7 +158,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
 
 		}
 
-		private IEnumerable<IPropertyTypeInfo> FindMeasureTypes()
+		static private IEnumerable<IPropertyTypeInfo> FindMeasureTypes()
 		{
 			HashSet<string> done = new HashSet<string>();
             foreach (var item in new [] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4 })

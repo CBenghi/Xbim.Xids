@@ -4,6 +4,14 @@ using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
+    // todo: Extension methods for the conversion of the value given 
+    // If 
+    //    Stringa -> No conversion
+    //    number -> No conversion
+    // Extension method To/From - con (double value, string unit) (m2/kg)
+    // 
+         
+
     public struct IfcMeasureInfo
     {
         public IfcMeasureInfo(string id, string measure, string description, string unit, string symbol, string exponents, string[] concrete)

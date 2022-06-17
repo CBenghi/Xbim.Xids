@@ -243,7 +243,7 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
-		public static Dictionary<string, IfcMeasureInfo> IfcMeasures = new()
+		public static Dictionary<string, IfcMeasureInfo> IfcMeasures { get; } = new()
 		{
 			<PlaceHolder>
 		};

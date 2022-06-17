@@ -20,7 +20,7 @@ namespace Xbim.InformationSpecifications.Tests
 {
     public class buildingSmartCompatibilityTests
     {
-        private ITestOutputHelper OutputHelper;
+        private readonly ITestOutputHelper OutputHelper;
 
         public buildingSmartCompatibilityTests(ITestOutputHelper outputHelper)
         {
@@ -146,17 +146,11 @@ namespace Xbim.InformationSpecifications.Tests
             validationResult.Should().Be(IdsLib.CheckOptions.Status.Ok);
         }
 
-        private XmlElementSummary XmlReport(string tmpFile)
+        static private XmlElementSummary XmlReport(string tmpFile)
         {
             var main = XElement.Parse(File.ReadAllText(tmpFile));
             XmlElementSummary summary = new(main, null);
             return summary;
-        }
-
-        private (int elements, int attributes) Count(string tmpFile)
-        {
-            var main = XElement.Parse(File.ReadAllText(tmpFile));
-            return Count(main);
         }
 
         private static (int elements, int attributes) Count(XElement main)
@@ -192,9 +186,9 @@ namespace Xbim.InformationSpecifications.Tests
                     return ReportDifference("Other is null");
                 if (this.attributes != other.attributes)
                     return ReportDifference("Different attributes count");
-                if (this.Subs.Count() != other.Subs.Count())
+                if (this.Subs.Count != other.Subs.Count)
                     return ReportDifference("Different elements count");
-                for (int i = 0; i< Subs.Count(); i++ )
+                for (int i = 0; i< Subs.Count; i++ )
                 {
                     var thisSub = this.Subs[i];
                     var otherSub = other.Subs[i];
@@ -262,14 +256,14 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static Xids GetSpec(IFacet tpFacet, IFacet partFacet)
         {
-            Xids x = new Xids();
+            var x = new Xids();
             var t = x.PrepareSpecification(IfcSchemaVersion.IFC4);
             t.Applicability.Facets.Add(tpFacet);
             t.Requirement.Facets.Add(partFacet);
             return x;
         }
 
-        private void RequiresErrors(Xids x, int v)
+        static private void RequiresErrors(Xids x, int v)
         {
             var loggerMock = new Mock<ILogger<buildingSmartCompatibilityTests>>();
             var file = Path.GetTempFileName();

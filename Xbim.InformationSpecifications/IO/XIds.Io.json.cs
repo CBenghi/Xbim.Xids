@@ -16,11 +16,9 @@ namespace Xbim.InformationSpecifications
 		{
 			if (File.Exists(destinationFile))
 				File.Delete(destinationFile);
-			using (var s = File.OpenWrite(destinationFile))
-			{
-				SaveAsJson(s, logger);
-			}
-		}
+            using var s = File.OpenWrite(destinationFile);
+            SaveAsJson(s, logger);
+        }
 
 		public void SaveAsJson(Stream sw, ILogger? logger = null)
 		{

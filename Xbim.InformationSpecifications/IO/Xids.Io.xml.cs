@@ -73,7 +73,7 @@ namespace Xbim.InformationSpecifications
 
         
 
-        private void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger)
+        private static void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
@@ -129,7 +129,7 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
-        private void ExportBuildingSmartIDS(Specification spec, XmlWriter xmlWriter, ILogger? logger)
+        private static void ExportBuildingSmartIDS(Specification spec, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
             if (spec.IfcVersion != null)
@@ -155,7 +155,7 @@ namespace Xbim.InformationSpecifications
             {
                 foreach (var item in spec.Applicability.Facets)
                 {
-                    ExportBuildingSmartIDS(item, xmlWriter, false, logger, spec.Applicability, null);
+                    Xids.ExportBuildingSmartIDS(item, xmlWriter, false, logger, spec.Applicability, null);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -169,14 +169,14 @@ namespace Xbim.InformationSpecifications
                 {
                     var option = GetProgressive(opts, i, RequirementOptions.Expected);
                     IFacet? item = spec.Requirement.Facets[i];
-                    ExportBuildingSmartIDS(item, xmlWriter, true, logger, spec.Requirement, option);
+                    Xids.ExportBuildingSmartIDS(item, xmlWriter, true, logger, spec.Requirement, option);
                 }
             }
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
         }
 
-        private RequirementOptions GetProgressive(ObservableCollection<RequirementOptions>? opts, int i, RequirementOptions defaultValue)
+        static private RequirementOptions GetProgressive(ObservableCollection<RequirementOptions>? opts, int i, RequirementOptions defaultValue)
         {
             if (opts is null)
                 return defaultValue;
@@ -185,7 +185,7 @@ namespace Xbim.InformationSpecifications
             return opts[i];
         }
 
-        private void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementOptions? requirementOption = null)
+        private static void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementOptions? requirementOption = null)
         {
             switch (item)
             {
@@ -252,19 +252,19 @@ namespace Xbim.InformationSpecifications
                     break;
             }
         }
-        private void LogDataLoss(ILogger? logger, FacetGroup context, IFacet facet, string propertyName, bool forRequirement)
+        static private void LogDataLoss(ILogger? logger, FacetGroup context, IFacet facet, string propertyName, bool forRequirement)
         {
             logger?.LogError("Loss of data exporting group {grp}: property {prop} not available in {tp} for {ctx}.", context.Guid, propertyName, facet.GetType().Name, forRequirement ? "requirement" : "applicability");
         }
 
-        private void WriteSimpleValue(XmlWriter xmlWriter, string stringValue)
+        static private void WriteSimpleValue(XmlWriter xmlWriter, string stringValue)
         {
             xmlWriter.WriteStartElement("simpleValue", IdsNamespace);
             xmlWriter.WriteString(stringValue);
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger)
+        static private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger)
         {
             if (value == null)
                 return;            
@@ -358,7 +358,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementOptions? option)
+        static private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementOptions? option)
         {
             if (forRequirement)
             {
@@ -409,7 +409,7 @@ namespace Xbim.InformationSpecifications
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
-        private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
+        static private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
         {
             // function is kept in case it's gonna be useful again for structure purposes
         }
@@ -680,7 +680,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(sub, elem, logger);
                 }
             }
-            var mmax = new bsMinMaxOccur();
+            var mmax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -688,7 +688,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new MaterialFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
                     // nothing to do, IsRelevant takes care of mmax
                 }
@@ -736,7 +736,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var mmax = new bsMinMaxOccur();
+            var mmax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -749,7 +749,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     ret.Measure = attribute.Value;
                 }
-                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
                     // nothing to do, IsRelevant takes care of mmax
                 }
@@ -1007,7 +1007,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var mmax = new bsMinMaxOccur();
+            var mmax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 var subname = attribute.Name.LocalName.ToLowerInvariant();
@@ -1016,7 +1016,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new AttributeFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
                     // nothing to do, IsRelevant takes care of mmax
                 }
@@ -1029,12 +1029,12 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private class bsMinMaxOccur
+        private class BsMinMaxOccur
         {
             public string Min { get; set; } = "";
             public string Max { get; set; } = "";
 
-            internal static bool IsRelevant(XAttribute attribute, ref bsMinMaxOccur mmax)
+            internal static bool IsRelevant(XAttribute attribute, ref BsMinMaxOccur mmax)
             {
                 if (attribute.Name == "minOccurs")
                 {
@@ -1106,7 +1106,7 @@ namespace Xbim.InformationSpecifications
                 }
             }
 
-            var mmax = new bsMinMaxOccur();
+            var mmax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 var locAtt = attribute.Name.LocalName;
@@ -1115,7 +1115,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (bsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
                 {
                     // nothing to do, IsRelevant takes care of mmax
                 }
@@ -1139,6 +1139,7 @@ namespace Xbim.InformationSpecifications
         }
 #pragma warning restore IDE0060 // Remove unused parameter
 
+#pragma warning disable IDE0060 // Remove unused parameter (sub)
         private static bool IsFacetBaseEntity(XElement sub)
         {
             //switch (sub.Name.LocalName)
@@ -1150,17 +1151,15 @@ namespace Xbim.InformationSpecifications
             //}
             return false;
         }
+#pragma warning restore IDE0060 // Remove unused parameter
 
         private static bool IsBaseAttribute(XAttribute attribute)
         {
-            switch (attribute.Name.LocalName)
+            return attribute.Name.LocalName switch
             {
-                case "uri":
-                case "instructions":
-                    return true;
-                default:
-                    return false;
-            }
+                "uri" or "instructions" => true,
+                _ => false,
+            };
         }
 
         private static void GetBaseAttribute(XAttribute attribute, FacetBase ret, ILogger? logger)
@@ -1262,9 +1261,7 @@ namespace Xbim.InformationSpecifications
                         var val = sub.Attribute("value");
                         if (!string.IsNullOrEmpty(val?.Value))
                         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference. 
-                            return val.Value;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                            return val!.Value; // bang is redundant in net5, but net2 is capricious with nullability checks
                         }
                         break;
                     }

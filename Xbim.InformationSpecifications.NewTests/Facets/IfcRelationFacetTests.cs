@@ -64,7 +64,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			}
 		}
 
-		private static Guid constantGuid = new();
+		private readonly static Guid constantGuid = new();
 
 		public static IEnumerable<IfcRelationFacet> GetDifferentAttributes()
 		{

@@ -3,6 +3,10 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Defines the type of Ifc schema compatible with a given .
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)] 
     public class CompatibleSchemaAttribute : Attribute
     {
         private readonly IfcSchemaVersion[] vs;

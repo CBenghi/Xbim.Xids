@@ -14,10 +14,8 @@ namespace Xbim.InformationSpecifications
         {
             if (File.Exists(destinationFile))
                 File.Delete(destinationFile);
-            using (var s = File.OpenWrite(destinationFile))
-            {
-                group.SaveAsJson(s, logger);
-            }
+            using var s = File.OpenWrite(destinationFile);
+            group.SaveAsJson(s, logger);
         }
         public static void SaveAsJson(this FacetGroup group, Stream sw, ILogger? logger = null)
         {

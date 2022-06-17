@@ -11,7 +11,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void ValueConstraintIsExact()
         {
-            ValueConstraint constraint = new();
+            ValueConstraint constraint;
 
             var stringValue = "Gatto";
             constraint = new ValueConstraint(stringValue);
@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications.Tests
 
             test = constraint.IsSingleExact<int>(out int intGattoVal);
             test.Should().BeFalse();
-            intGattoVal.Should().Be(default(int));
+            intGattoVal.Should().Be(default);
 
             int IntValue = 32;
             constraint = new ValueConstraint(IntValue);
@@ -35,7 +35,7 @@ namespace Xbim.InformationSpecifications.Tests
 
             test = constraint.IsSingleExact(out string strVal);
             test.Should().BeFalse();
-            strVal.Should().Be(default(string));
+            strVal.Should().Be(default);
         }
 
         [Fact]

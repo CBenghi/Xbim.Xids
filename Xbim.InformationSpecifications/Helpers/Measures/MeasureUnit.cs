@@ -5,8 +5,17 @@ using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
 {
+    /// <summary>
+    /// Main class to deal with unit conversion to and from constraint values.
+    /// 
+    /// Measurable units are stored in standard SI units in the schema, this class
+    /// helps providing conversion methods against a variety of compatible units.
+    /// </summary>
     public class MeasureUnit
     {
+        /// <summary>
+        /// Composition of the unit in the 7 fundamental units.
+        /// </summary>
         public DimensionalExponents Exponent { get; }
         public double Ratio { get; } = 1;
         public double Offset { get; } = 0;

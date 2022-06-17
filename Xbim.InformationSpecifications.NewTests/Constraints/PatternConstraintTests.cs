@@ -39,7 +39,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{
 				"*(glas)*",
 				new string[] {"glass"}, // true
-				new string[] {}, // false
+				System.Array.Empty<string>(), // false
 			};
 
 		}

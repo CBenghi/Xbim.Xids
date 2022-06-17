@@ -47,21 +47,12 @@ namespace Xbim.InformationSpecifications.Helpers
 
         public static IList<PropertySetInfo>? GetSchema(IfcSchemaVersion version)
         {
-            IList<PropertySetInfo>? schema;
-            switch (version)
+            IList<PropertySetInfo>? schema = version switch
             {
-                case IfcSchemaVersion.IFC2X3:
-                    schema = SchemaIfc2x3;
-                    break;
-                case IfcSchemaVersion.IFC4:
-                    schema = SchemaIfc4;
-                    break;
-                case IfcSchemaVersion.Undefined:
-                case IfcSchemaVersion.IFC4X3:
-                default:
-                    schema = null;
-                    break;
-            }
+                IfcSchemaVersion.IFC2X3 => SchemaIfc2x3,
+                IfcSchemaVersion.IFC4 => SchemaIfc4,
+                _ => null,
+            };
             return schema;
         }
 

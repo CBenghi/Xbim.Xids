@@ -28,49 +28,32 @@ namespace Xbim.InformationSpecifications.Helpers
 
         public static DimensionalExponents GetUnit(DimensionType tp)
         {
-            switch (tp)
+            return tp switch
             {
-                case DimensionType.Length:
-                    return new DimensionalExponents(1, 0, 0, 0, 0, 0, 0);
-                case DimensionType.Mass:
-                    return new DimensionalExponents(0, 1, 0, 0, 0, 0, 0);
-                case DimensionType.Time:
-                    return new DimensionalExponents(0, 0, 1, 0, 0, 0, 0);
-                case DimensionType.ElectricCurrent:
-                    return new DimensionalExponents(0, 0, 0, 1, 0, 0, 0);
-                case DimensionType.Temperature:
-                    return new DimensionalExponents(0, 0, 0, 0, 1, 0, 0);
-                case DimensionType.AmountOfSubstance:
-                    return new DimensionalExponents(0, 0, 0, 0, 0, 1, 0);
-                case DimensionType.LuminousIntensity:
-                    return new DimensionalExponents(0, 0, 0, 0, 0, 0, 1);
-                default:
-                    throw new NotImplementedException();
-            }
-            
+                DimensionType.Length => new DimensionalExponents(1, 0, 0, 0, 0, 0, 0),
+                DimensionType.Mass => new DimensionalExponents(0, 1, 0, 0, 0, 0, 0),
+                DimensionType.Time => new DimensionalExponents(0, 0, 1, 0, 0, 0, 0),
+                DimensionType.ElectricCurrent => new DimensionalExponents(0, 0, 0, 1, 0, 0, 0),
+                DimensionType.Temperature => new DimensionalExponents(0, 0, 0, 0, 1, 0, 0),
+                DimensionType.AmountOfSubstance => new DimensionalExponents(0, 0, 0, 0, 0, 1, 0),
+                DimensionType.LuminousIntensity => new DimensionalExponents(0, 0, 0, 0, 0, 0, 1),
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public int GetExponent(DimensionType tp)
         {
-            switch (tp)
+            return tp switch
             {
-                case DimensionType.Length:
-                    return Length;
-                case DimensionType.Mass:
-                    return Mass;
-                case DimensionType.Time:
-                    return Time;
-                case DimensionType.ElectricCurrent:
-                    return ElectricCurrent;
-                case DimensionType.Temperature:
-                    return Temperature;
-                case DimensionType.AmountOfSubstance:
-                    return AmountOfSubstance;
-                case DimensionType.LuminousIntensity:
-                    return LuminousIntensity;
-                default:
-                    throw new NotImplementedException();
-            }
+                DimensionType.Length => Length,
+                DimensionType.Mass => Mass,
+                DimensionType.Time => Time,
+                DimensionType.ElectricCurrent => ElectricCurrent,
+                DimensionType.Temperature => Temperature,
+                DimensionType.AmountOfSubstance => AmountOfSubstance,
+                DimensionType.LuminousIntensity => LuminousIntensity,
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public override string ToString()
@@ -196,7 +179,7 @@ namespace Xbim.InformationSpecifications.Helpers
             };
         }
 
-        private string GetMultiplier(int[] asArray, bool numerator)
+        static private string GetMultiplier(int[] asArray, bool numerator)
         {
             List<string> vals  = new();
             for (int i = 0; i < asArray.Length; i++)
@@ -230,6 +213,27 @@ namespace Xbim.InformationSpecifications.Helpers
                 && AmountOfSubstance == other.AmountOfSubstance
                 && LuminousIntensity == other.LuminousIntensity;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as DimensionalExponents);
+        }
+
+#pragma warning disable IDE0070 // Use 'System.HashCode'
+        public override int GetHashCode()
+        {
+            // system hashcode is not available in net20
+            return (
+                Length,
+                Mass,
+                Time,
+                ElectricCurrent,
+                Temperature,
+                AmountOfSubstance,
+                LuminousIntensity
+                ).GetHashCode();
+        }
+#pragma warning restore IDE0070 // Use 'System.HashCode'
     }
 
 }

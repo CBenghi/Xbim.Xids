@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         public string UnitSymbol { get; set; }
         public int Exponent { get; set; } = 1;
 
-        static Regex reUnitAndExponent = new("(['°a-zA-Z]+)(\\d*)"); // letters ' for inches and feet and ° for degrees
+        static readonly Regex reUnitAndExponent = new("(['°a-zA-Z]+)(\\d*)"); // letters ' for inches and feet and ° for degrees
 
         public UnitFactor(string unitAndExponent)
         {
@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             }
             if (SchemaInfo.TryGetUnit(smb, out var oFnd))
             {
-                if (oFnd is IfcMeasureInfo mi && mi.Exponents is DimensionalExponents)
+                if (oFnd is IfcMeasureInfo mi && mi.Exponents is not null)
                 {
                     exp = DimensionalExponents.Elevated(mi.Exponents, Exponent);
                     return true;
@@ -60,7 +60,8 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             return false;
         }
 
-        public static List<(Regex rex, string replace)> Replacements = new List<(Regex, string)>
+
+        public static List<(Regex rex, string replace)> Replacements { get; } = new()
         {
             (new Regex("square (\\w+)\\b"), "$1 2"), // $1 is the group, 2 is the square, the space will be removed later $12 does not work
             (new Regex("cubic (\\w+)\\b"), "$1 3"), // $1 is the group, 3 is the cube, the space will be removed later
@@ -71,9 +72,9 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         public static IEnumerable<UnitFactor> SymbolBreakDown(string unitSymbol)
         {
             var t = unitSymbol;
-            foreach (var item in Replacements)
+            foreach (var (rex, replace) in Replacements)
             {
-                t = item.rex.Replace(t, item.replace);
+                t = rex.Replace(t, replace);
             }
             t = Regex.Replace(t, " +(\\d+)", "$1");
             unitSymbol = t;

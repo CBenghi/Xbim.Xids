@@ -220,25 +220,14 @@ namespace Xbim.InformationSpecifications
 		// https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#string
 		public static IEnumerable<constraints> CompatibleConstraints(TypeName withType)
 		{
-			switch (withType)
-			{
-				case TypeName.String:
-					return new[] { constraints.length, constraints.minLength, constraints.maxLength, constraints.pattern, constraints.enumeration, constraints.whiteSpace };
-				case TypeName.Boolean:
-					return new[] { constraints.pattern, constraints.whiteSpace };
-				case TypeName.Decimal:
-				case TypeName.Integer:
-					return new[] { constraints.totalDigits, constraints.fractionDigits, constraints.pattern, constraints.whiteSpace, constraints.enumeration, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive };
-				case TypeName.Floating:
-				case TypeName.Double:
-				case TypeName.Duration:
-				case TypeName.DateTime:
-				case TypeName.Time:
-				case TypeName.Uri:
-				default:
-					return new[] { constraints.pattern, constraints.enumeration, constraints.whiteSpace, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive };
-			}
-		}
+            return withType switch
+            {
+                TypeName.String => new[] { constraints.length, constraints.minLength, constraints.maxLength, constraints.pattern, constraints.enumeration, constraints.whiteSpace },
+                TypeName.Boolean => new[] { constraints.pattern, constraints.whiteSpace },
+                TypeName.Decimal or TypeName.Integer => new[] { constraints.totalDigits, constraints.fractionDigits, constraints.pattern, constraints.whiteSpace, constraints.enumeration, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive },
+                _ => new[] { constraints.pattern, constraints.enumeration, constraints.whiteSpace, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive },
+            };
+        }
 
 
 	}

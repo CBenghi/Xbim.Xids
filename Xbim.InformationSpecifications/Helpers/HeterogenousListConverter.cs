@@ -57,12 +57,11 @@ namespace Xbim.InformationSpecifications.Helpers
 
 				if (KeyTypeLookup.TryGetValue(typeKey, out var concreteItemType))
 				{
-					var item = JsonSerializer.Deserialize(ref reader, concreteItemType, options) as TItem;
-					if (item != null)
-						results.Add(item);
-					else
-						throw new JsonException($"Invalid token: Was expecting a '{concreteItemType}' token but received a '{reader.TokenType}' token");
-				}
+                    if (JsonSerializer.Deserialize(ref reader, concreteItemType, options) is TItem item)
+                        results.Add(item);
+                    else
+                        throw new JsonException($"Invalid token: Was expecting a '{concreteItemType}' token but received a '{reader.TokenType}' token");
+                }
 				else
 				{
 					throw new JsonException($"Unknown type key '{typeKey}' found");

@@ -12,18 +12,13 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
         public double Offset { get; } = 0;
         public string[] Aliases { get; }
 
-        public DimensionalExponents? GetExponents()
-        {
-            return null;
-        }
-
         public UnitConversion(double OrigQty, string name, double equivalentQty, string equivalent, double offset)
         {
             Name = name;
             Equivalent = equivalent;
             MultiplierToEquivalent = equivalentQty / OrigQty;
             Offset = offset;
-            Aliases = new string[] { };
+            Aliases = Array.Empty<string>();
         }
         public UnitConversion(double OrigQty, string name, double equivalentQty, string equivalent, params string[] aliases)
         {

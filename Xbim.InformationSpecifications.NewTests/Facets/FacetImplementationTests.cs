@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications.Tests
 {
 	public class FacetImplementationTests
 	{
-		private Dictionary<string, string> guaranteedStructures = new()
+		private readonly Dictionary<string, string> guaranteedStructures = new()
 		{
 			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Instructions" },
 			{ "FacetBase","String Uri,String Instructions" },
@@ -51,9 +51,9 @@ namespace Xbim.InformationSpecifications.Tests
             }
         }
 
-		private static Regex rNullable = new("\\[\\[([^,]*),");
+		private readonly static Regex rNullable = new("\\[\\[([^,]*),");
 
-        private string SmartName(PropertyInfo x)
+        static private string SmartName(PropertyInfo x)
         {
 			var t = x.PropertyType.FullName.Replace("System.", "");
 			if (t.StartsWith("Nullable"))
@@ -154,20 +154,20 @@ namespace Xbim.InformationSpecifications.Tests
 			var pc = new PatternConstraint();
 			TestAddRemove(pc);
 
-			List<ValueConstraint> vals = new();
+			// List<ValueConstraint> vals = new();
 			var val = new ValueConstraint();
 			TestAddRemove(val);
 			val = MakeEnumVal();
 			TestAddRemove(val);
 
-			List<RangeConstraint> rcl = new();
+			// List<RangeConstraint> rcl = new();
 			var rc = new RangeConstraint();
 			TestAddRemove(rc);
 
-			List<StructureConstraint> scl = new();
+			// List<StructureConstraint> scl = new();
 			var sc = new StructureConstraint();
-			var t = sc.GetHashCode();
-			TestAddRemove(sc, false);
+            _ = sc.GetHashCode();
+            TestAddRemove(sc, false);
 
 			var val1 = MakeEnumVal();
 			var val2 = MakeEnumVal();
@@ -210,13 +210,17 @@ namespace Xbim.InformationSpecifications.Tests
 			}
 		}
 
-		private ValueConstraint MakeEnumVal()
+        static private ValueConstraint MakeEnumVal()
 		{
-			var val = new ValueConstraint();
-			val.BaseType = TypeName.String;
-			val.AcceptedValues = new List<IValueConstraint>();
-			val.AcceptedValues.Add(new ExactConstraint("30"));
-			val.AcceptedValues.Add(new ExactConstraint("60"));
+            var val = new ValueConstraint
+            {
+                BaseType = TypeName.String,
+                AcceptedValues = new List<IValueConstraint>()
+                {
+                    new ExactConstraint("30"),
+                    new ExactConstraint("60")
+                }
+            };
 			return val;
 		}
 
