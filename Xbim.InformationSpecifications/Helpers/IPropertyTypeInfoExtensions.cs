@@ -3,6 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
+    /// <summary>
+    /// Extension methods for IPropertyTypeInfo
+    /// </summary>
     public static class IPropertyTypeInfoExtensions
     {
         /// <summary>

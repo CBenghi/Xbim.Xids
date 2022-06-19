@@ -55,9 +55,9 @@ namespace Xbim.InformationSpecifications
 
         }
 
-        public void SetRelation(RelationType loc)
+        public void SetRelation(RelationType relationType)
         {
-            relation = loc.ToString();
+            relation = relationType.ToString();
         }
 
         public string Relation

@@ -37,6 +37,7 @@ namespace Xbim.InformationSpecifications
         /// Exports the entire XIDS to a buildingSmart file, depending on the number of groups exports an XML or a ZIP file.
         /// </summary>
         /// <param name="destinationFileName">the path of a writeable location on disk</param>
+        /// <param name="logger">the logging context</param>
         /// <returns>An enum determining if XML or ZIP files were written</returns>
         public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger? logger = null)
         {
@@ -44,6 +45,12 @@ namespace Xbim.InformationSpecifications
             return ExportBuildingSmartIDS(fs, logger);
         }
 
+        /// <summary>
+        /// Exports the entire XIDS to a buildingSmart file, depending on the number of groups exports an XML or a ZIP file.
+        /// </summary>
+        /// <param name="destinationStream">a writeable stream</param>
+        /// <param name="logger">the logging context</param>
+        /// <returns>An enum determining if XML or ZIP files were written</returns>
         public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger? logger = null)
         {
             if (SpecificationsGroups.Count == 1)

@@ -5,11 +5,16 @@
     //    Stringa -> No conversion
     //    number -> No conversion
     // Extension method To/From - con (double value, string unit) (m2/kg)
-    // 
-
-
+    
+    /// <summary>
+    /// Metadata about measure conversion behaviours.
+    /// Use <see cref="Measures.MeasureUnit" /> for the quantitative conversion services.
+    /// </summary>
     public struct IfcMeasureInfo
     {
+        /// <summary>
+        /// basic constructor
+        /// </summary>
         public IfcMeasureInfo(string id, string measure, string description, string unit, string symbol, string exponents, string[] concrete)
         {
             ID = id;
@@ -51,6 +56,11 @@
         /// </summary>
         public string[] ConcreteClasses { get; }
 
+
+        /// <summary>
+        /// Retuns the SI preferred unit.
+        /// </summary>
+        /// <returns>empty string for measures that do not have expected measures (strings and numbers)</returns>
         public string GetUnit()
         {
             if (!string.IsNullOrEmpty(Unit))

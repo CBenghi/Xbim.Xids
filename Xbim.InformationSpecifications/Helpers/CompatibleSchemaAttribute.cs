@@ -4,34 +4,58 @@ using System.Linq;
 namespace Xbim.InformationSpecifications
 {
     /// <summary>
-    /// Defines the type of Ifc schema compatible with a given .
+    /// Defines the type of Ifc schema compatible with a given element.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class CompatibleSchemaAttribute : Attribute
     {
         private readonly IfcSchemaVersion[] vs;
 
-        public CompatibleSchemaAttribute(IfcSchemaVersion[] vs)
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="validSchemas">Says so on the tin</param>
+        public CompatibleSchemaAttribute(IfcSchemaVersion[] validSchemas)
         {
-            this.vs = vs;
+            this.vs = validSchemas;
         }
 
-        public bool IsCompatibleSchema(IfcSchemaVersion s)
+        /// <summary>
+        /// Is the element valid for <paramref name="relevantSchema"/>?
+        /// </summary>
+        /// <param name="relevantSchema"></param>
+        /// <returns>True if it is, false if not</returns>
+        public bool IsCompatibleSchema(IfcSchemaVersion relevantSchema)
         {
-            return vs.Contains(s);
+            return vs.Contains(relevantSchema);
         }
     }
 
+    /// <summary>
+    /// schema compatibility helpers functions for specific elements
+    /// </summary>
     public static class CompatibleSchemaHelpers
     {
-        public static bool IsCompatibleSchema(this PartOfFacet.Container container, string schemaVersionString)
+        /// <summary>
+        /// Given a Container, is it valid for a required schema?
+        /// </summary>
+        /// <param name="container">the container</param>
+        /// <param name="requiredSchemaVersionString">the required schema as a string to be converted</param>
+        /// <returns>True if certainly compatible, false otherwise</returns>
+        public static bool IsCompatibleSchema(this PartOfFacet.Container container, string requiredSchemaVersionString)
         {
-            if (Enum.TryParse<IfcSchemaVersion>(schemaVersionString, out var version))
+            if (Enum.TryParse<IfcSchemaVersion>(requiredSchemaVersionString, out var version))
                 return IsCompatibleSchema(container, version);
             return false;
         }
 
-        public static bool IsCompatibleSchema(this PartOfFacet.Container container, IfcSchemaVersion s)
+        /// <summary>
+        /// Given a Container, is it valid for a required schema?
+        /// </summary>
+        /// <param name="container">the container</param>
+        /// <param name="requiredSchemaEnum">the required schema as enum</param>
+        /// <returns>True if certainly compatible, false otherwise</returns>
+        public static bool IsCompatibleSchema(this PartOfFacet.Container container, IfcSchemaVersion requiredSchemaEnum)
         {
             try
             {
@@ -42,7 +66,7 @@ namespace Xbim.InformationSpecifications
                     return false;
                 var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(CompatibleSchemaAttribute), false);
                 CompatibleSchemaAttribute foundAttribute = (CompatibleSchemaAttribute)valueAttributes[0];
-                return foundAttribute.IsCompatibleSchema(s);
+                return foundAttribute.IsCompatibleSchema(requiredSchemaEnum);
             }
             catch
             {
