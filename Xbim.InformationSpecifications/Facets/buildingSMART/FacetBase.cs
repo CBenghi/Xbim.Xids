@@ -3,15 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Xbim.InformationSpecifications
 {
-	
-	public enum Use
-	{
-		undefined,
-		required,
-		optional,
-		prohibited
-	}
-
+    /// <summary>
+    /// Base class of all facets.
+    /// </summary>
 	public abstract class FacetBase : IEquatable<FacetBase>
 	{
         internal static bool IsNullOrEmpty([NotNullWhen(false)] ValueConstraint? evaluatingConstraint)
@@ -21,14 +15,22 @@ namespace Xbim.InformationSpecifications
 			return evaluatingConstraint.IsEmpty();
         }
 
-		public string Uri { get; set; } = string.Empty; // attribute uri
+        /// <summary>
+        /// Optional, but not null, information of any public URI Id of the facet.
+        /// </summary>
+		public string Uri { get; set; } = string.Empty; 
+        /// <summary>
+        /// Optional instructions relevant to the facet.
+        /// </summary>
 		public string Instructions { get; set; } = string.Empty; // element
 
+        /// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{Uri}-{Instructions}";
 		}
 
+        /// <inheritdoc />
 		public bool Equals(FacetBase? other)
 		{
 			if (other == null)
@@ -40,11 +42,13 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
+        /// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
 			return Equals(obj as FacetBase);
 		}
 
+        /// <inheritdoc />
 		public override int GetHashCode()
 		{
 			return ToString().GetHashCode();

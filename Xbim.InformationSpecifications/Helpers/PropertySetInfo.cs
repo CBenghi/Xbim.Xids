@@ -16,11 +16,27 @@ namespace Xbim.InformationSpecifications.Helpers
         /// string names of the properties defined for the IfcPropertySet being described.
         /// </summary>
 		public IEnumerable<string> PropertyNames => Properties.Select(p => p.Name);
-		public IList<string> ApplicableClasses { get; set; }
+		
+        /// <summary>
+        /// Valid schema classes that may be attached to the property set.
+        /// </summary>
+        public IList<string> ApplicableClasses { get; set; }
+        
+        /// <summary>
+        /// The properties defined for the set.
+        /// </summary>
 		public IList<IPropertyTypeInfo> Properties { get; set; } 
 
+        /// <summary>
+        /// Returns one of the defined properties in the set by name, if found
+        /// </summary>
+        /// <param name="name">the expected name, case sensitive</param>
+        /// <returns>null if not found, otherwise information about the property</returns>
 		public IPropertyTypeInfo? GetProperty(string name) => Properties.FirstOrDefault(p => p.Name == name);
 
+        /// <summary>
+        /// basic constructor
+        /// </summary>
 		public PropertySetInfo(
 			string propertySetName,
 			IEnumerable<IPropertyTypeInfo> properties,
@@ -33,6 +49,9 @@ namespace Xbim.InformationSpecifications.Helpers
 		}
 
 		private static IList<PropertySetInfo>? schemaIFC4;
+        /// <summary>
+        /// static method to get the known metadata for the IFC4 schema
+        /// </summary>
 		public static IList<PropertySetInfo> SchemaIfc4
 		{
 			get
@@ -43,6 +62,11 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
+        /// <summary>
+        /// Resolve a property from its name within a set, given an schema.
+        /// Both property set name and property name are case sensitive matches.
+        /// </summary>
+        /// <returns>Property metadata if exact match or null.</returns>
 		public static IPropertyTypeInfo? Get(IfcSchemaVersion version, string propertySetName, string propertyName)
         {
             IList<PropertySetInfo>? schema = GetSchema(version);
@@ -54,6 +78,10 @@ namespace Xbim.InformationSpecifications.Helpers
             return set.GetProperty(propertyName);
         }
 
+        /// <summary>
+        /// Schema metadata from the enum
+        /// </summary>
+        /// <returns>null if the schema has no metadata in the current implementation</returns>
         public static IList<PropertySetInfo>? GetSchema(IfcSchemaVersion version)
         {
             IList<PropertySetInfo>? schema = version switch
@@ -66,6 +94,10 @@ namespace Xbim.InformationSpecifications.Helpers
         }
 
         private static IList<PropertySetInfo>? schemaIFC2x3;
+
+        /// <summary>
+        /// static method to get the known metadata for the IFC2x3 schema
+        /// </summary>
 		public static IList<PropertySetInfo> SchemaIfc2x3
 		{
 			get

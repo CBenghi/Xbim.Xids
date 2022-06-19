@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-/// <summary>
-///  
-/// </summary>
 namespace Xbim.InformationSpecifications.Helpers
 {
 	/// <summary>

@@ -41,10 +41,25 @@ namespace Xbim.InformationSpecifications
 	/// </summary>
 	public partial class DocumentFacet : FacetBase, IFacet, IEquatable<DocumentFacet>
 	{
-		public ValueConstraint? DocId { get; set; } // Ide
+        /// <summary>
+        /// mapped to DocumentId in IFC2x3 or Identification in Ifc4
+        /// </summary>
+		public ValueConstraint? DocId { get; set; } 
+        /// <summary>
+        /// Mapped to Name property of IFC entities.
+        /// </summary>
 		public ValueConstraint? DocName { get; set; }
+        /// <summary>
+        /// DocumentReferences in IFC2x3 or Location in IFC4
+        /// </summary>
 		public ValueConstraint? DocLocation { get; set; }
+        /// <summary>
+        /// Mapped to Purpose property of IFC entities.
+        /// </summary>
 		public ValueConstraint? DocPurpose { get; set; }
+        /// <summary>
+        /// Mapped to IntendedUse property of IFC entities.
+        /// </summary>
 		public ValueConstraint? DocIntendedUse { get; set; }
 
         /// <inheritdoc />

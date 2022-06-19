@@ -283,7 +283,7 @@ namespace Xbim.InformationSpecifications
             else if (value.AcceptedValues != null)
             {
                 xmlWriter.WriteStartElement("restriction", @"http://www.w3.org/2001/XMLSchema");
-                if (value.BaseType != TypeName.Undefined)
+                if (value.BaseType != NetTypeName.Undefined)
                 {
                     var val = ValueConstraint.GetXsdTypeString(value.BaseType);
                     xmlWriter.WriteAttributeString("base", val);
@@ -773,7 +773,7 @@ namespace Xbim.InformationSpecifications
                 var tc = ValueConstraint.SingleUndefinedExact(content);
                 return tc;
             }
-            TypeName t = TypeName.Undefined;
+            NetTypeName t = NetTypeName.Undefined;
             var bse = restriction.Attribute("base");
             if (bse != null && bse.Value != null)
             {

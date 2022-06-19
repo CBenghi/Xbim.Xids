@@ -17,56 +17,110 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public class PartOfFacet : FacetBase, IFacet, IEquatable<PartOfFacet>
     {
+        /// <summary>
+        /// The type of IFC container
+        /// </summary>
         public enum Container
         {
+            /// <summary>
+            /// Invalid
+            /// </summary>
             [CompatibleSchema(new IfcSchemaVersion[] { })]
             Undefined,
 
+            /// <summary>
+            /// IfcAsset, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcAsset,
 
+            /// <summary>
+            /// IfcBuildingSystem, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcBuildingSystem,
 
+            /// <summary>
+            /// IfcBuiltSystem, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4X3 })]
             IfcBuiltSystem,
 
+            /// <summary>
+            /// IfcCondition, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3 })]
             IfcCondition,
 
+            /// <summary>
+            /// IfcDistributionCircuit, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcDistributionCircuit,
 
+            /// <summary>
+            /// IfcDistributionSystem, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcDistributionSystem,
 
+            /// <summary>
+            /// IfcElectricalCircuit, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3 })]
             IfcElectricalCircuit,
 
+            /// <summary>
+            /// IfcElementAssembly, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcElementAssembly,
 
+            /// <summary>
+            /// IfcGroup, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcGroup,
 
+            /// <summary>
+            /// IfcInventory, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcInventory,
 
+            /// <summary>
+            /// IfcStructuralAnalysisModel, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralAnalysisModel,
 
+            /// <summary>
+            /// IfcStructuralLoadCase, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralLoadCase,
 
+            /// <summary>
+            /// IfcStructuralLoadGroup, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralLoadGroup,
 
+            /// <summary>
+            /// IfcStructuralResultGroup, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcStructuralResultGroup,
 
+            /// <summary>
+            /// IfcSystem, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcSystem,
 
+            /// <summary>
+            /// IfcZone, or any subclass
+            /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcZone
         } 

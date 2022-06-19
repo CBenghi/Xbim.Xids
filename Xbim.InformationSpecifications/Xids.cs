@@ -8,6 +8,9 @@ using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
 {
+	/// <summary>
+	/// Wraps this object instance into an IEnumerable of its type;
+	/// </summary>
 	public static class IEnumerableExt
 	{
 		/// <summary>
@@ -186,18 +189,18 @@ namespace Xbim.InformationSpecifications
 		internal string ReadVersion { get { return _readVersion; } }
 
 		public string Version
-        {
+		{
 			get
-            {
+			{
 				// doint it dynamically breaks under some scenarios (see blazor in webassembly)
 				// so we hardcode it
 				return AssemblyVersion;
 			}
 			set
-            {
+			{
 				_readVersion = value;
-            }
-        }
+			}
+		}
 
 		public Project Project { get; set; } = new Project();
 

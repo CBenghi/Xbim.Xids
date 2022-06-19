@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void ExactContraintSatisfactionTest()
 		{
-			var vc = new ValueConstraint(TypeName.String, "2");
+			var vc = new ValueConstraint(NetTypeName.String, "2");
 			vc.IsSatisfiedBy("2").Should().BeTrue();
 			vc.IsSatisfiedBy("1").Should().BeFalse();
 			vc.IsSatisfiedBy(1).Should().BeFalse();
@@ -48,7 +48,7 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy("red").Should().BeTrue();
 			vc.IsSatisfiedBy("blue").Should().BeFalse();
 
-			vc = new ValueConstraint(TypeName.Floating);
+			vc = new ValueConstraint(NetTypeName.Floating);
 			vc.IsSatisfiedBy(2f).Should().BeTrue();
 			vc.IsSatisfiedBy("blue").Should().BeFalse();
 			vc.IsSatisfiedBy(2d).Should().BeFalse();
@@ -81,7 +81,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void RangeConstraintSatisfactionTest()
 		{
-			var vc = new ValueConstraint(TypeName.Double);
+			var vc = new ValueConstraint(NetTypeName.Double);
 			var t = new RangeConstraint()
 			{
 				MinValue = 2.ToString(),
@@ -112,7 +112,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void EnumConstraintSatisfactionTest()
 		{
-			var vc = new ValueConstraint(TypeName.Integer);
+			var vc = new ValueConstraint(NetTypeName.Integer);
 			vc.AddAccepted(new ExactConstraint(30.ToString()));
 			vc.AddAccepted(new ExactConstraint(60.ToString()));
 			vc.AddAccepted(new ExactConstraint(90.ToString()));

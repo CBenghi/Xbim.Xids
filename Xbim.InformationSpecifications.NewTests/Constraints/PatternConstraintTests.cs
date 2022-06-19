@@ -48,7 +48,7 @@ namespace Xbim.InformationSpecifications.Tests
 		public void FailLoggerTest()
         {
 			var loggerMock = new Mock<ILogger<PatternConstraintTests>>();
-			var vc = new ValueConstraint(TypeName.String);
+			var vc = new ValueConstraint(NetTypeName.String);
 			vc.AddAccepted(new PatternConstraint() { Pattern = "(invalid" });
 			vc.IsSatisfiedBy("a", loggerMock.Object).Should().BeFalse();
 			var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
@@ -59,7 +59,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
 		public void PatternConstraintSatisfactionTest()
 		{
-			var vc = new ValueConstraint(TypeName.String);
+			var vc = new ValueConstraint(NetTypeName.String);
 			vc.AddAccepted(new PatternConstraint() { Pattern = "[a-z]" });
 			vc.IsSatisfiedBy("a").Should().BeTrue();
 			vc.IsSatisfiedBy("z").Should().BeTrue();

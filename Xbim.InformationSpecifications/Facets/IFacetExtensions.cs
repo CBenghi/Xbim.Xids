@@ -55,7 +55,7 @@ namespace Xbim.InformationSpecifications
 					continue; // both null is ok
 				if (ofOne == null || ofTwo == null)
 					return false; // only one null is not equal
-				if (one.BaseType == TypeName.String
+				if (one.BaseType == NetTypeName.String
 					&& ofOne is ExactConstraint ecOfOne
 					&& ofTwo is ExactConstraint ecOfTwo
 					)

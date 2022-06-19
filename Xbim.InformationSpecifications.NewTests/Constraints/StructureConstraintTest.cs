@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void StructureConstraintSatisfactionTest()
         {
-            var vc = new ValueConstraint(TypeName.Decimal);
+            var vc = new ValueConstraint(NetTypeName.Decimal);
             var sc = new StructureConstraint
             {
                 FractionDigits = 2,
@@ -32,21 +32,21 @@ namespace Xbim.InformationSpecifications.Tests
             TestDirectAndAfterPersistence(vc, TestNoFraction);
 
 
-            vc = new ValueConstraint(TypeName.Floating);
+            vc = new ValueConstraint(NetTypeName.Floating);
             sc = new StructureConstraint();
             vc.AddAccepted(sc);
             sc.FractionDigits = 2;
             sc.TotalDigits = 5;
             TestDirectAndAfterPersistence(vc, FloatingTests);
 
-            vc = new ValueConstraint(TypeName.Double);
+            vc = new ValueConstraint(NetTypeName.Double);
             sc = new StructureConstraint();
             vc.AddAccepted(sc);
             sc.FractionDigits = 2;
             sc.TotalDigits = 5;
             TestDirectAndAfterPersistence(vc, DoubleStructureTests);
 
-            vc = new ValueConstraint(TypeName.String);
+            vc = new ValueConstraint(NetTypeName.String);
             sc = new StructureConstraint();
             vc.AddAccepted(sc);
             sc.Length = 4;

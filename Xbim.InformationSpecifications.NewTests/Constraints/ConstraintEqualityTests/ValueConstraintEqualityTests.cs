@@ -66,7 +66,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 		[Fact]
 		public void OrderIrrelevant()
         {
-			var t1 = new ValueConstraint(TypeName.String)
+			var t1 = new ValueConstraint(NetTypeName.String)
 			{
 				AcceptedValues = new List<IValueConstraint>()
 				{
@@ -75,7 +75,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 				}
 			};
 
-			var t2 = new ValueConstraint(TypeName.String)
+			var t2 = new ValueConstraint(NetTypeName.String)
 			{
 				AcceptedValues = new List<IValueConstraint>()
 				{
@@ -96,9 +96,9 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 			yield return new ValueConstraint(2.0d);
 			yield return new ValueConstraint(2.0m);
 			yield return new ValueConstraint(2);
-			yield return new ValueConstraint(TypeName.Boolean);
+			yield return new ValueConstraint(NetTypeName.Boolean);
 
-			yield return new ValueConstraint(TypeName.String)
+			yield return new ValueConstraint(NetTypeName.String)
 			{
 				AcceptedValues = new List<IValueConstraint>()
 				{

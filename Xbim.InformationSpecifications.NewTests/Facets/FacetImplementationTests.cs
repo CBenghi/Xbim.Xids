@@ -181,9 +181,9 @@ namespace Xbim.InformationSpecifications.Tests
 		public void ValueIsEmpty()
 		{
 			new ValueConstraint().IsEmpty().Should().BeTrue();
-			new ValueConstraint() { BaseType = TypeName.String }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { BaseType = NetTypeName.String }.IsEmpty().Should().BeFalse();
 			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeTrue();
-			new ValueConstraint() { BaseType = TypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { BaseType = NetTypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeFalse();
 			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty().Should().BeFalse();
 		}
 
@@ -191,10 +191,10 @@ namespace Xbim.InformationSpecifications.Tests
 		[Fact]
 		public void DataTypesOk()
 		{
-			var typeNames = Enum.GetValues(typeof(TypeName)).Cast<TypeName>();
+			var typeNames = Enum.GetValues(typeof(NetTypeName)).Cast<NetTypeName>();
 			foreach (var tName in typeNames)
 			{
-				if (tName == TypeName.Undefined)
+				if (tName == NetTypeName.Undefined)
 					continue;
 
 				var t = ValueConstraint.GetXsdTypeString(tName);
@@ -214,7 +214,7 @@ namespace Xbim.InformationSpecifications.Tests
 		{
             var val = new ValueConstraint
             {
-                BaseType = TypeName.String,
+                BaseType = NetTypeName.String,
                 AcceptedValues = new List<IValueConstraint>()
                 {
                     new ExactConstraint("30"),

@@ -55,11 +55,18 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// Name string
 		/// </summary>
 		public string Name { get; private set; }
+
 		/// <summary>
 		/// Parent name as string
 		/// </summary>
+
 		public string ParentName { get; private set; }
-		public ClassType Type { get; private set; }
+
+        /// <summary>
+        /// Metadata about the class (concrete, abstract or enum).
+        /// </summary>
+        public ClassType Type { get; private set; }
+
 		/// <summary>
 		/// Resolved parent Classinfo
 		/// </summary>
@@ -118,6 +125,9 @@ namespace Xbim.InformationSpecifications.Helpers
 			}
 		}
 
+        /// <summary>
+        /// Public constructor
+        /// </summary>
 		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace)
 		{
 			Name = name;
@@ -127,6 +137,9 @@ namespace Xbim.InformationSpecifications.Helpers
 			NameSpace = nameSpace;
 		}
 
+        /// <summary>
+        /// What are the Type Classes related to the current (e.g. IfcWall to IfcWallType).
+        /// </summary>
 		public string[]? RelationTypeClasses { get; private set;}
 
 		internal void SetTypeClasses(IEnumerable<string> typeClasses)

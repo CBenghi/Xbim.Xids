@@ -12,6 +12,11 @@ namespace Xbim.InformationSpecifications
 {
 	public partial class Xids
 	{
+        /// <summary>
+        /// Persists the instance to a file by file name. See the <see cref="LoadFromJson(string, ILogger?)"/> to unpersist.
+        /// </summary>
+        /// <param name="destinationFile">The file name to write to. If the file exists it's overwritten without throwing an error.</param>
+        /// <param name="logger">The logging context to be notified.</param>
 		public void SaveAsJson(string destinationFile, ILogger? logger = null)
 		{
 			if (File.Exists(destinationFile))
@@ -20,6 +25,11 @@ namespace Xbim.InformationSpecifications
             SaveAsJson(s, logger);
         }
 
+        /// <summary>
+        /// Persists the instance to a stream.
+        /// </summary>
+        /// <param name="sw">Any writeable stream</param>
+        /// <param name="logger">The logging context to be notified.</param>
 		public void SaveAsJson(Stream sw, ILogger? logger = null)
 		{
 			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
@@ -55,7 +65,13 @@ namespace Xbim.InformationSpecifications
 			return options;
 		}
 
-		public static Xids? LoadFromJson(string sourceFile, ILogger? logger = null)
+        /// <summary>
+        /// Unpersists an instance from a file by file name. See the <see cref="SaveAsJson(string, ILogger?)"/> to persist.
+        /// </summary>
+        /// <param name="sourceFile">File name to load the information from</param>
+        /// <param name="logger">The logging context to be notified.</param>
+        /// <returns>null if any critical error occurs</returns>
+        public static Xids? LoadFromJson(string sourceFile, ILogger? logger = null)
 		{
 			// todo: 2021: json perhaps not efficient for large files.
 			if (!File.Exists(sourceFile))
@@ -68,7 +84,7 @@ namespace Xbim.InformationSpecifications
 			return Finalize(t);
 		}
 
-		public static Xids? Finalize(Xids? unpersisted)
+		private static Xids? Finalize(Xids? unpersisted)
 		{
 			if (unpersisted == null)
 				return null;
@@ -89,7 +105,13 @@ namespace Xbim.InformationSpecifications
 			return unpersisted;
 		}
 
-		public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
+        /// <summary>
+        /// Unpersists an instance from a stream in json format. 
+        /// </summary>
+        /// <param name="sourceStream">a readable json stream.</param>
+        /// <param name="logger">The logging context to be notified.</param>
+        /// <returns>null if any critical error occurs</returns>
+        public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
 		{
 			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
 			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;

@@ -6,40 +6,84 @@ namespace Xbim.InformationSpecifications
 	// to evaluate more XSD types see 
 	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
-	public enum TypeName
+    /// <summary>
+    /// type names in the .NET framework
+    /// </summary>
+	public enum NetTypeName
 	{
+        /// <summary>
+        /// No type constraint
+        /// </summary>
 		Undefined,
+        /// <summary>
+        /// Boolean values as defined in  the .NET framework
+        /// </summary>
 		Boolean,
+        /// <summary>
+        /// String values as defined in  the .NET framework
+        /// </summary>
 		String,
+        /// <summary>
+        /// Integer values as defined in  the .NET framework
+        /// </summary>
 		Integer,
+        /// <summary>
+        /// Floating values as defined in  the .NET framework
+        /// </summary>
 		Floating,
+        /// <summary>
+        /// Double values as defined in  the .NET framework
+        /// </summary>
 		Double,
+        /// <summary>
+        /// Boolean values as defined in  the .NET framework
+        /// </summary>
 		Decimal,
+        /// <summary>
+        /// Date values as defined in  the .NET framework
+        /// </summary>
 		Date,
+        /// <summary>
+        /// Time values as defined in  the .NET framework
+        /// </summary>
 		Time,
+        /// <summary>
+        /// DateTime values as defined in  the .NET framework
+        /// </summary>
 		DateTime,
+        /// <summary>
+        /// Duration values as defined in  the .NET framework
+        /// </summary>
 		Duration,
+        /// <summary>
+        /// Uri values as defined in  the .NET framework
+        /// </summary>
 		Uri,
 	}
 
 
 	public partial class ValueConstraint
 	{
-		public static string GetXsdTypeString(TypeName baseType)
+        /// <summary>
+        /// gets the relevant XSD type string from a C# type enum
+        /// </summary>
+        /// <param name="type">.NET type enum sought</param>
+        /// <returns>mapped xs type name, or empty string is not found.</returns>
+		public static string GetXsdTypeString(NetTypeName type)
 		{
-            return baseType switch
+            return type switch
             {
-                TypeName.Integer => "xs:integer",
-                TypeName.String => "xs:string",
-                TypeName.Boolean => "xs:boolean",
-                TypeName.Floating => "xs:float",
-                TypeName.Double => "xs:double",
-                TypeName.Decimal => "xs:decimal",
-                TypeName.Date => "xs:date",
-                TypeName.Time => "xs:time",
-                TypeName.Duration => "xs:duration",
-                TypeName.DateTime => "xs:dateTime",
-                TypeName.Uri => "xs:anyURI",
+                NetTypeName.Integer => "xs:integer",
+                NetTypeName.String => "xs:string",
+                NetTypeName.Boolean => "xs:boolean",
+                NetTypeName.Floating => "xs:float",
+                NetTypeName.Double => "xs:double",
+                NetTypeName.Decimal => "xs:decimal",
+                NetTypeName.Date => "xs:date",
+                NetTypeName.Time => "xs:time",
+                NetTypeName.Duration => "xs:duration",
+                NetTypeName.DateTime => "xs:dateTime",
+                NetTypeName.Uri => "xs:anyURI",
                 _ => "",
             };
         }
@@ -51,139 +95,196 @@ namespace Xbim.InformationSpecifications
 		/// <returns>A value constraint, based on string type</returns>
         public static ValueConstraint CreatePattern(string pattern)
         {
-			var vc = new ValueConstraint(TypeName.String);
+			var vc = new ValueConstraint(NetTypeName.String);
 			vc.AddAccepted(new PatternConstraint() { Pattern = pattern });
 			return vc;
 		}
 
-        public static Type? GetNetType(TypeName baseType)
+        /// <summary>
+        /// Gets the .NET type from the enum value
+        /// </summary>
+        /// <returns>null if not found</returns>
+        public static Type? GetNetType(NetTypeName baseType)
 		{
             return baseType switch
             {
-                TypeName.Integer => typeof(int),
-                TypeName.String => typeof(string),
-                TypeName.Boolean => typeof(bool),
-                TypeName.Floating => typeof(float),
-                TypeName.Double => typeof(double),
-                TypeName.Decimal => typeof(decimal),
-                TypeName.Date or TypeName.DateTime => typeof(DateTime),
-                TypeName.Time or TypeName.Duration => typeof(TimeSpan),
-                TypeName.Uri => typeof(Uri),
-                TypeName.Undefined => null,
+                NetTypeName.Integer => typeof(int),
+                NetTypeName.String => typeof(string),
+                NetTypeName.Boolean => typeof(bool),
+                NetTypeName.Floating => typeof(float),
+                NetTypeName.Double => typeof(double),
+                NetTypeName.Decimal => typeof(decimal),
+                NetTypeName.Date or NetTypeName.DateTime => typeof(DateTime),
+                NetTypeName.Time or NetTypeName.Duration => typeof(TimeSpan),
+                NetTypeName.Uri => typeof(Uri),
+                NetTypeName.Undefined => null,
                 _ => null,
             };
         }
 
 
-
-		public static TypeName GetNamedTypeFromXsd(string tval)
+        /// <summary>
+        /// Gets the .NET type enum from the XSD string value
+        /// </summary>
+        /// <returns>Undefined if not found</returns>
+		public static NetTypeName GetNamedTypeFromXsd(string tval)
 		{
             return tval switch
             {
-                "xs:string" => TypeName.String,
-                "xs:integer" => TypeName.Integer,
-                "xs:boolean" => TypeName.Boolean,
-                "xs:double" => TypeName.Double,
-                "xs:decimal" => TypeName.Decimal,
-                "xs:float" => TypeName.Floating,
-                "xs:date" => TypeName.Date,
-                "xs:dateTime" => TypeName.DateTime,
-                "xs:duration" => TypeName.Duration,
-                "xs:time" => TypeName.Time,
-                "xs:anyURI" => TypeName.Uri,
-                _ => TypeName.Undefined,
+                "xs:string" => NetTypeName.String,
+                "xs:integer" => NetTypeName.Integer,
+                "xs:boolean" => NetTypeName.Boolean,
+                "xs:double" => NetTypeName.Double,
+                "xs:decimal" => NetTypeName.Decimal,
+                "xs:float" => NetTypeName.Floating,
+                "xs:date" => NetTypeName.Date,
+                "xs:dateTime" => NetTypeName.DateTime,
+                "xs:duration" => NetTypeName.Duration,
+                "xs:time" => NetTypeName.Time,
+                "xs:anyURI" => NetTypeName.Uri,
+                _ => NetTypeName.Undefined,
             };
         }
 
+        /// <summary>
+        /// Enumeration of all possible XSD constraint types
+        /// </summary>
 		public enum Constraints
 		{
+            /// <summary>
+            /// Length of an element in characters or digits.
+            /// </summary>
 			length,
+            /// <summary>
+            /// Minumum Length of an element in characters or digits
+            /// </summary>
 			minLength,
+            /// <summary>
+            /// Maximum Length of an element in characters or digits
+            /// </summary>
 			maxLength,
+            /// <summary>
+            /// pattern of a an element (expressed as a string)
+            /// </summary>
 			pattern,
+            /// <summary>
+            /// One of the values in the enumeration
+            /// </summary>
 			enumeration,
+            /// <summary>
+            /// How do we treat whitespace? TODO: to be documented.
+            /// </summary>
 			whiteSpace,
+            /// <summary>
+            /// number of digits defined in a decimal value
+            /// </summary>
 			totalDigits,
+            /// <summary>
+            /// number of digits after the unit, in a decimal value
+            /// </summary>
 			fractionDigits,
+            /// <summary>
+            /// the minimum boundary of an element, not valid for the interval
+            /// </summary>
 			minExclusive,
+            /// <summary>
+            /// the minimum boundary of an element, valid for the interval
+            /// </summary>
 			minInclusive,
+            /// <summary>
+            /// the maximum boundary of an element, not valid for the interval
+            /// </summary>
 			maxExclusive,
+            /// <summary>
+            /// the minimum boundary of an element, valid for the interval
+            /// </summary>
 			maxInclusive,
 		}
 
-		public static object? GetObject(object value, TypeName t)
+
+        /// <summary>
+        /// Converts the passed <paramref name="value"/> to the provided <paramref name="typeName"/>
+        /// </summary>
+        /// <param name="value">the value to try to convert</param>
+        /// <param name="typeName">the destination type</param>
+        /// <returns>Null when conversion is not successful</returns>
+		public static object? GetObject(object value, NetTypeName typeName)
 		{
-			if (t == TypeName.Integer)
+			if (typeName == NetTypeName.Integer)
 				return Convert.ToInt32(value);
-			if (t == TypeName.Decimal)
+			if (typeName == NetTypeName.Decimal)
 				return Convert.ToDecimal(value);
-			if (t == TypeName.Double)
+			if (typeName == NetTypeName.Double)
 				return Convert.ToDouble(value);
-			if (t == TypeName.Floating)
+			if (typeName == NetTypeName.Floating)
 				return Convert.ToSingle(value);
-			if (t == TypeName.Date)
+			if (typeName == NetTypeName.Date)
 				return Convert.ToDateTime(value);
-			if (t == TypeName.Boolean)
+			if (typeName == NetTypeName.Boolean)
 				return Convert.ToBoolean(value);
-			if (t == TypeName.Time)
+			if (typeName == NetTypeName.Time)
 			{
 				var tmp = Convert.ToDateTime(value);
 				return tmp.TimeOfDay;
 			}
-			if (t == TypeName.Uri)
+			if (typeName == NetTypeName.Uri)
 			{
 				if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
 					return val;
 				return null;
 			}
-			if (t == TypeName.String)
+			if (typeName == NetTypeName.String)
 			{
 				return value.ToString();
 			}
 			return value;
 		}
 
-
-
-		public static object? GetObject(string? value, TypeName t)
+        /// <summary>
+        /// Converts the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
+        /// </summary>
+        /// <param name="value">The value to parse</param>
+        /// <param name="typeName">The destination type required</param>
+        /// <returns>Null if parsing or conversion are not succesful</returns>
+		public static object? GetObject(string? value, NetTypeName typeName)
 		{
-			switch (t)
+			switch (typeName)
 			{
-				case TypeName.Undefined:
+				case NetTypeName.Undefined:
 					return value;
-				case TypeName.Boolean:
+				case NetTypeName.Boolean:
 					if (bool.TryParse(value, out var boolval))
 						return boolval;
 					return null;
-				case TypeName.String:
+				case NetTypeName.String:
 					return value;
-				case TypeName.Integer:
+				case NetTypeName.Integer:
 					if (int.TryParse(value, out var ival))
 						return ival;
 					return null;
-				case TypeName.Floating:
+				case NetTypeName.Floating:
 					if (float.TryParse(value, out var fval))
 						return fval;
 					return null;
-				case TypeName.Double:
+				case NetTypeName.Double:
 					if (double.TryParse(value, out var dblval))
 						return dblval;
 					return null;
-				case TypeName.Decimal:
+				case NetTypeName.Decimal:
 					if (decimal.TryParse(value, out var dval))
 						return dval;
 					return null;
-				case TypeName.Date:
-				case TypeName.DateTime:
+				case NetTypeName.Date:
+				case NetTypeName.DateTime:
 					if (DateTime.TryParse(value, out var dateval))
 						return dateval.Date;
 					return null;
-				case TypeName.Time:
-				case TypeName.Duration:
+				case NetTypeName.Time:
+				case NetTypeName.Duration:
 					if (TimeSpan.TryParse(value, out var timeval))
 						return timeval;
 					return null;
-				case TypeName.Uri:
+				case NetTypeName.Uri:
 					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
 						return urival;
 					return null;
@@ -192,15 +293,21 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		// documentation taken from:
-		// https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#string
-		public static IEnumerable<Constraints> CompatibleConstraints(TypeName withType)
+
+        /// <summary>
+        /// returns a set of the valid constraint types given a base types 
+        /// Documentation taken from:
+        /// https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#string
+        /// </summary>
+        /// <param name="withType">the base type for the application of the constraints</param>
+        /// <returns>An enumeration of constraints.</returns>
+        public static IEnumerable<Constraints> CompatibleConstraints(NetTypeName withType)
 		{
             return withType switch
             {
-                TypeName.String => new[] { Constraints.length, Constraints.minLength, Constraints.maxLength, Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace },
-                TypeName.Boolean => new[] { Constraints.pattern, Constraints.whiteSpace },
-                TypeName.Decimal or TypeName.Integer => new[] { Constraints.totalDigits, Constraints.fractionDigits, Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive },
+                NetTypeName.String => new[] { Constraints.length, Constraints.minLength, Constraints.maxLength, Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace },
+                NetTypeName.Boolean => new[] { Constraints.pattern, Constraints.whiteSpace },
+                NetTypeName.Decimal or NetTypeName.Integer => new[] { Constraints.totalDigits, Constraints.fractionDigits, Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive },
                 _ => new[] { Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive },
             };
         }
