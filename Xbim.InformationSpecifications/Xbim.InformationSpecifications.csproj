@@ -33,6 +33,7 @@
 	<PropertyGroup>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>XbimOpenSourceKeyFile.snk</AssemblyOriginatorKeyFile>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="Helpers\NullableHelper.cs" />
@@ -42,6 +43,7 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+		<None Include="C:\Data\Dev\XbimPrivate\Xbim.Xids\Xbim.InformationSpecifications\.editorconfig" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
@@ -72,5 +74,8 @@
 		<Message Importance="high" Text="Copying local package to:  C:/Users/Claudio/OneDrive/Benghi/FastViewer" />
 		<Copy SourceFiles="$(OutputPath)/$(PackageId).$(PackageVersion).nupkg" DestinationFolder="C:/Users/Claudio/OneDrive/Benghi/FastViewer" />
 	</Target>
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Data\Dev\XbimPrivate\Xbim.Xids\Xbim.InformationSpecifications\.editorconfig" />
+	</ItemGroup>
 	
 </Project>

@@ -103,6 +103,7 @@ namespace Xbim.InformationSpecifications
             Entity = value.ToString();
         }
 
+        /// <inheritdoc />
         public bool Equals(PartOfFacet? other)
         {
             if (other == null)
@@ -115,16 +116,22 @@ namespace Xbim.InformationSpecifications
             return base.Equals(other);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as PartOfFacet);
         }
 
+        /// <summary>
+        /// Valid (see <see cref="IFacet.IsValid"/>) if at least <see cref="Entity"/> is meaningful.
+        /// </summary>
+        /// <returns>true if valid</returns>
         public bool IsValid()
         {
             return GetEntity() != Container.Undefined;
         }
 
+        /// <inheritdoc />
         public string Short()
         {
             if (IsValid())
@@ -132,11 +139,13 @@ namespace Xbim.InformationSpecifications
             return "belongs to undefined group";
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"belongs to :'{Entity}'";
         }
 
+        /// <inheritdoc />
         public override int GetHashCode() => 23 + 31 * (Entity, true).GetHashCode() + 31 * base.GetHashCode();
 
     }

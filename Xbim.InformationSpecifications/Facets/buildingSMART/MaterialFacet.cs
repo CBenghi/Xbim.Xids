@@ -11,6 +11,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		public ValueConstraint? Value { get; set; } = null;
 
+        /// <inheritdoc />
 		public string Short()
 		{
 			if (Value == null)
@@ -20,11 +21,13 @@ namespace Xbim.InformationSpecifications
 			return $"Has a material's name {Value.Short()}";
 		}
 
+        /// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{Value}-{base.ToString()}";
 		}
 
+        /// <inheritdoc />
 		public bool Equals(MaterialFacet? other)
 		{
 			if (other == null)
@@ -33,14 +36,18 @@ namespace Xbim.InformationSpecifications
 				return false;
 			return base.Equals(other);
 		}
+
+        /// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as MaterialFacet);
 		}
 
+        /// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 * (Value, true).GetHashCode() + 31 * base.GetHashCode();
 
 
+        /// always valid (see <see cref="IFacet.IsValid"/>).
 		public bool IsValid()
 		{
 			// an empty one just means should have a material

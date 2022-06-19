@@ -6,6 +6,9 @@ using System.Xml;
 
 namespace Xbim.InformationSpecifications.Cardinality
 {
+    /// <summary>
+    /// A way of defining <see cref="ICardinality"/> by Min and Max expected values.
+    /// </summary>
     public class MinMaxCardinality : ICardinality
     {
         /// <summary>
@@ -21,13 +24,11 @@ namespace Xbim.InformationSpecifications.Cardinality
         public int? MaxOccurs { get; set; } = null;
 
         /// <summary>
-        /// No requirement needed if maxoccurs is set to 0.
+        /// No requirement needed if maxoccurs is set to 0, See <see cref="ICardinality.ExpectsRequirements"/>.
         /// </summary>
         public bool ExpectsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
 
-        /// <summary>
-        /// A string describing the nature of the cardinality.
-        /// </summary>
+        /// <inheritdoc />
         public string Description
         {
             get
@@ -45,9 +46,7 @@ namespace Xbim.InformationSpecifications.Cardinality
             }
         }
 
-        /// <summary>
-        /// True if the cardinality requires the entire model for evaluation.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsModelConstraint
         {
             get {
@@ -60,6 +59,7 @@ namespace Xbim.InformationSpecifications.Cardinality
 
         }
 
+        /// <inheritdoc />
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteAttributeString("minOccurs", MinOccurs.ToString());

@@ -3,9 +3,18 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
+    /// <summary>
+    /// Information about standard property sets defined from bS
+    /// </summary>
 	public partial class PropertySetInfo
 	{
-		public string Name { get; set; }
+        /// <summary>
+        /// The stanard name of the IfcPropertySet being described.
+        /// </summary>
+		public string Name { get; }
+        /// <summary>
+        /// string names of the properties defined for the IfcPropertySet being described.
+        /// </summary>
 		public IEnumerable<string> PropertyNames => Properties.Select(p => p.Name);
 		public IList<string> ApplicableClasses { get; set; }
 		public IList<IPropertyTypeInfo> Properties { get; set; } 

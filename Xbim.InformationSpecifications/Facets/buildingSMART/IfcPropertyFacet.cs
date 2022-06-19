@@ -33,6 +33,11 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public ValueConstraint? PropertyValue { get; set; }
 
+        /// <summary>
+        /// Tries parsing the Measure string and returns success state
+        /// </summary>
+        /// <param name="measure">value of the parsing of the string into the enum</param>
+        /// <returns>true if parsing successful</returns>
         public bool HasMeasure([NotNullWhen(true)] out IfcMeasures? measure)
         {
             if (Measure is not null && Enum.TryParse<IfcMeasures>(Measure, out var found))
@@ -44,9 +49,7 @@ namespace Xbim.InformationSpecifications
             return false;
         }
 
-        /// <summary>
-        /// Textual facet description
-        /// </summary>
+        /// <inheritdoc />
         public string Short()
         {
             var sb = new StringBuilder();
@@ -63,16 +66,16 @@ namespace Xbim.InformationSpecifications
             sb.Append('.');
             return sb.ToString();
         }
-
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as IfcPropertyFacet);
         }
-
+        /// <inheritdoc />
         public override int GetHashCode() => 23 + 31 * (PropertySetName, PropertyName, PropertyValue, Measure).GetHashCode() + 31 * base.GetHashCode();
-
+        /// <inheritdoc />
         public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{Measure}-{base.ToString()}";
-        
+        /// <inheritdoc />
 		public bool Equals(IfcPropertyFacet? other)
         {
             if (other == null)
@@ -88,6 +91,7 @@ namespace Xbim.InformationSpecifications
             return base.Equals(other);
         }
 
+        /// <inheritdoc />
         [MemberNotNullWhen(true, nameof(PropertySetName))]
         [MemberNotNullWhen(true, nameof(PropertyName))]
         public bool IsValid()

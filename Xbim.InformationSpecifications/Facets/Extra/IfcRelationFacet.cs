@@ -46,15 +46,16 @@ namespace Xbim.InformationSpecifications
 
 		private string relation = RelationType.Undefined.ToString();
 
-		public RelationType GetRelation()
+        public RelationType GetRelation()
 		{
-			if (Enum.TryParse<RelationType>(relation, out var loc))
+			if (Enum.TryParse<RelationType>(relation, out var rel))
 			{
-				return loc;
+				return rel;
 			}
 			return RelationType.Undefined;
 
 		}
+
 		public void SetRelation(RelationType loc)
 		{
 			relation = loc.ToString();
@@ -69,17 +70,20 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		public override string ToString()
+        /// <inheritdoc />
+        public override string ToString()
 		{
 			return $"{SourceId}-{Relation}-{base.ToString()}";
 		}
 
-		public override bool Equals(object? obj)
+        /// <inheritdoc />
+        public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as IfcRelationFacet);
 		}
 
-		public bool Equals(IfcRelationFacet? other)
+        /// <inheritdoc />
+        public bool Equals(IfcRelationFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -90,31 +94,42 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other);
 		}
 
-		[MemberNotNullWhen(true, nameof(Source))]
-		public bool IsValid()
+        /// <summary>
+        /// Valid (see <see cref="IFacet.IsValid"/>) if 
+        /// <see cref="Source"/> and
+        /// <see cref="Relation"/>        
+        /// are meaningful.
+        /// </summary>
+        /// <returns>true if valid</returns>        
+        [MemberNotNullWhen(true, nameof(Source))]
+        [MemberNotNullWhen(true, nameof(Relation))]
+        public bool IsValid()
 		{
 			if (Source == null)
 				return false;
 			if (GetRelation() == RelationType.Undefined)
 				return false;
-			return true;
-		}
+#pragma warning disable CS8775 // Member must have a non-null value when exiting in some condition, ensured by GetRelation()
+            return true;
+#pragma warning restore CS8775 // Member must have a non-null value when exiting in some condition.
+        }
 
-		public override int GetHashCode() => 23 + 31 * (sourceId, relation).GetHashCode() + 53 * base.GetHashCode();
+        /// <inheritdoc />
+        public override int GetHashCode() => 23 + 31 * (sourceId, relation).GetHashCode() + 53 * base.GetHashCode();
 
-
-		public string Short()
+        /// <inheritdoc />
+        public string Short()
 		{
 			return ToString();
 		}
 
-		// IRepositoryRef
-		public void SetContextIds(Xids unpersisted)
+        /// <inheritdoc />
+        public void SetContextIds(Xids unpersisted)
 		{
 			Source = unpersisted.GetFacetGroup(sourceId);
 		}
 
-		// IRepositoryRef
+        /// <inheritdoc />
 		public IEnumerable<FacetGroup> UsedGroups()
 		{
 			if (Source is not null)

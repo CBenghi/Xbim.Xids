@@ -47,7 +47,7 @@ namespace Xbim.InformationSpecifications
 		public ValueConstraint? DocPurpose { get; set; }
 		public ValueConstraint? DocIntendedUse { get; set; }
 
-
+        /// <inheritdoc />
 		public bool Equals(DocumentFacet? other)
 		{
 			if (other == null)
@@ -58,24 +58,40 @@ namespace Xbim.InformationSpecifications
 				return false;
 			return base.Equals(other);
 		}
+
+        /// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as DocumentFacet);
 		}
 
+        /// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{DocId}-{DocName}-{DocLocation}-{DocPurpose}-{DocIntendedUse}-{base.ToString()}";
 		}
 
+        /// <inheritdoc />
 		public override int GetHashCode() => (DocId, DocName, DocLocation, DocPurpose, DocIntendedUse).GetHashCode();
 
+        /// <inheritdoc />
 		public string Short()
 		{
 			return ToString();
 		}
 
-		public bool IsValid()
+
+        /// <summary>
+        /// Valid (see <see cref="IFacet.IsValid"/>) if at least one of 
+        /// <see cref="DocId"/>, 
+        /// <see cref="DocName"/>, 
+        /// <see cref="DocLocation"/>,
+        /// <see cref="DocPurpose"/> or
+        /// <see cref="DocIntendedUse"/>,
+        /// are not empty.
+        /// </summary>
+        /// <returns>true if valid</returns>
+        public bool IsValid()
 		{
 			// at least one field is not empty
 			return ValueConstraint.IsNotEmpty(DocId) ||

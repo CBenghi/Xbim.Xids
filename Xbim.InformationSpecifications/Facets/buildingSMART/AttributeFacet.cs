@@ -7,7 +7,6 @@ namespace Xbim.InformationSpecifications
 
 	/// <summary>
 	/// Constrain model parts on the ground of class attributes.
-	/// Either directly or via a type relation (see <see cref="Location"/>).
 	/// </summary>
 	public partial class AttributeFacet : FacetBase, IEquatable<AttributeFacet>, IFacet
 	{
@@ -24,7 +23,8 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		public ValueConstraint? AttributeValue { get; set; }
 
-		public bool Equals(AttributeFacet? other)
+		/// <inheritdoc />
+        public bool Equals(AttributeFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -35,23 +35,28 @@ namespace Xbim.InformationSpecifications
 			return base.Equals(other);
 		}
 
+        /// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
 			return Equals(obj as AttributeFacet);
 		}
 
+        /// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{AttributeName}-{AttributeValue}-{base.ToString()}";
 		}
 
+        /// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 *(AttributeName, AttributeValue).GetHashCode() + 31 * base.GetHashCode();
 
+        /// <inheritdoc />
 		public string Short()
 		{
 			return $"attribute {AttributeName} = {AttributeValue}";
 		}
 
+        /// <inheritdoc />
 		[MemberNotNullWhen(true, nameof(AttributeName))]
 		public bool IsValid()
 		{

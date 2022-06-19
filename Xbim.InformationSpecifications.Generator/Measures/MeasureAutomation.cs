@@ -187,10 +187,21 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			var sb = new StringBuilder();
 
 			var doc = Program.GetBuildingSmartSchemaXML();
-			var measureEnum = GetMeasureRestrictions(doc).ToList();
+			var measureEnum = GetMeasureRestrictionsFromSchema(doc).ToList();
 			foreach (var measure in measureEnum)
 			{
-				sb.AppendLine($"\t\t{measure},");
+				if (SchemaInfo.IfcMeasures.TryGetValue(measure, out var found))
+                {
+					if (found.Exponents != null)
+                    {
+						sb.AppendLine($"\t\t/// {found.Description}, expressed in {found.GetUnit()}");
+                    }
+					else
+                    {
+                        sb.AppendLine($"\t\t/// {measure}, no unit conversion");
+                    }
+                }
+                sb.AppendLine($"\t\t{measure},");
 			}
 
 			source = source.Replace($"\t\t<PlaceHolder>\r\n", sb.ToString());
@@ -210,7 +221,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 		public static bool Execute_CheckMeasureEnumeration()
 		{
 			var doc = Program.GetBuildingSmartSchemaXML();
-			var measureEnum = GetMeasureRestrictions(doc).ToList();
+			var measureEnum = GetMeasureRestrictionsFromSchema(doc).ToList();
 			var errors = false;
 			foreach (var item in measureEnum)
 			{
@@ -223,8 +234,12 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			return errors;
 		}
 
-		private static IEnumerable<string> GetMeasureRestrictions(XmlDocument doc)
+		/// <summary>
+		/// Taken from the schema, not the documentation
+		/// </summary>
+		private static IEnumerable<string> GetMeasureRestrictionsFromSchema(XmlDocument doc)
 		{
+			// finds the node via xml, then returns the enum
 			XmlNode root = doc.DocumentElement;
 			var prop = root.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Attributes[0].Value == "propertyType");
 			var measure = prop.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Attributes.Count > 0 && n.Attributes[0].Value == "measure");
@@ -258,6 +273,9 @@ using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
+	/// <summary>
+    /// Determins data type constraints and conversion for measures.
+    /// </summary>
     public enum IfcMeasures
     {
 		<PlaceHolder>

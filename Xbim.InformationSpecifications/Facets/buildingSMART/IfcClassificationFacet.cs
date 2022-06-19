@@ -26,6 +26,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		public bool IncludeSubClasses { get; set; }
 
+        /// <inheritdoc />
 		public string Short()
 		{
 			if (
@@ -47,9 +48,9 @@ namespace Xbim.InformationSpecifications
 			return tmp.FirstCharToUpper();
 		}
 
-		
 
-		public bool Equals(IfcClassificationFacet? other)
+        /// <inheritdoc />
+        public bool Equals(IfcClassificationFacet? other)
 		{
 			if (other == null)
 				return false;
@@ -67,21 +68,21 @@ namespace Xbim.InformationSpecifications
 				return false;
 			return base.Equals(other);
 		}
-
+        /// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
 			return this.Equals(obj as IfcClassificationFacet);
 		}
-
+        /// <inheritdoc />
 		public override string ToString()
 		{
 			return $"{ClassificationSystem}-{Identification}-{IncludeSubClasses}-{base.ToString()}";
 		}
-
+        /// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 * (ClassificationSystem, Identification, IncludeSubClasses).GetHashCode() + 53 * base.GetHashCode();
-		
 
-		public bool IsValid()
+        /// <inheritdoc />
+        public bool IsValid()
 		{
 			// if we assume that all empty means that it's enough to have any classification
 			// then the facet is always valid.

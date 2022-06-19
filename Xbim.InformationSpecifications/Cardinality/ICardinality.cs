@@ -6,13 +6,17 @@ using System.Xml;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Useful in the determination of required cardinal constraints for aspects of the model.
+    /// E.g. Any parts are expected or invalid (possibly how many are due).
+    /// </summary>
     public interface ICardinality
     {
         /// <summary>
-        /// Function to export the bS XML content of the instance
+        /// Exports a representation of the instance to a valid bS IDS format
         /// </summary>
-        /// <param name="xmlWriter"></param>
-        /// <param name="logger"></param>
+        /// <param name="xmlWriter">the writer used as target of the export</param>
+        /// <param name="logger">optional logging environemnt</param>
         void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger);
 
         /// <summary>

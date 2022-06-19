@@ -25,6 +25,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public bool IncludeSubtypes { get; set; } = true;
 
+        /// <inheritdoc />
         public string Short()
         {
             var desc = new List<string>();
@@ -43,18 +44,22 @@ namespace Xbim.InformationSpecifications
             return tmp.FirstCharToUpper();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as IfcTypeFacet);
         }
 
+        /// <inheritdoc />
 		public override string ToString()
 		{
             return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}-{base.ToString()}";
         }
 
+        /// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 * (IfcType, PredefinedType, IncludeSubtypes).GetHashCode() + 31 * base.GetHashCode();
 
+        /// <inheritdoc />
 		public bool Equals(IfcTypeFacet? other)
 		{
             if (other == null)
@@ -67,7 +72,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Valid if at least IfcType is meaningful
+        /// Valid (see <see cref="IFacet.IsValid"/>) if at least IfcType is meaningful.
         /// </summary>
         /// <returns>true if valid</returns>
         [MemberNotNullWhen(true, nameof(IfcType))]

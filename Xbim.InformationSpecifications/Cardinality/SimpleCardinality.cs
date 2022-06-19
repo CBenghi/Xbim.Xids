@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
 namespace Xbim.InformationSpecifications.Cardinality
 {
+    /// <summary>
+    /// Supports the definiton of cardinality 
+    /// </summary>
     public enum CardinalityEnum
     {
         /// <summary>
@@ -22,6 +22,9 @@ namespace Xbim.InformationSpecifications.Cardinality
         Prohibited
     }
 
+    /// <summary>
+    /// A way of defining <see cref="ICardinality"/> by options in the <see cref="CardinalityEnum"/> enum.
+    /// </summary>
     public class SimpleCardinality : ICardinality
     {
         /// <summary>
@@ -30,20 +33,16 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public CardinalityEnum ApplicabilityCardinality { get; set; } = CardinalityEnum.Optional;
 
-        /// <summary>
-        /// If a facetgroup is prohibited, it does not make sens to have requirements assoiated with it.
-        /// </summary>
+        /// <inheritdoc />
         public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
 
-        /// <summary>
-        /// A string describing the nature of the cardinality.
-        /// </summary>
+        /// <inheritdoc />
         public string Description => ApplicabilityCardinality.ToString();
-        /// <summary>
-        /// True if the cardinality requires the entire model for evaluation.
-        /// </summary>
+
+        /// <inheritdoc />
         public bool IsModelConstraint => ApplicabilityCardinality != CardinalityEnum.Optional;
 
+        /// <inheritdoc />
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             switch (ApplicabilityCardinality)
