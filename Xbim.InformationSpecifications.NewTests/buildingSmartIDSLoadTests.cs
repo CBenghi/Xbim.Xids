@@ -13,9 +13,9 @@ using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-    public class buildingSmartIDSLoadTests
+    public class BuildingSmartIDSLoadTests
     {
-        public buildingSmartIDSLoadTests(ITestOutputHelper outputHelper)
+        public BuildingSmartIDSLoadTests(ITestOutputHelper outputHelper)
         {
             OutputHelper = outputHelper;
         }
@@ -40,9 +40,9 @@ namespace Xbim.InformationSpecifications.Tests
             {
                 DirectoryInfo d = new(".");
                 Debug.WriteLine(d.FullName);
-                ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
+                ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
                 CheckSchema(fileName, logg);
-                var loggerMock = new Mock<ILogger<buildingSmartIDSLoadTests>>();
+                var loggerMock = new Mock<ILogger<BuildingSmartIDSLoadTests>>();
                 var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
                 loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
                 var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
@@ -64,17 +64,17 @@ namespace Xbim.InformationSpecifications.Tests
             }
         }
 
-        internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()
+        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
         {
             var services = new ServiceCollection()
                         .AddLogging((builder) => builder.AddXUnit(OutputHelper));
             IServiceProvider provider = services.BuildServiceProvider();
-            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
+            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
             Assert.NotNull(logg);
             return logg;
         }
 
-        private static void CheckSchema(string tmpFile, ILogger<buildingSmartIDSLoadTests> logg = null)
+        private static void CheckSchema(string tmpFile, ILogger<BuildingSmartIDSLoadTests> logg = null)
         {
             IdsLib.CheckOptions c = new()
             {
@@ -86,7 +86,9 @@ namespace Xbim.InformationSpecifications.Tests
             var varlidationResult = IdsLib.CheckOptions.Run(c, s);
             if (varlidationResult != IdsLib.CheckOptions.Status.Ok)
             {
+#pragma warning disable CA2254 // Template should be a static expression, but we consider acceptable in the test.
                 logg?.LogError(s.ToString());
+#pragma warning restore CA2254 // Template should be a static expression
             }
             varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
         }

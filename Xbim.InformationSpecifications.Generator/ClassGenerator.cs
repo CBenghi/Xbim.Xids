@@ -55,7 +55,7 @@ namespace Xbim.InformationSpecifications.Generator
 						{
 							pdtypes.Add(val.ToString());
 						}
-						predType = newStringArray(pdtypes.ToArray());
+						predType = NewStringArray(pdtypes.ToArray());
 					}
 
 					var t = daType.Type;
@@ -70,7 +70,7 @@ namespace Xbim.InformationSpecifications.Generator
 			return source;
 		}
 
-		private static string newStringArray(string[] classes)
+		private static string NewStringArray(string[] classes)
 		{
 			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
 		}

@@ -34,7 +34,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
 			SchemaInfo.SchemaIfc4.Any().Should().BeTrue();
 			SchemaInfo.SchemaIfc4.Count().Should().NotBe(2);
 			SchemaInfo.SchemaIfc4["IfcProduct"].Parent.Name.Should().Be("IfcObject");
-			SchemaInfo.SchemaIfc4["IfcFeatureElement"].SubClasses.Count().Should().Be(3);
+            SchemaInfo.SchemaIfc4["IfcFeatureElement"].SubClasses.Count.Should().Be(3);
 			SchemaInfo.SchemaIfc4["IfcFeatureElement"].MatchingConcreteClasses.Count().Should().Be(5);
 			SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWall").Should().BeTrue();
 			SchemaInfo.SchemaIfc4["IfcWallStandardCase"].Is("IfcWall").Should().BeTrue();
@@ -160,7 +160,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
 
 		static private IEnumerable<IPropertyTypeInfo> FindMeasureTypes()
 		{
-			HashSet<string> done = new HashSet<string>();
+			var done = new HashSet<string>();
             foreach (var item in new [] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4 })
             {
 				var schema = PropertySetInfo.GetSchema(item);

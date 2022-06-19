@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications.Tests
 	public class ValidityTests
 	{
 		[Fact]
-		[Obsolete]
+		[Obsolete("Because we use an constructor method mark as obsolete for testing, we prevent the warning by marking the test obsolete too.")]
 		public void FacetGroupValidityTests()
 		{
 			FacetGroup g = new();

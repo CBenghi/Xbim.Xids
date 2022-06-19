@@ -106,7 +106,7 @@ namespace Xbim.InformationSpecifications.Generator
 			return matched;
 		}
 
-		private static string newStringArray(string[] classes)
+		private static string NewStringArray(string[] classes)
 		{
 			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
 		}
@@ -122,7 +122,7 @@ namespace Xbim.InformationSpecifications.Generator
 				var rel = GetRelationTypes(schema);	
 				foreach (var pair in rel.ObjectToTypesMatch)
                 {
-					sb.AppendLine($"\t\t\tschema.SetRelationType(\"{pair.Key.Name}\", {newStringArray(pair.Value.Select(x=>x.Name).ToArray())});");
+					sb.AppendLine($"\t\t\tschema.SetRelationType(\"{pair.Key.Name}\", {NewStringArray(pair.Value.Select(x=>x.Name).ToArray())});");
                 }				
 				source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
 			}

@@ -27,33 +27,22 @@ namespace Xbim.InformationSpecifications
 	{
 		public static string GetXsdTypeString(TypeName baseType)
 		{
-			switch (baseType)
-			{
-				case TypeName.Integer:
-					return "xs:integer";
-				case TypeName.String:
-					return "xs:string";
-				case TypeName.Boolean:
-					return "xs:boolean";
-				case TypeName.Floating:
-					return "xs:float";
-				case TypeName.Double:
-					return "xs:double";
-				case TypeName.Decimal:
-					return "xs:decimal";
-				case TypeName.Date:
-					return "xs:date";
-				case TypeName.Time:
-					return "xs:time";
-				case TypeName.Duration:
-					return "xs:duration";
-				case TypeName.DateTime:
-					return "xs:dateTime";
-				case TypeName.Uri:
-					return "xs:anyURI";
-			}
-			return "";
-		}
+            return baseType switch
+            {
+                TypeName.Integer => "xs:integer",
+                TypeName.String => "xs:string",
+                TypeName.Boolean => "xs:boolean",
+                TypeName.Floating => "xs:float",
+                TypeName.Double => "xs:double",
+                TypeName.Decimal => "xs:decimal",
+                TypeName.Date => "xs:date",
+                TypeName.Time => "xs:time",
+                TypeName.Duration => "xs:duration",
+                TypeName.DateTime => "xs:dateTime",
+                TypeName.Uri => "xs:anyURI",
+                _ => "",
+            };
+        }
 
 		/// <summary>
 		/// Create a constraint pattern from a string.
@@ -89,37 +78,24 @@ namespace Xbim.InformationSpecifications
 
 		public static TypeName GetNamedTypeFromXsd(string tval)
 		{
-            switch (tval)
+            return tval switch
             {
-                case "xs:string":
-                    return TypeName.String;
-                case "xs:integer":
-                    return TypeName.Integer;
-                case "xs:boolean":
-                    return TypeName.Boolean;
-                case "xs:double":
-                    return TypeName.Double;
-                case "xs:decimal":
-                    return TypeName.Decimal;
-                case "xs:float":
-                    return TypeName.Floating;
-                case "xs:date":
-                    return TypeName.Date;
-                case "xs:dateTime":
-                    return TypeName.DateTime;
-                case "xs:duration":
-                    return TypeName.Duration;
-                case "xs:time":
-                    return TypeName.Time;
-                case "xs:anyURI":
-                    return TypeName.Uri;
-				default:
-					return TypeName.Undefined;
-			}
-            
-		}
+                "xs:string" => TypeName.String,
+                "xs:integer" => TypeName.Integer,
+                "xs:boolean" => TypeName.Boolean,
+                "xs:double" => TypeName.Double,
+                "xs:decimal" => TypeName.Decimal,
+                "xs:float" => TypeName.Floating,
+                "xs:date" => TypeName.Date,
+                "xs:dateTime" => TypeName.DateTime,
+                "xs:duration" => TypeName.Duration,
+                "xs:time" => TypeName.Time,
+                "xs:anyURI" => TypeName.Uri,
+                _ => TypeName.Undefined,
+            };
+        }
 
-		public enum constraints
+		public enum Constraints
 		{
 			length,
 			minLength,
@@ -218,14 +194,14 @@ namespace Xbim.InformationSpecifications
 
 		// documentation taken from:
 		// https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#string
-		public static IEnumerable<constraints> CompatibleConstraints(TypeName withType)
+		public static IEnumerable<Constraints> CompatibleConstraints(TypeName withType)
 		{
             return withType switch
             {
-                TypeName.String => new[] { constraints.length, constraints.minLength, constraints.maxLength, constraints.pattern, constraints.enumeration, constraints.whiteSpace },
-                TypeName.Boolean => new[] { constraints.pattern, constraints.whiteSpace },
-                TypeName.Decimal or TypeName.Integer => new[] { constraints.totalDigits, constraints.fractionDigits, constraints.pattern, constraints.whiteSpace, constraints.enumeration, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive },
-                _ => new[] { constraints.pattern, constraints.enumeration, constraints.whiteSpace, constraints.maxInclusive, constraints.maxExclusive, constraints.minInclusive, constraints.minExclusive },
+                TypeName.String => new[] { Constraints.length, Constraints.minLength, Constraints.maxLength, Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace },
+                TypeName.Boolean => new[] { Constraints.pattern, Constraints.whiteSpace },
+                TypeName.Decimal or TypeName.Integer => new[] { Constraints.totalDigits, Constraints.fractionDigits, Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive },
+                _ => new[] { Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive },
             };
         }
 

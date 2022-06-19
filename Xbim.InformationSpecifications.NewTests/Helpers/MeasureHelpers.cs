@@ -75,7 +75,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(5.0, "J / kg °F", IfcMeasures.SpecificHeatCapacity, 9)]
         public void CheckUnit(double originalUnit, string complexUnit, IfcMeasures measure, double expected)
         {
-            MeasureUnit sourceUnit = new MeasureUnit(complexUnit);
+            var sourceUnit = new MeasureUnit(complexUnit);
             var t = SchemaInfo.IfcMeasures[measure.ToString()];
             sourceUnit.Exponent.Should().BeEquivalentTo(t.Exponents);
             sourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);

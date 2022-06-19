@@ -129,8 +129,8 @@ namespace Xbim.InformationSpecifications.Tests
 		[InlineData("Files/newformat.json")]
 		public void CanReadOldFile(string fileName)
 		{
-			var t = Xids.LoadFromJson(fileName);
-		}
+            _ = Xids.LoadFromJson(fileName);
+        }
 
 		[Fact]
 		public void CanWriteSimpleFile()

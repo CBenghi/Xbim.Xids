@@ -130,7 +130,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			return sb.ToString();
 		}
 
-		private static string newStringArray(string[] classes)
+		private static string NewStringArray(string[] classes)
 		{
 			return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
 		}
@@ -163,8 +163,8 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 				{
 					for (int i = 0; i < schemas.Length; i++)
 					{
-						Properties.Version schema = schemas[i];
-						var metaD = meta[i];
+                        _ = schemas[i];
+                        var metaD = meta[i];
 						var tp = metaD.ExpressType(ifcType.ToUpperInvariant());
 						if (tp != null)
 						{
@@ -173,7 +173,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 						}
 					}
 				}
-				sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {newStringArray(concreteClasses.ToArray())}) }},");
+				sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {NewStringArray(concreteClasses.ToArray())}) }},");
 			}
 
 			source = source.Replace($"\t\t\t<PlaceHolder>\r\n", sb.ToString());

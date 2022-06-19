@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications.Generator
 	{
 		internal static XmlDocument GetBuildingSmartSchemaXML()
 		{
-			XmlDocument doc = new XmlDocument();
+			var doc = new XmlDocument();
 			doc.LoadXml(File.ReadAllText(@"Files\ids_06.xsd"));
 			return doc;
 		}
@@ -53,12 +53,11 @@ namespace Xbim.InformationSpecifications.Generator
                                                                            // Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
                 return;
             }
-            string dest = "";
 
             // depends on Xbim.Properties assembly
             Console.WriteLine("Running properties generation...");
             var tPropGen = PropertiesGenerator.Execute();
-            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\PropertySetInfo.Generated.cs");
+            string dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\PropertySetInfo.Generated.cs");
             File.WriteAllText(dest, tPropGen);
 
             // depends on ExpressMetaData and IfcClassStudy classes

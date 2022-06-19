@@ -14,7 +14,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			if (_units is null)
 			{
 				_units = new Dictionary<string, UnitConversion>();
-				foreach (var item in units())
+				foreach (var item in Units())
 				{
 					_units.Add(item.Name, item);
 					foreach (var alias in item.Aliases)
@@ -26,7 +26,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			return _units.TryGetValue(unit, out Conversion);
 		}
 
-		private static IEnumerable<UnitConversion> units()
+		private static IEnumerable<UnitConversion> Units()
 		{
 			yield return new UnitConversion(1, "in", 0.0254, "m",
 				"inches", "''", "\"");

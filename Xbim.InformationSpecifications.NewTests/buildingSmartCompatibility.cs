@@ -18,11 +18,11 @@ using static Xbim.InformationSpecifications.Xids;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-    public class buildingSmartCompatibilityTests
+    public class BuildingSmartCompatibilityTests
     {
         private readonly ITestOutputHelper OutputHelper;
 
-        public buildingSmartCompatibilityTests(ITestOutputHelper outputHelper)
+        public BuildingSmartCompatibilityTests(ITestOutputHelper outputHelper)
         {
             OutputHelper = outputHelper;
         }
@@ -61,9 +61,11 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static CheckOptions GetValidator(string tmpFile)
         {
-            CheckOptions c = new();
-            c.CheckSchema = new[] { "bsFiles\\ids_06.xsd" };
-            c.InputSource = tmpFile;
+            CheckOptions c = new()
+            {
+                CheckSchema = new[] { "bsFiles\\ids_06.xsd" },
+                InputSource = tmpFile
+            };
             return c;
         }
 
@@ -93,12 +95,12 @@ namespace Xbim.InformationSpecifications.Tests
             archive.Entries.Count.Should().Be(2);               
         }
 
-        internal ILogger<buildingSmartIDSLoadTests> GetXunitLogger()
+        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
         {
             var services = new ServiceCollection()
                         .AddLogging((builder) => builder.AddXUnit(OutputHelper));
             IServiceProvider provider = services.BuildServiceProvider();
-            var logg = provider.GetRequiredService<ILogger<buildingSmartIDSLoadTests>>();
+            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
             Assert.NotNull(logg);
             return logg;
         }
@@ -112,8 +114,8 @@ namespace Xbim.InformationSpecifications.Tests
             var x = Xids.ImportBuildingSmartIDS(fileName);
             var exportedFile = Path.GetTempFileName();
 
-            ILogger<buildingSmartIDSLoadTests> logg = GetXunitLogger();
-            var loggerMock = new Mock<ILogger<buildingSmartCompatibilityTests>>(); // this is to check events
+            ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
+            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock.Object);
             _ = x.ExportBuildingSmartIDS(exportedFile, logg);
             var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
@@ -158,9 +160,9 @@ namespace Xbim.InformationSpecifications.Tests
             var t = (elements: main.Elements().Count(), attributes: main.Attributes().Count());
             foreach (var sub in main.Elements())
             {
-                var subCount = Count(sub);
-                t.elements += subCount.elements;
-                t.attributes += subCount.attributes;
+                var (elements, attributes) = Count(sub);
+                t.elements += elements;
+                t.attributes += attributes;
             }
             return t;
         }
@@ -265,7 +267,7 @@ namespace Xbim.InformationSpecifications.Tests
 
         static private void RequiresErrors(Xids x, int v)
         {
-            var loggerMock = new Mock<ILogger<buildingSmartCompatibilityTests>>();
+            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>();
             var file = Path.GetTempFileName();
             x.ExportBuildingSmartIDS(file, loggerMock.Object);
             var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls

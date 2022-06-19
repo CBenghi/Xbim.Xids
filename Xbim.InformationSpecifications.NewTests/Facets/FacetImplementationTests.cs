@@ -72,7 +72,7 @@ namespace Xbim.InformationSpecifications.Tests
 					return "List<" + nM.Groups[1].Value + "> " + x.Name;
 				}
 			}
-			if (x.PropertyType.Name.Contains("`"))
+			if (x.PropertyType.Name.Contains('`'))
             {
 
             }
@@ -229,9 +229,9 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			var lst = new List<T>();
 			var s = c.ToString();
-			var t = c.GetHashCode(); // this must not crash
-			
-			if (c is IFacet f)
+            _ = c.GetHashCode(); // this must not crash
+
+            if (c is IFacet f)
 			{
 				var shortV = f.Short();
 				shortV.Should().NotBeNull();

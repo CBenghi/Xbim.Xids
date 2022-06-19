@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications.Generator
 							}
 							else
 							{
-								richProp.Add($"new EnumerationPropertyType(\"{prop.Name}\", {newStringArray(enumV.EnumList.Items)} ){def}");
+								richProp.Add($"new EnumerationPropertyType(\"{prop.Name}\", {NewStringArray(enumV.EnumList.Items)} ){def}");
 							}
 						}
 						else if (prop.PropertyType.PropertyValueType is TypePropertyReferenceValue refP)
@@ -94,9 +94,9 @@ namespace Xbim.InformationSpecifications.Generator
 
 						// prop.PropertyType
                     }
-					var cArr = newStringArray(classes);
+					var cArr = NewStringArray(classes);
 					
-					var rpArr = newArray("IPropertyTypeInfo", richProp);
+					var rpArr = NewArray("IPropertyTypeInfo", richProp);
 
 					// sb.AppendLine($@"			// {string.Join(",", classes)}");
 					// sb.AppendLine($@"			yield return new PropertySetInfo(""{set.Name}"", {pArr}, {cArr});");
@@ -118,13 +118,13 @@ namespace Xbim.InformationSpecifications.Generator
 			return tmp;
         }
 
-        private static string newStringArray(IEnumerable<string> values)
+        private static string NewStringArray(IEnumerable<string> values)
 		{
 			var strippedValues = values.Select(x => x.Trim(' ', '\r', '\n'));
 			return @$"new [] {{ ""{string.Join("\", \"", strippedValues)}"" }}";
 		}
 
-		private static string newArray(string type, IEnumerable<string> values)
+		private static string NewArray(string type, IEnumerable<string> values)
 		{
 			return @$"new {type}[] {{ {string.Join(", ", values)} }}";
 		}
