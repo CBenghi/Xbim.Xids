@@ -4,8 +4,6 @@
 // https://github.com/Microsoft/referencesource/blob/master/System.Xml/System/Xml/Schema/FacetChecker.cs
 // following MIT licence
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Xbim.InformationSpecifications
@@ -32,13 +30,26 @@ namespace Xbim.InformationSpecifications
             new Map('I', "\\P{_xmlI}"),
             new Map('w', "\\p{_xmlW}"),
             new Map('W', "\\P{_xmlW}"),
+
+/* Unmerged change from project 'Xbim.InformationSpecifications (net5.0)'
+Before:
         };
 
         
         internal static string Preprocess(string pattern, bool omitBoundaries = false)
+After:
+        };
+
+
+        internal static string Preprocess(string pattern, bool omitBoundaries = false)
+*/
+        };
+
+
+        internal static string Preprocess(string pattern, bool omitBoundaries = false)
         {
             var bufBld = new StringBuilder();
-            if(!omitBoundaries)
+            if (!omitBoundaries)
                 bufBld.Append('^');
 
             char[] source = pattern.ToCharArray();

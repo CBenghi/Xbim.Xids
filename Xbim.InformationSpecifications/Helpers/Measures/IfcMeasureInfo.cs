@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xbim.InformationSpecifications.Helpers
+﻿namespace Xbim.InformationSpecifications.Helpers
 {
     // todo: Extension methods for the conversion of the value given 
     // If 
@@ -10,7 +6,7 @@ namespace Xbim.InformationSpecifications.Helpers
     //    number -> No conversion
     // Extension method To/From - con (double value, string unit) (m2/kg)
     // 
-         
+
 
     public struct IfcMeasureInfo
     {
@@ -22,7 +18,7 @@ namespace Xbim.InformationSpecifications.Helpers
             Unit = unit;
             UnitSymbol = symbol;
             Exponents = DimensionalExponents.FromString(exponents);
-            ConcreteClasses = concrete; 
+            ConcreteClasses = concrete;
         }
 
         /// <summary>
@@ -40,7 +36,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Full name of the unit.
         /// </summary>
-        public string Unit { get;  }
+        public string Unit { get; }
         /// <summary>
         /// Symbol used to present the unit.
         /// </summary>

@@ -1,19 +1,17 @@
 ﻿using FluentAssertions;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	public class StructureConstraintTests
-	{
+    public class StructureConstraintTests
+    {
 
-		[Fact]
-		public void StructureConstraintSatisfactionTest()
+        [Fact]
+        public void StructureConstraintSatisfactionTest()
         {
             var vc = new ValueConstraint(NetTypeName.Decimal);
             var sc = new StructureConstraint
@@ -137,17 +135,17 @@ namespace Xbim.InformationSpecifications.Tests
                 Value = vc
             };
             var s = new Xids();
-			var t = s.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+            var t = s.PrepareSpecification(IfcSchemaVersion.IFC2X3);
             if (t.Requirement is not null)
-			    t.Requirement.Facets.Add(facet);
+                t.Requirement.Facets.Add(facet);
 
-			var tfn = Path.GetTempFileName();
-			s.ExportBuildingSmartIDS(tfn);
+            var tfn = Path.GetTempFileName();
+            s.ExportBuildingSmartIDS(tfn);
 
-			var unpers = Xids.ImportBuildingSmartIDS(tfn);
-			var fg = unpers.FacetGroups(FacetGroup.FacetUse.All).FirstOrDefault();
-			var unpersF = fg.Facets.OfType<MaterialFacet>().First();
-			return unpersF.Value;
+            var unpers = Xids.ImportBuildingSmartIDS(tfn);
+            var fg = unpers.FacetGroups(FacetGroup.FacetUse.All).FirstOrDefault();
+            var unpersF = fg.Facets.OfType<MaterialFacet>().First();
+            return unpersF.Value;
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xbim.InformationSpecifications
+﻿namespace Xbim.InformationSpecifications
 {
     public partial class Xids
     {

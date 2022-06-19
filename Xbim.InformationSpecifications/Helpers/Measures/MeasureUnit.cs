@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xbim.InformationSpecifications.Generator.Measures;
+﻿using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
 {
@@ -62,7 +59,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                 valueSourceUnit = valueSI;
                 return false;
             }
-            valueSourceUnit = valueSI /  Ratio - Offset;
+            valueSourceUnit = valueSI / Ratio - Offset;
             return true;
         }
     }

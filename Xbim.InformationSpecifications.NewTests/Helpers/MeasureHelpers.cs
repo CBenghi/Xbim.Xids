@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xbim.InformationSpecifications.Generator.Measures;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Helpers.Measures;
 using Xunit;
@@ -86,7 +83,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         }
 
         public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcMeasures>().Select(x => new object[] { x }).ToArray();
-        
+
         [Theory]
         [MemberData(nameof(GetMeasures))]
         public void VerifyMeasureUnit(IfcMeasures item)

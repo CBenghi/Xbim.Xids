@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -21,7 +18,7 @@ namespace Xbim.InformationSpecifications
         {
             var options = Xids.GetJsonSerializerOptions(logger);
 #if DEBUG
-			var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
+            var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
 #else
             var t = new Utf8JsonWriter(sw);
 #endif

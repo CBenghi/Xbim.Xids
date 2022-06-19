@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TextCopy;
 
 namespace Xbim.InformationSpecifications.Generator
@@ -77,12 +73,12 @@ namespace Xbim.InformationSpecifications.Generator
 
         private static string FixOccur(string inst, string typecontraint, string[] replaceOptions)
         {
-            int i  = 0;
+            int i = 0;
             Regex r = new(typecontraint + "[^>]* minOccurs maxOccurs");
             var m = r.Match(inst);
             while (m.Success)
             {
-                var value = m.Value.Replace("minOccurs maxOccurs", replaceOptions[i++%replaceOptions.Length]);
+                var value = m.Value.Replace("minOccurs maxOccurs", replaceOptions[i++ % replaceOptions.Length]);
                 var prev = inst.Substring(0, m.Index);
                 var post = inst.Substring(m.Index + m.Value.Length);
                 inst = prev + value + post;

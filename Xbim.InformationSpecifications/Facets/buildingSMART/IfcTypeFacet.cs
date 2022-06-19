@@ -18,7 +18,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Optional
         /// </summary>
-        public ValueConstraint? PredefinedType { get; set; } 
+        public ValueConstraint? PredefinedType { get; set; }
 
         /// <summary>
         /// Not part of buildingSmart specification
@@ -52,7 +52,7 @@ namespace Xbim.InformationSpecifications
 
         /// <inheritdoc />
 		public override string ToString()
-		{
+        {
             return $"{IfcType}-{PredefinedType}-{IncludeSubtypes}-{base.ToString()}";
         }
 
@@ -61,7 +61,7 @@ namespace Xbim.InformationSpecifications
 
         /// <inheritdoc />
 		public bool Equals(IfcTypeFacet? other)
-		{
+        {
             if (other == null)
                 return false;
             var thisEq = (IfcType, PredefinedType, IncludeSubtypes)
@@ -77,10 +77,10 @@ namespace Xbim.InformationSpecifications
         /// <returns>true if valid</returns>
         [MemberNotNullWhen(true, nameof(IfcType))]
         public bool IsValid()
-		{
+        {
             if (FacetBase.IsNullOrEmpty(IfcType))
-                return false; 
+                return false;
             return true;
         }
-	}
+    }
 }

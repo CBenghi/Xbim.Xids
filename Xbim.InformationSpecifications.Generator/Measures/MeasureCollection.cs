@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Xbim.InformationSpecifications.Generator.Measures
 {
@@ -19,10 +16,11 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         List<Measure> measureList;
         public List<Measure> MeasureList
         {
-            get { 
+            get
+            {
                 if (measureList == null)
                     measureList = new List<Measure>();
-                return measureList; 
+                return measureList;
             }
         }
 
@@ -39,7 +37,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             var t = MeasureList.FirstOrDefault(m => m.UnitSymbol == unit && m.DimensionalExponents != "");
             if (t != null)
                 return t;
-            return MeasureList.FirstOrDefault(m=>m.UnitSymbol == unit);
+            return MeasureList.FirstOrDefault(m => m.UnitSymbol == unit);
         }
 
     }

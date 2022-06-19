@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -8,13 +7,13 @@ using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
-	public enum IfcSchemaVersion
+    public enum IfcSchemaVersion
     {
         Undefined,
-		IFC2X3,
-		IFC4,
-		IFC4X3,
-	}
+        IFC2X3,
+        IFC4,
+        IFC4X3,
+    }
 
     public partial class Specification : ISpecificationMetadata
     {
@@ -28,7 +27,7 @@ namespace Xbim.InformationSpecifications
             Cardinality = new SimpleCardinality();
         }
 
-        public ICardinality Cardinality { get; set; } 
+        public ICardinality Cardinality { get; set; }
 
         [JsonIgnore]
         SpecificationsGroup Parent { get; set; }
@@ -104,7 +103,8 @@ namespace Xbim.InformationSpecifications
 
         [JsonIgnore]
         [AllowNull] // allows setting null, but always return not null
-        public FacetGroup Applicability {
+        public FacetGroup Applicability
+        {
             get
             {
                 if (applicability == null)
@@ -127,7 +127,7 @@ namespace Xbim.InformationSpecifications
         public FacetGroup? Requirement { get; set; }
 
         private string? requirementId;
-        
+
         [JsonPropertyName("Requirement")]
         public string? RequirementId
         {
@@ -177,8 +177,8 @@ namespace Xbim.InformationSpecifications
             if (!Applicability.IsValid())
                 return false;
             if (
-                Cardinality.ExpectsRequirements 
-                && 
+                Cardinality.ExpectsRequirements
+                &&
                     (Requirement == null
                     ||
                     !Requirement.IsValid())

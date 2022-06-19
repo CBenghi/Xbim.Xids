@@ -66,7 +66,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             (new Regex("square (\\w+)\\b"), "$1 2"), // $1 is the group, 2 is the square, the space will be removed later $12 does not work
             (new Regex("cubic (\\w+)\\b"), "$1 3"), // $1 is the group, 3 is the cube, the space will be removed later
         };
-            
+
 
 
         public static IEnumerable<UnitFactor> SymbolBreakDown(string unitSymbol)

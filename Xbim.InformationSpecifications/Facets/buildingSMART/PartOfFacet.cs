@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Xbim.InformationSpecifications
 {
@@ -123,7 +121,7 @@ namespace Xbim.InformationSpecifications
             /// </summary>
             [CompatibleSchema(new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3 })]
             IfcZone
-        } 
+        }
 
         /// <summary>
         /// Constraints the containing entity type to one of <see cref="Container"/> enum.

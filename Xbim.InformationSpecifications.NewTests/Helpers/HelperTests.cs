@@ -21,14 +21,14 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
                 var t = i.GetAttributeRelations("GlobalId").ToArray();
                 t.Should().Contain(x => x.Connection == SchemaInfo.ClassAttributeMode.ViaRelationType);
                 t.Should().Contain(x => x.Connection == SchemaInfo.ClassAttributeMode.ViaElement);
-            }            
+            }
         }
 
         [Fact]
         public void IfcMeasure_Helpers_Populated()
         {
             var area = SchemaInfo.IfcMeasures["Area"];
-            area.Should().NotBeNull();  
+            area.Should().NotBeNull();
             area.Exponents.Should().NotBeNull();
             area.Exponents.ToUnitSymbol().Should().Be("m2");
 

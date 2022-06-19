@@ -1,223 +1,220 @@
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
 {
-	/// <summary>
-	/// Wraps this object instance into an IEnumerable of its type;
-	/// </summary>
-	public static class IEnumerableExt
-	{
-		/// <summary>
-		/// Wraps this object instance into an IEnumerable&lt;T&gt;
-		/// consisting of a single item.
-		/// </summary>
-		/// <typeparam name="T"> Type of the object. </typeparam>
-		/// <param name="item"> The instance that will be wrapped. </param>
-		/// <returns> An IEnumerable&lt;T&gt; consisting of a single item. </returns>
-		public static IEnumerable<T> Yield<T>(this T item)
-		{
-			yield return item;
-		}
-	}
+    /// <summary>
+    /// Wraps this object instance into an IEnumerable of its type;
+    /// </summary>
+    public static class IEnumerableExt
+    {
+        /// <summary>
+        /// Wraps this object instance into an IEnumerable&lt;T&gt;
+        /// consisting of a single item.
+        /// </summary>
+        /// <typeparam name="T"> Type of the object. </typeparam>
+        /// <param name="item"> The instance that will be wrapped. </param>
+        /// <returns> An IEnumerable&lt;T&gt; consisting of a single item. </returns>
+        public static IEnumerable<T> Yield<T>(this T item)
+        {
+            yield return item;
+        }
+    }
 
-	public partial class Xids // basic definition file
-	{
-		// private ILogger<Xids> _logger;
+    public partial class Xids // basic definition file
+    {
+        // private ILogger<Xids> _logger;
 
-		public static bool HasData(Xids xidsToTest)
-		{
-			if (xidsToTest == null)
-				return false;
-			if (xidsToTest.AllSpecifications().Any())
-				return true;
-			if (xidsToTest.FacetRepository.Collection.Any())
-				return true;
-			if (xidsToTest.SpecificationsGroups.Any())
-				return true;
-			return false;
-		}
+        public static bool HasData(Xids xidsToTest)
+        {
+            if (xidsToTest == null)
+                return false;
+            if (xidsToTest.AllSpecifications().Any())
+                return true;
+            if (xidsToTest.FacetRepository.Collection.Any())
+                return true;
+            if (xidsToTest.SpecificationsGroups.Any())
+                return true;
+            return false;
+        }
 
-		/// <summary>
-		/// Prepares a new specification,
-		/// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
-		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
-		/// </summary>
-		/// <param name="ifcVersion">the desired parent collection</param>
-		/// <param name="applicability"></param>
-		/// <param name="requirement"></param>
-		/// <returns>The initialised specification</returns>
-		public Specification PrepareSpecification(
-			IfcSchemaVersion ifcVersion,
-			FacetGroup? applicability = null,
-			FacetGroup? requirement = null
-			)
-		{
-			return PrepareSpecification(ifcVersion.Yield(), applicability, requirement);
-		}
+        /// <summary>
+        /// Prepares a new specification,
+        /// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
+        /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+        /// </summary>
+        /// <param name="ifcVersion">the desired parent collection</param>
+        /// <param name="applicability"></param>
+        /// <param name="requirement"></param>
+        /// <returns>The initialised specification</returns>
+        public Specification PrepareSpecification(
+            IfcSchemaVersion ifcVersion,
+            FacetGroup? applicability = null,
+            FacetGroup? requirement = null
+            )
+        {
+            return PrepareSpecification(ifcVersion.Yield(), applicability, requirement);
+        }
 
-		/// <summary>
-		/// Prepares a new specification,
-		/// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
-		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
-		/// </summary>
-		/// <param name="ifcVersion">the desired parent collection</param>
-		/// <param name="applicability"></param>
-		/// <param name="requirement"></param>
-		/// <returns>The initialised specification</returns>
-		public Specification PrepareSpecification(
-			IEnumerable<IfcSchemaVersion> ifcVersion,
-			FacetGroup? applicability = null,
-			FacetGroup? requirement = null
-		)
-		{
-			var destinationGroup = SpecificationsGroups.FirstOrDefault();
-			if (destinationGroup == null)
-			{
-				destinationGroup = new SpecificationsGroup();
-				SpecificationsGroups.Add(destinationGroup);
-			}
-			return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
-		}
+        /// <summary>
+        /// Prepares a new specification,
+        /// the function takes care of creating a destinationGroup if one suitable for schema is not found in the data.
+        /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+        /// </summary>
+        /// <param name="ifcVersion">the desired parent collection</param>
+        /// <param name="applicability"></param>
+        /// <param name="requirement"></param>
+        /// <returns>The initialised specification</returns>
+        public Specification PrepareSpecification(
+            IEnumerable<IfcSchemaVersion> ifcVersion,
+            FacetGroup? applicability = null,
+            FacetGroup? requirement = null
+        )
+        {
+            var destinationGroup = SpecificationsGroups.FirstOrDefault();
+            if (destinationGroup == null)
+            {
+                destinationGroup = new SpecificationsGroup();
+                SpecificationsGroups.Add(destinationGroup);
+            }
+            return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
+        }
 
-		/// <summary>
-		/// Prepares a new specification, inside the specified destinationGroup
-		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
-		/// </summary>
-		/// <param name="destinationGroup">the desired owning collection</param>
-		/// <param name="applicability"></param>
-		/// <param name="requirement"></param>
-		/// <returns>The initialised specification</returns>
-		public Specification PrepareSpecification(
-			SpecificationsGroup destinationGroup,
-			IfcSchemaVersion ifcVersion,
-			FacetGroup? applicability = null,
-			FacetGroup? requirement = null
-			)
-		{
-			return PrepareSpecification(destinationGroup, ifcVersion.Yield(), applicability, requirement);
-		}
+        /// <summary>
+        /// Prepares a new specification, inside the specified destinationGroup
+        /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+        /// </summary>
+        /// <param name="destinationGroup">the desired owning collection</param>
+        /// <param name="applicability"></param>
+        /// <param name="requirement"></param>
+        /// <returns>The initialised specification</returns>
+        public Specification PrepareSpecification(
+            SpecificationsGroup destinationGroup,
+            IfcSchemaVersion ifcVersion,
+            FacetGroup? applicability = null,
+            FacetGroup? requirement = null
+            )
+        {
+            return PrepareSpecification(destinationGroup, ifcVersion.Yield(), applicability, requirement);
+        }
 
-		/// <summary>
-		/// Prepares a new specification, inside the specified destinationGroup
-		/// WARNING: this creates new facetgroups if applicability and requirement are not provided.
-		/// </summary>
-		/// <param name="destinationGroup">the desired owning collection</param>
-		/// <param name="applicability"></param>
-		/// <param name="requirement"></param>
-		/// <returns>The initialised specification</returns>
-		public Specification PrepareSpecification(
-			SpecificationsGroup? destinationGroup,
-			IEnumerable<IfcSchemaVersion> ifcVersion,
-			FacetGroup? applicability = null,
-			FacetGroup? requirement = null
-			)
-		{
-			if (applicability == null)
-				applicability = new FacetGroup(FacetRepository);
-			if (requirement == null)
-				requirement = new FacetGroup(FacetRepository);
+        /// <summary>
+        /// Prepares a new specification, inside the specified destinationGroup
+        /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
+        /// </summary>
+        /// <param name="destinationGroup">the desired owning collection</param>
+        /// <param name="applicability"></param>
+        /// <param name="requirement"></param>
+        /// <returns>The initialised specification</returns>
+        public Specification PrepareSpecification(
+            SpecificationsGroup? destinationGroup,
+            IEnumerable<IfcSchemaVersion> ifcVersion,
+            FacetGroup? applicability = null,
+            FacetGroup? requirement = null
+            )
+        {
+            if (applicability == null)
+                applicability = new FacetGroup(FacetRepository);
+            if (requirement == null)
+                requirement = new FacetGroup(FacetRepository);
 
-			// checks and/or prepares destination
-			if (destinationGroup == null) // if one exists get that
-				destinationGroup = SpecificationsGroups.FirstOrDefault();
-			if (destinationGroup == null)
-			{
-				destinationGroup = new SpecificationsGroup();
-				SpecificationsGroups.Add(destinationGroup);
-			}
+            // checks and/or prepares destination
+            if (destinationGroup == null) // if one exists get that
+                destinationGroup = SpecificationsGroups.FirstOrDefault();
+            if (destinationGroup == null)
+            {
+                destinationGroup = new SpecificationsGroup();
+                SpecificationsGroups.Add(destinationGroup);
+            }
 
-			// creates new specification
-			var t = new Specification(this, destinationGroup)
-			{
-				Applicability = applicability,
-				Requirement = requirement,
-				IfcVersion = ifcVersion.ToList()
-			};
+            // creates new specification
+            var t = new Specification(this, destinationGroup)
+            {
+                Applicability = applicability,
+                Requirement = requirement,
+                IfcVersion = ifcVersion.ToList()
+            };
 
-			destinationGroup.Specifications.Add(t);
-			return t;
-		}
+            destinationGroup.Specifications.Add(t);
+            return t;
+        }
 
-		public static Xids? FromStream(Stream s)
-		{
-			return Xids.ImportBuildingSmartIDS(s);
-		}
+        public static Xids? FromStream(Stream s)
+        {
+            return Xids.ImportBuildingSmartIDS(s);
+        }
 
-		public Xids()
-		{
-			FacetRepository = new FacetGroupRepository(this);
-			_readVersion = "not read";
-		}
-	
-		public IEnumerable<Specification> AllSpecifications()
-		{
-			foreach (var rg in SpecificationsGroups)
-			{
-				foreach (var req in rg.Specifications)
-				{
-					yield return req;
-				}
-			}
-		}
+        public Xids()
+        {
+            FacetRepository = new FacetGroupRepository(this);
+            _readVersion = "not read";
+        }
 
-		public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
-		{
-			foreach (var fg in FacetRepository.Collection.ToArray())
-			{
-				if (fg.IsUsed(this, use))
-					yield return fg;
-			}
-		}
+        public IEnumerable<Specification> AllSpecifications()
+        {
+            foreach (var rg in SpecificationsGroups)
+            {
+                foreach (var req in rg.Specifications)
+                {
+                    yield return req;
+                }
+            }
+        }
 
-		public void Purge()
-		{
-			var unusedFG = FacetRepository.Collection.Except(FacetGroups(FacetUse.All)).ToList();
-			foreach (var unused in unusedFG)
-			{
-				FacetRepository.Collection.Remove(unused);
-			}
-		}
+        public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
+        {
+            foreach (var fg in FacetRepository.Collection.ToArray())
+            {
+                if (fg.IsUsed(this, use))
+                    yield return fg;
+            }
+        }
 
-		private string _readVersion;
+        public void Purge()
+        {
+            var unusedFG = FacetRepository.Collection.Except(FacetGroups(FacetUse.All)).ToList();
+            foreach (var unused in unusedFG)
+            {
+                FacetRepository.Collection.Remove(unused);
+            }
+        }
 
-		internal string ReadVersion { get { return _readVersion; } }
+        private string _readVersion;
 
-		public string Version
-		{
-			get
-			{
-				// doint it dynamically breaks under some scenarios (see blazor in webassembly)
-				// so we hardcode it
-				return AssemblyVersion;
-			}
-			set
-			{
-				_readVersion = value;
-			}
-		}
+        internal string ReadVersion { get { return _readVersion; } }
 
-		public Project Project { get; set; } = new Project();
+        public string Version
+        {
+            get
+            {
+                // doint it dynamically breaks under some scenarios (see blazor in webassembly)
+                // so we hardcode it
+                return AssemblyVersion;
+            }
+            set
+            {
+                _readVersion = value;
+            }
+        }
 
-		public FacetGroupRepository FacetRepository { get; set; }
+        public Project Project { get; set; } = new Project();
 
-		public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
+        public FacetGroupRepository FacetRepository { get; set; }
 
-		internal FacetGroup? GetFacetGroup(string? guid)
-		{
-			if (guid is null)
-				return null;
-			return FacetRepository.FirstOrDefault(x => x?.Guid is not null && x.Guid.ToString() == guid);
-		}
+        public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
 
-		internal FacetGroup? GetFacetGroup(List<IFacet> fs)
-		{
-			return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
-		}
-	}
+        internal FacetGroup? GetFacetGroup(string? guid)
+        {
+            if (guid is null)
+                return null;
+            return FacetRepository.FirstOrDefault(x => x?.Guid is not null && x.Guid.ToString() == guid);
+        }
+
+        internal FacetGroup? GetFacetGroup(List<IFacet> fs)
+        {
+            return FacetRepository.FirstOrDefault(x => x.Facets.FilterMatch(fs));
+        }
+    }
 }

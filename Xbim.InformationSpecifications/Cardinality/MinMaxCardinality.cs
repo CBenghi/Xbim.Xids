@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
@@ -49,7 +47,8 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// <inheritdoc />
         public bool IsModelConstraint
         {
-            get {
+            get
+            {
                 if (MinOccurs != 0)
                     return true;
                 if (MaxOccurs.HasValue)

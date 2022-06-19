@@ -1,7 +1,4 @@
 ﻿using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
@@ -16,7 +13,7 @@ namespace Xbim.InformationSpecifications.Tests
             var stringValue = "Gatto";
             constraint = new ValueConstraint(stringValue);
             var test = constraint.IsSingleUndefinedExact(out var someVal);
-            test.Should().BeFalse("starting from a string we set the type to string"); 
+            test.Should().BeFalse("starting from a string we set the type to string");
             someVal.Should().BeNull();
 
             test = constraint.IsSingleExact(out string gattoVal);
@@ -46,16 +43,16 @@ namespace Xbim.InformationSpecifications.Tests
             var itIs = val.IsSingleUndefinedExact(out var retVal);
             itIs.Should().BeTrue();
             retVal.Should().Be(stringV);
-            
+
 
             ValueConstraint t = new(2d);
             t.IsSingleUndefinedExact(out var _).Should().BeFalse();
-            
+
 
             t = new ValueConstraint(NetTypeName.Undefined);
             t.Add(new RangeConstraint());
             t.IsSingleUndefinedExact(out var _).Should().BeFalse();
-            
+
 
         }
     }

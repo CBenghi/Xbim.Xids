@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
@@ -17,7 +15,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Property descriptive definition.
         /// </summary>
-        public string Definition { get; set; } 
+        public string Definition { get; set; }
     }
 
     /// <summary>
@@ -67,7 +65,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// minimal constructor
         /// </summary>
         public SingleValuePropertyType(string name, string dataType) : base(name)
-        {           
+        {
             DataType = dataType;
         }
 

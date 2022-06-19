@@ -7,7 +7,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// Information about standard property sets defined from bS
     /// </summary>
 	public partial class PropertySetInfo
-	{
+    {
         /// <summary>
         /// The stanard name of the IfcPropertySet being described.
         /// </summary>
@@ -16,51 +16,51 @@ namespace Xbim.InformationSpecifications.Helpers
         /// string names of the properties defined for the IfcPropertySet being described.
         /// </summary>
 		public IEnumerable<string> PropertyNames => Properties.Select(p => p.Name);
-		
+
         /// <summary>
         /// Valid schema classes that may be attached to the property set.
         /// </summary>
         public IList<string> ApplicableClasses { get; set; }
-        
+
         /// <summary>
         /// The properties defined for the set.
         /// </summary>
-		public IList<IPropertyTypeInfo> Properties { get; set; } 
+        public IList<IPropertyTypeInfo> Properties { get; set; }
 
         /// <summary>
         /// Returns one of the defined properties in the set by name, if found
         /// </summary>
         /// <param name="name">the expected name, case sensitive</param>
         /// <returns>null if not found, otherwise information about the property</returns>
-		public IPropertyTypeInfo? GetProperty(string name) => Properties.FirstOrDefault(p => p.Name == name);
+        public IPropertyTypeInfo? GetProperty(string name) => Properties.FirstOrDefault(p => p.Name == name);
 
         /// <summary>
         /// basic constructor
         /// </summary>
 		public PropertySetInfo(
-			string propertySetName,
-			IEnumerable<IPropertyTypeInfo> properties,
-			IEnumerable<string> applicableClasses
-			)
-		{
-			Name = propertySetName;
-			Properties = properties.ToList();
-			ApplicableClasses = applicableClasses.ToList();
-		}
+            string propertySetName,
+            IEnumerable<IPropertyTypeInfo> properties,
+            IEnumerable<string> applicableClasses
+            )
+        {
+            Name = propertySetName;
+            Properties = properties.ToList();
+            ApplicableClasses = applicableClasses.ToList();
+        }
 
-		private static IList<PropertySetInfo>? schemaIFC4;
+        private static IList<PropertySetInfo>? schemaIFC4;
         /// <summary>
         /// static method to get the known metadata for the IFC4 schema
         /// </summary>
 		public static IList<PropertySetInfo> SchemaIfc4
-		{
-			get
-			{
-				if (schemaIFC4 == null)
-					schemaIFC4 = GetPropertiesIFC4().ToList();
-				return schemaIFC4;
-			}
-		}
+        {
+            get
+            {
+                if (schemaIFC4 == null)
+                    schemaIFC4 = GetPropertiesIFC4().ToList();
+                return schemaIFC4;
+            }
+        }
 
         /// <summary>
         /// Resolve a property from its name within a set, given an schema.
@@ -70,8 +70,8 @@ namespace Xbim.InformationSpecifications.Helpers
 		public static IPropertyTypeInfo? Get(IfcSchemaVersion version, string propertySetName, string propertyName)
         {
             IList<PropertySetInfo>? schema = GetSchema(version);
-			if (schema == null)
-				return null;
+            if (schema == null)
+                return null;
             var set = schema.Where(x => x.Name == propertySetName).FirstOrDefault();
             if (set is null)
                 return null;
@@ -99,13 +99,13 @@ namespace Xbim.InformationSpecifications.Helpers
         /// static method to get the known metadata for the IFC2x3 schema
         /// </summary>
 		public static IList<PropertySetInfo> SchemaIfc2x3
-		{
-			get
-			{
-				if (schemaIFC2x3 == null)
-					schemaIFC2x3 = GetPropertiesIFC2x3().ToList();
-				return schemaIFC2x3;
-			}
-		}
-	}
+        {
+            get
+            {
+                if (schemaIFC2x3 == null)
+                    schemaIFC2x3 = GetPropertiesIFC2x3().ToList();
+                return schemaIFC2x3;
+            }
+        }
+    }
 }

@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Generator
 {
-	class Program
-	{
-		internal static XmlDocument GetBuildingSmartSchemaXML()
-		{
-			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(@"Files\ids_06.xsd"));
-			return doc;
-		}
+    class Program
+    {
+        internal static XmlDocument GetBuildingSmartSchemaXML()
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(File.ReadAllText(@"Files\ids_06.xsd"));
+            return doc;
+        }
 
-		public static void Main()
+        public static void Main()
         {
             Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
             if (Console.ReadKey().Key == ConsoleKey.T)

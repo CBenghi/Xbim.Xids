@@ -6,7 +6,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -92,7 +91,7 @@ namespace Xbim.InformationSpecifications.Tests
             type.Should().Be(ExportedFormat.ZIP, "multiple groups are defined in the file");
 
             using var archive = ZipFile.OpenRead(tmpFile);
-            archive.Entries.Count.Should().Be(2);               
+            archive.Entries.Count.Should().Be(2);
         }
 
         internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
@@ -142,7 +141,7 @@ namespace Xbim.InformationSpecifications.Tests
             StringWriter debugOutputWriter = new();
             var validationResult = IdsLib.CheckOptions.Run(c, debugOutputWriter);
             if (validationResult != IdsLib.CheckOptions.Status.Ok)
-            { 
+            {
                 Debug.WriteLine(debugOutputWriter.ToString());
             }
             validationResult.Should().Be(IdsLib.CheckOptions.Status.Ok);
@@ -167,7 +166,7 @@ namespace Xbim.InformationSpecifications.Tests
             return t;
         }
 
-        private class XmlElementSummary 
+        private class XmlElementSummary
         {
             public string type;
             public XmlElementSummary parent;
@@ -178,8 +177,8 @@ namespace Xbim.InformationSpecifications.Tests
             {
                 type = main.Name.LocalName;
                 this.parent = parent;
-                attributes = main.Attributes().Count(); 
-                Subs = main.Elements().Select(x=>new XmlElementSummary(x, this)).ToList();
+                attributes = main.Attributes().Count();
+                Subs = main.Elements().Select(x => new XmlElementSummary(x, this)).ToList();
             }
 
             public string FirstDifference(XmlElementSummary other)
@@ -190,7 +189,7 @@ namespace Xbim.InformationSpecifications.Tests
                     return ReportDifference("Different attributes count");
                 if (this.Subs.Count != other.Subs.Count)
                     return ReportDifference("Different elements count");
-                for (int i = 0; i< Subs.Count; i++ )
+                for (int i = 0; i < Subs.Count; i++)
                 {
                     var thisSub = this.Subs[i];
                     var otherSub = other.Subs[i];
@@ -203,8 +202,8 @@ namespace Xbim.InformationSpecifications.Tests
 
             private string ReportDifference(string message)
             {
-                StringBuilder sb = new(); 
-                
+                StringBuilder sb = new();
+
                 Stack<XmlElementSummary> parents = new();
                 var running = this;
                 while (running.parent != null)

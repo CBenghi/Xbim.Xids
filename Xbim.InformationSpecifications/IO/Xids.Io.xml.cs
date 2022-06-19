@@ -71,7 +71,7 @@ namespace Xbim.InformationSpecifications
             return ExportedFormat.ZIP;
         }
 
-        
+
 
         private static void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger)
         {
@@ -136,8 +136,8 @@ namespace Xbim.InformationSpecifications
                 xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", spec.IfcVersion));
             else
                 xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
-            // if (requirement.Name != null)
-                xmlWriter.WriteAttributeString("name", spec.Name ?? ""); // required
+                                                                                                  // if (requirement.Name != null)
+            xmlWriter.WriteAttributeString("name", spec.Name ?? ""); // required
             if (spec.Description != null)
                 xmlWriter.WriteAttributeString("description", spec.Description);
             // instructions
@@ -148,7 +148,7 @@ namespace Xbim.InformationSpecifications
                 logger?.LogError("Cardinality is required for specification '{specname}' ({guid}).", spec.Name, spec.Guid);
             else
                 spec.Cardinality.ExportBuildingSmartIDS(xmlWriter, logger);
-            
+
             // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
             if (spec.Applicability is not null)
@@ -198,19 +198,19 @@ namespace Xbim.InformationSpecifications
                     break;
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
-                    WriteFaceteBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption); 
+                    WriteFaceteBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
                     WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
                     xmlWriter.WriteEndElement();
-                    break;                    
+                    break;
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
                     WriteFaceteBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
-                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);                  
+                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);
                     WriteConstraintValue(pf.PropertyValue, xmlWriter, "value", logger);
                     WriteFaceteBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
@@ -267,7 +267,7 @@ namespace Xbim.InformationSpecifications
         static private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger)
         {
             if (value == null)
-                return;            
+                return;
             xmlWriter.WriteStartElement(name, IdsNamespace);
             if (value.IsSingleUndefinedExact(out string? exact))
             {
@@ -384,7 +384,7 @@ namespace Xbim.InformationSpecifications
                         default:
                             logger?.LogError("Invalid RequirementOption persistence for '{option}'", option);
                             break;
-                    }   
+                    }
                 }
 
                 if (cf is not PartOfFacet)
@@ -580,7 +580,7 @@ namespace Xbim.InformationSpecifications
             var ret = new Specification(ids, destGroup);
             var cardinality = new MinMaxCardinality();
             destGroup.Specifications.Add(ret);
-            
+
             foreach (var att in specificationElement.Attributes())
             {
                 var attName = att.Name.LocalName.ToLower();
@@ -997,7 +997,7 @@ namespace Xbim.InformationSpecifications
                     case "name":
                         ret ??= new AttributeFacet();
                         ret.AttributeName = sub.Value;
-                        break;                        
+                        break;
                     case "value":
                         ret ??= new AttributeFacet();
                         ret.AttributeValue = GetConstraint(sub, logger);
@@ -1070,7 +1070,7 @@ namespace Xbim.InformationSpecifications
 
                 if (Min == "0" && Max == "0")
                     return RequirementOptions.Prohibited;
-                if (Min == "1" && 
+                if (Min == "1" &&
                     (Max == "unbounded" || Max == "")
                     )
                     return RequirementOptions.Expected;
@@ -1217,7 +1217,7 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        
+
 
         private static IFacet? GetPartOf(XElement elem, ILogger? logger)
         {

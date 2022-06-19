@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,8 +25,8 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             if (_options == null)
             {
-                if (options == null)    
-                    options = new JsonSerializerOptions();  
+                if (options == null)
+                    options = new JsonSerializerOptions();
                 _options = new JsonSerializerOptions()
                 {
                     DefaultIgnoreCondition = options.DefaultIgnoreCondition
@@ -39,7 +38,7 @@ namespace Xbim.InformationSpecifications.Helpers
                     (nameof(StructureConstraint), typeof(StructureConstraint))
                     );
                 _options.Converters.Add(constraintConverter);
-                foreach (var cnv in options.Converters.Where(x=>x.GetType() != typeof(ValueConstraintConverter)))
+                foreach (var cnv in options.Converters.Where(x => x.GetType() != typeof(ValueConstraintConverter)))
                 {
                     _options.Converters.Add(cnv);
                 }

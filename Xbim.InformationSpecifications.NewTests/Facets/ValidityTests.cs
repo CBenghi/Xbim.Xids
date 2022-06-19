@@ -1,9 +1,5 @@
 ﻿using FluentAssertions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.Facets
@@ -13,7 +9,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
         [Theory]
         [MemberData(nameof(GetValidFacets))]
         public void EmptyValidityTests(IFacet facet)
-        { 
+        {
             // some empty facets are not valid
             facet.IsValid().Should().BeFalse($"{facet.GetType()} should not be valid if empty");
         }

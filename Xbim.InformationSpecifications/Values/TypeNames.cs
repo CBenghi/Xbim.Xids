@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications
 {
-	// to evaluate more XSD types see 
-	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
+    // to evaluate more XSD types see 
+    // see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
     /// <summary>
     /// type names in the .NET framework
     /// </summary>
-	public enum NetTypeName
-	{
+    public enum NetTypeName
+    {
         /// <summary>
         /// No type constraint
         /// </summary>
@@ -59,18 +59,18 @@ namespace Xbim.InformationSpecifications
         /// Uri values as defined in  the .NET framework
         /// </summary>
 		Uri,
-	}
+    }
 
 
-	public partial class ValueConstraint
-	{
+    public partial class ValueConstraint
+    {
         /// <summary>
         /// gets the relevant XSD type string from a C# type enum
         /// </summary>
         /// <param name="type">.NET type enum sought</param>
         /// <returns>mapped xs type name, or empty string is not found.</returns>
 		public static string GetXsdTypeString(NetTypeName type)
-		{
+        {
             return type switch
             {
                 NetTypeName.Integer => "xs:integer",
@@ -88,24 +88,24 @@ namespace Xbim.InformationSpecifications
             };
         }
 
-		/// <summary>
-		/// Create a constraint pattern from a string.
-		/// </summary>
-		/// <param name="pattern">The regex value that needs to be matched.</param>
-		/// <returns>A value constraint, based on string type</returns>
+        /// <summary>
+        /// Create a constraint pattern from a string.
+        /// </summary>
+        /// <param name="pattern">The regex value that needs to be matched.</param>
+        /// <returns>A value constraint, based on string type</returns>
         public static ValueConstraint CreatePattern(string pattern)
         {
-			var vc = new ValueConstraint(NetTypeName.String);
-			vc.AddAccepted(new PatternConstraint() { Pattern = pattern });
-			return vc;
-		}
+            var vc = new ValueConstraint(NetTypeName.String);
+            vc.AddAccepted(new PatternConstraint() { Pattern = pattern });
+            return vc;
+        }
 
         /// <summary>
         /// Gets the .NET type from the enum value
         /// </summary>
         /// <returns>null if not found</returns>
         public static Type? GetNetType(NetTypeName baseType)
-		{
+        {
             return baseType switch
             {
                 NetTypeName.Integer => typeof(int),
@@ -128,7 +128,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <returns>Undefined if not found</returns>
 		public static NetTypeName GetNamedTypeFromXsd(string tval)
-		{
+        {
             return tval switch
             {
                 "xs:string" => NetTypeName.String,
@@ -150,7 +150,7 @@ namespace Xbim.InformationSpecifications
         /// Enumeration of all possible XSD constraint types
         /// </summary>
 		public enum Constraints
-		{
+        {
             /// <summary>
             /// Length of an element in characters or digits.
             /// </summary>
@@ -199,7 +199,7 @@ namespace Xbim.InformationSpecifications
             /// the minimum boundary of an element, valid for the interval
             /// </summary>
 			maxInclusive,
-		}
+        }
 
 
         /// <summary>
@@ -209,36 +209,36 @@ namespace Xbim.InformationSpecifications
         /// <param name="typeName">the destination type</param>
         /// <returns>Null when conversion is not successful</returns>
 		public static object? GetObject(object value, NetTypeName typeName)
-		{
-			if (typeName == NetTypeName.Integer)
-				return Convert.ToInt32(value);
-			if (typeName == NetTypeName.Decimal)
-				return Convert.ToDecimal(value);
-			if (typeName == NetTypeName.Double)
-				return Convert.ToDouble(value);
-			if (typeName == NetTypeName.Floating)
-				return Convert.ToSingle(value);
-			if (typeName == NetTypeName.Date)
-				return Convert.ToDateTime(value);
-			if (typeName == NetTypeName.Boolean)
-				return Convert.ToBoolean(value);
-			if (typeName == NetTypeName.Time)
-			{
-				var tmp = Convert.ToDateTime(value);
-				return tmp.TimeOfDay;
-			}
-			if (typeName == NetTypeName.Uri)
-			{
-				if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
-					return val;
-				return null;
-			}
-			if (typeName == NetTypeName.String)
-			{
-				return value.ToString();
-			}
-			return value;
-		}
+        {
+            if (typeName == NetTypeName.Integer)
+                return Convert.ToInt32(value);
+            if (typeName == NetTypeName.Decimal)
+                return Convert.ToDecimal(value);
+            if (typeName == NetTypeName.Double)
+                return Convert.ToDouble(value);
+            if (typeName == NetTypeName.Floating)
+                return Convert.ToSingle(value);
+            if (typeName == NetTypeName.Date)
+                return Convert.ToDateTime(value);
+            if (typeName == NetTypeName.Boolean)
+                return Convert.ToBoolean(value);
+            if (typeName == NetTypeName.Time)
+            {
+                var tmp = Convert.ToDateTime(value);
+                return tmp.TimeOfDay;
+            }
+            if (typeName == NetTypeName.Uri)
+            {
+                if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
+                    return val;
+                return null;
+            }
+            if (typeName == NetTypeName.String)
+            {
+                return value.ToString();
+            }
+            return value;
+        }
 
         /// <summary>
         /// Converts the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
@@ -247,51 +247,51 @@ namespace Xbim.InformationSpecifications
         /// <param name="typeName">The destination type required</param>
         /// <returns>Null if parsing or conversion are not succesful</returns>
 		public static object? GetObject(string? value, NetTypeName typeName)
-		{
-			switch (typeName)
-			{
-				case NetTypeName.Undefined:
-					return value;
-				case NetTypeName.Boolean:
-					if (bool.TryParse(value, out var boolval))
-						return boolval;
-					return null;
-				case NetTypeName.String:
-					return value;
-				case NetTypeName.Integer:
-					if (int.TryParse(value, out var ival))
-						return ival;
-					return null;
-				case NetTypeName.Floating:
-					if (float.TryParse(value, out var fval))
-						return fval;
-					return null;
-				case NetTypeName.Double:
-					if (double.TryParse(value, out var dblval))
-						return dblval;
-					return null;
-				case NetTypeName.Decimal:
-					if (decimal.TryParse(value, out var dval))
-						return dval;
-					return null;
-				case NetTypeName.Date:
-				case NetTypeName.DateTime:
-					if (DateTime.TryParse(value, out var dateval))
-						return dateval.Date;
-					return null;
-				case NetTypeName.Time:
-				case NetTypeName.Duration:
-					if (TimeSpan.TryParse(value, out var timeval))
-						return timeval;
-					return null;
-				case NetTypeName.Uri:
-					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
-						return urival;
-					return null;
-				default:
-					return value;
-			}
-		}
+        {
+            switch (typeName)
+            {
+                case NetTypeName.Undefined:
+                    return value;
+                case NetTypeName.Boolean:
+                    if (bool.TryParse(value, out var boolval))
+                        return boolval;
+                    return null;
+                case NetTypeName.String:
+                    return value;
+                case NetTypeName.Integer:
+                    if (int.TryParse(value, out var ival))
+                        return ival;
+                    return null;
+                case NetTypeName.Floating:
+                    if (float.TryParse(value, out var fval))
+                        return fval;
+                    return null;
+                case NetTypeName.Double:
+                    if (double.TryParse(value, out var dblval))
+                        return dblval;
+                    return null;
+                case NetTypeName.Decimal:
+                    if (decimal.TryParse(value, out var dval))
+                        return dval;
+                    return null;
+                case NetTypeName.Date:
+                case NetTypeName.DateTime:
+                    if (DateTime.TryParse(value, out var dateval))
+                        return dateval.Date;
+                    return null;
+                case NetTypeName.Time:
+                case NetTypeName.Duration:
+                    if (TimeSpan.TryParse(value, out var timeval))
+                        return timeval;
+                    return null;
+                case NetTypeName.Uri:
+                    if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
+                        return urival;
+                    return null;
+                default:
+                    return value;
+            }
+        }
 
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="withType">the base type for the application of the constraints</param>
         /// <returns>An enumeration of constraints.</returns>
         public static IEnumerable<Constraints> CompatibleConstraints(NetTypeName withType)
-		{
+        {
             return withType switch
             {
                 NetTypeName.String => new[] { Constraints.length, Constraints.minLength, Constraints.maxLength, Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace },
@@ -313,5 +313,5 @@ namespace Xbim.InformationSpecifications
         }
 
 
-	}
+    }
 }

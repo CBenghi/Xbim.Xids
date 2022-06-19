@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Xbim.InformationSpecifications.UI.mvvm
 {
-	public class ActionCommand : ICommand
+    public class ActionCommand : ICommand
     {
         readonly Action<object> execute;
         readonly Predicate<object> canExecute;

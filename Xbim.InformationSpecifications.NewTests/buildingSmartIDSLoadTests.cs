@@ -3,11 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -98,7 +96,7 @@ namespace Xbim.InformationSpecifications.Tests
             Assert.NotNull(loaded);
             if (specificationsCount != -1)
                 Assert.Equal(specificationsCount, loaded.AllSpecifications().Count());
-            if (facetGroupsCount != -1) 
+            if (facetGroupsCount != -1)
             {
                 var grps = loaded.FacetGroups(FacetGroup.FacetUse.All);
                 var tally = 0;

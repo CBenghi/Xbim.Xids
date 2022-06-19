@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
@@ -119,8 +118,8 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <inheritdoc />
         public override string ToString()
         {
-            var asStringArray = ValuesAsArray().Select(x=>x.ToString()).ToArray();  
-            return "(" + string.Join(", ", asStringArray) +")";
+            var asStringArray = ValuesAsArray().Select(x => x.ToString()).ToArray();
+            return "(" + string.Join(", ", asStringArray) + ")";
         }
 
         /// <summary>
@@ -150,13 +149,13 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <param name="exponent">the power to raise the current instance to</param>
         public void Elevate(int exponent)
         {
-            Length *= exponent; 
-            Mass *= exponent; 
-            Time *= exponent; 
-            ElectricCurrent *= exponent; 
-            Temperature *= exponent; 
-            AmountOfSubstance *= exponent; 
-            LuminousIntensity *= exponent; 
+            Length *= exponent;
+            Mass *= exponent;
+            Time *= exponent;
+            ElectricCurrent *= exponent;
+            Temperature *= exponent;
+            AmountOfSubstance *= exponent;
+            LuminousIntensity *= exponent;
         }
 
         /// <summary>
@@ -168,11 +167,11 @@ namespace Xbim.InformationSpecifications.Helpers
             return new DimensionalExponents
                 (
                 Length + other.Length,
-                Mass + other.Mass, 
-                Time + other.Time, 
-                ElectricCurrent + other.ElectricCurrent, 
-                Temperature + other.Temperature, 
-                AmountOfSubstance + other.AmountOfSubstance, 
+                Mass + other.Mass,
+                Time + other.Time,
+                ElectricCurrent + other.ElectricCurrent,
+                Temperature + other.Temperature,
+                AmountOfSubstance + other.AmountOfSubstance,
                 LuminousIntensity + other.LuminousIntensity
                 );
         }
@@ -278,7 +277,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
         static private string GetMultiplier(int[] asArray, bool numerator)
         {
-            List<string> vals  = new();
+            List<string> vals = new();
             for (int i = 0; i < asArray.Length; i++)
             {
                 if (asArray[i] == 0)

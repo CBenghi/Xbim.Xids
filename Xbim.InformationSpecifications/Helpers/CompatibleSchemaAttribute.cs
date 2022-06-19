@@ -6,7 +6,7 @@ namespace Xbim.InformationSpecifications
     /// <summary>
     /// Defines the type of Ifc schema compatible with a given .
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)] 
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class CompatibleSchemaAttribute : Attribute
     {
         private readonly IfcSchemaVersion[] vs;
@@ -38,8 +38,8 @@ namespace Xbim.InformationSpecifications
                 var enumType = typeof(PartOfFacet.Container);
                 var memberInfos = enumType.GetMember(container.ToString());
                 var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
-                if (enumValueMemberInfo is null)    
-                    return false; 
+                if (enumValueMemberInfo is null)
+                    return false;
                 var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(CompatibleSchemaAttribute), false);
                 CompatibleSchemaAttribute foundAttribute = (CompatibleSchemaAttribute)valueAttributes[0];
                 return foundAttribute.IsCompatibleSchema(s);

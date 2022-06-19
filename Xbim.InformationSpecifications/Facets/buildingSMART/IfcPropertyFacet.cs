@@ -21,7 +21,7 @@ namespace Xbim.InformationSpecifications
         /// Constraint that is applied to the name of the Property.
         /// </summary>
         public ValueConstraint? PropertyName { get; set; }
-		
+
         /// <summary>
         /// Constrained type of the identified property value.
         /// Use the <see cref="HasMeasure(out IfcMeasures?)"/> method to test for the enumeration.
@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications
             if (Measure != null)
                 sb.Append($" containing '{Measure}'");
             if (PropertyValue != null)
-                sb.Append($" {PropertyValue.Short()}");            
+                sb.Append($" {PropertyValue.Short()}");
             sb.Append('.');
             return sb.ToString();
         }
@@ -74,7 +74,7 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public override int GetHashCode() => 23 + 31 * (PropertySetName, PropertyName, PropertyValue, Measure).GetHashCode() + 31 * base.GetHashCode();
         /// <inheritdoc />
-        public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString()??""}-{Measure}-{base.ToString()}";
+        public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString() ?? ""}-{Measure}-{base.ToString()}";
         /// <inheritdoc />
 		public bool Equals(IfcPropertyFacet? other)
         {
@@ -95,12 +95,12 @@ namespace Xbim.InformationSpecifications
         [MemberNotNullWhen(true, nameof(PropertySetName))]
         [MemberNotNullWhen(true, nameof(PropertyName))]
         public bool IsValid()
-		{
+        {
             if (FacetBase.IsNullOrEmpty(PropertySetName))
                 return false;
             if (FacetBase.IsNullOrEmpty(PropertyName))
                 return false;
             return true;
-		}
-	}
+        }
+    }
 }

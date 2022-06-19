@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
 {
     public class UnitConversion
     {
-        public string Name { get; }    
-        public string Equivalent { get; } 
+        public string Name { get; }
+        public string Equivalent { get; }
         public double MultiplierToEquivalent { get; } = 1;
         public double Offset { get; } = 0;
         public string[] Aliases { get; }
@@ -24,7 +22,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
         {
             Name = name;
             Equivalent = equivalent;
-            MultiplierToEquivalent = equivalentQty/OrigQty;
+            MultiplierToEquivalent = equivalentQty / OrigQty;
             Aliases = aliases;
         }
     }

@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
-	/// <summary>
-	/// Taken from https://stackoverflow.com/questions/50098/comparing-two-collections-for-equality-irrespective-of-the-order-of-items-in-the
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	internal class MultiSetComparer<T> : IEqualityComparer<IEnumerable<T>>
+    /// <summary>
+    /// Taken from https://stackoverflow.com/questions/50098/comparing-two-collections-for-equality-irrespective-of-the-order-of-items-in-the
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal class MultiSetComparer<T> : IEqualityComparer<IEnumerable<T>>
     {
         private readonly IEqualityComparer<T> m_comparer;
         public MultiSetComparer(IEqualityComparer<T>? comparer = null)
@@ -38,8 +38,8 @@ namespace Xbim.InformationSpecifications.Helpers
 
             var prevMatch = new HashSet<int>();
             var sList = second.ToList();
-			foreach (var firstItem in first)
-			{
+            foreach (var firstItem in first)
+            {
                 int start = 0;
                 // todo: 2021: deal with objects that match multiple times
                 var found = (firstItem is null)
@@ -48,19 +48,19 @@ namespace Xbim.InformationSpecifications.Helpers
                 if (found == -1)
                     return false;
                 if (!prevMatch.Contains(found))
-				{
+                {
                     prevMatch.Add(found);
-				}
-				else
-				{
+                }
+                else
+                {
                     return false;
-				}
-			}
+                }
+            }
             return true;
 
             // return !HaveMismatchedElement(first, second);
         }
-             
+
         public int GetHashCode(IEnumerable<T> enumerable)
         {
             if (enumerable == null) throw new

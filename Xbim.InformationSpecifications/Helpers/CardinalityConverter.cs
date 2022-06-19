@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xbim.InformationSpecifications.Cardinality;
@@ -39,7 +37,7 @@ namespace Xbim.InformationSpecifications.Helpers
             else if (reader.TokenType == JsonTokenType.StartObject)
             {
                 // it has got to be a MinMaxCardinality
-                var item = JsonSerializer.Deserialize(ref reader, typeof( MinMaxCardinality), options) as MinMaxCardinality;
+                var item = JsonSerializer.Deserialize(ref reader, typeof(MinMaxCardinality), options) as MinMaxCardinality;
                 if (item is null)
                 {
                     logger?.LogError("Invalid object values when trying to parse MinMaxCardinality.");
