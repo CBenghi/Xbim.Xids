@@ -57,7 +57,8 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Collection of the facets defined in the group.
         /// </summary>
-		public ObservableCollection<IFacet> Facets { get; } = new ObservableCollection<IFacet>();
+		public ObservableCollection<IFacet> Facets { get; set; } = new ObservableCollection<IFacet>();
+        // set is required for persistence.
 
         /// <summary>
         /// Identifies the possible ways in which a Facet may be used; see IsUsed methods.

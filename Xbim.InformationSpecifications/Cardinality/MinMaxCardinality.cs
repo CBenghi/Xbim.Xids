@@ -55,7 +55,6 @@ namespace Xbim.InformationSpecifications.Cardinality
                     return true;
                 return false;
             }
-
         }
 
         /// <inheritdoc />
@@ -80,5 +79,16 @@ namespace Xbim.InformationSpecifications.Cardinality
                 return new SimpleCardinality() { ApplicabilityCardinality = CardinalityEnum.Prohibited };
             return this;
         }
+
+        /// <inheritdoc />
+        public bool IsValid()
+        {
+            if (!MaxOccurs.HasValue)
+                return true;
+            return MaxOccurs >= MinOccurs;
+        }
+
+        /// <inheritdoc />
+        public bool NoMatchingEntities => MaxOccurs.HasValue && MaxOccurs.Value == 0;
     }
 }

@@ -97,12 +97,11 @@ namespace Xbim.InformationSpecifications.Tests
             spec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcFurnishingElement" });
             spec.Requirement.Facets.Add(new IfcPropertyFacet() { PropertySetName = "pset", PropertyName = "prop" });
 
-            var fname = "CanSerializeExtraFacets.json";
-            var fname2 = "CanSerializeExtraFacets2.json";
+            var fname = "CanSerializeExtraFacetsFistPersisted.json";
+            var fname2 = "CanSerializeExtraFacetReloadPersisted.json";
             x.SaveAsJson(fname);
             var reloaded = Xids.LoadFromJson(fname);
             reloaded.AllSpecifications().Count().Should().Be(x.AllSpecifications().Count());
-
             reloaded.SaveAsJson(fname2);
 
             var h1 = FileHashing.GetFileHash(fname);
@@ -113,7 +112,6 @@ namespace Xbim.InformationSpecifications.Tests
                 Debug.Write($"\"{new FileInfo(fname).FullName}\" ");
                 Debug.Write($"\"{new FileInfo(fname2).FullName}\" ");
                 Debug.WriteLine("");
-
             }
             h1.Should().Be(h2);
 

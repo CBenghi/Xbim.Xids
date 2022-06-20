@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -29,7 +30,18 @@ namespace Xbim.InformationSpecifications.Helpers
         public ReversibleLookup<string, Type> KeyTypeLookup = new();
 
         public override bool CanConvert(Type typeToConvert)
-            => typeof(TList).IsAssignableFrom(typeToConvert);
+        {
+            var can = typeof(TList).IsAssignableFrom(typeToConvert);
+            if (!can)
+            {
+                Debug.WriteLine($"Cannot convert {typeToConvert.FullName}");
+            }
+            else
+            {
+                Debug.WriteLine($"Can convert {typeToConvert.FullName}");
+            }
+            return can;
+        }
 
         public override TList Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

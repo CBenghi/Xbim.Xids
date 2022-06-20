@@ -5,15 +5,36 @@ using System.Threading.Tasks;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Extension methods for JSON persistence
+    /// </summary>
     public static class FacetGroupExtensions
     {
-        public static void SaveAsJson(this FacetGroup group, string destinationFile, ILogger? logger = null)
+        /// <summary>
+        /// Saves a single facetGroup to file via file name.
+        /// The file gets overwritten if it already exists.
+        /// </summary>
+        /// <param name="groupToSave">The group to persist</param>
+        /// <param name="destinationFile">The file name to write to. WARNING: If the file exists it's overwritten without throwing an error.</param>
+        /// <param name="logger">optional logging context</param>
+        public static void SaveAsJson(this FacetGroup groupToSave, string destinationFile, ILogger? logger = null)
         {
             if (File.Exists(destinationFile))
+            {
+                var f = new FileInfo(destinationFile);
+                logger?.LogWarning("File is being overwritten: {file}", f.FullName);
                 File.Delete(destinationFile);
+            }
             using var s = File.OpenWrite(destinationFile);
-            group.SaveAsJson(s, logger);
+            groupToSave.SaveAsJson(s, logger);
         }
+
+        /// <summary>
+        /// persists a single facetGroup to a stream
+        /// </summary>
+        /// <param name="group">the group to persist</param>
+        /// <param name="sw">a writeable stream</param>
+        /// <param name="logger">optional loggin context</param>
         public static void SaveAsJson(this FacetGroup group, Stream sw, ILogger? logger = null)
         {
             var options = Xids.GetJsonSerializerOptions(logger);
@@ -25,11 +46,18 @@ namespace Xbim.InformationSpecifications
             JsonSerializer.Serialize(t, group, options);
         }
 
+        /// <summary>
+        /// Unpersists a <see cref="FacetGroup"/> instance from a file by file name. 
+        /// </summary>
+        /// <param name="sourceFile">the file to read</param>
+        /// <param name="logger">optional logging context</param>
+        /// <returns>null in case of errors, a loaded group otherwise</returns>
         public static FacetGroup? LoadFromJson(string sourceFile, ILogger? logger = null)
         {
             if (!File.Exists(sourceFile))
             {
-                logger?.LogError("Json file not found: '{sourceFile}'", sourceFile);
+                var f = new FileInfo(sourceFile);
+                logger?.LogError("Json file not found: '{sourceFile}'", f.FullName);
                 return null;
             }
             var allfile = File.ReadAllText(sourceFile);
@@ -37,6 +65,12 @@ namespace Xbim.InformationSpecifications
             return t;
         }
 
+        /// <summary>
+        /// Unpersists a <see cref="FacetGroup"/> instance from a stream 
+        /// </summary>
+        /// <param name="sourceStream">a readable stream</param>
+        /// <param name="logger">optional logging context</param>
+        /// <returns>null in case of errors, a loaded group otherwise</returns>
         public static async Task<FacetGroup?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
         {
             JsonSerializerOptions options = Xids.GetJsonSerializerOptions(logger);

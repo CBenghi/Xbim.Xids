@@ -87,7 +87,7 @@ namespace Xbim.InformationSpecifications
         {
             if (other == null)
                 return false;
-            var thisEq = (sourceId, Relation)
+            var thisEq = (SourceId, Relation)
                 .Equals((other.SourceId, other.Relation));
             if (!thisEq)
                 return false;

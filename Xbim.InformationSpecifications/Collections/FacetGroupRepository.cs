@@ -5,10 +5,15 @@ using System.Text.Json.Serialization;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Provides methods for reusing facetgroups
+    /// </summary>
     public class FacetGroupRepository
     {
         private readonly Xids ids;
-
+        /// <summary>
+        /// Use only for persistence and testing, use <see cref="FacetGroupRepository(Xids)"/> instead
+        /// </summary>
         [Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
         [JsonConstructor]
         public FacetGroupRepository()
@@ -16,27 +21,57 @@ namespace Xbim.InformationSpecifications
             ids = new Xids();
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="ids">a valid repository</param>
         public FacetGroupRepository(Xids ids)
         {
             this.ids = ids;
         }
 
+        /// <summary>
+        /// count of the <see cref="FacetGroup"/> instances in the collection
+        /// </summary>
         [JsonIgnore]
-        public int Count => Collection.Count;
+        public int Count => collection.Count;
 
-        public List<FacetGroup> Collection { get; set; } = new List<FacetGroup>();
+        private List<FacetGroup> collection = new List<FacetGroup>();
 
-        internal void Add(FacetGroup group)
+        /// <summary>
+        /// readonly collection, use other methods in this class to add/modify
+        /// </summary>
+        public IEnumerable<FacetGroup> Collection
+        {
+            get { return collection; }
+            set
+            {
+                collection = new List<FacetGroup>();
+                foreach (var item in value)
+                {
+                    Add(item);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Adds an item to the collection
+        /// </summary>
+        /// <param name="group"></param>
+        public void Add(FacetGroup group)
         {
             // just to be on the safe side, let's only add it once.
-            if (Collection.Contains(group))
+            if (collection.Contains(group))
                 return;
-            Collection.Add(group);
+            collection.Add(group);
         }
 
-        internal FacetGroup? FirstOrDefault(Func<FacetGroup, bool> p)
+        /// <summary>
+        /// Just like the LINQ method
+        /// </summary>
+        public FacetGroup? FirstOrDefault(Func<FacetGroup, bool> p)
         {
-            return Collection.FirstOrDefault(p);
+            return collection.FirstOrDefault(p);
         }
 
         /// <summary>
@@ -47,6 +82,16 @@ namespace Xbim.InformationSpecifications
         {
             var ret = new FacetGroup(this);
             return ret;
+        }
+
+
+        /// <summary>
+        /// Removes an item from the collection
+        /// </summary>
+        /// <param name="toRemove">item to remove</param>
+        public void Remove(FacetGroup toRemove)
+        {
+            collection.Remove(toRemove);
         }
     }
 }

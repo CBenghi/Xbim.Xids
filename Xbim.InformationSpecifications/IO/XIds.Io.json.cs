@@ -14,12 +14,16 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Persists the instance to a file by file name. See the <see cref="LoadFromJson(string, ILogger?)"/> to unpersist.
         /// </summary>
-        /// <param name="destinationFile">The file name to write to. If the file exists it's overwritten without throwing an error.</param>
+        /// <param name="destinationFile">The file name to write to. WARNING: If the file exists it's overwritten without throwing an error.</param>
         /// <param name="logger">The logging context to be notified.</param>
 		public void SaveAsJson(string destinationFile, ILogger? logger = null)
         {
             if (File.Exists(destinationFile))
+            {
+                var f = new FileInfo(destinationFile);
+                logger?.LogWarning("File is being overwritten: {file}", f.FullName);
                 File.Delete(destinationFile);
+            }
             using var s = File.OpenWrite(destinationFile);
             SaveAsJson(s, logger);
         }
@@ -65,7 +69,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Unpersists an instance from a file by file name. See the <see cref="SaveAsJson(string, ILogger?)"/> to persist.
+        /// Unpersists a XIDS instance from a file by file name. See the <see cref="SaveAsJson(string, ILogger?)"/> to persist.
         /// </summary>
         /// <param name="sourceFile">File name to load the information from</param>
         /// <param name="logger">The logging context to be notified.</param>

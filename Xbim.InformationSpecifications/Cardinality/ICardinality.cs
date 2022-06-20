@@ -30,5 +30,16 @@ namespace Xbim.InformationSpecifications
         /// True if the cardinality requires the entire model for evaluation.
         /// </summary>
         bool IsModelConstraint { get; }
+
+        /// <summary>
+        /// True if the cardinality expects that there are no entities matching.
+        /// </summary>
+        bool NoMatchingEntities { get; }
+
+        /// <summary>
+        /// Evaluates whether the cardinality properties are meaningful and valid
+        /// </summary>
+        /// <returns></returns>
+        bool IsValid();
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Xbim.Common.Metadata;
 using Xbim.InformationSpecifications.Helpers;
@@ -203,7 +204,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                 sb.AppendLine($"\t\t{measure},");
             }
 
-            source = source.Replace($"\t\t<PlaceHolder>\r\n", sb.ToString());
+            source = Regex.Replace(source, $"[\t ]*<PlaceHolder>", sb.ToString());
             return source;
         }
 
@@ -257,6 +258,9 @@ namespace Xbim.InformationSpecifications.Helpers
 {
 	public partial class SchemaInfo
 	{
+		/// <summary>
+		/// Repository of valid <see cref=""IfcMeasureInfo""/> metadata given the persistence string defined in bS IDS
+		/// </summary>
 		public static Dictionary<string, IfcMeasureInfo> IfcMeasures { get; } = new()
 		{
 			<PlaceHolder>
@@ -272,12 +276,12 @@ using System.Text;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
-	/// <summary>
+    /// <summary>
     /// Determins data type constraints and conversion for measures.
     /// </summary>
     public enum IfcMeasures
     {
-		<PlaceHolder>
+        <PlaceHolder>
     }
 }
 ";

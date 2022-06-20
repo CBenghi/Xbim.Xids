@@ -7,6 +7,9 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications.Generator.Measures
 {
+    /// <summary>
+    /// Class to support unit conversion
+    /// </summary>
     public class UnitFactor
     {
         public string UnitSymbol { get; set; }

@@ -2,6 +2,9 @@
 {
     public partial class Xids
     {
-        public static string AssemblyVersion => "0.3.4";
+        /// <summary>
+        /// Static field to hardcode the DLL version number.
+        /// </summary>
+        public static string AssemblyVersion => "0.3.5";
     }
 }

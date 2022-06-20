@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,8 +26,11 @@ namespace Xbim.InformationSpecifications
 
     public partial class Xids // basic definition file
     {
-        // private ILogger<Xids> _logger;
-
+        /// <summary>
+        /// Static helper method to determine whether the XIDS has information worth saving.
+        /// </summary>
+        /// <param name="xidsToTest">the instance to check</param>
+        /// <returns>True if there's any data in the model</returns>
         public static bool HasData(Xids xidsToTest)
         {
             if (xidsToTest == null)
@@ -87,6 +91,7 @@ namespace Xbim.InformationSpecifications
         /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
         /// </summary>
         /// <param name="destinationGroup">the desired owning collection</param>
+        /// <param name="ifcVersion">a required schema version to set</param>
         /// <param name="applicability"></param>
         /// <param name="requirement"></param>
         /// <returns>The initialised specification</returns>
@@ -105,6 +110,7 @@ namespace Xbim.InformationSpecifications
         /// WARNING: this creates new facetgroups if applicability and requirement are not provided.
         /// </summary>
         /// <param name="destinationGroup">the desired owning collection</param>
+        /// <param name="ifcVersion">an enumerable of model schemas that would be acceptable</param>
         /// <param name="applicability"></param>
         /// <param name="requirement"></param>
         /// <returns>The initialised specification</returns>
@@ -141,17 +147,28 @@ namespace Xbim.InformationSpecifications
             return t;
         }
 
+        /// <summary>
+        /// Obsolete method will be removed soon, use ImportBuildingSmartIDS instead
+        /// </summary>
+        [Obsolete("This will be removed soon, use ImportBuildingSmartIDS instead.")]
         public static Xids? FromStream(Stream s)
         {
             return Xids.ImportBuildingSmartIDS(s);
         }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public Xids()
         {
             FacetRepository = new FacetGroupRepository(this);
             _readVersion = "not read";
         }
 
+        /// <summary>
+        /// enumerate specifications from all the groups
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Specification> AllSpecifications()
         {
             foreach (var rg in SpecificationsGroups)
@@ -163,6 +180,12 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <summary>
+        /// Enumerates all the <see cref="FacetGroup"/> that match the use enum.
+        /// Each instance is evaluated only once.
+        /// </summary>
+        /// <param name="use">limits the retuned collection to a specific usage of the <see cref="FacetGroup"/>.</param>
+        /// <returns>all facet groups matching the use</returns>
         public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
         {
             foreach (var fg in FacetRepository.Collection.ToArray())
@@ -172,12 +195,15 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <summary>
+        /// Cleans up the repository removinga all facet groups that are never used.
+        /// </summary>
         public void Purge()
         {
             var unusedFG = FacetRepository.Collection.Except(FacetGroups(FacetUse.All)).ToList();
             foreach (var unused in unusedFG)
             {
-                FacetRepository.Collection.Remove(unused);
+                FacetRepository.Remove(unused);
             }
         }
 
@@ -185,12 +211,15 @@ namespace Xbim.InformationSpecifications
 
         internal string ReadVersion { get { return _readVersion; } }
 
+        /// <summary>
+        /// Version of the DLL, gets stored in the json persistence
+        /// </summary>
         public string Version
         {
             get
             {
-                // doint it dynamically breaks under some scenarios (see blazor in webassembly)
-                // so we hardcode it
+                // we are getting the version hardcoded, because loading dll information
+                // breaks under some scenarios (see blazor in webassembly)
                 return AssemblyVersion;
             }
             set
@@ -199,12 +228,24 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <summary>
+        /// Project metadata 
+        /// </summary>
         public Project Project { get; set; } = new Project();
 
+        /// <summary>
+        /// the repository of all facet groups that can be reused by GUID
+        /// </summary>
         public FacetGroupRepository FacetRepository { get; set; }
 
+        /// <summary>
+        /// Specifications can be grouped for any required purpose.
+        /// </summary>
         public List<SpecificationsGroup> SpecificationsGroups { get; set; } = new List<SpecificationsGroup>();
 
+        /// <summary>
+        /// Retrieve a <see cref="FacetGroup"/> via its GUID as a string
+        /// </summary>
         internal FacetGroup? GetFacetGroup(string? guid)
         {
             if (guid is null)

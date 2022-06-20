@@ -43,6 +43,9 @@ namespace Xbim.InformationSpecifications.Cardinality
         public bool IsModelConstraint => ApplicabilityCardinality != CardinalityEnum.Optional;
 
         /// <inheritdoc />
+        public bool NoMatchingEntities => ApplicabilityCardinality == CardinalityEnum.Prohibited;
+
+        /// <inheritdoc />
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)
         {
             switch (ApplicabilityCardinality)
@@ -59,6 +62,13 @@ namespace Xbim.InformationSpecifications.Cardinality
                 default:
                     break;
             }
+        }
+
+        /// <inheritdoc />
+        public bool IsValid()
+        {
+            // SimpleCardinality is always valid
+            return true;
         }
     }
 }
