@@ -5,13 +5,19 @@ using System.Text.RegularExpressions;
 
 namespace Xbim.InformationSpecifications
 {
-    public class PatternConstraint : IValueConstraint, IEquatable<PatternConstraint>
+    /// <summary>
+    /// A constraint component based on a regex-like pattern
+    /// </summary>
+    public class PatternConstraint : IValueConstraintComponent, IEquatable<PatternConstraint>
     {
         private Regex? compiledCaseSensitiveRegex;
         private Regex? compiledCaseInsensitiveRegex;
 
-        private string pattern = String.Empty;
+        private string pattern = string.Empty;
 
+        /// <summary>
+        /// Defines the patter for the evaluator
+        /// </summary>
         public string Pattern
         {
             get { return pattern; }
@@ -21,17 +27,20 @@ namespace Xbim.InformationSpecifications
                 pattern = value;
             }
         }
-
+        
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return (Pattern, true).GetHashCode();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return base.Equals(obj as PatternConstraint);
         }
 
+        /// <inheritdoc />
         public bool Equals(PatternConstraint? other)
         {
             if (other == null)
@@ -40,6 +49,9 @@ namespace Xbim.InformationSpecifications
             return (Pattern, true).Equals((other.Pattern, true));
         }
 
+        /// <summary>
+        /// Helper method to provide feedback to see if the pattern is valid
+        /// </summary>
         [JsonIgnore]
         public bool IsValidPattern
         {
@@ -61,6 +73,9 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <summary>
+        /// Helper providing an error string in case of pattern is not valid
+        /// </summary>
         [JsonIgnore]
         public string PatternError
         {
@@ -79,6 +94,7 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (ignoreCase)
@@ -145,6 +161,7 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (pattern == null)
@@ -152,6 +169,7 @@ namespace Xbim.InformationSpecifications
             return $"Pattern: '{Pattern}'";
         }
 
+        /// <inheritdoc />
         public string Short()
         {
             return $"matches the pattern: '{Pattern}'";

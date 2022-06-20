@@ -64,7 +64,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
         {
             var t1 = new ValueConstraint(NetTypeName.String)
             {
-                AcceptedValues = new List<IValueConstraint>()
+                AcceptedValues = new List<IValueConstraintComponent>()
                 {
                     new ExactConstraint("2"),
                     new ExactConstraint("3")
@@ -73,7 +73,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 
             var t2 = new ValueConstraint(NetTypeName.String)
             {
-                AcceptedValues = new List<IValueConstraint>()
+                AcceptedValues = new List<IValueConstraintComponent>()
                 {
                     new ExactConstraint("3"),
                     new ExactConstraint("2")
@@ -96,7 +96,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 
             yield return new ValueConstraint(NetTypeName.String)
             {
-                AcceptedValues = new List<IValueConstraint>()
+                AcceptedValues = new List<IValueConstraintComponent>()
                 {
                     new ExactConstraint("2"),
                     new ExactConstraint("3")

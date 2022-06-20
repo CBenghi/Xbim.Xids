@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 
             t = new ValueConstraint(NetTypeName.Undefined);
-            t.Add(new RangeConstraint());
+            t.AddAccepted(new RangeConstraint());
             t.IsSingleUndefinedExact(out var _).Should().BeFalse();
 
 

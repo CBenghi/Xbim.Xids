@@ -24,6 +24,9 @@ namespace Xbim.InformationSpecifications
         }
     }
 
+    /// <summary>
+    /// Core class for the management of model specifications 
+    /// </summary>
     public partial class Xids // basic definition file
     {
         /// <summary>

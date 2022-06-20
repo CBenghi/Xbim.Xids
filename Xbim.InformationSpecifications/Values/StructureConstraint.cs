@@ -101,15 +101,33 @@ namespace Xbim.InformationSpecifications
             }
         }
     }
-
-    public class StructureConstraint : IValueConstraint, IEquatable<StructureConstraint>
+    /// <summary>
+    /// A constraint component based on a structure of the presentation 
+    /// </summary>
+    public class StructureConstraint : IValueConstraintComponent, IEquatable<StructureConstraint>
     {
+        /// <summary>
+        /// Optional: Total digits of the presentation
+        /// </summary>
         public int? TotalDigits { get; set; }
+        /// <summary>
+        /// Optional: fractional digits of the presentation
+        /// </summary>
         public int? FractionDigits { get; set; }
+        /// <summary>
+        /// Optional: Total characters of the presentation
+        /// </summary>
         public int? Length { get; set; }
+        /// <summary>
+        /// Optional: minimum characters of the presentation
+        /// </summary>
         public int? MinLength { get; set; }
+        /// <summary>
+        /// Optional: maximum characters of the presentation
+        /// </summary>
         public int? MaxLength { get; set; }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (
@@ -135,13 +153,16 @@ namespace Xbim.InformationSpecifications
             return sb.ToString();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return Equals(obj as StructureConstraint);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode() => (TotalDigits, FractionDigits, Length, MinLength, MaxLength).GetHashCode();
 
+        /// <inheritdoc />
         public bool Equals(StructureConstraint? other)
         {
             if (other == null)
@@ -159,6 +180,7 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
+        /// <inheritdoc />
         public bool IsSatisfiedBy(object? candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (TotalDigits.HasValue)
@@ -255,6 +277,7 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
+        /// <inheritdoc />
         public string Short()
         {
             var ret = new List<string>();

@@ -27,9 +27,18 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <summary>
+        /// When exporting to bS IDS, export files can be one of the formats in this enum.
+        /// </summary>
         public enum ExportedFormat
         {
+            /// <summary>
+            /// A single IDS in XML format
+            /// </summary>
             XML,
+            /// <summary>
+            /// multiple IDS files in a compressed ZIP format
+            /// </summary>
             ZIP
         }
 
@@ -438,6 +447,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Attempts to unpersist an XIDS from a file, given the file name.
         /// </summary>
+        /// <param name="fileName">File name of the Xids to load</param>
         /// <param name="logger">The logger to send any errors and warnings to.</param>
         /// <returns>an XIDS or null if it could not be read.</returns>
         public static Xids? ImportBuildingSmartIDS(string fileName, ILogger? logger = null)
@@ -915,7 +925,7 @@ namespace Xbim.InformationSpecifications
             {
                 var ret = new ValueConstraint(t)
                 {
-                    AcceptedValues = new List<IValueConstraint>()
+                    AcceptedValues = new List<IValueConstraintComponent>()
                 };
                 foreach (var val in enumeration)
                 {
@@ -927,7 +937,7 @@ namespace Xbim.InformationSpecifications
             {
                 var ret = new ValueConstraint(t)
                 {
-                    AcceptedValues = new List<IValueConstraint>() { range }
+                    AcceptedValues = new List<IValueConstraintComponent>() { range }
                 };
                 return ret;
             }
@@ -935,7 +945,7 @@ namespace Xbim.InformationSpecifications
             {
                 var ret = new ValueConstraint(t)
                 {
-                    AcceptedValues = new List<IValueConstraint>() { patternc }
+                    AcceptedValues = new List<IValueConstraintComponent>() { patternc }
                 };
                 return ret;
             }
@@ -943,7 +953,7 @@ namespace Xbim.InformationSpecifications
             {
                 var ret = new ValueConstraint(t)
                 {
-                    AcceptedValues = new List<IValueConstraint>() { structure }
+                    AcceptedValues = new List<IValueConstraintComponent>() { structure }
                 };
                 return ret;
             }

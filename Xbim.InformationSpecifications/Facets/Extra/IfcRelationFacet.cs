@@ -10,24 +10,37 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public class IfcRelationFacet : FacetBase, IFacet, IRepositoryRef, IEquatable<IfcRelationFacet>
     {
+        // todo: the relationtype can be expanded to start directly from the same set (e.g., building up a constraint adding other facetGroups).
 
-        // todo: the relationtype can be expanded to start directly from the same set (e.g., building up a constraint from summing other facetGroups).
-
+        /// <summary>
+        /// The kind of relation that expands from the original <see cref="Source"/> facet group
+        /// </summary>
         public enum RelationType
         {
+            /// <summary>
+            /// Not suitable for testing
+            /// </summary>
             Undefined,
-            ContainedElements,   // from: IfcSpatialElement -> ContainsElements (IfcRelContainedInSpatialStructure) -> RelatedElements
-                                 //       potentially recursive
-                                 // from: IfcElement        ->   HasOpenings (IfcRelVoidsElement) -> RelatedOpeningElement -> HasFillings (IfcRelFillsElement) -> RelatedBuildingElement
-                                 //       conceptually recursive
+            /// <summary>
+            /// Contained elements are found by:
+            /// - from: IfcSpatialElement -> ContainsElements (IfcRelContainedInSpatialStructure) -> RelatedElements (potentially recursive)
+            /// - from: IfcElement        ->   HasOpenings (IfcRelVoidsElement) -> RelatedOpeningElement -> HasFillings (IfcRelFillsElement) -> RelatedBuildingElement (conceptually recursive)
+            /// </summary>
+            ContainedElements,
 
-            Voids,               // from: IfcElement        ->   HasOpenings (IfcRelVoidsElement) -> RelatedOpeningElement
-                                 //       Recursive ignored
+            /// <summary>
+            /// Contained elements are found by:
+            /// from: IfcElement        ->   HasOpenings (IfcRelVoidsElement) -> RelatedOpeningElement (Recursive ignored)
+            /// </summary>
+            Voids,
 
         }
 
         private string? sourceId;
 
+        /// <summary>
+        /// Id of the starting element set 
+        /// </summary>
         [JsonPropertyName("Source")]
         public string? SourceId
         {
@@ -40,11 +53,17 @@ namespace Xbim.InformationSpecifications
             set => sourceId = value;
         }
 
+        /// <summary>
+        /// The resolved facet Group of the starting set;
+        /// </summary>
         [JsonIgnore]
         public FacetGroup? Source { get; set; }
 
         private string relation = RelationType.Undefined.ToString();
 
+        /// <summary>
+        /// Enum resolved from the <see cref="Relation"/> string
+        /// </summary>
         public RelationType GetRelation()
         {
             if (Enum.TryParse<RelationType>(relation, out var rel))
@@ -52,14 +71,19 @@ namespace Xbim.InformationSpecifications
                 return rel;
             }
             return RelationType.Undefined;
-
         }
 
+        /// <summary>
+        /// Helper setting the string from the enum
+        /// </summary>
         public void SetRelation(RelationType relationType)
         {
             relation = relationType.ToString();
         }
 
+        /// <summary>
+        /// Getter and setter of the relation string, the setter ignores strings that do represent a valid <see cref="RelationType"/>.
+        /// </summary>
         public string Relation
         {
             get { return relation; }

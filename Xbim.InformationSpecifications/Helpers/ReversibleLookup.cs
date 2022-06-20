@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace Xbim.InformationSpecifications.Helpers
 {
-    // part of the serialization solution at for HeterogenousListConverter
+    /// <summary>
+    /// part of the serialization solution at for <see cref="HeterogenousListConverter{TItem, TList}"/>
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <typeparam name="T2"></typeparam>
     public class ReversibleLookup<T1, T2> : ReadOnlyDictionary<T1, T2>
         where T1 : notnull
         where T2 : notnull
@@ -14,7 +19,6 @@ namespace Xbim.InformationSpecifications.Helpers
         public ReversibleLookup(params (T1, T2)[] mappings)
         : base(new Dictionary<T1, T2>())
         {
-
             ReverseLookup = new ReadOnlyDictionary<T2, T1>(reverseLookup);
 
             foreach (var mapping in mappings)
@@ -27,7 +31,6 @@ namespace Xbim.InformationSpecifications.Helpers
         [DebuggerHidden]
         public void Add(T1 value1, T2 value2)
         {
-
             if (ContainsKey(value1))
                 throw new InvalidOperationException($"{nameof(value1)} is not unique");
 
@@ -45,3 +48,4 @@ namespace Xbim.InformationSpecifications.Helpers
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

@@ -4,13 +4,27 @@ using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications
 {
-    public class RangeConstraint : IValueConstraint, IEquatable<RangeConstraint>
+    /// <summary>
+    /// A constraint component based on a range, identified by minimum and maximum values.
+    /// </summary>
+    public class RangeConstraint : IValueConstraintComponent, IEquatable<RangeConstraint>
     {
+        /// <summary>
+        /// String representation of the minimum value
+        /// </summary>
         public string? MinValue { get; set; }
+        /// <summary>
+        /// boolean option, is the minimum value inclusive?
+        /// </summary>
         public bool MinInclusive { get; set; }
+        /// String representation of the maximum value
         public string? MaxValue { get; set; }
+        /// <summary>
+        /// boolean option, is the maximum value inclusive?
+        /// </summary>
         public bool MaxInclusive { get; set; }
 
+        /// <inheritdoc />
         public bool Equals(RangeConstraint? other)
         {
             if (other == null)
@@ -23,11 +37,13 @@ namespace Xbim.InformationSpecifications
                 MaxInclusive == other.MaxInclusive;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
-            return this.Equals(obj as RangeConstraint);
+            return Equals(obj as RangeConstraint);
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             var minV = MinValue ?? "undefined";
@@ -37,11 +53,13 @@ namespace Xbim.InformationSpecifications
             return $"Range: {minV} {min} .. {max} {maxV}";
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return ToString().GetHashCode();
         }
 
+        /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (context == null)
@@ -70,6 +88,7 @@ namespace Xbim.InformationSpecifications
             return minOk && maxOk;
         }
 
+        /// <inheritdoc />
         public string Short()
         {
             var ret = new List<string>();

@@ -16,22 +16,43 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public partial class ValueConstraint : IEquatable<ValueConstraint>
     {
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
         public ValueConstraint() { }
 
-        public void Add(IValueConstraint newConstraint)
+        /// <summary>
+        /// Add an accepted constraint component, will be removed, use <see cref="AddAccepted(IValueConstraintComponent)"/>
+        /// </summary>
+        /// <param name="newConstraint"></param>
+        [Obsolete("Will be removed, use AddAccepted")]
+        public void Add(IValueConstraintComponent newConstraint)
         {
-            AcceptedValues ??= new List<IValueConstraint>();
+            AcceptedValues ??= new List<IValueConstraintComponent>();
             AcceptedValues.Add(newConstraint);
         }
 
-        public void AddAccepted(IValueConstraint constraint)
+        /// <summary>
+        /// Add an accepted constraint component
+        /// </summary>
+        public void AddAccepted(IValueConstraintComponent constraint)
         {
-            AcceptedValues ??= new List<IValueConstraint>();
+            AcceptedValues ??= new List<IValueConstraintComponent>();
             AcceptedValues.Add(constraint);
         }
 
-        public List<IValueConstraint>? AcceptedValues { get; set; }
+        /// <summary>
+        /// The list of accepted values
+        /// </summary>
+        public List<IValueConstraintComponent>? AcceptedValues { get; set; }
 
+        /// <summary>
+        /// Evaluates a candidate value, against the constraints
+        /// </summary>
+        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="ignoreCase">used for strings</param>
+        /// <param name="logger">logging context</param>
+        /// <returns>true if satisfied, false otherwise</returns>
         public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, bool ignoreCase, ILogger? logger = null)
         {
             if (candiatateValue is null)
@@ -52,14 +73,28 @@ namespace Xbim.InformationSpecifications
             return false;
         }
 
+        /// <summary>
+        /// Evaluates a candidate value, against the constraints, strings are compared with exact case match
+        /// </summary>
+        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="logger">the logging context</param>
+        /// <returns>true if satisfied, false otherwise</returns>
         public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
         {
             return IsSatisfiedBy(candiatateValue, false, logger);
         }
+
+        /// <summary>
+        /// Evaluates a candidate value, against the constraints, strings are compared with ignoring case match
+        /// </summary>
+        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="logger">the logging context</param>
+        /// <returns>true if satisfied, false otherwise</returns>
         public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
         {
             return IsSatisfiedBy(candiatateValue, true, logger);
         }
+
 
         static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
         {
@@ -89,7 +124,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value to set as exact string constraint</param>
         public ValueConstraint(string value)
         {
-            AcceptedValues = new List<IValueConstraint>
+            AcceptedValues = new List<IValueConstraintComponent>
             {
                 new ExactConstraint(value)
             };
@@ -97,15 +132,23 @@ namespace Xbim.InformationSpecifications
         }
 
 
+        /// <summary>
+        /// Constructor by type enumeration
+        /// </summary>
         public ValueConstraint(NetTypeName value)
         {
             BaseType = value;
-            AcceptedValues = new List<IValueConstraint>();
+            AcceptedValues = new List<IValueConstraintComponent>();
         }
 
+        /// <summary>
+        /// Constructor by type enumeration and string representation of an acceptable value
+        /// </summary>
+        /// <param name="valueType">type</param>
+        /// <param name="value">The value will be parsed when testing IsSatisfiedBy according to the <paramref name="valueType"/></param>
         public ValueConstraint(NetTypeName valueType, string value)
         {
-            AcceptedValues = new List<IValueConstraint>
+            AcceptedValues = new List<IValueConstraintComponent>
             {
                 new ExactConstraint(value)
             };
@@ -118,7 +161,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value to set as exact int constraint</param>
         public ValueConstraint(int value)
         {
-            AcceptedValues = new List<IValueConstraint>
+            AcceptedValues = new List<IValueConstraintComponent>
             {
                 new ExactConstraint(value.ToString())
             };
@@ -131,7 +174,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value to set as exact decimal constraint</param>
         public ValueConstraint(decimal value)
         {
-            AcceptedValues = new List<IValueConstraint>
+            AcceptedValues = new List<IValueConstraintComponent>
             {
                 new ExactConstraint(value.ToString())
             };
@@ -144,13 +187,16 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value to set as exact double constraint</param>
         public ValueConstraint(double value)
         {
-            AcceptedValues = new List<IValueConstraint>
+            AcceptedValues = new List<IValueConstraintComponent>
             {
                 new ExactConstraint(value.ToString())
             };
             BaseType = NetTypeName.Double;
         }
 
+        /// <summary>
+        /// BaseType to be used for the evaluation of constraints
+        /// </summary>
         public NetTypeName BaseType { get; set; }
 
         /// <summary>
@@ -190,6 +236,7 @@ namespace Xbim.InformationSpecifications
                 (AcceptedValues == null || !AcceptedValues.Any());
         }
 
+        /// <inheritdoc />
         public bool Equals([NotNullWhen(true)] ValueConstraint? other)
         {
             if (other == null)
@@ -202,13 +249,17 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (AcceptedValues != null)
             {
-                var comp = new Helpers.MultiSetComparer<IValueConstraint>();
+                var comp = new Helpers.MultiSetComparer<IValueConstraintComponent>();
                 if (!comp.Equals(AcceptedValues, other.AcceptedValues))
                     return false;
             }
             return true;
         }
 
+        /// <summary>
+        /// Converts from a net type name to the type
+        /// </summary>
+        /// <returns>Can return null if the starting enum is Undefined</returns>
         public static Type? ResolvedType(NetTypeName Name)
         {
             return Name switch
@@ -227,6 +278,9 @@ namespace Xbim.InformationSpecifications
             };
         }
 
+        /// <summary>
+        /// Returns a default value given a type.
+        /// </summary>
         public static object? GetDefault(NetTypeName tName, ILogger? logger = null)
         {
             if (tName == NetTypeName.String)
@@ -249,16 +303,19 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return Equals(obj as ValueConstraint);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return ToString().GetHashCode();
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (AcceptedValues == null || !AcceptedValues.Any())
@@ -328,6 +385,11 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
+        /// <summary>
+        /// Helps UI creation for the cases where a ValueConstraint is specified by a single value (the UI can be compressed).
+        /// </summary>
+        /// <param name="value">the constraint to evaluate</param>
+        /// <param name="exact">returns the single exact constraint value as an object, if the return value is true</param>
         public static bool IsSingleExact([NotNullWhen(true)] ValueConstraint? value, [NotNullWhen(true)] out object? exact)
         {
             if (value is null)
@@ -362,6 +424,12 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
+        /// <summary>
+        /// Helps UI creation for the cases where a ValueConstraint is specified by a single value (the UI can be compressed).
+        /// This override allows the specification of the expected <typeparamref name="RequiredType"/>.
+        /// </summary>
+        /// <param name="value">the constraint to evaluate</param>
+        /// <param name="exact">returns the single exact constraint value as an object, if the return value is true</param>
         public static bool IsSingleExact<RequiredType>([NotNullWhen(true)] ValueConstraint? value, [NotNullWhen(true)] out RequiredType? exact)
         {
             if (value is null)
@@ -373,7 +441,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Checks that there'a single exactConstraint in the accepted values and its value is of <see cref="RequiredType"/>, and provides it for consumption 
+        /// Checks that there'a single exactConstraint in the accepted values and its value is of type <typeparamref name="RequiredType"/>, and provides it for consumption 
         /// </summary>
         /// <param name="exact">The single exact constraint value defining the constraint, null if the check is not passed</param>
         /// <returns>true if check is passed, false otherwise</returns>
@@ -393,15 +461,22 @@ namespace Xbim.InformationSpecifications
             return false;
         }
 
-
+        /// <summary>
+        /// Implicit operator to convert from a string, notice that the required type is undefined
+        /// </summary>
         public static implicit operator ValueConstraint(string singleUndefinedExact) => SingleUndefinedExact(singleUndefinedExact);
 
+        /// <summary>
+        /// Explicit constructor from string.
+        /// </summary>
+        /// <param name="content">the value of a single undefined exact string, notice that the required type is undefined</param>
+        /// <returns></returns>
         public static ValueConstraint SingleUndefinedExact(string content)
         {
             var ret = new ValueConstraint()
             {
                 BaseType = NetTypeName.Undefined,
-                AcceptedValues = new List<IValueConstraint>() { new ExactConstraint(content) }
+                AcceptedValues = new List<IValueConstraintComponent>() { new ExactConstraint(content) }
             };
             return ret;
         }

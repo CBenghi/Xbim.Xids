@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
-			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraint> AcceptedValues,NetTypeName BaseType" },
+			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraintComponent> AcceptedValues,NetTypeName BaseType" },
 			{ "PartOfFacet","String Entity,ValueConstraint EntityName,String Uri,String Instructions" },
 			{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
@@ -131,7 +131,7 @@ namespace Xbim.InformationSpecifications.Tests
 			yield return new[] { new MaterialFacet() };
 			yield return new[] { new IfcRelationFacet() };
 
-            Xids x = new Xids();
+            var x = new Xids();
             var g = x.FacetRepository.CreateNew();
             yield return new[] { new IfcRelationFacet()
 				{
@@ -186,9 +186,9 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			new ValueConstraint().IsEmpty().Should().BeTrue();
 			new ValueConstraint() { BaseType = NetTypeName.String }.IsEmpty().Should().BeFalse();
-			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeTrue();
-			new ValueConstraint() { BaseType = NetTypeName.Boolean, AcceptedValues = new List<IValueConstraint>() }.IsEmpty().Should().BeFalse();
-			new ValueConstraint() { AcceptedValues = new List<IValueConstraint>() { new ExactConstraint("") } }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { AcceptedValues = new List<IValueConstraintComponent>() }.IsEmpty().Should().BeTrue();
+			new ValueConstraint() { BaseType = NetTypeName.Boolean, AcceptedValues = new List<IValueConstraintComponent>() }.IsEmpty().Should().BeFalse();
+			new ValueConstraint() { AcceptedValues = new List<IValueConstraintComponent>() { new ExactConstraint("") } }.IsEmpty().Should().BeFalse();
 		}
 
 
@@ -219,7 +219,7 @@ namespace Xbim.InformationSpecifications.Tests
 			var val = new ValueConstraint
 			{
 				BaseType = NetTypeName.String,
-				AcceptedValues = new List<IValueConstraint>()
+				AcceptedValues = new List<IValueConstraintComponent>()
 				{
 					new ExactConstraint("30"),
 					new ExactConstraint("60")
@@ -240,7 +240,7 @@ namespace Xbim.InformationSpecifications.Tests
 				var shortV = f.Short();
 				shortV.Should().NotBeNull();
 			}
-			if (c is IValueConstraint vc)
+			if (c is IValueConstraintComponent vc)
 			{
 				var shortV = vc.Short();
 				shortV.Should().NotBeNull();

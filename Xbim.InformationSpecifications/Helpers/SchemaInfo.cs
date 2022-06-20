@@ -11,6 +11,9 @@ namespace Xbim.InformationSpecifications.Helpers
     /// </summary>
     public partial class SchemaInfo : IEnumerable<ClassInfo>
     {
+        /// <summary>
+        /// Provides metadata on IFC schemas, to support the correct compilation of the XIDS
+        /// </summary>
         public SchemaInfo()
         {
             Classes = new Dictionary<string, ClassInfo>();
@@ -100,14 +103,24 @@ namespace Xbim.InformationSpecifications.Helpers
             }
         }
 
-        public static IfcMeasureInfo? GetMeasure(string type)
+        /// <summary>
+        /// Get the ifc measure metadata from a string
+        /// </summary>
+        /// <param name="ifcMeasureString">the string value of the measure</param>
+        /// <returns>Null if the string is not meaningful, for a sure hit, use <see cref="GetMeasure(Helpers.IfcMeasures)"/></returns>
+        public static IfcMeasureInfo? GetMeasure(string ifcMeasureString)
         {
-            return IfcMeasures.Values.FirstOrDefault(x => x.IfcMeasure == type);
+            return IfcMeasures.Values.FirstOrDefault(x => x.IfcMeasure == ifcMeasureString);
         }
 
-        public static IfcMeasureInfo GetMeasure(IfcMeasures meas)
+        /// <summary>
+        /// Get the ifc measure metadata from the enum
+        /// </summary>
+        /// <param name="measure"></param>
+        /// <returns></returns>
+        public static IfcMeasureInfo GetMeasure(IfcMeasures measure)
         {
-            return IfcMeasures[meas.ToString()];
+            return IfcMeasures[measure.ToString()];
         }
 
         private static void SetTypeObject(SchemaInfo t, string topTypeObjectClass)
@@ -169,7 +182,9 @@ namespace Xbim.InformationSpecifications.Helpers
             return t;
         }
 
-
+        /// <summary>
+        /// Relation that allows to connect an available attribute to an entity
+        /// </summary>
         public enum ClassAttributeMode
         {
             /// <summary>
@@ -177,7 +192,7 @@ namespace Xbim.InformationSpecifications.Helpers
             /// </summary>
             ViaElement = 1,
             /// <summary>
-            /// The attribute is defined in the type that can be related to an IfcClass
+            /// The attribute is defined in the type that can be related to an Ifc Class
             /// </summary>
             ViaRelationType = 2,
         }
@@ -187,7 +202,13 @@ namespace Xbim.InformationSpecifications.Helpers
         /// </summary>
         public struct ClassRelationInfo
         {
+            /// <summary>
+            /// Class name
+            /// </summary>
             public string ClassName { get; set; }
+            /// <summary>
+            /// Mode of connection to the Class
+            /// </summary>
             public ClassAttributeMode Connection { get; set; }
         }
 
@@ -275,7 +296,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
         private static Dictionary<string, object>? _dicUnits;
 
-        public static bool TryGetUnit(string unit, [NotNullWhen(true)] out object? found)
+        internal static bool TryGetUnit(string unit, [NotNullWhen(true)] out object? found)
         {
             if (_dicUnits == null)
             {

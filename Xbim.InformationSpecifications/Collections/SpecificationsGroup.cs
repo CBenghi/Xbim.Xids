@@ -14,21 +14,56 @@ namespace Xbim.InformationSpecifications
     public partial class SpecificationsGroup : ISpecificationMetadata
     {
         // main properties
-        public string? Name { get; set; } // also in bS -> Title
+
+        /// <summary>
+        /// Optional name of the SpecificationsGroup, also in bS (Title)
+        /// </summary>
+        public string? Name { get; set; }
+        /// <summary>
+        /// Any optional copyright of the data, also in bS
+        /// </summary>
         public string? Copyright { get; set; } // bS
+        /// <summary>
+        /// Optional Version, expressed in a free string.
+        /// </summary>
         public string? Version { get; set; } // bS
+        /// <summary>
+        /// Optional Textual description
+        /// </summary>
         public string? Description { get; set; } // bS
+        /// <summary>
+        /// Optional author of the specifications
+        /// </summary>
         public string? Author { get; set; } // bS
+        /// <summary>
+        /// Optional date of editing
+        /// </summary>
         public DateTime? Date { get; set; } // bS
+        /// <summary>
+        /// Optional Purpose of the document, expressed as a string
+        /// </summary>
         public string? Purpose { get; set; }// bS
+        /// <summary>
+        /// Relevant optional project milestone
+        /// </summary>
         public string? Milestone { get; set; }// bS
 
-        // useful for LOIN
+        /// <summary>
+        /// Property is needed for Data editing, but for presentation, prefer the <see cref="GetProvider()"/> method.
+        /// </summary>
         public string? Provider { get; set; }
+        /// <summary>
+        /// Property is needed for Data editing, but for presentation, prefer the <see cref="GetConsumers()"/> method
+        /// </summary>
         public List<string>? Consumers { get; set; }
+        /// <summary>
+        /// Property is needed for Data editing, but for presentation, prefer the <see cref="GetStages()"/> method
+        /// </summary>
         public List<string>? Stages { get; set; }
 
-        // now the hierarchycal data
+        /// <summary>
+        /// The set of specifications in the group.
+        /// </summary>
         public List<Specification> Specifications { get; set; } = new List<Specification>();
 
         internal IEnumerable<FacetGroup> UsedFacetGroups()
@@ -61,6 +96,24 @@ namespace Xbim.InformationSpecifications
                     }
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public string? GetProvider()
+        {
+            return Provider;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<string>? GetConsumers()
+        {
+            return Consumers;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<string>? GetStages()
+        {
+            return Stages;
         }
     }
 }

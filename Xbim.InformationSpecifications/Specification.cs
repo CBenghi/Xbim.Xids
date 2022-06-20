@@ -7,18 +7,43 @@ using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Closed list of Schema names
+    /// </summary>
     public enum IfcSchemaVersion
     {
+        /// <summary>
+        /// When no information is defined
+        /// </summary>
         Undefined,
+        /// <summary>
+        /// Ifc2x3 Schema
+        /// </summary>
         IFC2X3,
+        /// <summary>
+        /// Ifc4 schema
+        /// </summary>
         IFC4,
+        /// <summary>
+        /// Ifc4x3 schema
+        /// </summary>
         IFC4X3,
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class Specification : ISpecificationMetadata
     {
         private Xids ids;
 
+        /// <summary>
+        /// Only for persistence, use one of the other methods:
+        /// <see cref="Xids.PrepareSpecification(IEnumerable{IfcSchemaVersion}, FacetGroup?, FacetGroup?)"/>, 
+        /// <see cref="Xids.PrepareSpecification(IfcSchemaVersion, FacetGroup?, FacetGroup?)"/>, 
+        /// <see cref="Xids.PrepareSpecification(SpecificationsGroup, IfcSchemaVersion, FacetGroup?, FacetGroup?)"/>, 
+        /// <see cref="Xids.PrepareSpecification(SpecificationsGroup?, IEnumerable{IfcSchemaVersion}, FacetGroup?, FacetGroup?)"/>
+        /// </summary>
         [Obsolete("Only for persistence, use the Xids.NewSpecification() method, instead.")]
         public Specification()
         {
@@ -27,13 +52,24 @@ namespace Xbim.InformationSpecifications
             Cardinality = new SimpleCardinality();
         }
 
+        /// <summary>
+        /// Provides ways to constrain the the amount of entities related to the Specification
+        /// </summary>
         public ICardinality Cardinality { get; set; }
 
         [JsonIgnore]
-        SpecificationsGroup Parent { get; set; }
+        internal SpecificationsGroup Parent { get; set; }
 
+        /// <summary>
+        /// optional list of IFC versions compabile with the specification
+        /// </summary>
         public List<IfcSchemaVersion>? IfcVersion { get; set; } // bS
 
+        /// <summary>
+        /// Basic constructor
+        /// </summary>
+        /// <param name="ids">Defines the owning IDS for identifying other elements by guids</param>
+        /// <param name="parent">Owning specification group</param>
         public Specification(Xids ids, SpecificationsGroup parent)
         {
             this.ids = ids;
@@ -86,6 +122,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public List<string>? Stages { get; set; }
 
+        /// <inheritdoc />
         public IEnumerable<string> GetStages()
         {
             if (Stages != null && Stages.Any())
@@ -95,12 +132,22 @@ namespace Xbim.InformationSpecifications
             return Enumerable.Empty<string>();
         }
 
-        public string? Name { get; set; } // bS
-        public string? Description { get; set; } // bS
+        /// <summary>
+        /// Specification name is available also in buildingSmart format
+        /// </summary>
+        public string? Name { get; set; }
 
+        /// <summary>
+        /// Specification Description is available also in buildingSmart format
+        /// </summary>
+        public string? Description { get; set; } // bS
 
         private FacetGroup? applicability;
 
+        /// <summary>
+        /// Defines the subset of models that are affected by the specification.
+        /// It can be set also via the <see cref="ApplicabilityId"/> property.
+        /// </summary>
         [JsonIgnore]
         [AllowNull] // allows setting null, but always return not null
         public FacetGroup Applicability
@@ -116,6 +163,10 @@ namespace Xbim.InformationSpecifications
 
         private string? applicabilityId;
 
+
+        /// <summary>
+        /// Is the guid of the <see cref="Applicability"/> facet group.
+        /// </summary>
         [JsonPropertyName("Applicability")]
         public string? ApplicabilityId
         {
@@ -123,21 +174,60 @@ namespace Xbim.InformationSpecifications
             set => applicabilityId = value;
         }
 
+        /// <summary>
+        /// Optionally defines the requirements of the the subset of models that are affected by the specification.
+        /// It can be set also via the <see cref="RequirementId"/> property.
+        /// </summary>
         [JsonIgnore]
         public FacetGroup? Requirement { get; set; }
 
         private string? requirementId;
-
+        
+        /// <summary>
+        /// Gets or sets the reuquirement ID
+        /// </summary>
         [JsonPropertyName("Requirement")]
         public string? RequirementId
         {
             get => Requirement?.Guid?.ToString();
-            set => requirementId = value;
+            set
+            {
+                requirementId = value;
+                if (ids is not null)
+                {
+
+                }
+            }
         }
 
+        /// <summary>
+        /// Optional string providing instructions for the end users.
+        /// </summary>
         public string? Instructions { get; set; }
 
-        public string? Guid { get; set; }
+        private string? guid;
+
+        /// <summary>
+        /// Unique identification of the Specification
+        /// </summary>
+        public string Guid
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(guid))
+                {
+                    guid = System.Guid.NewGuid().ToString();
+                }
+                return guid!;
+            }
+
+            set
+            {
+                guid = value;
+            }
+        }
+
+        
 
         internal void SetExpectations(List<IFacet> fs)
         {
@@ -176,6 +266,8 @@ namespace Xbim.InformationSpecifications
         {
             if (!Applicability.IsValid())
                 return false;
+            if (!Cardinality.IsValid())
+                return false;
             if (
                 Cardinality.ExpectsRequirements
                 &&
@@ -187,19 +279,25 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
+        /// <summary>
+        /// The string returned from Short if no better information is available.
+        /// </summary>
+        public const string UnnamedString = "Unnamed";
+
+        /// <summary>
+        /// Short text description
+        /// </summary>
+        /// <returns>a meaningful string, or <see cref="UnnamedString"/> if no better information is available</returns>
         public string Short()
         {
             if (Name is not null && !string.IsNullOrWhiteSpace(Name))
                 return Name;
-            return "<Unnamed>";
+            return UnnamedString;
         }
 
         internal void SetIds(Xids unpersisted)
         {
             ids = unpersisted;
-            var t = unpersisted.GetFacetGroup(requirementId);
-            if (t != null)
-                Requirement = t;
             // collections
             var m = unpersisted.GetFacetGroup(applicabilityId);
             if (m != null)
@@ -207,9 +305,6 @@ namespace Xbim.InformationSpecifications
             var f = unpersisted.GetFacetGroup(requirementId);
             if (f != null)
                 Requirement = f;
-
-            if (Guid == null)
-                Guid = System.Guid.NewGuid().ToString();
         }
     }
 }

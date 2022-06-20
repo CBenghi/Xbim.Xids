@@ -31,7 +31,7 @@ namespace Xbim.InformationSpecifications.Helpers
                 {
                     DefaultIgnoreCondition = options.DefaultIgnoreCondition
                 };
-                var constraintConverter = new HeterogenousListConverter<IValueConstraint, List<IValueConstraint>>(
+                var constraintConverter = new HeterogenousListConverter<IValueConstraintComponent, List<IValueConstraintComponent>>(
                     (nameof(ExactConstraint), typeof(ExactConstraint)),
                     (nameof(PatternConstraint), typeof(PatternConstraint)),
                     (nameof(RangeConstraint), typeof(RangeConstraint)),

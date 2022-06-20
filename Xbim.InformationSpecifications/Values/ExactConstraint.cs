@@ -3,15 +3,27 @@ using System;
 
 namespace Xbim.InformationSpecifications
 {
-    public class ExactConstraint : IValueConstraint, IEquatable<ExactConstraint>
+    /// <summary>
+    /// A constraint component based on an exact value option
+    /// </summary>
+    public class ExactConstraint : IValueConstraintComponent, IEquatable<ExactConstraint>
     {
+        /// <summary>
+        /// Basic constructor setting an exact value.
+        /// The string is only evaluated as object upon checking <see cref="IsSatisfiedBy(object, ValueConstraint, bool, ILogger?)"/>
+        /// </summary>
+        /// <param name="value"></param>
         public ExactConstraint(string value)
         {
             Value = value;
         }
 
+        /// <summary>
+        /// String representation of the value to match
+        /// </summary>
         public string Value { get; set; }
 
+        /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (ignoreCase)
@@ -19,6 +31,7 @@ namespace Xbim.InformationSpecifications
             return Value.Equals(candiatateValue.ToString());
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (Value == null)
@@ -26,6 +39,7 @@ namespace Xbim.InformationSpecifications
             return $"Exact: '{Value}'";
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             if (Value != null)
@@ -33,11 +47,13 @@ namespace Xbim.InformationSpecifications
             return base.GetHashCode();
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return Equals(obj as ExactConstraint);
         }
 
+        /// <inheritdoc />
         public bool Equals(ExactConstraint? other)
         {
             if (other == null)
@@ -46,6 +62,7 @@ namespace Xbim.InformationSpecifications
             return (Value, true).Equals((other.Value, true));
         }
 
+        /// <inheritdoc />
         public string Short()
         {
             return Value;

@@ -36,7 +36,7 @@ namespace Xbim.InformationSpecifications
         [JsonIgnore]
         public int Count => collection.Count;
 
-        private List<FacetGroup> collection = new List<FacetGroup>();
+        private List<FacetGroup> collection = new();
 
         /// <summary>
         /// readonly collection, use other methods in this class to add/modify

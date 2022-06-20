@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         /// <summary>
         /// Capitalises the first character of a string.

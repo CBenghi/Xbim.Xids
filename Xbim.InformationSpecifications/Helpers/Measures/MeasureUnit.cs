@@ -14,11 +14,24 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
         /// Composition of the unit in the 7 fundamental units.
         /// </summary>
         public DimensionalExponents Exponent { get; }
+        /// <summary>
+        /// Conversion ratio between units
+        /// </summary>
         public double Ratio { get; } = 1;
+        /// <summary>
+        /// Any scale offset (used for temperature conversions)
+        /// </summary>
         public double Offset { get; } = 0;
 
+        /// <summary>
+        /// Evaluates if the Unit was correctly parsed during construction.
+        /// </summary>
         public bool IsValid { get; private set; } = true;
 
+        /// <summary>
+        /// Constructor requiring a valid unit string.
+        /// </summary>
+        /// <param name="unitString">the unit to evaluate conversion for, e.g. "lb/m2"</param>
         public MeasureUnit(string unitString)
         {
             Exponent = new DimensionalExponents();
@@ -41,6 +54,12 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                 Offset = 0;
         }
 
+        /// <summary>
+        /// Attempts conversion of the value to SI starting from the source unit
+        /// </summary>
+        /// <param name="valueSourceUnit">double value to convert</param>
+        /// <param name="valueSI">out value in SI units</param>
+        /// <returns>true if conversion is valid, false otherwise</returns>
         public bool TryConvertToSI(double valueSourceUnit, out double valueSI)
         {
             if (!IsValid)
@@ -52,6 +71,12 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
             return true;
         }
 
+        /// <summary>
+        /// Attempts conversion of the value to source unit starting from the SI 
+        /// </summary>
+        /// <param name="valueSI">double value in SI units</param>
+        /// <param name="valueSourceUnit">out double value converted</param>
+        /// <returns>true if conversion is valid, false otherwise</returns>
         public bool TryConvertFromSI(double valueSI, out double valueSourceUnit)
         {
             if (!IsValid)
