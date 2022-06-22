@@ -215,6 +215,13 @@ namespace Xbim.InformationSpecifications
         internal string ReadVersion { get { return _readVersion; } }
 
         /// <summary>
+        /// Sets a recognisable element in the json persistence.
+        /// </summary>
+#pragma warning disable CA1822 // Mark members as static, because it's useful for persistency in json
+        public string ContentType => "XIDS";
+#pragma warning restore CA1822 // Mark members as static
+
+        /// <summary>
         /// Version of the DLL, gets stored in the json persistence
         /// </summary>
         public string Version
