@@ -41,5 +41,13 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <returns></returns>
         bool IsValid();
+
+        /// <summary>
+        /// Evaluates if the cardinality is satisfied by the provided count
+        /// </summary>
+        /// <param name="count">the number to evaluate</param>
+        /// <returns>true if satisfied, false otherwise</returns>
+        bool IsSatisfiedBy(int count);
+        
     }
 }

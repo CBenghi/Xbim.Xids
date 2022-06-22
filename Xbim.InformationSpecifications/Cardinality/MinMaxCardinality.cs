@@ -10,6 +10,22 @@ namespace Xbim.InformationSpecifications.Cardinality
     public class MinMaxCardinality : ICardinality
     {
         /// <summary>
+        /// Default constructor, Min = 0, Max = unbounded
+        /// </summary>
+        public MinMaxCardinality()
+        {
+        }
+
+        /// <summary>
+        /// Specific value constructor
+        /// </summary>
+        public MinMaxCardinality(int Minimum, int? Maximum = null)
+        {
+            MinOccurs = Minimum;
+            MaxOccurs = Maximum;
+        }
+
+        /// <summary>
         /// The minimum cardinality.
         /// Defaults to 0 (optional).
         /// </summary>
@@ -86,6 +102,17 @@ namespace Xbim.InformationSpecifications.Cardinality
             if (!MaxOccurs.HasValue)
                 return true;
             return MaxOccurs >= MinOccurs;
+        }
+
+        /// <inheritdoc />
+        public bool IsSatisfiedBy(int count)
+        {
+            if (!MaxOccurs.HasValue)
+                return count >= MinOccurs;
+            return
+                count >= MinOccurs
+                &&
+                count <= MaxOccurs.Value;
         }
 
         /// <inheritdoc />

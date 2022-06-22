@@ -33,6 +33,22 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// </summary>
         public CardinalityEnum ApplicabilityCardinality { get; set; } = CardinalityEnum.Optional;
 
+        /// <summary>
+        /// Default constructor; <see cref="ApplicabilityCardinality"/> is set to Optional
+        /// </summary>
+        public SimpleCardinality()
+        {
+        }
+
+        /// <summary>
+        /// Known value constructor
+        /// </summary>
+        /// <param name="crd">The required cardinality enum</param>
+        public SimpleCardinality(CardinalityEnum crd)
+        {
+            ApplicabilityCardinality = crd;
+        }
+
         /// <inheritdoc />
         public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
 
@@ -69,6 +85,21 @@ namespace Xbim.InformationSpecifications.Cardinality
         {
             // SimpleCardinality is always valid
             return true;
+        }
+
+        /// <inheritdoc />
+        public bool IsSatisfiedBy(int count)
+        {
+            switch (ApplicabilityCardinality)
+            {
+                case CardinalityEnum.Optional:
+                    return true;
+                case CardinalityEnum.Required:
+                    return count > 0;
+                case CardinalityEnum.Prohibited:
+                    return count < 1;
+            }
+            return false;
         }
     }
 }
