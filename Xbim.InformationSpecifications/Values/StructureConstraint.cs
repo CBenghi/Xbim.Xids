@@ -293,5 +293,11 @@ namespace Xbim.InformationSpecifications
                 ret.Add($"is maximum {MaxLength.Value} characters long");
             return string.Join(" and ", ret.ToArray());
         }
+
+        /// <inheritdoc />
+        public bool IsValid(ValueConstraint context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Xbim.InformationSpecifications.FacetGroup;
 
 namespace Xbim.InformationSpecifications
@@ -140,23 +141,30 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public string? GetProvider()
+        public string GetProvider()
         {
-            return Provider;
+            if (!string.IsNullOrWhiteSpace(Provider))
+                return Provider!;
+            return parent.GetProvider();
         }
 
         /// <inheritdoc />
-        public IEnumerable<string>? GetConsumers()
+        public IEnumerable<string> GetConsumers()
         {
             if (Consumers != null)
                 return Consumers;
-            return null;
+            var temp = parent.GetConsumers();
+            if (temp != null)
+                return temp;
+            return Enumerable.Empty<string>();
         }
 
         /// <inheritdoc />
-        public IEnumerable<string>? GetStages()
+        public IEnumerable<string> GetStages()
         {
-            return Stages;
+            if (Stages is not null)
+                return Stages;
+            return parent.GetStages();
         }
 
         internal void SetParent(Xids newParent)

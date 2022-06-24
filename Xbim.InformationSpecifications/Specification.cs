@@ -87,13 +87,11 @@ namespace Xbim.InformationSpecifications
         /// Get the planned provider of the specification (direct or inherited) 
         /// </summary>
         /// <returns>A string identifying the provider</returns>
-        public string? GetProvider()
+        public string GetProvider()
         {
             if (!string.IsNullOrWhiteSpace(Provider))
-                return Provider;
-            if (Parent != null)
-                return Parent.Provider;
-            return Provider;
+                return Provider!;
+            return Parent.GetProvider();
         }
 
         /// <summary>
@@ -110,8 +108,9 @@ namespace Xbim.InformationSpecifications
         {
             if (Consumers != null)
                 return Consumers;
-            if (Parent?.Consumers != null)
-                return Parent.Consumers;
+            var temp = Parent.GetConsumers();
+            if (temp != null)
+                return temp;
             return Enumerable.Empty<string>();
         }
 
@@ -124,10 +123,11 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public IEnumerable<string> GetStages()
         {
-            if (Stages != null && Stages.Any())
+            if (Stages != null)
                 return Stages;
-            if (Parent?.Stages != null)
-                return Parent.Stages;
+            var temp = Parent.GetStages();
+            if (temp != null)
+                return temp;
             return Enumerable.Empty<string>();
         }
 

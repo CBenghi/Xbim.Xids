@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications
         /// Including value from the grouping inheritance.
         /// </summary>
         /// <returns>A string identifying the provider, can be null.</returns>
-        string? GetProvider();
+        string GetProvider();
 
         /// <summary>
         /// Identifies the party responsibile for providing the information (Optional)
@@ -54,7 +54,7 @@ namespace Xbim.InformationSpecifications
         /// Including values from the grouping inheritance.
         /// </summary>
         /// <returns>A list of strings identifying the consumers</returns>
-        IEnumerable<string>? GetConsumers();
+        IEnumerable<string> GetConsumers();
 
         /// <summary>
         /// Identifies the parties that will need the information (Optional)
@@ -66,14 +66,12 @@ namespace Xbim.InformationSpecifications
         /// Identifies the stages where the information will be needed (Optional)
         /// </summary>
         /// <returns>A list of strings identifying the consumers</returns>
-        IEnumerable<string>? GetStages();
+        IEnumerable<string> GetStages();
 
         /// <summary>
         /// Identifies the stages where the information will be needed (Optional)
         /// If set on any instance, it overrides any higher level setting.
         /// </summary>
         public IList<string>? Stages { get; set; }
-
-        // todo: add testing of the GetXXX functions.
     }
 }

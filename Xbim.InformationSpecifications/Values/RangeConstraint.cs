@@ -103,5 +103,13 @@ namespace Xbim.InformationSpecifications
 
             return string.Join(" and ", ret.ToArray());
         }
+
+
+        /// <inheritdoc />
+        public bool IsValid(ValueConstraint context)
+        {
+            // convert values to the background type if available then make sense if it's valid
+            throw new NotImplementedException();
+        }
     }
 }

@@ -23,6 +23,13 @@ namespace Xbim.InformationSpecifications
         /// <returns>a string</returns>
         string Short();
 
-        // todo: 2022 06 21 - add an IsValid method to the interface, e.g. patters and ranges can be invalid 
+        /// <summary>
+        /// Come constraints could be internally invalid. E.g. patters and ranges.
+        /// </summary>
+        /// <param name="context">The value constraint in which the validity is checked</param>
+        /// <returns>True if valid, false if invalid.</returns>
+        bool IsValid(ValueConstraint context);
+
+        
     }
 }

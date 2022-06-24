@@ -48,17 +48,15 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public string? GetProvider()
+        public string GetProvider()
         {
-            if (!string.IsNullOrWhiteSpace(Provider))
-                return Provider;
-            return Provider;
+            return Provider ?? "";
         }
 
         /// <inheritdoc />
         public IEnumerable<string> GetStages()
         {
-            if (Stages != null && Stages.Any())
+            if (Stages is not null)
                 return Stages;
             return Enumerable.Empty<string>();
         }

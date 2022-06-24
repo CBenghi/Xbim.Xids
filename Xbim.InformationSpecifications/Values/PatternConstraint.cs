@@ -174,5 +174,11 @@ namespace Xbim.InformationSpecifications
         {
             return $"matches the pattern: '{Pattern}'";
         }
+
+        /// <inheritdoc />
+        public bool IsValid(ValueConstraint context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

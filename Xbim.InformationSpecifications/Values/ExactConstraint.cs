@@ -10,9 +10,10 @@ namespace Xbim.InformationSpecifications
     {
         /// <summary>
         /// Basic constructor setting an exact value.
-        /// The string is only evaluated as object upon checking <see cref="IsSatisfiedBy(object, ValueConstraint, bool, ILogger?)"/>
+        /// The string is only evaluated as object upon checking 
+        /// <see cref="IsSatisfiedBy(object, ValueConstraint, bool, ILogger?)"/>
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">The value of the constraint, expressed as a string</param>
         public ExactConstraint(string value)
         {
             Value = value;
@@ -66,6 +67,13 @@ namespace Xbim.InformationSpecifications
         public string Short()
         {
             return Value;
+        }
+
+        /// <inheritdoc />
+        public bool IsValid(ValueConstraint context)
+        {
+            // todo: check that the value is compatible with basetype
+            throw new NotImplementedException();
         }
     }
 }
