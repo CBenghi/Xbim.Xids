@@ -41,15 +41,15 @@ namespace Xbim.InformationSpecifications.Tests
                 ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
                 CheckSchema(fileName, logg);
                 var loggerMock = new Mock<ILogger<BuildingSmartIDSLoadTests>>();
-                var loaded = Xids.ImportBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
-                loaded = Xids.ImportBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
+                var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+                loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
                 var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
                 var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
                 errorAndWarnings.Count().Should().Be(err, "mismatch with expected value");
                 CheckCounts(specificationsCount, facetGroupsCount, loaded);
                 loaded.ExportBuildingSmartIDS(outputFile);
                 CheckSchema(outputFile, logg);
-                var reloaded = Xids.ImportBuildingSmartIDS(outputFile);
+                var reloaded = Xids.LoadBuildingSmartIDS(outputFile);
                 CheckCounts(specificationsCount, facetGroupsCount, reloaded);
             }
             catch (Exception)

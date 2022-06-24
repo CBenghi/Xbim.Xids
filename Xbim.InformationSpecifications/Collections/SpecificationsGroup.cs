@@ -16,6 +16,27 @@ namespace Xbim.InformationSpecifications
         // main properties
 
         /// <summary>
+        /// Default parameterless constructor, prefer the <see cref="SpecificationsGroup(Xids)"/> constructor instead.
+        /// </summary>
+        [Obsolete("Used only for testing, prefer the SpecificationsGroup(Xids) constructor instead.")]
+        public SpecificationsGroup()
+        {
+            parent = new Xids();
+        }
+
+        internal Xids GetParent() => parent;
+
+
+        private Xids parent;
+        /// <summary>
+        /// Default parameterless constructor
+        /// </summary>
+        public SpecificationsGroup(Xids parent)
+        {
+            this.parent = parent;
+        }
+
+        /// <summary>
         /// Optional name of the SpecificationsGroup, also in bS (Title)
         /// </summary>
         public string? Name { get; set; }
@@ -55,16 +76,36 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Property is needed for Data editing, but for presentation, prefer the <see cref="GetConsumers()"/> method
         /// </summary>
-        public List<string>? Consumers { get; set; }
+        public IList<string>? Consumers { get; set; }
         /// <summary>
         /// Property is needed for Data editing, but for presentation, prefer the <see cref="GetStages()"/> method
         /// </summary>
-        public List<string>? Stages { get; set; }
+        public IList<string>? Stages { get; set; }
 
         /// <summary>
         /// The set of specifications in the group.
         /// </summary>
-        public List<Specification> Specifications { get; set; } = new List<Specification>();
+        public IList<Specification> Specifications { get; set; } = new List<Specification>();
+
+        private string? guid;
+
+        /// <inheritdoc />
+        public string Guid
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(guid))
+                {
+                    guid = System.Guid.NewGuid().ToString();
+                }
+                return guid!;
+            }
+
+            set
+            {
+                guid = value;
+            }
+        }
 
         internal IEnumerable<FacetGroup> UsedFacetGroups()
         {
@@ -107,13 +148,24 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public IEnumerable<string>? GetConsumers()
         {
-            return Consumers;
+            if (Consumers != null)
+                return Consumers;
+            return null;
         }
 
         /// <inheritdoc />
         public IEnumerable<string>? GetStages()
         {
             return Stages;
+        }
+
+        internal void SetParent(Xids newParent)
+        {
+            parent = newParent;
+            foreach (var spec in Specifications)
+            {
+                spec.SetParent(this);
+            }
         }
     }
 }

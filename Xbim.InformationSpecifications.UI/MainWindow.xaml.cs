@@ -20,7 +20,7 @@ namespace Xbim.InformationSpecifications
         {
             var d = new DirectoryInfo(".");
             Debug.WriteLine(d.FullName);
-            var ids = Xids.ImportBuildingSmartIDS(@"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\IDS_aachen_example.xml");
+            var ids = Xids.LoadBuildingSmartIDS(@"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\IDS_aachen_example.xml");
             DataContext = new ReqGrpVM(ids.SpecificationsGroups.FirstOrDefault(), ids);
         }
 

@@ -10,24 +10,24 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public class FacetGroupRepository
     {
-        private readonly Xids ids;
+        // private readonly Xids ids;
         /// <summary>
         /// Use only for persistence and testing, use <see cref="FacetGroupRepository(Xids)"/> instead
         /// </summary>
-        [Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
         [JsonConstructor]
         public FacetGroupRepository()
         {
-            ids = new Xids();
+            // ids = new Xids();
         }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="ids">a valid repository</param>
+        [Obsolete("Use only for persistence and testing, otherwise prefer other constructors")]
         public FacetGroupRepository(Xids ids)
         {
-            this.ids = ids;
+            // this.ids = ids;
         }
 
         /// <summary>

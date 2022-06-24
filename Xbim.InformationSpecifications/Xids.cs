@@ -27,7 +27,7 @@ namespace Xbim.InformationSpecifications
     /// <summary>
     /// Core class for the management of model specifications 
     /// </summary>
-    public partial class Xids // basic definition file
+    public partial class Xids // core definition file
     {
         /// <summary>
         /// Static helper method to determine whether the XIDS has information worth saving.
@@ -83,7 +83,7 @@ namespace Xbim.InformationSpecifications
             var destinationGroup = SpecificationsGroups.FirstOrDefault();
             if (destinationGroup == null)
             {
-                destinationGroup = new SpecificationsGroup();
+                destinationGroup = new SpecificationsGroup(this);
                 SpecificationsGroups.Add(destinationGroup);
             }
             return PrepareSpecification(destinationGroup, ifcVersion, applicability, requirement);
@@ -134,12 +134,12 @@ namespace Xbim.InformationSpecifications
                 destinationGroup = SpecificationsGroups.FirstOrDefault();
             if (destinationGroup == null)
             {
-                destinationGroup = new SpecificationsGroup();
+                destinationGroup = new SpecificationsGroup(this);
                 SpecificationsGroups.Add(destinationGroup);
             }
 
             // creates new specification
-            var t = new Specification(this, destinationGroup)
+            var t = new Specification(destinationGroup)
             {
                 Applicability = applicability,
                 Requirement = requirement,
@@ -164,7 +164,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public Xids()
         {
-            FacetRepository = new FacetGroupRepository(this);
+            FacetRepository = new FacetGroupRepository();
             _readVersion = "not read";
         }
 

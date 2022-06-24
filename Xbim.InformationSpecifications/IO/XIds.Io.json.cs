@@ -91,9 +91,9 @@ namespace Xbim.InformationSpecifications
         {
             if (unpersisted == null)
                 return null;
-            foreach (var spec in unpersisted.AllSpecifications())
+            foreach (var specG in unpersisted.SpecificationsGroups)
             {
-                spec.SetIds(unpersisted);
+                specG.SetParent(unpersisted);
             }
             foreach (var facetGroup in unpersisted.FacetRepository.Collection)
             {

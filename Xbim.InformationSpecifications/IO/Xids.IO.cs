@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications
             if (IsXidsJson(sourceFile, logger))
                 return Xids.LoadFromJson(sourceFile.FullName, logger);
             if (IsBsXml(sourceFile))
-                return Xids.ImportBuildingSmartIDS(sourceFile.FullName, logger);
+                return Xids.LoadBuildingSmartIDS(sourceFile.FullName, logger);
             return null;
         }
 

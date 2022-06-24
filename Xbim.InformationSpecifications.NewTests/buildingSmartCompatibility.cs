@@ -78,7 +78,7 @@ namespace Xbim.InformationSpecifications.Tests
             t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
             t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
 
-            var newGroup = new SpecificationsGroup();
+            var newGroup = new SpecificationsGroup(x);
             x.SpecificationsGroups.Add(newGroup);
 
             t = x.PrepareSpecification(newGroup, IfcSchemaVersion.IFC4);
@@ -110,7 +110,7 @@ namespace Xbim.InformationSpecifications.Tests
         public void FullSchemaImportTest(string fileName)
         {
             Validate(fileName);
-            var x = Xids.ImportBuildingSmartIDS(fileName);
+            var x = Xids.LoadBuildingSmartIDS(fileName);
             var exportedFile = Path.GetTempFileName();
 
             ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();

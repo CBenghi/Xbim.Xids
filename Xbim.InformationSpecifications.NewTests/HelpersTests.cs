@@ -97,7 +97,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         {
             var fSpec = @"bsFiles\IDS_wooden-windows.xml";
             // open the specs
-            var t = Xids.ImportBuildingSmartIDS(fSpec);
+            var t = Xids.LoadBuildingSmartIDS(fSpec);
             t.Should().NotBeNull("file should be able to load");
 
             var tmpFile = Path.GetTempFileName();

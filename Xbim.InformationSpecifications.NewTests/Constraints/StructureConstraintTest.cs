@@ -142,7 +142,7 @@ namespace Xbim.InformationSpecifications.Tests
             var tfn = Path.GetTempFileName();
             s.ExportBuildingSmartIDS(tfn);
 
-            var unpers = Xids.ImportBuildingSmartIDS(tfn);
+            var unpers = Xids.LoadBuildingSmartIDS(tfn);
             var fg = unpers.FacetGroups(FacetGroup.FacetUse.All).FirstOrDefault();
             var unpersF = fg.Facets.OfType<MaterialFacet>().First();
             return unpersF.Value;

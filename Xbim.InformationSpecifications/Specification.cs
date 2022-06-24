@@ -35,8 +35,8 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public partial class Specification : ISpecificationMetadata
     {
-        private Xids ids;
-
+        private Xids GetIds() => Parent.GetParent();
+        
         /// <summary>
         /// Only for persistence, use one of the other methods:
         /// <see cref="Xids.PrepareSpecification(IEnumerable{IfcSchemaVersion}, FacetGroup?, FacetGroup?)"/>, 
@@ -48,7 +48,7 @@ namespace Xbim.InformationSpecifications
         public Specification()
         {
             Parent = new SpecificationsGroup();
-            ids = new Xids();
+            // ids = new Xids();
             Cardinality = new SimpleCardinality();
         }
 
@@ -68,11 +68,10 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Basic constructor
         /// </summary>
-        /// <param name="ids">Defines the owning IDS for identifying other elements by guids</param>
         /// <param name="parent">Owning specification group</param>
-        public Specification(Xids ids, SpecificationsGroup parent)
+        /// 
+        public Specification(SpecificationsGroup parent)
         {
-            this.ids = ids;
             Parent = parent;
             Guid = System.Guid.NewGuid().ToString();
             Cardinality = new SimpleCardinality();
@@ -101,7 +100,7 @@ namespace Xbim.InformationSpecifications
         /// Used to set the consumers directly on this instance, otherwise inherited.
         /// Use <see cref="GetConsumers"/>.
         /// </summary>
-        public List<string>? Consumers { get; set; }
+        public IList<string>? Consumers { get; set; } 
 
         /// <summary>
         /// Get consumers of the specification (direct or inherited) 
@@ -109,7 +108,7 @@ namespace Xbim.InformationSpecifications
         /// <returns>A list of strings identifying the consumers</returns>
         public IEnumerable<string> GetConsumers()
         {
-            if (Consumers != null && Consumers.Any())
+            if (Consumers != null)
                 return Consumers;
             if (Parent?.Consumers != null)
                 return Parent.Consumers;
@@ -120,7 +119,7 @@ namespace Xbim.InformationSpecifications
         /// Used to set the stages directly on this instance, otherwise inherited.
         /// Use <see cref="GetStages"/>.
         /// </summary>
-        public List<string>? Stages { get; set; }
+        public IList<string>? Stages { get; set; }
 
         /// <inheritdoc />
         public IEnumerable<string> GetStages()
@@ -155,7 +154,7 @@ namespace Xbim.InformationSpecifications
             get
             {
                 if (applicability == null)
-                    applicability = new FacetGroup(ids.FacetRepository);
+                    applicability = new FacetGroup(GetIds().FacetRepository);
                 return applicability;
             }
             set => applicability = value;
@@ -193,9 +192,9 @@ namespace Xbim.InformationSpecifications
             set
             {
                 requirementId = value;
-                if (ids is not null)
+                if (GetIds() is not null)
                 {
-
+                    Requirement = GetIds().GetFacetGroup(value);
                 }
             }
         }
@@ -231,14 +230,14 @@ namespace Xbim.InformationSpecifications
 
         internal void SetExpectations(List<IFacet> fs)
         {
-            var existing = ids.GetFacetGroup(fs);
+            var existing = GetIds().GetFacetGroup(fs);
             if (existing != null)
             {
                 Requirement = existing;
                 return;
             }
             if (Requirement == null)
-                Requirement = new FacetGroup(ids.FacetRepository);
+                Requirement = new FacetGroup(GetIds().FacetRepository);
             foreach (var item in fs)
             {
                 Requirement.Facets.Add(item);
@@ -247,14 +246,14 @@ namespace Xbim.InformationSpecifications
 
         internal void SetFilters(List<IFacet> fs)
         {
-            var existing = ids.GetFacetGroup(fs);
+            var existing = GetIds().GetFacetGroup(fs);
             if (existing != null)
             {
                 Applicability = existing;
                 return;
             }
             if (Applicability == null)
-                Applicability = new FacetGroup(ids.FacetRepository);
+                Applicability = new FacetGroup(GetIds().FacetRepository);
             foreach (var item in fs)
             {
                 Applicability.Facets.Add(item);
@@ -295,14 +294,14 @@ namespace Xbim.InformationSpecifications
             return UnnamedString;
         }
 
-        internal void SetIds(Xids unpersisted)
+        internal void SetParent(SpecificationsGroup parent)
         {
-            ids = unpersisted;
+            Parent = parent;
             // collections
-            var m = unpersisted.GetFacetGroup(applicabilityId);
+            var m = GetIds().GetFacetGroup(applicabilityId);
             if (m != null)
                 Applicability = m;
-            var f = unpersisted.GetFacetGroup(requirementId);
+            var f = GetIds().GetFacetGroup(requirementId);
             if (f != null)
                 Requirement = f;
         }

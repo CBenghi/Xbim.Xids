@@ -6,6 +6,8 @@ namespace Xbim.InformationSpecifications.UI.VM
 {
     internal class ReqGrpVM : ViewModelBase
     {
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
         private readonly SpecificationsGroup requirementsCollection;
 
         private readonly Xids ids;

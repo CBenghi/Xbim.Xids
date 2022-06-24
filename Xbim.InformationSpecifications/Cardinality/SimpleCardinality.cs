@@ -90,16 +90,13 @@ namespace Xbim.InformationSpecifications.Cardinality
         /// <inheritdoc />
         public bool IsSatisfiedBy(int count)
         {
-            switch (ApplicabilityCardinality)
+            return ApplicabilityCardinality switch
             {
-                case CardinalityEnum.Optional:
-                    return true;
-                case CardinalityEnum.Required:
-                    return count > 0;
-                case CardinalityEnum.Prohibited:
-                    return count < 1;
-            }
-            return false;
+                CardinalityEnum.Optional => true,
+                CardinalityEnum.Required => count > 0,
+                CardinalityEnum.Prohibited => count < 1,
+                _ => false,
+            };
         }
     }
 }

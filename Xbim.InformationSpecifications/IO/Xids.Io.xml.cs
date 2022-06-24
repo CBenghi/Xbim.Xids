@@ -431,17 +431,35 @@ namespace Xbim.InformationSpecifications
         }
 #pragma warning restore IDE0060 // Remove unused parameter
 
+        /// <summary>
+        /// Should use <see cref="LoadBuildingSmartIDS(Stream, ILogger?)"/> instead.
+        /// </summary>
+        [Obsolete("Use LoadBuildingSmartIDS instead.")]
+        public static Xids? ImportBuildingSmartIDS(Stream stream, ILogger? logger = null)
+        { 
+            return LoadBuildingSmartIDS(stream, logger);
+        }
+    
 
         /// <summary>
         /// Attempts to unpersist an XIDS from a stream.
         /// </summary>
-        /// <param name="stream">The source stream to parse.</param>
+        /// <param name="stream">The XML source stream to parse.</param>
         /// <param name="logger">The logger to send any errors and warnings to.</param>
         /// <returns>an XIDS or null if it could not be read.</returns>
-        public static Xids? ImportBuildingSmartIDS(Stream stream, ILogger? logger = null)
+        public static Xids? LoadBuildingSmartIDS(Stream stream, ILogger? logger = null)
         {
             var t = XElement.Load(stream);
-            return ImportBuildingSmartIDS(t, logger);
+            return LoadBuildingSmartIDS(t, logger);
+        }
+
+        /// <summary>
+        /// Should use <see cref="LoadBuildingSmartIDS(string, ILogger?)"/> instead.
+        /// </summary>
+        [Obsolete("Use LoadBuildingSmartIDS instead.")]
+        public static Xids? ImportBuildingSmartIDS(string fileName, ILogger? logger = null)
+        {
+            return LoadBuildingSmartIDS(fileName, logger);
         }
 
         /// <summary>
@@ -450,7 +468,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="fileName">File name of the Xids to load</param>
         /// <param name="logger">The logger to send any errors and warnings to.</param>
         /// <returns>an XIDS or null if it could not be read.</returns>
-        public static Xids? ImportBuildingSmartIDS(string fileName, ILogger? logger = null)
+        public static Xids? LoadBuildingSmartIDS(string fileName, ILogger? logger = null)
         {
             if (!File.Exists(fileName))
             {
@@ -459,28 +477,37 @@ namespace Xbim.InformationSpecifications
                 return null;
             }
             var main = XElement.Parse(File.ReadAllText(fileName));
-            return ImportBuildingSmartIDS(main, logger);
+            return LoadBuildingSmartIDS(main, logger);
+        }
+
+        /// <summary>
+        /// Should use <see cref="LoadBuildingSmartIDS(XElement, ILogger?)"/> instead.
+        /// </summary>
+        [Obsolete("Use LoadBuildingSmartIDS instead.")]
+        public static Xids? ImportBuildingSmartIDS(XElement main, ILogger? logger = null)
+        {
+            return LoadBuildingSmartIDS(main, logger);
         }
 
         /// <summary>
         /// Attempts to unpersist an XIDS from an XML element.
         /// </summary>
-        /// <param name="main"></param>
-        /// <param name="logger"></param>
-        /// <returns></returns>
-        public static Xids? ImportBuildingSmartIDS(XElement main, ILogger? logger = null)
+        /// <param name="main">the IDS element to load.</param>
+        /// <param name="logger">the logging context</param>
+        /// <returns>an entire new XIDS of null on errors</returns>
+        public static Xids? LoadBuildingSmartIDS(XElement main, ILogger? logger = null)
         {
             if (main.Name.LocalName == "ids")
             {
                 var ret = new Xids();
-                var grp = new SpecificationsGroup();
+                var grp = new SpecificationsGroup(ret);
                 ret.SpecificationsGroups.Add(grp);
                 foreach (var sub in main.Elements())
                 {
                     var name = sub.Name.LocalName.ToLowerInvariant();
                     if (name == "specifications")
                     {
-                        AddSpecifications(ret, grp, sub, logger);
+                        AddSpecifications(grp, sub, logger);
                     }
                     else if (name == "info")
                     {
@@ -575,7 +602,7 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void AddSpecifications(Xids ids, SpecificationsGroup destGroup, XElement specifications, ILogger? logger)
+        private static void AddSpecifications(SpecificationsGroup destGroup, XElement specifications, ILogger? logger)
         {
             foreach (var elem in specifications.Elements())
             {
@@ -583,7 +610,7 @@ namespace Xbim.InformationSpecifications
                 switch (name)
                 {
                     case "specification":
-                        AddSpecification(ids, destGroup, elem, logger);
+                        AddSpecification(destGroup, elem, logger);
                         break;
                     default:
                         LogUnexpected(elem, specifications, logger);
@@ -592,9 +619,9 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void AddSpecification(Xids ids, SpecificationsGroup destGroup, XElement specificationElement, ILogger? logger)
+        private static void AddSpecification(SpecificationsGroup destGroup, XElement specificationElement, ILogger? logger)
         {
-            var ret = new Specification(ids, destGroup);
+            var ret = new Specification(destGroup);
             var cardinality = new MinMaxCardinality();
             destGroup.Specifications.Add(ret);
 
