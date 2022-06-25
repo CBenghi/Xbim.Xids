@@ -14,6 +14,23 @@ namespace Xbim.InformationSpecifications
         private Regex? compiledCaseInsensitiveRegex;
 
         private string pattern = string.Empty;
+        
+        /// <summary>
+        /// Default empty constructor, pattern is set to empty string
+        /// </summary>
+        public PatternConstraint()
+        {
+
+        }
+
+        /// <summary>
+        /// Fully qualified constructor 
+        /// </summary>
+        /// <param name="pattern">defines the <see cref="Pattern"/> of valid values</param>
+        public PatternConstraint(string pattern)
+        {
+            Pattern = pattern;
+        }
 
         /// <summary>
         /// Defines the patter for the evaluator
@@ -178,7 +195,9 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            throw new NotImplementedException();
+            if (pattern == null)
+                return false;
+            return IsValidPattern;
         }
     }
 }

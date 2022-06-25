@@ -58,7 +58,7 @@ namespace Xbim.InformationSpecifications.Generator
                     var t = daType.Type;
                     var abstractOrNot = t.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
 
-                    var ns = t.Namespace.Substring(5);
+                    var ns = t.Namespace[5..];
 
                     sb.AppendLine($@"				new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""),");
                 }

@@ -297,7 +297,27 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            throw new NotImplementedException();
+            if (MinLength.HasValue && MaxLength.HasValue // min && max available
+                && !(MaxLength.Value >= MinLength.Value)) // invalid case
+            {
+                return false;
+            }
+            if (Length.HasValue && MaxLength.HasValue // len && max available
+                && !(MaxLength.Value == Length.Value)) // invalid case
+            {
+                return false;
+            }
+            if (Length.HasValue && MinLength.HasValue // len && min available
+                && !(MinLength.Value == Length.Value)) // invalid case
+            {
+                return false;
+            }
+            if (TotalDigits.HasValue && FractionDigits.HasValue // tot && fraction available
+                && !(TotalDigits.Value >= FractionDigits.Value)) // invalid case
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -95,7 +95,6 @@ namespace Xbim.InformationSpecifications
             return IsSatisfiedBy(candiatateValue, true, logger);
         }
 
-
         static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
         {
             if (destType is null)
@@ -479,6 +478,24 @@ namespace Xbim.InformationSpecifications
                 AcceptedValues = new List<IValueConstraintComponent>() { new ExactConstraint(content) }
             };
             return ret;
+        }
+
+        /// <summary>
+        /// Determines if the the constraint is correctly formed
+        /// </summary>
+        /// <returns>True if the instance is valid, false otherwise</returns>
+        public bool IsValid()
+        {
+            // Todo: idstalk: is empty AcceptedValues valid?
+            if (AcceptedValues is not null)
+            {
+                foreach (var item in AcceptedValues)
+                {
+                    if (!item.IsValid(this))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

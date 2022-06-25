@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Xbim.InformationSpecifications
 {
@@ -9,6 +10,29 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public class RangeConstraint : IValueConstraintComponent, IEquatable<RangeConstraint>
     {
+        /// <summary>
+        /// Default empty contructor
+        /// </summary>
+        public RangeConstraint()
+        {
+
+        }
+
+        /// <summary>
+        /// Fully specified constructor
+        /// </summary>
+        /// <param name="minValue">The optional minimum value</param>
+        /// <param name="minInclusive">Is the minimum value included in the range</param>
+        /// <param name="maxValue">The optional maximum value</param>
+        /// <param name="maxInclusive">Is the maximum value included in the range</param>
+        public RangeConstraint(string? minValue, bool minInclusive, string? maxValue, bool maxInclusive)
+        {
+            MinValue = minValue;
+            MinInclusive = minInclusive;
+            MaxValue = maxValue;
+            MaxInclusive = maxInclusive;
+        }
+
         /// <summary>
         /// String representation of the minimum value
         /// </summary>
@@ -108,8 +132,32 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            // convert values to the background type if available then make sense if it's valid
-            throw new NotImplementedException();
+            var min = ValueConstraint.GetObject(MinValue, context.BaseType);
+            var max = ValueConstraint.GetObject(MaxValue, context.BaseType);
+
+            // values need to be succesfully converted
+            if (min is null && !string.IsNullOrEmpty(MinValue))
+                return false;
+            if (max is null && !string.IsNullOrEmpty(MaxValue))
+                return false;
+
+            // values that exist must be comparable
+            if (min is not IComparable minCmp)
+                return false;
+            if (max is not IComparable maxCmp)
+                return false;
+
+            if (min is not null && max is not null)
+            {
+                // if both values are available they need to be meaningful (max > min)
+                if (!MinInclusive && !MaxInclusive)
+                {
+                    return maxCmp.CompareTo(minCmp) > 0;
+                }
+                return maxCmp.CompareTo(minCmp) >= 0;
+            }
+
+            return true;
         }
     }
 }

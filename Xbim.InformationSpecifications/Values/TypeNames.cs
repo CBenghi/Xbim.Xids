@@ -245,9 +245,11 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="value">The value to parse</param>
         /// <param name="typeName">The destination type required</param>
-        /// <returns>Null if parsing or conversion are not succesful</returns>
+        /// <returns>Null if parsing or conversion are not succesful, a nullable string in case of undefined type</returns>
 		public static object? GetObject(string? value, NetTypeName typeName)
         {
+            if (string.IsNullOrEmpty(value))
+                return null;
             switch (typeName)
             {
                 case NetTypeName.Undefined:

@@ -79,8 +79,8 @@ namespace Xbim.InformationSpecifications.Generator
             while (m.Success)
             {
                 var value = m.Value.Replace("minOccurs maxOccurs", replaceOptions[i++ % replaceOptions.Length]);
-                var prev = inst.Substring(0, m.Index);
-                var post = inst.Substring(m.Index + m.Value.Length);
+                var prev = inst[..m.Index];
+                var post = inst[(m.Index + m.Value.Length)..];
                 inst = prev + value + post;
                 m = r.Match(inst);
             }

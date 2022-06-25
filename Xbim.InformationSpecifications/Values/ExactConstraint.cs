@@ -72,8 +72,11 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            // todo: check that the value is compatible with basetype
-            throw new NotImplementedException();
+            var v = ValueConstraint.GetObject(Value, context.BaseType);
+            // values need to be succesfully converted
+            if (v is null && !string.IsNullOrEmpty(Value))
+                return false;
+            return true;
         }
     }
 }

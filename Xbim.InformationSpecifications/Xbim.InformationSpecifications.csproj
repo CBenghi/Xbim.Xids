@@ -19,7 +19,7 @@
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<AssemblyVersion>0.3.9</AssemblyVersion>
+		<AssemblyVersion>0.3.10</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
@@ -34,6 +34,18 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>XbimOpenSourceKeyFile.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
+	  <NoWarn>1701;1702</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="Helpers\NullableHelper.cs" />

@@ -86,9 +86,9 @@ namespace Xbim.InformationSpecifications.Generator
             string indent = "";
             var search = typeType.Name;
             if (search.EndsWith("Type"))
-                search = search.Substring(0, search.Length - 4);
+                search = search[..^4]; // ^4 is 4 from the end
             else if (search.EndsWith("Style"))
-                search = search.Substring(0, search.Length - 5);
+                search = search[..^5]; // ^5 is 5 from the end
             else
             {
                 Debug.WriteLine($"{indent}Skipped: {search}");
