@@ -50,8 +50,7 @@ namespace Xbim.InformationSpecifications
         /// always valid (see <see cref="IFacet.IsValid"/>).
 		public bool IsValid()
         {
-            // an empty one just means should have a material
-            return true;
+            return FacetBase.IsValidButOptional(Value);
         }
     }
 }

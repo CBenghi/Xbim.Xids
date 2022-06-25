@@ -107,12 +107,20 @@ namespace Xbim.InformationSpecifications
         /// <returns>true if valid</returns>
         public bool IsValid()
         {
-            // at least one field is not empty
-            return ValueConstraint.IsNotEmpty(DocId) ||
-                ValueConstraint.IsNotEmpty(DocName) ||
-                ValueConstraint.IsNotEmpty(DocLocation) ||
-                ValueConstraint.IsNotEmpty(DocPurpose) ||
-                ValueConstraint.IsNotEmpty(DocIntendedUse);
+
+            return
+                (// at least one field is not empty
+                    ValueConstraint.IsNotEmpty(DocId) ||
+                    ValueConstraint.IsNotEmpty(DocName) ||
+                    ValueConstraint.IsNotEmpty(DocLocation) ||
+                    ValueConstraint.IsNotEmpty(DocPurpose) ||
+                    ValueConstraint.IsNotEmpty(DocIntendedUse)
+                ) // but they are all valid, if defined
+                && FacetBase.IsValidButOptional(DocId)
+                && FacetBase.IsValidButOptional(DocName)
+                && FacetBase.IsValidButOptional(DocLocation)
+                && FacetBase.IsValidButOptional(DocPurpose)
+                && FacetBase.IsValidButOptional(DocIntendedUse);
         }
     }
 }

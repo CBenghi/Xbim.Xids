@@ -180,7 +180,8 @@ namespace Xbim.InformationSpecifications
         /// <returns>true if valid</returns>
         public bool IsValid()
         {
-            return GetEntity() != Container.Undefined;
+            return GetEntity() != Container.Undefined
+                && FacetBase.IsValidButOptional(EntityName);
         }
 
         /// <inheritdoc />

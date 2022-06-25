@@ -86,7 +86,8 @@ namespace Xbim.InformationSpecifications
         {
             // if we assume that all empty means that it's enough to have any classification
             // then the facet is always valid.
-            return true;
+            return FacetBase.IsValidButOptional(ClassificationSystem)
+                   && FacetBase.IsValidButOptional(Identification);
         }
     }
 }

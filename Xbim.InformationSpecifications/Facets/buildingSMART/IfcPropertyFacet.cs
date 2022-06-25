@@ -96,11 +96,10 @@ namespace Xbim.InformationSpecifications
         [MemberNotNullWhen(true, nameof(PropertyName))]
         public bool IsValid()
         {
-            if (FacetBase.IsNullOrEmpty(PropertySetName))
-                return false;
-            if (FacetBase.IsNullOrEmpty(PropertyName))
-                return false;
-            return true;
+            return
+                FacetBase.IsValidAndNotEmpty(PropertySetName)
+                && FacetBase.IsValidAndNotEmpty(PropertyName)
+                && FacetBase.IsValidButOptional(PropertyValue);
         }
     }
 }

@@ -78,9 +78,8 @@ namespace Xbim.InformationSpecifications
         [MemberNotNullWhen(true, nameof(IfcType))]
         public bool IsValid()
         {
-            if (FacetBase.IsNullOrEmpty(IfcType))
-                return false;
-            return true;
+            return FacetBase.IsValidAndNotEmpty(IfcType)
+                && FacetBase.IsValidButOptional(PredefinedType);
         }
     }
 }

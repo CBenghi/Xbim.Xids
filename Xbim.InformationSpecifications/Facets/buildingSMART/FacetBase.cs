@@ -53,5 +53,41 @@ namespace Xbim.InformationSpecifications
         {
             return ToString().GetHashCode();
         }
+
+        /// <summary>
+        /// Requires the passed <paramref name="constraint"/> to be not null and valid
+        /// </summary>
+        /// <param name="constraint">The constraint to test</param>
+        /// <returns>True if constraint is not null and valid</returns>
+        protected static bool IsValid(ValueConstraint? constraint)
+        {
+            if (constraint is null)
+                return false;
+            return constraint.IsValid();
+        }
+
+        /// <summary>
+        /// Requires the passed <paramref name="constraint"/> to be not null, not empty and valid
+        /// </summary>
+        /// <param name="constraint">The constraint to test</param>
+        /// <returns>True if constraint is not null and valid</returns>
+        protected static bool IsValidAndNotEmpty(ValueConstraint? constraint)
+        {
+            if (constraint is null)
+                return false;
+            return constraint.IsValid();
+        }
+
+        /// <summary>
+        /// Requires the passed <paramref name="constraint"/> to be either null or valid
+        /// </summary>
+        /// <param name="constraint">The constraint to test</param>
+        /// <returns>True if constraint is either null or valid</returns>
+        protected static bool IsValidButOptional(ValueConstraint? constraint)
+        {
+            if (constraint is null)
+                return true;
+            return constraint.IsValid();
+        }
     }
 }
