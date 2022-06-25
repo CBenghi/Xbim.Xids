@@ -226,7 +226,8 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        
+        /// <inheritdoc />
+        public SpecificationLevel Level => SpecificationLevel.SingleSpecification;
 
         internal void SetExpectations(List<IFacet> fs)
         {
@@ -279,19 +280,14 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// The string returned from Short if no better information is available.
-        /// </summary>
-        public const string UnnamedString = "Unnamed";
-
-        /// <summary>
         /// Short text description
         /// </summary>
-        /// <returns>a meaningful string, or <see cref="UnnamedString"/> if no better information is available</returns>
+        /// <returns>a the name string if defined, or the valid GUID</returns>
         public string Short()
         {
             if (Name is not null && !string.IsNullOrWhiteSpace(Name))
                 return Name;
-            return UnnamedString;
+            return Guid;
         }
 
         internal void SetParent(SpecificationsGroup parent)

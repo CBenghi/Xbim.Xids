@@ -60,5 +60,16 @@ namespace Xbim.InformationSpecifications
                 return Stages;
             return Enumerable.Empty<string>();
         }
+
+        /// <inheritdoc />
+        public string Short()
+        {
+            if (Name is not null && !string.IsNullOrWhiteSpace(Name))
+                return Name;
+            return Guid;
+        }
+
+        /// <inheritdoc />
+        public SpecificationLevel Level => SpecificationLevel.SpecificationRepository;
     }
 }

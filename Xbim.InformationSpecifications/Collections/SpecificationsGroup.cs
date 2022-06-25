@@ -108,6 +108,9 @@ namespace Xbim.InformationSpecifications
             }
         }
 
+        /// <inheritdoc />
+        public SpecificationLevel Level => SpecificationLevel.SpecificationGroup;
+
         internal IEnumerable<FacetGroup> UsedFacetGroups()
         {
             foreach (var spec in Specifications)
@@ -174,6 +177,14 @@ namespace Xbim.InformationSpecifications
             {
                 spec.SetParent(this);
             }
+        }
+
+        /// <inheritdoc />
+        public string Short()
+        {
+            if (Name is not null && !string.IsNullOrWhiteSpace(Name))
+                return Name;
+            return Guid;
         }
     }
 }

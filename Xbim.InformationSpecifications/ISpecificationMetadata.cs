@@ -3,25 +3,6 @@
 namespace Xbim.InformationSpecifications
 {
     /// <summary>
-    /// the hierarchical level of classes implementing <see cref="ISpecificationMetadata"/>
-    /// </summary>
-    public enum SpecificationContextType
-    {
-        /// <summary>
-        /// The level of a <see cref="Xids"/> (2nd order group)
-        /// </summary>
-        SpecificationRepository,
-        /// <summary>
-        /// The level of <see cref="SpecificationsGroup"/> (1st order group)
-        /// </summary>
-        SpecificationGroup,
-        /// <summary>
-        /// The level of a single <see cref="Specification"/> (operational level)
-        /// </summary>
-        SingleSpecification
-    }
-
-    /// <summary>
     /// LOIN related Specification metadata
     /// </summary>
     public interface ISpecificationMetadata
@@ -73,5 +54,17 @@ namespace Xbim.InformationSpecifications
         /// If set on any instance, it overrides any higher level setting.
         /// </summary>
         public IList<string>? Stages { get; set; }
+
+        /// <summary>
+        /// Short description to allow the identification of the spec.
+        /// </summary>
+        /// <returns>A non empty string</returns>
+        public string Short();
+
+        /// <summary>
+        /// Returns the hierarchical level of the specificaiton.
+        /// </summary>
+        SpecificationLevel Level { get; }
+
     }
 }
