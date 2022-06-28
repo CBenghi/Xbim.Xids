@@ -15,7 +15,7 @@
         /// <summary>
         /// basic constructor
         /// </summary>
-        public IfcMeasureInfo(string id, string measure, string description, string unit, string symbol, string exponents, string[] concrete)
+        public IfcMeasureInfo(string id, string measure, string description, string unit, string symbol, string exponents, string[] concrete, string unitTypeEnum)
         {
             ID = id;
             IfcMeasure = measure;
@@ -24,6 +24,7 @@
             UnitSymbol = symbol;
             Exponents = DimensionalExponents.FromString(exponents);
             ConcreteClasses = concrete;
+            UnitTypeEnum = unitTypeEnum;
         }
 
         /// <summary>
@@ -56,6 +57,10 @@
         /// </summary>
         public string[] ConcreteClasses { get; }
 
+        /// <summary>
+        /// The string value of the UnitType enum of a valid matching unit
+        /// </summary>
+        public string UnitTypeEnum { get; }
 
         /// <summary>
         /// Retuns the SI preferred unit.

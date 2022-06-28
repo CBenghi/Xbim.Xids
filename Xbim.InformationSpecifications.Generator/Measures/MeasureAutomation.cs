@@ -154,10 +154,40 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                 meta.Add(metaD);
             }
 
+            var allUnits = GetSchemaUnits();
+
             MeasureCollection mCollection = new(GetFromDocumentation().Concat(ExtraMeaures()));
             foreach (var measure in mCollection.MeasureList)
             {
                 var concreteClasses = new List<string>();
+                var expectedUnitsTypes = new[] {
+                    measure.Key.ToUpperInvariant() + "UNIT",
+                    //measure.Key.ToUpperInvariant() + "VALUEUNIT",
+                    //"THERMODYNAMIC" + measure.Key.ToUpperInvariant() + "UNIT",
+                    };
+                // special cases
+                //
+                if (measure.Key == "Speed")
+                    expectedUnitsTypes = new[] { "LINEARVELOCITYUNIT" }; 
+                else if (measure.Key == "ThermalConductivity")
+                    expectedUnitsTypes = new[] { "THERMALCONDUCTANCEUNIT" };                
+                else if (measure.Key == "Heating")
+                    expectedUnitsTypes = new[] { "HEATINGVALUEUNIT" };
+                else if (measure.Key == "Temperature")
+                    expectedUnitsTypes = new[] { "THERMODYNAMICTEMPERATUREUNIT"};
+                else if (measure.Key == "Angle")
+                    expectedUnitsTypes = new[] { "PLANEANGLEUNIT" };
+
+                var expectedUnitType = "";
+                foreach (var item in expectedUnitsTypes)
+                {
+                    if (allUnits.Contains(item))
+                    {
+                        expectedUnitType = item;
+                        break;
+                    }
+                }
+                
                 var ifcType = measure.IfcMeasure;
                 if (ifcType != null)
                 {
@@ -173,13 +203,21 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         }
                     }
                 }
-                sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {NewStringArray(concreteClasses.ToArray())}) }},");
+                sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {NewStringArray(concreteClasses.ToArray())}, \"{expectedUnitType}\") }},");
             }
 
             source = source.Replace($"\t\t\t<PlaceHolder>\r\n", sb.ToString());
             return source;
         }
 
+        private static IList<string> GetSchemaUnits()
+        {
+            var all = Enum.GetValues<Ifc2x3.MeasureResource.IfcDerivedUnitEnum>().Select(x => x.ToString());
+            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcDerivedUnitEnum>().Select(x => x.ToString()));
+            all = all.Union(Enum.GetValues<Ifc2x3.MeasureResource.IfcUnitEnum>().Select(x => x.ToString()));
+            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcUnitEnum>().Select(x => x.ToString()));
+            return all.Distinct().OrderBy(x=>x).ToList();
+        }
 
         public static string Execute_GenerateIfcMeasureEnum()
         {
@@ -212,6 +250,25 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         {
             yield return new Measure() { Key = "String" };
             yield return new Measure() { Key = "Number" };
+        }
+
+
+        /// <summary>
+        /// ensures that the measure helpers are fully populated
+        /// </summary>
+        /// <returns>False if no warnings</returns>
+        public static bool Execute_CheckMeasureMetadata()
+        {
+            foreach (var measVal in SchemaInfo.IfcMeasures.Values)
+            {
+                if (measVal.ID == "String")
+                    continue;
+                if (measVal.ID == "Number")
+                    continue;
+                if (measVal.UnitTypeEnum == "")
+                    Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.ID}' lacks UnitType for {measVal.IfcMeasure}.");
+            }
+            return false;
         }
 
         /// <summary>

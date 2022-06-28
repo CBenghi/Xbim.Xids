@@ -86,10 +86,13 @@ namespace Xbim.InformationSpecifications.Generator
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.GeneratedRelTypes.cs");
             File.WriteAllText(dest, tRelTypeGen);
 
+            // QA analysis 
+            MeasureAutomation.Execute_CheckMeasureMetadata();
             if (MeasureAutomation.Execute_CheckMeasureEnumeration())
             {
                 Message(ConsoleColor.Red, "Errors in measure helpers, try running again once, it might get fixed by code generation.");
             }
+
             Message(ConsoleColor.DarkGreen, "Completed");
         }
 
