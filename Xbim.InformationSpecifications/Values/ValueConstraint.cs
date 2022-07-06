@@ -42,7 +42,19 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// The list of accepted values
+        /// Cheks that there's at list one entry in the non-null list of accepted values.
+        /// </summary>
+        /// <returns>True if the list is not null and not empty</returns>
+        [MemberNotNullWhen(true, nameof(AcceptedValues))]
+        public bool HasAnyAcceptedValue()
+        {
+            if (AcceptedValues is null)
+                return false;
+            return AcceptedValues.Any();
+        }
+
+        /// <summary>
+        /// The list of accepted values, use <see cref="HasAnyAcceptedValue"/> to check for content
         /// </summary>
         public List<IValueConstraintComponent>? AcceptedValues { get; set; }
 

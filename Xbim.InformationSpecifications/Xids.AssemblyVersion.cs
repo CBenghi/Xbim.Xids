@@ -5,6 +5,6 @@
         /// <summary>
         /// Static field to hardcode the DLL version number.
         /// </summary>
-        public static string AssemblyVersion => "0.3.14";
+        public static string AssemblyVersion => "0.3.15";
     }
 }
