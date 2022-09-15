@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
@@ -183,7 +184,7 @@ namespace Xbim.InformationSpecifications
                 var opts = spec.Requirement.RequirementOptions;
                 for (int i = 0; i < spec.Requirement.Facets.Count; i++)
                 {
-                    var option = GetProgressive(opts, i, RequirementOptions.Expected);
+                    var option = GetProgressive(opts, i, RequirementCardinalityOptions.Expected);
                     IFacet? item = spec.Requirement.Facets[i];
                     Xids.ExportBuildingSmartIDS(item, xmlWriter, true, logger, spec.Requirement, option);
                 }
@@ -192,7 +193,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private RequirementOptions GetProgressive(ObservableCollection<RequirementOptions>? opts, int i, RequirementOptions defaultValue)
+        static private RequirementCardinalityOptions GetProgressive(ObservableCollection<RequirementCardinalityOptions>? opts, int i, RequirementCardinalityOptions defaultValue)
         {
             if (opts is null)
                 return defaultValue;
@@ -201,7 +202,7 @@ namespace Xbim.InformationSpecifications
             return opts[i];
         }
 
-        private static void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementOptions? requirementOption = null)
+        private static void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementCardinalityOptions? requirementOption = null)
         {
             switch (item)
             {
@@ -246,22 +247,11 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
-                    if (forRequirement)
-                    {
-                        xmlWriter.WriteStartElement("partOf", IdsNamespace);
-                        WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
-                        xmlWriter.WriteAttributeString("entity", pof.Entity.ToString());
-                        if (ValueConstraint.IsNotEmpty(pof.EntityName))
-                        {
-                            LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName), forRequirement);
-                        }
-                        xmlWriter.WriteEndElement();
-                    }
-                    else
-                    {
-                        // partOf is not supported for applicability in bS
-                        LogDataLoss(logger, context, pof, nameof(PartOfFacet.EntityName), forRequirement);
-                    }
+                    xmlWriter.WriteStartElement("partOf", IdsNamespace);
+                    WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
+                    xmlWriter.WriteAttributeString("relation", pof.EntityRelation.ToString());
+                    WriteConstraintValue(pof.EntityType, xmlWriter, "entity", logger);
+                    xmlWriter.WriteEndElement();                    
                     break;
                 default:
                     logger?.LogWarning($"todo: missing case for {item.GetType()}.");
@@ -374,12 +364,12 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementOptions? option)
+        static private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
         {
             if (forRequirement)
             {
                 if (!option.HasValue)
-                    option = RequirementOptions.Expected; // should be redundant, but makes some be not null
+                    option = RequirementCardinalityOptions.Expected; // should be redundant, but makes some be not null
 
                 if (
                     cf is IfcPropertyFacet ||
@@ -389,11 +379,11 @@ namespace Xbim.InformationSpecifications
                     // use is required
                     switch (option.Value)
                     {
-                        case RequirementOptions.Prohibited:
+                        case RequirementCardinalityOptions.Prohibited:
                             xmlWriter.WriteAttributeString("minOccurs", "0");
                             xmlWriter.WriteAttributeString("maxOccurs", "0");
                             break;
-                        case RequirementOptions.Expected:
+                        case RequirementCardinalityOptions.Expected:
                             xmlWriter.WriteAttributeString("minOccurs", "1");
                             xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
                             break;
@@ -402,13 +392,10 @@ namespace Xbim.InformationSpecifications
                             break;
                     }
                 }
-
-                if (cf is not PartOfFacet)
-                {
-                    // instruction is optional
-                    if (!string.IsNullOrWhiteSpace(cf.Instructions))
-                        xmlWriter.WriteAttributeString("instructions", cf.Instructions);
-                }
+                // instruction is optional
+                if (!string.IsNullOrWhiteSpace(cf.Instructions))
+                    xmlWriter.WriteAttributeString("instructions", cf.Instructions);
+                
             }
 
             if (
@@ -691,8 +678,8 @@ namespace Xbim.InformationSpecifications
                             if (fs.Any())
                             {
                                 ret.SetExpectations(fs);
-                                if (options.Any(x => x != RequirementOptions.Expected))
-                                    ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementOptions>(options);
+                                if (options.Any(x => x != RequirementCardinalityOptions.Expected))
+                                    ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(options);
                             }
                             break;
                         }
@@ -704,7 +691,7 @@ namespace Xbim.InformationSpecifications
             ret.Cardinality = cardinality.Simplify();
         }
 
-        private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementOptions opt)
+        private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
             MaterialFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -741,11 +728,60 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger);
+            opt = mmax.Evaluate(elem, logger); // from material
             return ret;
         }
 
-        private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementOptions opt)
+        private static IFacet? GetPartOf(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        {
+            PartOfFacet? ret = null;
+            foreach (var sub in elem.Elements())
+            {
+                var locName = sub.Name.LocalName.ToLowerInvariant();
+                switch (locName)
+                {
+                    case "entity":
+                        ret ??= new PartOfFacet();
+                        ret.EntityType = GetConstraint(sub, logger);
+                        break;
+                    default:
+                        LogUnexpected(sub, elem, logger);
+                        break;
+                }
+            }
+            var mmax = new BsMinMaxOccur();
+            foreach (var attribute in elem.Attributes())
+            {
+
+                if (IsBaseAttribute(attribute))
+                {
+                    ret ??= new PartOfFacet();
+                    GetBaseAttribute(attribute, ret, logger);
+                }
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                {
+                    // nothing to do, IsRelevant takes care of mmax
+                }
+                else
+                {
+                    var locName = attribute.Name.LocalName.ToLowerInvariant();
+                    switch (locName)
+                    {
+                        case "relation":
+                            ret ??= new PartOfFacet();
+                            ret.EntityRelation = attribute.Value;
+                            break;
+                        default:
+                            LogUnexpected(attribute, elem, logger);
+                            break;
+                    }
+                }
+            }
+            opt = mmax.Evaluate(elem, logger); // from partOf
+            return ret;
+        }
+
+        private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
             IfcPropertyFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -802,7 +838,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger);
+            opt = mmax.Evaluate(elem, logger); // from property
             return ret;
         }
 
@@ -987,14 +1023,14 @@ namespace Xbim.InformationSpecifications
             return null;
         }
 
-        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, out IEnumerable<RequirementOptions> options)
+        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, out IEnumerable<RequirementCardinalityOptions> options)
         {
             var fs = new List<IFacet>();
-            var opts = new List<RequirementOptions>();
+            var opts = new List<RequirementCardinalityOptions>();
             foreach (var sub in elem.Elements())
             {
                 IFacet? t = null;
-                RequirementOptions opt = RequirementOptions.Expected;
+                RequirementCardinalityOptions opt = RequirementCardinalityOptions.Expected;
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
                 {
@@ -1014,7 +1050,7 @@ namespace Xbim.InformationSpecifications
                         t = GetAttribute(sub, logger, out opt);
                         break;
                     case "partof":
-                        t = GetPartOf(sub, logger);
+                        t = GetPartOf(sub, logger, out opt);
                         break;
                     default:
                         LogUnexpected(sub, elem, logger);
@@ -1030,7 +1066,7 @@ namespace Xbim.InformationSpecifications
             return fs;
         }
 
-        private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementOptions opt)
+        private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
             AttributeFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -1069,7 +1105,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger);
+            opt = mmax.Evaluate(elem, logger); // from attribute
             return ret;
         }
 
@@ -1093,38 +1129,38 @@ namespace Xbim.InformationSpecifications
                 return false;
             }
 
-            internal RequirementOptions Evaluate(XElement elem, ILogger? logger)
+            internal RequirementCardinalityOptions Evaluate(XElement elem, ILogger? logger)
             {
                 if (Min == "" && Max == "")
-                    return RequirementOptions.Expected; // default value
+                    return RequirementCardinalityOptions.Expected; // default value
 
                 // managed min values
                 if (Min != "1" && Min != "0")
                 {
                     LogUnsupportedOccurValue(elem, logger);
-                    return RequirementOptions.Expected;
+                    return RequirementCardinalityOptions.Expected;
                 }
 
                 // managed max values
                 if (Max != "0" && Max != "unbounded" && Max != "")
                 {
                     LogUnsupportedOccurValue(elem, logger);
-                    return RequirementOptions.Expected;
+                    return RequirementCardinalityOptions.Expected;
                 }
 
                 if (Min == "0" && Max == "0")
-                    return RequirementOptions.Prohibited;
+                    return RequirementCardinalityOptions.Prohibited;
                 if (Min == "1" &&
                     (Max == "unbounded" || Max == "")
                     )
-                    return RequirementOptions.Expected;
+                    return RequirementCardinalityOptions.Expected;
 
                 LogUnsupportedOccurValue(elem, logger);
-                return RequirementOptions.Expected;
+                return RequirementCardinalityOptions.Expected;
             }
         }
 
-        private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementOptions opt)
+        private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
             IfcClassificationFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -1168,7 +1204,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger);
+            opt = mmax.Evaluate(elem, logger); // from classification
             return ret;
         }
 
@@ -1263,35 +1299,7 @@ namespace Xbim.InformationSpecifications
 
 
 
-        private static IFacet? GetPartOf(XElement elem, ILogger? logger)
-        {
-            PartOfFacet? ret = null;
-            foreach (var sub in elem.Elements())
-            {
-                var locName = sub.Name.LocalName.ToLowerInvariant();
-                switch (locName)
-                {
-                    default:
-                        LogUnexpected(sub, elem, logger);
-                        break;
-                }
-            }
-            foreach (var attribute in elem.Attributes())
-            {
-                var locName = attribute.Name.LocalName.ToLowerInvariant();
-                switch (locName)
-                {
-                    case "entity":
-                        ret ??= new PartOfFacet();
-                        ret.Entity = attribute.Value;
-                        break;
-                    default:
-                        LogUnexpected(attribute, elem, logger);
-                        break;
-                }
-            }
-            return ret;
-        }
+       
 
         private static string GetFirstString(XElement sub)
         {

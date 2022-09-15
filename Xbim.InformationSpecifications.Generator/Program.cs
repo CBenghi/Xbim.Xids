@@ -10,7 +10,7 @@ namespace Xbim.InformationSpecifications.Generator
         internal static XmlDocument GetBuildingSmartSchemaXML()
         {
             var doc = new XmlDocument();
-            doc.LoadXml(File.ReadAllText(@"Files\ids_06.xsd"));
+            doc.LoadXml(File.ReadAllText(@"Files\ids_09.xsd"));
             return doc;
         }
 
@@ -68,11 +68,14 @@ namespace Xbim.InformationSpecifications.Generator
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.IfcMeasures.cs");
             File.WriteAllText(dest, tMeasures);
 
-            // depends on schema
-            Console.WriteLine("Ifc ifcMeasure enum generation...");
-            var tEnum = MeasureAutomation.Execute_GenerateIfcMeasureEnum();
-            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\Measures\Enums.cs");
-            File.WriteAllText(dest, tEnum);
+            if (false) // enums removed from schema
+            {
+                // depends on schema
+                Console.WriteLine("Ifc ifcMeasure enum generation...");
+                var tEnum = MeasureAutomation.Execute_GenerateIfcMeasureEnum();
+                dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\Measures\Enums.cs");
+                File.WriteAllText(dest, tEnum);
+            }
 
             // depends on ExpressMetaData and IfcClassStudy classes
             Console.WriteLine("Running attributes generation...");
@@ -88,9 +91,13 @@ namespace Xbim.InformationSpecifications.Generator
 
             // QA analysis 
             MeasureAutomation.Execute_CheckMeasureMetadata();
-            if (MeasureAutomation.Execute_CheckMeasureEnumeration())
+
+            if (false) // enums removed from schema
             {
-                Message(ConsoleColor.Red, "Errors in measure helpers, try running again once, it might get fixed by code generation.");
+                if (MeasureAutomation.Execute_CheckMeasureEnumeration())
+                {
+                    Message(ConsoleColor.Red, "Errors in measure helpers, try running again once, it might get fixed by code generation.");
+                }
             }
 
             Message(ConsoleColor.DarkGreen, "Completed");

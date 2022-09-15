@@ -3,7 +3,7 @@
     /// <summary>
     /// A requirement can either be expected or prohibited.
     /// </summary>
-    public enum RequirementOptions
+    public enum RequirementCardinalityOptions
     {
         /// <summary>
         /// Should match all the facets in a <see cref="FacetGroup"/> 

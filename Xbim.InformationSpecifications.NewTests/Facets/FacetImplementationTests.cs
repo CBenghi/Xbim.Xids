@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 			{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 			{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraintComponent> AcceptedValues,NetTypeName BaseType" },
-			{ "PartOfFacet","String Entity,ValueConstraint EntityName,String Uri,String Instructions" },
+			{ "PartOfFacet","String EntityRelation,ValueConstraint EntityType,String Uri,String Instructions" },
 			{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
@@ -82,14 +82,14 @@ namespace Xbim.InformationSpecifications.Tests
 			TestAddRemove(new PartOfFacet());
 			TestAddRemove(new PartOfFacet()
 			{
-				Entity = "IfcGroup"
+				EntityRelation = "IfcGroup"
 			});
 
 			var p1 = new PartOfFacet();
-			var p2 = new PartOfFacet() { Entity = "none" };
+			var p2 = new PartOfFacet() { EntityRelation = "none" };
 			p1.Should().NotBeEquivalentTo(p2);
 
-			var p3 = new PartOfFacet() { Entity = "" };
+			var p3 = new PartOfFacet() { EntityRelation = "" };
 			p3.Should().BeEquivalentTo(p1);
 
 		}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS  ids_06.xsd">
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS  ids_09.xsd">
     <ids:info>
         <ids:title>Wooden Windows</ids:title>
         <ids:copyright>NBvT</ids:copyright>
@@ -17,8 +17,12 @@
                 </ids:entity>
             </ids:applicability>
             <ids:requirements>
-				<ids:partOf entity="IfcElementAssembly"/>
-                <ids:property minOccurs="1" measure="String">
+				<ids:partOf relation="IfcRelAggregates">
+					<ids:entity >
+						<ids:simpleValue>IFCDOOR</ids:simpleValue>
+					</ids:entity>
+				</ids:partOf>
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -33,7 +37,7 @@
                         </xs:restriction>
                     </ids:value>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -41,7 +45,7 @@
                         <ids:simpleValue>Kleurbuitenzijde</ids:simpleValue>
                     </ids:name>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -78,8 +82,12 @@
                 </ids:entity>
             </ids:applicability>
             <ids:requirements>
-				<ids:partOf entity="IfcElementAssembly"/>
-                <ids:property minOccurs="1" measure="String">
+				<ids:partOf relation="IfcRelAggregates">
+					<ids:entity >
+						<ids:simpleValue>IFCDOOR</ids:simpleValue>
+					</ids:entity>
+				</ids:partOf>
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -93,7 +101,7 @@
                         </xs:restriction>
                     </ids:value>
                 </ids:property>
-                    <ids:property minOccurs="1" measure="String">
+                    <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -108,7 +116,7 @@
                         </xs:restriction>
                     </ids:value>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -116,7 +124,7 @@
                         <ids:simpleValue>Kleurbuitenzijde</ids:simpleValue>
                     </ids:name>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -137,7 +145,11 @@
 				</ids:entity>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:partOf entity="IfcElementAssembly"/>
+				<ids:partOf relation="IfcRelAggregates">
+					<ids:entity>
+						<ids:simpleValue>IFCDOOR</ids:simpleValue>
+					</ids:entity>
+				</ids:partOf>
 				<ids:property minOccurs="1">
 					<ids:propertySet>
 						<ids:simpleValue>CPset_31</ids:simpleValue>
@@ -146,7 +158,7 @@
 						<ids:simpleValue>Draairichting</ids:simpleValue>
 					</ids:name>
 				</ids:property>
-				<ids:property minOccurs="1" measure="String">
+				<ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -161,7 +173,7 @@
                         </xs:restriction>
                     </ids:value>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -169,7 +181,7 @@
                         <ids:simpleValue>Kleurbuitenzijde</ids:simpleValue>
                     </ids:name>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -201,7 +213,11 @@
 			</ids:material>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:partOf entity="IfcElementAssembly"/>
+				<ids:partOf relation="IfcRelAggregates">
+					<ids:entity>
+						<ids:simpleValue>IFCDOOR</ids:simpleValue>
+					</ids:entity>
+				</ids:partOf>
 				<ids:property minOccurs="1">
 					<ids:propertySet>
 						<ids:simpleValue>CPset_31</ids:simpleValue>
@@ -224,8 +240,12 @@
 				</ids:entity>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:partOf entity="IfcElementAssembly"/>
-					<ids:property  minOccurs="1"  measure="String">
+				<ids:partOf relation="IfcRelAggregates">
+					<ids:entity>
+						<ids:simpleValue>IFCDOOR</ids:simpleValue>
+					</ids:entity>
+				</ids:partOf>
+					<ids:property  minOccurs="1"  measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -240,7 +260,7 @@
 					   </xs:restriction>
                     </ids:value>
                 </ids:property>
-                <ids:property  minOccurs="1" measure="String">
+                <ids:property  minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -248,7 +268,7 @@
                         <ids:simpleValue>Kleurbuitenzijde</ids:simpleValue>
                     </ids:name>
                 </ids:property>
-                <ids:property minOccurs="1" measure="String">
+                <ids:property minOccurs="1" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>CPset_31</ids:simpleValue>
                     </ids:propertySet>
@@ -276,7 +296,7 @@
 						<ids:simpleValue>Reference</ids:simpleValue>
 					</ids:name>
 				</ids:property>
-				<ids:property minOccurs="1" measure="Number"> 
+				<ids:property minOccurs="1" measure="IfcThermalTransmittanceMeasure"> 
 					<ids:propertySet>
 						<ids:simpleValue>Pset_PlateCommon</ids:simpleValue>
 					</ids:propertySet>

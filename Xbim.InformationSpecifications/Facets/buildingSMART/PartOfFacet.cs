@@ -1,20 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Xbim.InformationSpecifications
 {
-    // todo: IDSTALK: partof asymmetry
-    //
-    // why is it that partof can only be in the requirement side of a specification?
-    // I can see the need to have a certain property/classification for anything belonging to a system
-
-    // todo: IDSTALK: instuctions is missing only on partof facet
-    // 
-
     /// <summary>
     /// Constrain model parts on the ground of their belonging to a collection defined by the container enum.
     /// </summary>
     public class PartOfFacet : FacetBase, IFacet, IEquatable<PartOfFacet>
     {
+        /// <summary>
+        /// The type of relation defining the filtering criteria
+        /// </summary>
+        public enum PartOfRelation
+        {
+            /// <summary>
+            /// Invalid relation placeholder
+            /// </summary>
+            Undefined,
+            /// <summary>
+            /// A relation of type IfcRelAggregates
+            /// </summary>
+            IfcRelAggregates,
+            /// <summary>
+            /// A relation of type IfcRelAssignsToGroup or IfcRelAssignsToGroupByFactor
+            /// </summary>
+            IfcRelAssignsToGroup,
+            /// <summary>
+            /// A relation of type IfcRelContainedInSpatialStructure
+            /// </summary>
+            IfcRelContainedInSpatialStructure,
+            /// <summary>
+            /// A relation of type IfcRelNests
+            /// </summary>
+            IfcRelNests
+        }
+
         /// <summary>
         /// The type of IFC container
         /// </summary>
@@ -125,45 +146,77 @@ namespace Xbim.InformationSpecifications
 
         /// <summary>
         /// Constraints the containing entity type to one of <see cref="Container"/> enum.
-        /// This is a string value, to get/set the enum values use <see cref="GetEntity"/> and <see cref="SetEntity(Container)"/>.
+        /// This is a string value, to get/set the enum values use <see cref="GetRelation"/> and <see cref="SetRelation(PartOfRelation)"/>.
         /// </summary>
-        public string Entity { get; set; } = string.Empty;
+        public string EntityRelation { get; set; } = string.Empty;
 
         /// <summary>
-        /// Filter on the name of the collecting entity.
+        /// Filter on the type of the collecting entity.
         /// </summary>
-        public ValueConstraint? EntityName { get; set; }
+        public ValueConstraint? EntityType { get; set; }
 
         /// <summary>
-        /// Returns the enum value of <see cref="Entity"/>.
+        /// Returns the enum value of <see cref="EntityRelation"/>.
         /// </summary>
         /// <returns></returns>
-        public Container GetEntity()
+        public PartOfRelation GetRelation()
         {
-            if (Enum.TryParse<Container>(Entity, out var loc))
+            if (Enum.TryParse<PartOfRelation>(EntityRelation, out var loc))
             {
                 return loc;
             }
-            return Container.Undefined;
+            return PartOfRelation.Undefined;
         }
         /// <summary>
-        /// Sets the enum value of <see cref="Entity"/>.
+        /// Sets the enum value of <see cref="EntityRelation"/>.
         /// </summary>
         /// <param name="value"></param>
-        public void SetEntity(Container value)
+        public void SetRelation(PartOfRelation value)
         {
-            Entity = value.ToString();
+            EntityRelation = value.ToString();
         }
+
+        /// <summary>
+        /// Replaces any existing <see cref="EntityType"/> with a new ValueConstraint built from the <paramref name="containers"/> enumeration.
+        /// </summary>
+        /// <param name="containers">Enumeration of accepted container values</param>
+        public void SetContainers(IEnumerable<Container> containers)
+        {
+            var c = new ValueConstraint() { BaseType = NetTypeName.String };
+            foreach (var cont in containers)
+            {
+                c.AddAccepted(new ExactConstraint(cont.ToString()));
+            }
+            EntityType = c;
+
+        }
+
+        /// <summary>
+        /// Looks at exact constraints in the entityType and converts them, if possible, to an enumeration of <see cref="Container"/>.
+        /// </summary>
+        /// <returns>Any convertible value, empty enumeration is possible if conversions cannot be carried out.</returns>
+        public IEnumerable<Container> GetContainers()
+        {
+            if (EntityType is null)
+                yield break;
+            foreach (var value in EntityType.AcceptedValues.OfType<ExactConstraint>())
+            {
+                if (Enum.TryParse<Container>(value.Value, out var loc))
+                {
+                    yield return loc;
+                }
+            }
+
+        }
+
 
         /// <inheritdoc />
         public bool Equals(PartOfFacet? other)
         {
             if (other == null)
                 return false;
-            var thisEqual = (Entity, true).Equals((other.Entity, true));
+            var thisEqual = (EntityRelation, EntityType).Equals((other.EntityRelation, other.EntityType));
             if (thisEqual == false)
-                return false;
-            if (!IFacetExtensions.NullEquals(EntityName, other.EntityName))
                 return false;
             return base.Equals(other);
         }
@@ -175,31 +228,31 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Valid (see <see cref="IFacet.IsValid"/>) if at least <see cref="Entity"/> is meaningful.
+        /// Valid (see <see cref="IFacet.IsValid"/>) if at least <see cref="EntityRelation"/> is meaningful.
         /// </summary>
         /// <returns>true if valid</returns>
         public bool IsValid()
         {
-            return GetEntity() != Container.Undefined
-                && FacetBase.IsValidButOptional(EntityName);
+            return GetRelation() != PartOfRelation.Undefined
+                && FacetBase.IsValidButOptional(EntityType);
         }
 
         /// <inheritdoc />
         public string Short()
         {
             if (IsValid())
-                return $"belongs to {Entity}";
+                return $"belongs to {EntityRelation}";
             return "belongs to undefined group";
         }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"belongs to :'{Entity}'";
+            return $"belongs to :'{EntityRelation}'";
         }
 
         /// <inheritdoc />
-        public override int GetHashCode() => 23 + 31 * (Entity, true).GetHashCode() + 31 * base.GetHashCode();
+        public override int GetHashCode() => 23 + 31 * (EntityRelation, true).GetHashCode() + 31 * base.GetHashCode();
 
     }
 }

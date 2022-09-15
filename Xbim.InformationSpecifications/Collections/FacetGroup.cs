@@ -52,7 +52,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Determines options associated with the collection of facets, when used as a requirement
         /// </summary>
-        public ObservableCollection<RequirementOptions>? RequirementOptions { get; set; }
+        public ObservableCollection<RequirementCardinalityOptions>? RequirementOptions { get; set; }
 
         /// <summary>
         /// Collection of the facets defined in the group.

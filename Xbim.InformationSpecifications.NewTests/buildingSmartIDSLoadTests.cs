@@ -28,9 +28,10 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9, 0)]
         [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 31, 3)]
+        [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.xml", 3, 8, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
-        public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int err)
+        public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int expectedErrCount)
         {
             var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
             outputFile = Path.GetTempFileName();
@@ -45,7 +46,7 @@ namespace Xbim.InformationSpecifications.Tests
                 loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
                 var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
                 var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
-                errorAndWarnings.Count().Should().Be(err, "mismatch with expected value");
+                errorAndWarnings.Count().Should().Be(expectedErrCount, "mismatch with expected value");
                 CheckCounts(specificationsCount, facetGroupsCount, loaded);
                 loaded.ExportBuildingSmartIDS(outputFile);
                 CheckSchema(outputFile, logg);
@@ -76,7 +77,7 @@ namespace Xbim.InformationSpecifications.Tests
         {
             IdsLib.CheckOptions c = new()
             {
-                CheckSchema = new[] { "bsFiles\\ids_06.xsd" },
+                CheckSchema = new[] { "bsFiles\\ids_09.xsd" },
                 InputSource = tmpFile
             };
 
@@ -88,7 +89,7 @@ namespace Xbim.InformationSpecifications.Tests
                 logg?.LogError(s.ToString());
 #pragma warning restore CA2254 // Template should be a static expression
             }
-            varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is otherwise invalid");
+            varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is expected to be valid");
         }
 
         private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)

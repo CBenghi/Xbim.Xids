@@ -8,6 +8,20 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 {
     public class PartOfFacetTests
     {
+        [Fact]
+        public void HelpersFunctionsWork()
+        {
+            PartOfFacet f = new PartOfFacet();
+            f.GetContainers().Should().HaveCount(0);
+
+            f.SetContainers(new[] { PartOfFacet.Container.IfcSystem, PartOfFacet.Container.IfcDistributionSystem });
+            f.GetContainers().Should().HaveCount(2);
+
+            f.SetContainers(new[] { PartOfFacet.Container.IfcSystem });
+            f.GetContainers().Should().HaveCount(1);
+
+        }
+
         [Theory]
         [MemberData(nameof(GetSingleAttributes))]
         public void AttributeEqualMatchImplementation(PartOfFacet t, PartOfFacet tSame)
@@ -63,16 +77,16 @@ namespace Xbim.InformationSpecifications.Tests.Facets
         public static IEnumerable<PartOfFacet> GetDifferentAttributes()
         {
             yield return new PartOfFacet();
-            yield return new PartOfFacet() { EntityName = "name", };
+            yield return new PartOfFacet() { EntityType = PartOfFacet.Container.IfcElectricalCircuit.ToString() };
             yield return new PartOfFacet() { Instructions = "instr", };
             yield return new PartOfFacet() { Uri = "uri", };
-            yield return new PartOfFacet() { Entity = PartOfFacet.Container.IfcElementAssembly.ToString() };
+            yield return new PartOfFacet() { EntityRelation = PartOfFacet.PartOfRelation.IfcRelNests.ToString() };
             yield return new PartOfFacet()
             {
-                EntityName = "name",
+                EntityType = PartOfFacet.Container.IfcElectricalCircuit.ToString(),
                 Instructions = "instr",
                 Uri = "uri",
-                Entity = PartOfFacet.Container.IfcElementAssembly.ToString()
+                EntityRelation = PartOfFacet.PartOfRelation.IfcRelNests.ToString()
             };
         }
     }

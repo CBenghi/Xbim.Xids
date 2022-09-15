@@ -6,13 +6,13 @@
     <ids:copyright>string</ids:copyright>
     <ids:version>string</ids:version>
     <ids:description>string</ids:description>
-    <ids:author>We@&gt;5!&amp;.-=</ids:author>
-    <ids:date>1973-06-12</ids:date>
+    <ids:author>1a3\6@&amp;q,3M;8,'&amp;.5</ids:author>
+    <ids:date>2002-10-18</ids:date>
     <ids:purpose>string</ids:purpose>
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification name="string" minOccurs="0" ifcVersion="IFC2X3 IFC2X3 IFC4" description="string" instructions="string">
+    <ids:specification name="string" ifcVersion="IFC2X3 IFC4 IFC4X3 IFC4 IFC4X3" description="string" instructions="string">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -22,6 +22,11 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
+        <ids:partOf relation="IfcRelAggregates">
+          <ids:entity>
+            <ids:simpleValue>string</ids:simpleValue>
+          </ids:entity>
+        </ids:partOf>
         <ids:classification>
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
@@ -55,7 +60,7 @@
           </ids:value>
         </ids:material>
       </ids:applicability>
-      <ids:requirements>
+      <ids:requirements description="string">
         <ids:entity>
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
@@ -64,8 +69,12 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf entity="IfcBuildingSystem" />
-        <ids:classification uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
+        <ids:partOf instructions="string" relation="IfcRelContainedInSpatialStructure">
+          <ids:entity>
+            <ids:simpleValue>string</ids:simpleValue>
+          </ids:entity>
+        </ids:partOf>
+        <ids:classification uri="https://www.liquid-technologies.com" instructions="string">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
@@ -73,7 +82,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:system>
         </ids:classification>
-        <ids:attribute minOccurs="1" instructions="string">
+        <ids:attribute instructions="string">
           <ids:name>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:name>
@@ -81,7 +90,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
         </ids:attribute>
-        <ids:property uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
+        <ids:property uri="https://www.liquid-technologies.com" instructions="string">
           <ids:propertySet>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:propertySet>
@@ -92,268 +101,7 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
         </ids:property>
-        <ids:material uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" minOccurs="1" ifcVersion="IFC4X3 IFC4X3 IFC4 IFC4 IFC2X3 IFC2X3" description="string" instructions="string">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property>
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcGroup" />
-        <ids:classification uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" minOccurs="0" maxOccurs="0" ifcVersion="IFC4X3 IFC4 IFC4 IFC2X3 IFC2X3 IFC4X3" description="string" instructions="string">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property>
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcAsset" />
-        <ids:classification uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute minOccurs="1" instructions="string">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material uri="https://www.liquid-technologies.com" minOccurs="1" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:requirements>
-    </ids:specification>
-    <ids:specification name="string" minOccurs="0" ifcVersion="IFC4 IFC4X3 IFC4 IFC4 IFC4 IFC2X3" description="string" instructions="string">
-      <ids:applicability>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:classification>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property>
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:material>
-      </ids:applicability>
-      <ids:requirements>
-        <ids:entity>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:predefinedType>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:predefinedType>
-        </ids:entity>
-        <ids:partOf entity="IfcBuildingSystem" />
-        <ids:classification uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-          <ids:system>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:system>
-        </ids:classification>
-        <ids:attribute minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:attribute>
-        <ids:property uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
-          <ids:propertySet>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:propertySet>
-          <ids:name>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:name>
-          <ids:value>
-            <ids:simpleValue>string</ids:simpleValue>
-          </ids:value>
-        </ids:property>
-        <ids:material uri="https://www.liquid-technologies.com" minOccurs="0" maxOccurs="0" instructions="string">
+        <ids:material uri="https://www.liquid-technologies.com" instructions="string">
           <ids:value>
             <ids:simpleValue>string</ids:simpleValue>
           </ids:value>
