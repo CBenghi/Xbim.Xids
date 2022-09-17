@@ -11,8 +11,11 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var str = "2O2Fr$t4X7Zf8NOew3FLOH";
             Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new(str);
-            var vc = new ValueConstraint(str);
+            var vc = new ValueConstraint(str); // this is a string constraint
             vc.IsSatisfiedBy(i).Should().BeTrue();
+
+            var vc3 = ValueConstraint.SingleUndefinedExact(str); // this is an undefined constraint
+            vc3.IsSatisfiedBy(i).Should().BeTrue();
 
             var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
             var vc2 = new ValueConstraint(str2);

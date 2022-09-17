@@ -262,7 +262,7 @@ namespace Xbim.InformationSpecifications
                     return GetObject(value, NetTypeName.DateTime);
                 case TimeSpan:
                     return GetObject(value, NetTypeName.Duration);
-            }
+            }           
             return value;
         }
 
@@ -342,6 +342,9 @@ namespace Xbim.InformationSpecifications
 
         internal static bool FormalEquals(object toCheck, object? candiatateValue)
         {
+            // special casts for ifcTypes
+            if (toCheck.GetType().Name == "IfcGloballyUniqueId")
+                return toCheck.ToString().Equals(candiatateValue);   
             return toCheck.Equals(candiatateValue);
         }
     }
