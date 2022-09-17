@@ -71,17 +71,19 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
                 return false;
-            // if there are no constraints it's satisfied by default
+            // if there are no constraints it's satisfied by default // todo: should this be revised?
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return true;
             var cand = GetObject(candiatateValue, BaseType);
             if (cand is null)
                 return false;
+
             foreach (var av in AcceptedValues)
             {
                 if (av.IsSatisfiedBy(cand, this, ignoreCase, logger))
                     return true;
             }
+            
             return false;
         }
 

@@ -49,6 +49,16 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void bsConstraintValues()
+        {
+            // in case where the type is not defined,
+            // we cast the value of the string to the type provided to see if they match
+            //
+            var vc = new ValueConstraint(NetTypeName.Undefined, "42.0");
+            vc.IsSatisfiedBy(42d).Should().BeTrue();
+        }
+
+        [Fact]
         public void ConstraintFromBasicString()
         {
             ValueConstraint vc = "Some";
@@ -63,6 +73,7 @@ namespace Xbim.InformationSpecifications.Tests
         public void CaseSensitiviyTests()
         {
             ValueConstraint t2 = "ABC";
+            t2.BaseType = NetTypeName.String;
             t2.IsSatisfiedBy("abc").Should().BeFalse();
             t2.IsSatisfiedIgnoringCaseBy("abc").Should().BeTrue();
 

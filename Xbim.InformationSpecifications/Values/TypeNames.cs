@@ -210,6 +210,8 @@ namespace Xbim.InformationSpecifications
         /// <returns>Null when conversion is not successful</returns>
 		public static object? GetObject(object value, NetTypeName typeName)
         {
+            if (typeName == NetTypeName.Undefined) // if undefined type just return the value, unaltered.
+                return value;
             if (typeName == NetTypeName.Integer)
                 return Convert.ToInt32(value);
             if (typeName == NetTypeName.Decimal)
@@ -236,6 +238,30 @@ namespace Xbim.InformationSpecifications
             if (typeName == NetTypeName.String)
             {
                 return value.ToString();
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Centralised value casting function.
+        /// </summary>
+        /// <param name="value">The value to cast</param>
+        /// <param name="castingObjectForType">An object used to determine the casting</param>
+        /// <returns>a cast object according to the type of <paramref name="castingObjectForType"/></returns>
+        public static object? CastObject(string value, object castingObjectForType)
+        {
+            switch (castingObjectForType)
+            {
+                case double:
+                    return GetObject(value, NetTypeName.Double);
+                case float:
+                    return GetObject(value, NetTypeName.Floating);
+                case int:
+                    return GetObject(value, NetTypeName.Integer);
+                case DateTime:
+                    return GetObject(value, NetTypeName.DateTime);
+                case TimeSpan:
+                    return GetObject(value, NetTypeName.Duration);
             }
             return value;
         }
@@ -314,6 +340,9 @@ namespace Xbim.InformationSpecifications
             };
         }
 
-
+        internal static bool FormalEquals(object toCheck, object? candiatateValue)
+        {
+            return toCheck.Equals(candiatateValue);
+        }
     }
 }

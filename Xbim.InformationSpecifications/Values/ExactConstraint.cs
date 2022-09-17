@@ -27,6 +27,13 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
+            if (context.BaseType == NetTypeName.Undefined)
+            {
+                // if we are comparing without a type constraint, we match the type of the 
+                // candidate, rather than converting all to string.
+                var toCheck = ValueConstraint.CastObject(Value, candiatateValue);
+                return ValueConstraint.FormalEquals(candiatateValue, toCheck);
+            }
             if (ignoreCase)
                 return Value.Equals(candiatateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
             return Value.Equals(candiatateValue.ToString());
