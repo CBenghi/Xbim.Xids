@@ -38,6 +38,8 @@ namespace Xbim.InformationSpecifications.Test.Helpers
             SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWall").Should().BeTrue();
             SchemaInfo.SchemaIfc4["IfcWallStandardCase"].Is("IfcWall").Should().BeTrue();
             SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWallStandardCase").Should().BeFalse();
+            SchemaInfo.SchemaIfc4["IfcWall"].DirectAttributes.Should().NotBeNull();
+            SchemaInfo.SchemaIfc4["IfcWall"].DirectAttributes.Count().Should().Be(9);
         }
 
         [Fact]

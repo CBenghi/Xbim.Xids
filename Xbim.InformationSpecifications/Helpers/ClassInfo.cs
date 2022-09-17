@@ -82,6 +82,11 @@ namespace Xbim.InformationSpecifications.Helpers
         public IEnumerable<string> PredefinedTypeValues { get; private set; }
 
         /// <summary>
+        /// List of attribute names for the type
+        /// </summary>
+        public IEnumerable<string> DirectAttributes { get; private set; }
+
+        /// <summary>
         /// Similar to the c# Is clause
         /// </summary>
         /// <param name="className">the class we are comparing against</param>
@@ -127,13 +132,17 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Public constructor
         /// </summary>
-		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace)
+		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace, IEnumerable<string> directAttributes = null)
         {
             Name = name;
             ParentName = parentName;
             Type = type;
             PredefinedTypeValues = predefined;
             NameSpace = nameSpace;
+            if (directAttributes == null)
+                DirectAttributes = new List<string>();
+            else
+                DirectAttributes = directAttributes;
         }
 
         /// <summary>

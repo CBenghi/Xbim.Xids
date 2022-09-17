@@ -38,6 +38,8 @@ namespace Xbim.InformationSpecifications.Generator
                 {
                     var daType = metaD.ExpressType(className.ToUpperInvariant());
 
+
+                    // Enriching schema with predefined types
                     var propPdefT = daType.Properties.Values.FirstOrDefault(x => x.Name == "PredefinedType");
                     var predType = "Enumerable.Empty<string>()";
                     if (propPdefT != null)
@@ -55,12 +57,14 @@ namespace Xbim.InformationSpecifications.Generator
                         predType = NewStringArray(pdtypes.ToArray());
                     }
 
-                    var t = daType.Type;
-                    var abstractOrNot = t.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
+                    // other fields
+                    var abstractOrNot = daType.Type.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
+                    var ns = daType.Type.Namespace[5..];
 
-                    var ns = t.Namespace[5..];
+                    // Enriching schema with attribute names
+                    var attnames = NewStringArray(daType.Properties.Values.Select(x => x.Name).ToArray());
 
-                    sb.AppendLine($@"				new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}""),");
+                    sb.AppendLine($@"				new ClassInfo(""{daType.Name}"", ""{daType.SuperType.Name}"", {abstractOrNot}, {predType}, ""{ns}"", {attnames}),");
                 }
                 source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
             }
