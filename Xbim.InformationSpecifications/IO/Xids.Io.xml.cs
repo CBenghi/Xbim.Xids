@@ -1076,7 +1076,7 @@ namespace Xbim.InformationSpecifications
                 {
                     case "name":
                         ret ??= new AttributeFacet();
-                        ret.AttributeName = sub.Value;
+                        ret.AttributeName = GetConstraint(sub, logger);
                         break;
                     case "value":
                         ret ??= new AttributeFacet();

@@ -16,6 +16,34 @@ namespace Xbim.InformationSpecifications.Tests
     public class IoTests
     {
         [Fact]
+        public void CanLoadRestrictionXml()
+        {
+            var f = new FileInfo(@"bsFiles\Others\pass-name_restrictions_will_match_any_result_1_3.ids");
+            Xids.CanLoad(f).Should().BeTrue();
+
+            var x = Xids.Load(f);
+            x.Should().NotBeNull();
+
+            var spec = x.AllSpecifications().FirstOrDefault();
+            spec.Should().NotBeNull();
+
+            var attr = spec.Requirement.Facets[0];
+            attr.Should().BeOfType<AttributeFacet>();
+
+            var asAttr = attr.As<AttributeFacet>();
+            asAttr.AttributeName.Should().NotBeNull();
+
+            var av1 = asAttr.AttributeName.AcceptedValues[0];
+            av1.Should().NotBeNull();
+
+            av1.Should().BeOfType<PatternConstraint>();
+
+            
+
+
+        }
+
+        [Fact]
         public void CanLoadXml()
         {
             var f = new FileInfo(@"Files\IDS_example-with-restrictions.xml");

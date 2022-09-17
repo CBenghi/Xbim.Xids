@@ -163,11 +163,16 @@ namespace Xbim.InformationSpecifications
         /// Determines the validity of the instance for the purposes of IDS.
         /// Completed FacetGroups should not be invalid.
         /// </summary>
-        /// <returns>False if any of the facets is invalid or the list is empty.</returns>
+        /// <returns>False if any of the facets is invalid or the list is empty, or the requirementOptions collection does not match the facet count.</returns>
         public bool IsValid()
         {
             if (!Facets.Any())
                 return false;
+            if (RequirementOptions is not null)
+            {
+                if (RequirementOptions.Count != 0 && RequirementOptions.Count != Facets.Count)
+                    return false;
+            }
             foreach (var facet in Facets)
             {
                 if (!facet.IsValid())
