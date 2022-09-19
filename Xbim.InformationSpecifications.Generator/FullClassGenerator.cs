@@ -16,6 +16,10 @@ namespace Xbim.InformationSpecifications.Generator
             var source = stub;
             var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
 
+            var classNames = new List<string>();
+            var attNames = new List<string>();
+
+
             foreach (var schema in schemas)
             {
                 System.Reflection.Module module = null;
@@ -25,18 +29,13 @@ namespace Xbim.InformationSpecifications.Generator
                     module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
                 var metaD = ExpressMetaData.GetMetadata(module);
 
-                var sbClasses = new StringBuilder();
-                var sbAtts = new StringBuilder();
-
-                HashSet<string> classNames = new HashSet<string>();  
-                HashSet<string> attNames = new HashSet<string>();  
 
                 foreach (var daType in metaD.Types())
                 {
+                    // just class names
                     if (!classNames.Contains(daType.Name))
                     {
                         classNames.Add(daType.Name);
-                        sbClasses.AppendLine($"\t\t\t\tyield return \"{daType.Name}\";");
                     }
 
                     // Enriching schema with attribute names
@@ -46,13 +45,29 @@ namespace Xbim.InformationSpecifications.Generator
                         if (!attNames.Contains(attributeName))
                         {
                             attNames.Add(attributeName);
-                            sbAtts.AppendLine($"\t\t\t\tyield return \"{attributeName}\";");
                         }
                     }
                 }
-                source = source.Replace($"<PlaceHolderClasses>\r\n", sbClasses.ToString());
-                source = source.Replace($"<PlaceHolderAtts>\r\n", sbAtts.ToString());
             }
+            var sbClasses = new StringBuilder();
+            var sbAtts = new StringBuilder();
+            int i = 0;
+            foreach (var clNm in classNames.OrderBy(x => x))
+            {
+                sbClasses.AppendLine($"\t\t\t\tyield return \"{clNm}\"; // {++i}");
+            }
+            var done = false;
+            i = 0;
+            foreach (var atNm in attNames.OrderBy(x => x).ToList())
+            {
+                sbAtts.AppendLine($"\t\t\t\tyield return \"{atNm}\"; // {++i}");
+            }
+            if (!done)
+            {
+
+            }
+            source = source.Replace($"<PlaceHolderClasses>\r\n", sbClasses.ToString());
+            source = source.Replace($"<PlaceHolderAtts>\r\n", sbAtts.ToString());
             return source;
         }
 

@@ -14,777 +14,1058 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             get
             {
-				yield return "IfcAngularDimension";
-				yield return "IfcDimensionCurveDirectedCallout";
-				yield return "IfcDraughtingCallout";
-				yield return "IfcGeometricRepresentationItem";
-				yield return "IfcRepresentationItem";
-				yield return "IfcDiameterDimension";
-				yield return "IfcDimensionCalloutRelationship";
-				yield return "IfcDraughtingCalloutRelationship";
-				yield return "IfcDimensionCurve";
-				yield return "IfcAnnotationCurveOccurrence";
-				yield return "IfcAnnotationOccurrence";
-				yield return "IfcStyledItem";
-				yield return "IfcDimensionCurveTerminator";
-				yield return "IfcTerminatorSymbol";
-				yield return "IfcAnnotationSymbolOccurrence";
-				yield return "IfcDimensionPair";
-				yield return "IfcLinearDimension";
-				yield return "IfcPreDefinedDimensionSymbol";
-				yield return "IfcPreDefinedSymbol";
-				yield return "IfcPreDefinedItem";
-				yield return "IfcPreDefinedPointMarkerSymbol";
-				yield return "IfcPreDefinedTerminatorSymbol";
-				yield return "IfcProjectionCurve";
-				yield return "IfcRadiusDimension";
-				yield return "IfcStructuredDimensionCallout";
-				yield return "IfcRelConnectsStructuralActivity";
-				yield return "IfcRelConnects";
-				yield return "IfcRelationship";
-				yield return "IfcRoot";
-				yield return "IfcRelConnectsStructuralMember";
-				yield return "IfcRelConnectsWithEccentricity";
-				yield return "IfcStructuralAction";
-				yield return "IfcStructuralActivity";
-				yield return "IfcProduct";
-				yield return "IfcObject";
-				yield return "IfcObjectDefinition";
-				yield return "IfcStructuralAnalysisModel";
-				yield return "IfcSystem";
-				yield return "IfcGroup";
-				yield return "IfcStructuralConnection";
-				yield return "IfcStructuralItem";
-				yield return "IfcStructuralCurveConnection";
-				yield return "IfcStructuralCurveMember";
-				yield return "IfcStructuralMember";
-				yield return "IfcStructuralCurveMemberVarying";
-				yield return "IfcStructuralLinearAction";
-				yield return "IfcStructuralLoadGroup";
-				yield return "IfcStructuralPlanarAction";
-				yield return "IfcStructuralPointAction";
-				yield return "IfcStructuralPointConnection";
-				yield return "IfcStructuralPointReaction";
-				yield return "IfcStructuralReaction";
-				yield return "IfcStructuralResultGroup";
-				yield return "IfcStructuralSurfaceConnection";
-				yield return "IfcStructuralSurfaceMember";
-				yield return "IfcStructuralSurfaceMemberVarying";
-				yield return "IfcRelAssociatesProfileProperties";
-				yield return "IfcRelAssociates";
-				yield return "IfcRelConnectsStructuralElement";
-				yield return "IfcStructuralLinearActionVarying";
-				yield return "IfcStructuralPlanarActionVarying";
-				yield return "IfcProfileProperties";
-				yield return "IfcReinforcementBarProperties";
-				yield return "IfcSectionProperties";
-				yield return "IfcSectionReinforcementProperties";
-				yield return "IfcGeneralProfileProperties";
-				yield return "IfcRibPlateProfileProperties";
-				yield return "IfcStructuralProfileProperties";
-				yield return "IfcStructuralSteelProfileProperties";
-				yield return "IfcProcedure";
-				yield return "IfcProcess";
-				yield return "IfcTask";
-				yield return "IfcWorkControl";
-				yield return "IfcControl";
-				yield return "IfcWorkPlan";
-				yield return "IfcWorkSchedule";
-				yield return "IfcRelAssignsTasks";
-				yield return "IfcRelAssignsToControl";
-				yield return "IfcRelAssigns";
-				yield return "IfcScheduleTimeControl";
-				yield return "IfcPhysicalComplexQuantity";
-				yield return "IfcPhysicalQuantity";
-				yield return "IfcPhysicalSimpleQuantity";
-				yield return "IfcQuantityArea";
-				yield return "IfcQuantityCount";
-				yield return "IfcQuantityLength";
-				yield return "IfcQuantityTime";
-				yield return "IfcQuantityVolume";
-				yield return "IfcQuantityWeight";
-				yield return "IfcMaterialProperties";
-				yield return "IfcExtendedMaterialProperties";
-				yield return "IfcFuelProperties";
-				yield return "IfcGeneralMaterialProperties";
-				yield return "IfcHygroscopicMaterialProperties";
-				yield return "IfcMechanicalConcreteMaterialProperties";
-				yield return "IfcMechanicalMaterialProperties";
-				yield return "IfcMechanicalSteelMaterialProperties";
-				yield return "IfcOpticalMaterialProperties";
-				yield return "IfcProductsOfCombustionProperties";
-				yield return "IfcRelaxation";
-				yield return "IfcThermalMaterialProperties";
-				yield return "IfcWaterProperties";
-				yield return "IfcMaterial";
-				yield return "IfcMaterialClassificationRelationship";
-				yield return "IfcMaterialLayer";
-				yield return "IfcMaterialLayerSet";
-				yield return "IfcMaterialLayerSetUsage";
-				yield return "IfcMaterialList";
-				yield return "IfcLightDistributionData";
-				yield return "IfcLightIntensityDistribution";
-				yield return "IfcLightSource";
-				yield return "IfcLightSourceAmbient";
-				yield return "IfcLightSourceDirectional";
-				yield return "IfcLightSourceGoniometric";
-				yield return "IfcLightSourcePositional";
-				yield return "IfcLightSourceSpot";
-				yield return "IfcPresentationLayerAssignment";
-				yield return "IfcPresentationLayerWithStyle";
-				yield return "IfcIrregularTimeSeries";
-				yield return "IfcTimeSeries";
-				yield return "IfcIrregularTimeSeriesValue";
-				yield return "IfcRegularTimeSeries";
-				yield return "IfcTimeSeriesValue";
-				yield return "IfcTimeSeriesReferenceRelationship";
-				yield return "IfcGeometricRepresentationContext";
-				yield return "IfcRepresentationContext";
-				yield return "IfcGeometricRepresentationSubContext";
-				yield return "IfcMaterialDefinitionRepresentation";
-				yield return "IfcProductRepresentation";
-				yield return "IfcProductDefinitionShape";
-				yield return "IfcRepresentation";
-				yield return "IfcShapeAspect";
-				yield return "IfcShapeModel";
-				yield return "IfcShapeRepresentation";
-				yield return "IfcStyledRepresentation";
-				yield return "IfcStyleModel";
-				yield return "IfcTopologyRepresentation";
-				yield return "IfcFireSuppressionTerminalType";
-				yield return "IfcFlowTerminalType";
-				yield return "IfcDistributionFlowElementType";
-				yield return "IfcDistributionElementType";
-				yield return "IfcElementType";
-				yield return "IfcTypeProduct";
-				yield return "IfcTypeObject";
-				yield return "IfcSanitaryTerminalType";
-				yield return "IfcStackTerminalType";
-				yield return "IfcWasteTerminalType";
-				yield return "IfcDistributionChamberElement";
-				yield return "IfcDistributionFlowElement";
-				yield return "IfcDistributionElement";
-				yield return "IfcElement";
-				yield return "IfcDistributionChamberElementType";
-				yield return "IfcDistributionControlElement";
-				yield return "IfcDistributionControlElementType";
-				yield return "IfcDistributionPort";
-				yield return "IfcPort";
-				yield return "IfcEnergyConversionDevice";
-				yield return "IfcEnergyConversionDeviceType";
-				yield return "IfcFlowController";
-				yield return "IfcFlowControllerType";
-				yield return "IfcFlowFitting";
-				yield return "IfcFlowFittingType";
-				yield return "IfcFlowMovingDevice";
-				yield return "IfcFlowMovingDeviceType";
-				yield return "IfcFlowSegment";
-				yield return "IfcFlowSegmentType";
-				yield return "IfcFlowStorageDevice";
-				yield return "IfcFlowStorageDeviceType";
-				yield return "IfcFlowTerminal";
-				yield return "IfcFlowTreatmentDevice";
-				yield return "IfcFlowTreatmentDeviceType";
-				yield return "IfcRelFlowControlElements";
-				yield return "IfcElectricalBaseProperties";
-				yield return "IfcEnergyProperties";
-				yield return "IfcPropertySetDefinition";
-				yield return "IfcPropertyDefinition";
-				yield return "IfcFluidFlowProperties";
-				yield return "IfcSoundProperties";
-				yield return "IfcSoundValue";
-				yield return "IfcSpaceThermalLoadProperties";
-				yield return "IfcDiscreteAccessory";
-				yield return "IfcElementComponent";
-				yield return "IfcDiscreteAccessoryType";
-				yield return "IfcElementComponentType";
-				yield return "IfcFastener";
-				yield return "IfcFastenerType";
-				yield return "IfcMechanicalFastener";
-				yield return "IfcMechanicalFastenerType";
-				yield return "IfcChamferEdgeFeature";
-				yield return "IfcEdgeFeature";
-				yield return "IfcFeatureElementSubtraction";
-				yield return "IfcFeatureElement";
-				yield return "IfcRoundedEdgeFeature";
-				yield return "IfcCostItem";
-				yield return "IfcCostSchedule";
-				yield return "IfcProjectOrder";
-				yield return "IfcProjectOrderRecord";
-				yield return "IfcRelAssignsToProjectOrder";
-				yield return "IfcRelAssociatesAppliedValue";
-				yield return "IfcRelSchedulesCostItems";
-				yield return "IfcContextDependentUnit";
-				yield return "IfcNamedUnit";
-				yield return "IfcConversionBasedUnit";
-				yield return "IfcDerivedUnit";
-				yield return "IfcDerivedUnitElement";
-				yield return "IfcDimensionalExponents";
-				yield return "IfcMeasureWithUnit";
-				yield return "IfcMonetaryUnit";
-				yield return "IfcSIUnit";
-				yield return "IfcUnitAssignment";
-				yield return "IfcAbsorbedDoseMeasure";
-				yield return "IfcAccelerationMeasure";
-				yield return "IfcAmountOfSubstanceMeasure";
-				yield return "IfcAngularVelocityMeasure";
-				yield return "IfcAreaMeasure";
-				yield return "IfcBoolean";
-				yield return "IfcComplexNumber";
-				yield return "IfcCompoundPlaneAngleMeasure";
-				yield return "IfcContextDependentMeasure";
-				yield return "IfcCountMeasure";
-				yield return "IfcCurvatureMeasure";
-				yield return "IfcDescriptiveMeasure";
-				yield return "IfcDoseEquivalentMeasure";
-				yield return "IfcDynamicViscosityMeasure";
-				yield return "IfcElectricCapacitanceMeasure";
-				yield return "IfcElectricChargeMeasure";
-				yield return "IfcElectricConductanceMeasure";
-				yield return "IfcElectricCurrentMeasure";
-				yield return "IfcElectricResistanceMeasure";
-				yield return "IfcElectricVoltageMeasure";
-				yield return "IfcEnergyMeasure";
-				yield return "IfcForceMeasure";
-				yield return "IfcFrequencyMeasure";
-				yield return "IfcHeatFluxDensityMeasure";
-				yield return "IfcHeatingValueMeasure";
-				yield return "IfcIdentifier";
-				yield return "IfcIlluminanceMeasure";
-				yield return "IfcInductanceMeasure";
-				yield return "IfcInteger";
-				yield return "IfcIntegerCountRateMeasure";
-				yield return "IfcIonConcentrationMeasure";
-				yield return "IfcIsothermalMoistureCapacityMeasure";
-				yield return "IfcKinematicViscosityMeasure";
-				yield return "IfcLabel";
-				yield return "IfcLengthMeasure";
-				yield return "IfcLinearForceMeasure";
-				yield return "IfcLinearMomentMeasure";
-				yield return "IfcLinearStiffnessMeasure";
-				yield return "IfcLinearVelocityMeasure";
-				yield return "IfcLogical";
-				yield return "IfcLuminousFluxMeasure";
-				yield return "IfcLuminousIntensityDistributionMeasure";
-				yield return "IfcLuminousIntensityMeasure";
-				yield return "IfcMagneticFluxDensityMeasure";
-				yield return "IfcMagneticFluxMeasure";
-				yield return "IfcMassDensityMeasure";
-				yield return "IfcMassFlowRateMeasure";
-				yield return "IfcMassMeasure";
-				yield return "IfcMassPerLengthMeasure";
-				yield return "IfcModulusOfElasticityMeasure";
-				yield return "IfcModulusOfLinearSubgradeReactionMeasure";
-				yield return "IfcModulusOfRotationalSubgradeReactionMeasure";
-				yield return "IfcModulusOfSubgradeReactionMeasure";
-				yield return "IfcMoistureDiffusivityMeasure";
-				yield return "IfcMolecularWeightMeasure";
-				yield return "IfcMomentOfInertiaMeasure";
-				yield return "IfcMonetaryMeasure";
-				yield return "IfcNormalisedRatioMeasure";
-				yield return "IfcNumericMeasure";
-				yield return "IfcParameterValue";
-				yield return "IfcPHMeasure";
-				yield return "IfcPlanarForceMeasure";
-				yield return "IfcPlaneAngleMeasure";
-				yield return "IfcPositiveLengthMeasure";
-				yield return "IfcPositivePlaneAngleMeasure";
-				yield return "IfcPositiveRatioMeasure";
-				yield return "IfcPowerMeasure";
-				yield return "IfcPressureMeasure";
-				yield return "IfcRadioActivityMeasure";
-				yield return "IfcRatioMeasure";
-				yield return "IfcReal";
-				yield return "IfcRotationalFrequencyMeasure";
-				yield return "IfcRotationalMassMeasure";
-				yield return "IfcRotationalStiffnessMeasure";
-				yield return "IfcSectionalAreaIntegralMeasure";
-				yield return "IfcSectionModulusMeasure";
-				yield return "IfcShearModulusMeasure";
-				yield return "IfcSolidAngleMeasure";
-				yield return "IfcSoundPowerMeasure";
-				yield return "IfcSoundPressureMeasure";
-				yield return "IfcSpecificHeatCapacityMeasure";
-				yield return "IfcTemperatureGradientMeasure";
-				yield return "IfcText";
-				yield return "IfcThermalAdmittanceMeasure";
-				yield return "IfcThermalConductivityMeasure";
-				yield return "IfcThermalExpansionCoefficientMeasure";
-				yield return "IfcThermalResistanceMeasure";
-				yield return "IfcThermalTransmittanceMeasure";
-				yield return "IfcThermodynamicTemperatureMeasure";
-				yield return "IfcTimeMeasure";
-				yield return "IfcTimeStamp";
-				yield return "IfcTorqueMeasure";
-				yield return "IfcVaporPermeabilityMeasure";
-				yield return "IfcVolumeMeasure";
-				yield return "IfcVolumetricFlowRateMeasure";
-				yield return "IfcWarpingConstantMeasure";
-				yield return "IfcWarpingMomentMeasure";
-				yield return "IfcComplexProperty";
-				yield return "IfcProperty";
-				yield return "IfcPropertyBoundedValue";
-				yield return "IfcSimpleProperty";
-				yield return "IfcPropertyDependencyRelationship";
-				yield return "IfcPropertyEnumeratedValue";
-				yield return "IfcPropertyEnumeration";
-				yield return "IfcPropertyListValue";
-				yield return "IfcPropertyReferenceValue";
-				yield return "IfcPropertySingleValue";
-				yield return "IfcPropertyTableValue";
-				yield return "IfcColourRgb";
-				yield return "IfcColourSpecification";
-				yield return "IfcDraughtingPreDefinedColour";
-				yield return "IfcPreDefinedColour";
-				yield return "IfcExternallyDefinedTextFont";
-				yield return "IfcExternalReference";
-				yield return "IfcPlanarBox";
-				yield return "IfcPlanarExtent";
-				yield return "IfcPreDefinedTextFont";
-				yield return "IfcTextStyleFontModel";
-				yield return "IfcDraughtingPreDefinedTextFont";
-				yield return "IfcFontStyle";
-				yield return "IfcFontVariant";
-				yield return "IfcFontWeight";
-				yield return "IfcPresentableText";
-				yield return "IfcTextFontName";
-				yield return "IfcClosedShell";
-				yield return "IfcConnectedFaceSet";
-				yield return "IfcTopologicalRepresentationItem";
-				yield return "IfcEdge";
-				yield return "IfcEdgeCurve";
-				yield return "IfcEdgeLoop";
-				yield return "IfcLoop";
-				yield return "IfcFace";
-				yield return "IfcFaceBound";
-				yield return "IfcFaceOuterBound";
-				yield return "IfcFaceSurface";
-				yield return "IfcOpenShell";
-				yield return "IfcOrientedEdge";
-				yield return "IfcPath";
-				yield return "IfcPolyLoop";
-				yield return "IfcSubedge";
-				yield return "IfcVertex";
-				yield return "IfcVertexLoop";
-				yield return "IfcVertexPoint";
-				yield return "IfcBuildingElementPart";
-				yield return "IfcBuildingElementComponent";
-				yield return "IfcBuildingElement";
-				yield return "IfcFooting";
-				yield return "IfcPile";
-				yield return "IfcReinforcementDefinitionProperties";
-				yield return "IfcReinforcingBar";
-				yield return "IfcReinforcingElement";
-				yield return "IfcReinforcingMesh";
-				yield return "IfcTendon";
-				yield return "IfcTendonAnchor";
-				yield return "IfcBoundaryCondition";
-				yield return "IfcBoundaryEdgeCondition";
-				yield return "IfcBoundaryFaceCondition";
-				yield return "IfcBoundaryNodeCondition";
-				yield return "IfcBoundaryNodeConditionWarping";
-				yield return "IfcFailureConnectionCondition";
-				yield return "IfcStructuralConnectionCondition";
-				yield return "IfcSlippageConnectionCondition";
-				yield return "IfcStructuralLoad";
-				yield return "IfcStructuralLoadLinearForce";
-				yield return "IfcStructuralLoadStatic";
-				yield return "IfcStructuralLoadPlanarForce";
-				yield return "IfcStructuralLoadSingleDisplacement";
-				yield return "IfcStructuralLoadSingleDisplacementDistortion";
-				yield return "IfcStructuralLoadSingleForce";
-				yield return "IfcStructuralLoadSingleForceWarping";
-				yield return "IfcStructuralLoadTemperature";
-				yield return "IfcBlobTexture";
-				yield return "IfcSurfaceTexture";
-				yield return "IfcCurveStyle";
-				yield return "IfcPresentationStyle";
-				yield return "IfcCurveStyleFont";
-				yield return "IfcCurveStyleFontAndScaling";
-				yield return "IfcCurveStyleFontPattern";
-				yield return "IfcDraughtingPreDefinedCurveFont";
-				yield return "IfcPreDefinedCurveFont";
-				yield return "IfcExternallyDefinedHatchStyle";
-				yield return "IfcExternallyDefinedSurfaceStyle";
-				yield return "IfcFillAreaStyle";
-				yield return "IfcFillAreaStyleHatching";
-				yield return "IfcFillAreaStyleTiles";
-				yield return "IfcImageTexture";
-				yield return "IfcPixelTexture";
-				yield return "IfcPresentationStyleAssignment";
-				yield return "IfcSurfaceStyle";
-				yield return "IfcSurfaceStyleLighting";
-				yield return "IfcSurfaceStyleRefraction";
-				yield return "IfcSurfaceStyleRendering";
-				yield return "IfcSurfaceStyleShading";
-				yield return "IfcSurfaceStyleWithTextures";
-				yield return "IfcTextStyle";
-				yield return "IfcTextStyleForDefinedFont";
-				yield return "IfcTextStyleTextModel";
-				yield return "IfcFillAreaStyleTileSymbolWithStyle";
-				yield return "IfcNullStyle";
-				yield return "IfcOneDirectionRepeatFactor";
-				yield return "IfcSpecularExponent";
-				yield return "IfcSpecularRoughness";
-				yield return "IfcSymbolStyle";
-				yield return "IfcTextAlignment";
-				yield return "IfcTextDecoration";
-				yield return "IfcTextStyleWithBoxCharacteristics";
-				yield return "IfcTextTransformation";
-				yield return "IfcTwoDirectionRepeatFactor";
-				yield return "IfcBeam";
-				yield return "IfcBeamType";
-				yield return "IfcBuildingElementType";
-				yield return "IfcColumn";
-				yield return "IfcColumnType";
-				yield return "IfcCurtainWall";
-				yield return "IfcCurtainWallType";
-				yield return "IfcDoor";
-				yield return "IfcDoorLiningProperties";
-				yield return "IfcDoorPanelProperties";
-				yield return "IfcDoorStyle";
-				yield return "IfcMember";
-				yield return "IfcMemberType";
-				yield return "IfcPlate";
-				yield return "IfcPlateType";
-				yield return "IfcRailing";
-				yield return "IfcRailingType";
-				yield return "IfcRamp";
-				yield return "IfcRampFlight";
-				yield return "IfcRampFlightType";
-				yield return "IfcRelConnectsPathElements";
-				yield return "IfcRelConnectsElements";
-				yield return "IfcRoof";
-				yield return "IfcSlab";
-				yield return "IfcSlabType";
-				yield return "IfcStair";
-				yield return "IfcStairFlight";
-				yield return "IfcStairFlightType";
-				yield return "IfcWall";
-				yield return "IfcWallStandardCase";
-				yield return "IfcWallType";
-				yield return "IfcWindow";
-				yield return "IfcWindowLiningProperties";
-				yield return "IfcWindowPanelProperties";
-				yield return "IfcWindowStyle";
-				yield return "IfcAsset";
-				yield return "IfcFurnitureType";
-				yield return "IfcFurnishingElementType";
-				yield return "IfcInventory";
-				yield return "IfcOccupant";
-				yield return "IfcActor";
-				yield return "IfcSystemFurnitureElementType";
-				yield return "IfcRelOccupiesSpaces";
-				yield return "IfcRelAssignsToActor";
-				yield return "IfcServiceLife";
-				yield return "IfcServiceLifeFactor";
-				yield return "IfcArbitraryClosedProfileDef";
-				yield return "IfcProfileDef";
-				yield return "IfcArbitraryOpenProfileDef";
-				yield return "IfcArbitraryProfileDefWithVoids";
-				yield return "IfcAsymmetricIShapeProfileDef";
-				yield return "IfcIShapeProfileDef";
-				yield return "IfcParameterizedProfileDef";
-				yield return "IfcCenterLineProfileDef";
-				yield return "IfcCircleHollowProfileDef";
-				yield return "IfcCircleProfileDef";
-				yield return "IfcCompositeProfileDef";
-				yield return "IfcCShapeProfileDef";
-				yield return "IfcDerivedProfileDef";
-				yield return "IfcEllipseProfileDef";
-				yield return "IfcLShapeProfileDef";
-				yield return "IfcRectangleHollowProfileDef";
-				yield return "IfcRectangleProfileDef";
-				yield return "IfcRoundedRectangleProfileDef";
-				yield return "IfcTrapeziumProfileDef";
-				yield return "IfcTShapeProfileDef";
-				yield return "IfcUShapeProfileDef";
-				yield return "IfcZShapeProfileDef";
-				yield return "IfcCraneRailAShapeProfileDef";
-				yield return "IfcCraneRailFShapeProfileDef";
-				yield return "IfcApplication";
-				yield return "IfcOwnerHistory";
-				yield return "IfcTable";
-				yield return "IfcTableRow";
-				yield return "IfcGloballyUniqueId";
-				yield return "IfcAnnotationFillArea";
-				yield return "IfcTextLiteral";
-				yield return "IfcTextLiteralWithExtent";
-				yield return "IfcTextureCoordinate";
-				yield return "IfcTextureCoordinateGenerator";
-				yield return "IfcTextureMap";
-				yield return "IfcTextureVertex";
-				yield return "IfcAnnotationFillAreaOccurrence";
-				yield return "IfcAnnotationSurface";
-				yield return "IfcAnnotationSurfaceOccurrence";
-				yield return "IfcAnnotationTextOccurrence";
-				yield return "IfcBoxAlignment";
-				yield return "IfcDefinedSymbol";
-				yield return "IfcExternallyDefinedSymbol";
-				yield return "IfcVertexBasedTextureMap";
-				yield return "IfcAnnotation";
-				yield return "IfcBuilding";
-				yield return "IfcSpatialStructureElement";
-				yield return "IfcBuildingElementProxy";
-				yield return "IfcBuildingElementProxyType";
-				yield return "IfcBuildingStorey";
-				yield return "IfcCovering";
-				yield return "IfcCoveringType";
-				yield return "IfcElementAssembly";
-				yield return "IfcElementQuantity";
-				yield return "IfcFeatureElementAddition";
-				yield return "IfcFurnishingElement";
-				yield return "IfcGrid";
-				yield return "IfcOpeningElement";
-				yield return "IfcProjectionElement";
-				yield return "IfcRelAssociatesMaterial";
-				yield return "IfcRelConnectsPorts";
-				yield return "IfcRelConnectsPortToElement";
-				yield return "IfcRelConnectsWithRealizingElements";
-				yield return "IfcRelContainedInSpatialStructure";
-				yield return "IfcRelCoversBldgElements";
-				yield return "IfcRelCoversSpaces";
-				yield return "IfcRelFillsElement";
-				yield return "IfcRelProjectsElement";
-				yield return "IfcRelReferencedInSpatialStructure";
-				yield return "IfcRelServicesBuildings";
-				yield return "IfcRelSpaceBoundary";
-				yield return "IfcRelVoidsElement";
-				yield return "IfcSite";
-				yield return "IfcSpace";
-				yield return "IfcSpaceType";
-				yield return "IfcSpatialStructureElementType";
-				yield return "IfcTransportElement";
-				yield return "IfcTransportElementType";
-				yield return "IfcVirtualElement";
-				yield return "IfcZone";
-				yield return "IfcElectricalElement";
-				yield return "IfcEquipmentElement";
-				yield return "IfcProject";
-				yield return "IfcPropertySet";
-				yield return "IfcProxy";
-				yield return "IfcRelAggregates";
-				yield return "IfcRelDecomposes";
-				yield return "IfcRelAssignsToGroup";
-				yield return "IfcRelAssignsToProcess";
-				yield return "IfcRelAssignsToProduct";
-				yield return "IfcRelAssignsToResource";
-				yield return "IfcRelAssociatesClassification";
-				yield return "IfcRelAssociatesDocument";
-				yield return "IfcRelAssociatesLibrary";
-				yield return "IfcRelDefines";
-				yield return "IfcRelDefinesByProperties";
-				yield return "IfcRelDefinesByType";
-				yield return "IfcRelNests";
-				yield return "IfcRelSequence";
-				yield return "IfcResource";
-				yield return "IfcRelOverridesProperties";
-				yield return "IfcAirTerminalBoxType";
-				yield return "IfcAirTerminalType";
-				yield return "IfcAirToAirHeatRecoveryType";
-				yield return "IfcBoilerType";
-				yield return "IfcChillerType";
-				yield return "IfcCoilType";
-				yield return "IfcCompressorType";
-				yield return "IfcCondenserType";
-				yield return "IfcCooledBeamType";
-				yield return "IfcCoolingTowerType";
-				yield return "IfcDamperType";
-				yield return "IfcDuctFittingType";
-				yield return "IfcDuctSegmentType";
-				yield return "IfcDuctSilencerType";
-				yield return "IfcEvaporativeCoolerType";
-				yield return "IfcEvaporatorType";
-				yield return "IfcFanType";
-				yield return "IfcFilterType";
-				yield return "IfcFlowMeterType";
-				yield return "IfcGasTerminalType";
-				yield return "IfcHeatExchangerType";
-				yield return "IfcHumidifierType";
-				yield return "IfcPipeFittingType";
-				yield return "IfcPipeSegmentType";
-				yield return "IfcPumpType";
-				yield return "IfcSpaceHeaterType";
-				yield return "IfcTankType";
-				yield return "IfcTubeBundleType";
-				yield return "IfcUnitaryEquipmentType";
-				yield return "IfcValveType";
-				yield return "IfcVibrationIsolatorType";
-				yield return "Ifc2DCompositeCurve";
-				yield return "IfcCompositeCurve";
-				yield return "IfcBoundedCurve";
-				yield return "IfcCurve";
-				yield return "IfcAxis1Placement";
-				yield return "IfcPlacement";
-				yield return "IfcAxis2Placement2D";
-				yield return "IfcAxis2Placement3D";
-				yield return "IfcBezierCurve";
-				yield return "IfcBSplineCurve";
-				yield return "IfcBoundedSurface";
-				yield return "IfcSurface";
-				yield return "IfcCartesianPoint";
-				yield return "IfcPoint";
-				yield return "IfcCartesianTransformationOperator";
-				yield return "IfcCartesianTransformationOperator2D";
-				yield return "IfcCartesianTransformationOperator2DnonUniform";
-				yield return "IfcCartesianTransformationOperator3D";
-				yield return "IfcCartesianTransformationOperator3DnonUniform";
-				yield return "IfcCircle";
-				yield return "IfcConic";
-				yield return "IfcCompositeCurveSegment";
-				yield return "IfcCurveBoundedPlane";
-				yield return "IfcDimensionCount";
-				yield return "IfcDirection";
-				yield return "IfcElementarySurface";
-				yield return "IfcEllipse";
-				yield return "IfcLine";
-				yield return "IfcMappedItem";
-				yield return "IfcOffsetCurve2D";
-				yield return "IfcOffsetCurve3D";
-				yield return "IfcPlane";
-				yield return "IfcPointOnCurve";
-				yield return "IfcPointOnSurface";
-				yield return "IfcPolyline";
-				yield return "IfcRationalBezierCurve";
-				yield return "IfcRectangularTrimmedSurface";
-				yield return "IfcRepresentationMap";
-				yield return "IfcSurfaceOfLinearExtrusion";
-				yield return "IfcSweptSurface";
-				yield return "IfcSurfaceOfRevolution";
-				yield return "IfcTrimmedCurve";
-				yield return "IfcVector";
-				yield return "IfcBlock";
-				yield return "IfcCsgPrimitive3D";
-				yield return "IfcBooleanClippingResult";
-				yield return "IfcBooleanResult";
-				yield return "IfcBoundingBox";
-				yield return "IfcBoxedHalfSpace";
-				yield return "IfcHalfSpaceSolid";
-				yield return "IfcCsgSolid";
-				yield return "IfcSolidModel";
-				yield return "IfcExtrudedAreaSolid";
-				yield return "IfcSweptAreaSolid";
-				yield return "IfcFaceBasedSurfaceModel";
-				yield return "IfcFacetedBrep";
-				yield return "IfcManifoldSolidBrep";
-				yield return "IfcFacetedBrepWithVoids";
-				yield return "IfcGeometricCurveSet";
-				yield return "IfcGeometricSet";
-				yield return "IfcPolygonalBoundedHalfSpace";
-				yield return "IfcRectangularPyramid";
-				yield return "IfcRevolvedAreaSolid";
-				yield return "IfcRightCircularCone";
-				yield return "IfcRightCircularCylinder";
-				yield return "IfcSectionedSpine";
-				yield return "IfcShellBasedSurfaceModel";
-				yield return "IfcSphere";
-				yield return "IfcSurfaceCurveSweptAreaSolid";
-				yield return "IfcSweptDiskSolid";
-				yield return "IfcConnectionCurveGeometry";
-				yield return "IfcConnectionGeometry";
-				yield return "IfcConnectionPointEccentricity";
-				yield return "IfcConnectionPointGeometry";
-				yield return "IfcConnectionPortGeometry";
-				yield return "IfcConnectionSurfaceGeometry";
-				yield return "IfcGridAxis";
-				yield return "IfcGridPlacement";
-				yield return "IfcObjectPlacement";
-				yield return "IfcLocalPlacement";
-				yield return "IfcVirtualGridIntersection";
-				yield return "IfcActionRequest";
-				yield return "IfcCondition";
-				yield return "IfcConditionCriterion";
-				yield return "IfcEquipmentStandard";
-				yield return "IfcFurnitureStandard";
-				yield return "IfcMove";
-				yield return "IfcOrderAction";
-				yield return "IfcPermit";
-				yield return "IfcClassification";
-				yield return "IfcClassificationItem";
-				yield return "IfcClassificationItemRelationship";
-				yield return "IfcClassificationNotation";
-				yield return "IfcClassificationNotationFacet";
-				yield return "IfcClassificationReference";
-				yield return "IfcDocumentElectronicFormat";
-				yield return "IfcDocumentInformation";
-				yield return "IfcDocumentInformationRelationship";
-				yield return "IfcDocumentReference";
-				yield return "IfcLibraryInformation";
-				yield return "IfcLibraryReference";
-				yield return "IfcCableCarrierFittingType";
-				yield return "IfcCableCarrierSegmentType";
-				yield return "IfcCableSegmentType";
-				yield return "IfcElectricalCircuit";
-				yield return "IfcElectricApplianceType";
-				yield return "IfcElectricDistributionPoint";
-				yield return "IfcElectricFlowStorageDeviceType";
-				yield return "IfcElectricGeneratorType";
-				yield return "IfcElectricHeaterType";
-				yield return "IfcElectricMotorType";
-				yield return "IfcElectricTimeControlType";
-				yield return "IfcJunctionBoxType";
-				yield return "IfcLampType";
-				yield return "IfcLightFixtureType";
-				yield return "IfcMotorConnectionType";
-				yield return "IfcOutletType";
-				yield return "IfcProtectiveDeviceType";
-				yield return "IfcSwitchingDeviceType";
-				yield return "IfcTransformerType";
-				yield return "IfcCalendarDate";
-				yield return "IfcCoordinatedUniversalTimeOffset";
-				yield return "IfcDateAndTime";
-				yield return "IfcDayInMonthNumber";
-				yield return "IfcDaylightSavingHour";
-				yield return "IfcHourInDay";
-				yield return "IfcLocalTime";
-				yield return "IfcMinuteInHour";
-				yield return "IfcMonthInYearNumber";
-				yield return "IfcSecondInMinute";
-				yield return "IfcYearNumber";
-				yield return "IfcAppliedValue";
-				yield return "IfcAppliedValueRelationship";
-				yield return "IfcCostValue";
-				yield return "IfcCurrencyRelationship";
-				yield return "IfcEnvironmentalImpactValue";
-				yield return "IfcReferencesValueDocument";
-				yield return "IfcPerformanceHistory";
-				yield return "IfcRelAssociatesApproval";
-				yield return "IfcRelAssociatesConstraint";
-				yield return "IfcTimeSeriesSchedule";
-				yield return "IfcConstructionEquipmentResource";
-				yield return "IfcConstructionResource";
-				yield return "IfcConstructionMaterialResource";
-				yield return "IfcConstructionProductResource";
-				yield return "IfcCrewResource";
-				yield return "IfcLaborResource";
-				yield return "IfcSubContractResource";
-				yield return "IfcConstraint";
-				yield return "IfcConstraintAggregationRelationship";
-				yield return "IfcConstraintClassificationRelationship";
-				yield return "IfcConstraintRelationship";
-				yield return "IfcMetric";
-				yield return "IfcObjective";
-				yield return "IfcPropertyConstraintRelationship";
-				yield return "IfcActuatorType";
-				yield return "IfcAlarmType";
-				yield return "IfcControllerType";
-				yield return "IfcFlowInstrumentType";
-				yield return "IfcSensorType";
-				yield return "IfcPermeableCoveringProperties";
-				yield return "IfcRelInteractionRequirements";
-				yield return "IfcSpaceProgram";
-				yield return "IfcApproval";
-				yield return "IfcApprovalActorRelationship";
-				yield return "IfcApprovalPropertyRelationship";
-				yield return "IfcApprovalRelationship";
-				yield return "IfcActorRole";
-				yield return "IfcAddress";
-				yield return "IfcOrganization";
-				yield return "IfcOrganizationRelationship";
-				yield return "IfcPerson";
-				yield return "IfcPersonAndOrganization";
-				yield return "IfcPostalAddress";
-				yield return "IfcTelecomAddress";
+				yield return "Ifc2DCompositeCurve"; // 1
+				yield return "IfcAbsorbedDoseMeasure"; // 2
+				yield return "IfcAccelerationMeasure"; // 3
+				yield return "IfcActionRequest"; // 4
+				yield return "IfcActor"; // 5
+				yield return "IfcActorRole"; // 6
+				yield return "IfcActuator"; // 7
+				yield return "IfcActuatorType"; // 8
+				yield return "IfcAddress"; // 9
+				yield return "IfcAdvancedBrep"; // 10
+				yield return "IfcAdvancedBrepWithVoids"; // 11
+				yield return "IfcAdvancedFace"; // 12
+				yield return "IfcAirTerminal"; // 13
+				yield return "IfcAirTerminalBox"; // 14
+				yield return "IfcAirTerminalBoxType"; // 15
+				yield return "IfcAirTerminalType"; // 16
+				yield return "IfcAirToAirHeatRecovery"; // 17
+				yield return "IfcAirToAirHeatRecoveryType"; // 18
+				yield return "IfcAlarm"; // 19
+				yield return "IfcAlarmType"; // 20
+				yield return "IfcAlignment"; // 21
+				yield return "IfcAlignment2DHorizontal"; // 22
+				yield return "IfcAlignment2DHorizontalSegment"; // 23
+				yield return "IfcAlignment2DSegment"; // 24
+				yield return "IfcAlignment2DVerSegCircularArc"; // 25
+				yield return "IfcAlignment2DVerSegLine"; // 26
+				yield return "IfcAlignment2DVerSegParabolicArc"; // 27
+				yield return "IfcAlignment2DVertical"; // 28
+				yield return "IfcAlignment2DVerticalSegment"; // 29
+				yield return "IfcAlignmentCurve"; // 30
+				yield return "IfcAmountOfSubstanceMeasure"; // 31
+				yield return "IfcAngularDimension"; // 32
+				yield return "IfcAngularVelocityMeasure"; // 33
+				yield return "IfcAnnotation"; // 34
+				yield return "IfcAnnotationCurveOccurrence"; // 35
+				yield return "IfcAnnotationFillArea"; // 36
+				yield return "IfcAnnotationFillAreaOccurrence"; // 37
+				yield return "IfcAnnotationOccurrence"; // 38
+				yield return "IfcAnnotationSurface"; // 39
+				yield return "IfcAnnotationSurfaceOccurrence"; // 40
+				yield return "IfcAnnotationSymbolOccurrence"; // 41
+				yield return "IfcAnnotationTextOccurrence"; // 42
+				yield return "IfcApplication"; // 43
+				yield return "IfcAppliedValue"; // 44
+				yield return "IfcAppliedValueRelationship"; // 45
+				yield return "IfcApproval"; // 46
+				yield return "IfcApprovalActorRelationship"; // 47
+				yield return "IfcApprovalPropertyRelationship"; // 48
+				yield return "IfcApprovalRelationship"; // 49
+				yield return "IfcArbitraryClosedProfileDef"; // 50
+				yield return "IfcArbitraryOpenProfileDef"; // 51
+				yield return "IfcArbitraryProfileDefWithVoids"; // 52
+				yield return "IfcArcIndex"; // 53
+				yield return "IfcAreaDensityMeasure"; // 54
+				yield return "IfcAreaMeasure"; // 55
+				yield return "IfcAsset"; // 56
+				yield return "IfcAsymmetricIShapeProfileDef"; // 57
+				yield return "IfcAudioVisualAppliance"; // 58
+				yield return "IfcAudioVisualApplianceType"; // 59
+				yield return "IfcAxis1Placement"; // 60
+				yield return "IfcAxis2Placement2D"; // 61
+				yield return "IfcAxis2Placement3D"; // 62
+				yield return "IfcBeam"; // 63
+				yield return "IfcBeamStandardCase"; // 64
+				yield return "IfcBeamType"; // 65
+				yield return "IfcBezierCurve"; // 66
+				yield return "IfcBinary"; // 67
+				yield return "IfcBlobTexture"; // 68
+				yield return "IfcBlock"; // 69
+				yield return "IfcBoiler"; // 70
+				yield return "IfcBoilerType"; // 71
+				yield return "IfcBoolean"; // 72
+				yield return "IfcBooleanClippingResult"; // 73
+				yield return "IfcBooleanResult"; // 74
+				yield return "IfcBoundaryCondition"; // 75
+				yield return "IfcBoundaryCurve"; // 76
+				yield return "IfcBoundaryEdgeCondition"; // 77
+				yield return "IfcBoundaryFaceCondition"; // 78
+				yield return "IfcBoundaryNodeCondition"; // 79
+				yield return "IfcBoundaryNodeConditionWarping"; // 80
+				yield return "IfcBoundedCurve"; // 81
+				yield return "IfcBoundedSurface"; // 82
+				yield return "IfcBoundingBox"; // 83
+				yield return "IfcBoxAlignment"; // 84
+				yield return "IfcBoxedHalfSpace"; // 85
+				yield return "IfcBSplineCurve"; // 86
+				yield return "IfcBSplineCurveWithKnots"; // 87
+				yield return "IfcBSplineSurface"; // 88
+				yield return "IfcBSplineSurfaceWithKnots"; // 89
+				yield return "IfcBuilding"; // 90
+				yield return "IfcBuildingElement"; // 91
+				yield return "IfcBuildingElementComponent"; // 92
+				yield return "IfcBuildingElementPart"; // 93
+				yield return "IfcBuildingElementPartType"; // 94
+				yield return "IfcBuildingElementProxy"; // 95
+				yield return "IfcBuildingElementProxyType"; // 96
+				yield return "IfcBuildingElementType"; // 97
+				yield return "IfcBuildingStorey"; // 98
+				yield return "IfcBuildingSystem"; // 99
+				yield return "IfcBurner"; // 100
+				yield return "IfcBurnerType"; // 101
+				yield return "IfcCableCarrierFitting"; // 102
+				yield return "IfcCableCarrierFittingType"; // 103
+				yield return "IfcCableCarrierSegment"; // 104
+				yield return "IfcCableCarrierSegmentType"; // 105
+				yield return "IfcCableFitting"; // 106
+				yield return "IfcCableFittingType"; // 107
+				yield return "IfcCableSegment"; // 108
+				yield return "IfcCableSegmentType"; // 109
+				yield return "IfcCalendarDate"; // 110
+				yield return "IfcCardinalPointReference"; // 111
+				yield return "IfcCartesianPoint"; // 112
+				yield return "IfcCartesianPointList"; // 113
+				yield return "IfcCartesianPointList2D"; // 114
+				yield return "IfcCartesianPointList3D"; // 115
+				yield return "IfcCartesianTransformationOperator"; // 116
+				yield return "IfcCartesianTransformationOperator2D"; // 117
+				yield return "IfcCartesianTransformationOperator2DnonUniform"; // 118
+				yield return "IfcCartesianTransformationOperator3D"; // 119
+				yield return "IfcCartesianTransformationOperator3DnonUniform"; // 120
+				yield return "IfcCenterLineProfileDef"; // 121
+				yield return "IfcChamferEdgeFeature"; // 122
+				yield return "IfcChiller"; // 123
+				yield return "IfcChillerType"; // 124
+				yield return "IfcChimney"; // 125
+				yield return "IfcChimneyType"; // 126
+				yield return "IfcCircle"; // 127
+				yield return "IfcCircleHollowProfileDef"; // 128
+				yield return "IfcCircleProfileDef"; // 129
+				yield return "IfcCircularArcSegment2D"; // 130
+				yield return "IfcCivilElement"; // 131
+				yield return "IfcCivilElementType"; // 132
+				yield return "IfcClassification"; // 133
+				yield return "IfcClassificationItem"; // 134
+				yield return "IfcClassificationItemRelationship"; // 135
+				yield return "IfcClassificationNotation"; // 136
+				yield return "IfcClassificationNotationFacet"; // 137
+				yield return "IfcClassificationReference"; // 138
+				yield return "IfcClosedShell"; // 139
+				yield return "IfcCoil"; // 140
+				yield return "IfcCoilType"; // 141
+				yield return "IfcColourRgb"; // 142
+				yield return "IfcColourRgbList"; // 143
+				yield return "IfcColourSpecification"; // 144
+				yield return "IfcColumn"; // 145
+				yield return "IfcColumnStandardCase"; // 146
+				yield return "IfcColumnType"; // 147
+				yield return "IfcCommunicationsAppliance"; // 148
+				yield return "IfcCommunicationsApplianceType"; // 149
+				yield return "IfcComplexNumber"; // 150
+				yield return "IfcComplexProperty"; // 151
+				yield return "IfcComplexPropertyTemplate"; // 152
+				yield return "IfcCompositeCurve"; // 153
+				yield return "IfcCompositeCurveOnSurface"; // 154
+				yield return "IfcCompositeCurveSegment"; // 155
+				yield return "IfcCompositeProfileDef"; // 156
+				yield return "IfcCompoundPlaneAngleMeasure"; // 157
+				yield return "IfcCompressor"; // 158
+				yield return "IfcCompressorType"; // 159
+				yield return "IfcCondenser"; // 160
+				yield return "IfcCondenserType"; // 161
+				yield return "IfcCondition"; // 162
+				yield return "IfcConditionCriterion"; // 163
+				yield return "IfcConic"; // 164
+				yield return "IfcConnectedFaceSet"; // 165
+				yield return "IfcConnectionCurveGeometry"; // 166
+				yield return "IfcConnectionGeometry"; // 167
+				yield return "IfcConnectionPointEccentricity"; // 168
+				yield return "IfcConnectionPointGeometry"; // 169
+				yield return "IfcConnectionPortGeometry"; // 170
+				yield return "IfcConnectionSurfaceGeometry"; // 171
+				yield return "IfcConnectionVolumeGeometry"; // 172
+				yield return "IfcConstraint"; // 173
+				yield return "IfcConstraintAggregationRelationship"; // 174
+				yield return "IfcConstraintClassificationRelationship"; // 175
+				yield return "IfcConstraintRelationship"; // 176
+				yield return "IfcConstructionEquipmentResource"; // 177
+				yield return "IfcConstructionEquipmentResourceType"; // 178
+				yield return "IfcConstructionMaterialResource"; // 179
+				yield return "IfcConstructionMaterialResourceType"; // 180
+				yield return "IfcConstructionProductResource"; // 181
+				yield return "IfcConstructionProductResourceType"; // 182
+				yield return "IfcConstructionResource"; // 183
+				yield return "IfcConstructionResourceType"; // 184
+				yield return "IfcContext"; // 185
+				yield return "IfcContextDependentMeasure"; // 186
+				yield return "IfcContextDependentUnit"; // 187
+				yield return "IfcControl"; // 188
+				yield return "IfcController"; // 189
+				yield return "IfcControllerType"; // 190
+				yield return "IfcConversionBasedUnit"; // 191
+				yield return "IfcConversionBasedUnitWithOffset"; // 192
+				yield return "IfcCooledBeam"; // 193
+				yield return "IfcCooledBeamType"; // 194
+				yield return "IfcCoolingTower"; // 195
+				yield return "IfcCoolingTowerType"; // 196
+				yield return "IfcCoordinatedUniversalTimeOffset"; // 197
+				yield return "IfcCoordinateOperation"; // 198
+				yield return "IfcCoordinateReferenceSystem"; // 199
+				yield return "IfcCostItem"; // 200
+				yield return "IfcCostSchedule"; // 201
+				yield return "IfcCostValue"; // 202
+				yield return "IfcCountMeasure"; // 203
+				yield return "IfcCovering"; // 204
+				yield return "IfcCoveringType"; // 205
+				yield return "IfcCraneRailAShapeProfileDef"; // 206
+				yield return "IfcCraneRailFShapeProfileDef"; // 207
+				yield return "IfcCrewResource"; // 208
+				yield return "IfcCrewResourceType"; // 209
+				yield return "IfcCsgPrimitive3D"; // 210
+				yield return "IfcCsgSolid"; // 211
+				yield return "IfcCShapeProfileDef"; // 212
+				yield return "IfcCurrencyRelationship"; // 213
+				yield return "IfcCurtainWall"; // 214
+				yield return "IfcCurtainWallType"; // 215
+				yield return "IfcCurvatureMeasure"; // 216
+				yield return "IfcCurve"; // 217
+				yield return "IfcCurveBoundedPlane"; // 218
+				yield return "IfcCurveBoundedSurface"; // 219
+				yield return "IfcCurveSegment2D"; // 220
+				yield return "IfcCurveStyle"; // 221
+				yield return "IfcCurveStyleFont"; // 222
+				yield return "IfcCurveStyleFontAndScaling"; // 223
+				yield return "IfcCurveStyleFontPattern"; // 224
+				yield return "IfcCylindricalSurface"; // 225
+				yield return "IfcDamper"; // 226
+				yield return "IfcDamperType"; // 227
+				yield return "IfcDate"; // 228
+				yield return "IfcDateAndTime"; // 229
+				yield return "IfcDateTime"; // 230
+				yield return "IfcDayInMonthNumber"; // 231
+				yield return "IfcDayInWeekNumber"; // 232
+				yield return "IfcDaylightSavingHour"; // 233
+				yield return "IfcDefinedSymbol"; // 234
+				yield return "IfcDerivedProfileDef"; // 235
+				yield return "IfcDerivedUnit"; // 236
+				yield return "IfcDerivedUnitElement"; // 237
+				yield return "IfcDescriptiveMeasure"; // 238
+				yield return "IfcDiameterDimension"; // 239
+				yield return "IfcDimensionalExponents"; // 240
+				yield return "IfcDimensionCalloutRelationship"; // 241
+				yield return "IfcDimensionCount"; // 242
+				yield return "IfcDimensionCurve"; // 243
+				yield return "IfcDimensionCurveDirectedCallout"; // 244
+				yield return "IfcDimensionCurveTerminator"; // 245
+				yield return "IfcDimensionPair"; // 246
+				yield return "IfcDirection"; // 247
+				yield return "IfcDiscreteAccessory"; // 248
+				yield return "IfcDiscreteAccessoryType"; // 249
+				yield return "IfcDistanceExpression"; // 250
+				yield return "IfcDistributionChamberElement"; // 251
+				yield return "IfcDistributionChamberElementType"; // 252
+				yield return "IfcDistributionCircuit"; // 253
+				yield return "IfcDistributionControlElement"; // 254
+				yield return "IfcDistributionControlElementType"; // 255
+				yield return "IfcDistributionElement"; // 256
+				yield return "IfcDistributionElementType"; // 257
+				yield return "IfcDistributionFlowElement"; // 258
+				yield return "IfcDistributionFlowElementType"; // 259
+				yield return "IfcDistributionPort"; // 260
+				yield return "IfcDistributionSystem"; // 261
+				yield return "IfcDocumentElectronicFormat"; // 262
+				yield return "IfcDocumentInformation"; // 263
+				yield return "IfcDocumentInformationRelationship"; // 264
+				yield return "IfcDocumentReference"; // 265
+				yield return "IfcDoor"; // 266
+				yield return "IfcDoorLiningProperties"; // 267
+				yield return "IfcDoorPanelProperties"; // 268
+				yield return "IfcDoorStandardCase"; // 269
+				yield return "IfcDoorStyle"; // 270
+				yield return "IfcDoorType"; // 271
+				yield return "IfcDoseEquivalentMeasure"; // 272
+				yield return "IfcDraughtingCallout"; // 273
+				yield return "IfcDraughtingCalloutRelationship"; // 274
+				yield return "IfcDraughtingPreDefinedColour"; // 275
+				yield return "IfcDraughtingPreDefinedCurveFont"; // 276
+				yield return "IfcDraughtingPreDefinedTextFont"; // 277
+				yield return "IfcDuctFitting"; // 278
+				yield return "IfcDuctFittingType"; // 279
+				yield return "IfcDuctSegment"; // 280
+				yield return "IfcDuctSegmentType"; // 281
+				yield return "IfcDuctSilencer"; // 282
+				yield return "IfcDuctSilencerType"; // 283
+				yield return "IfcDuration"; // 284
+				yield return "IfcDynamicViscosityMeasure"; // 285
+				yield return "IfcEdge"; // 286
+				yield return "IfcEdgeCurve"; // 287
+				yield return "IfcEdgeFeature"; // 288
+				yield return "IfcEdgeLoop"; // 289
+				yield return "IfcElectricalBaseProperties"; // 290
+				yield return "IfcElectricalCircuit"; // 291
+				yield return "IfcElectricalElement"; // 292
+				yield return "IfcElectricAppliance"; // 293
+				yield return "IfcElectricApplianceType"; // 294
+				yield return "IfcElectricCapacitanceMeasure"; // 295
+				yield return "IfcElectricChargeMeasure"; // 296
+				yield return "IfcElectricConductanceMeasure"; // 297
+				yield return "IfcElectricCurrentMeasure"; // 298
+				yield return "IfcElectricDistributionBoard"; // 299
+				yield return "IfcElectricDistributionBoardType"; // 300
+				yield return "IfcElectricDistributionPoint"; // 301
+				yield return "IfcElectricFlowStorageDevice"; // 302
+				yield return "IfcElectricFlowStorageDeviceType"; // 303
+				yield return "IfcElectricGenerator"; // 304
+				yield return "IfcElectricGeneratorType"; // 305
+				yield return "IfcElectricHeaterType"; // 306
+				yield return "IfcElectricMotor"; // 307
+				yield return "IfcElectricMotorType"; // 308
+				yield return "IfcElectricResistanceMeasure"; // 309
+				yield return "IfcElectricTimeControl"; // 310
+				yield return "IfcElectricTimeControlType"; // 311
+				yield return "IfcElectricVoltageMeasure"; // 312
+				yield return "IfcElement"; // 313
+				yield return "IfcElementarySurface"; // 314
+				yield return "IfcElementAssembly"; // 315
+				yield return "IfcElementAssemblyType"; // 316
+				yield return "IfcElementComponent"; // 317
+				yield return "IfcElementComponentType"; // 318
+				yield return "IfcElementQuantity"; // 319
+				yield return "IfcElementType"; // 320
+				yield return "IfcEllipse"; // 321
+				yield return "IfcEllipseProfileDef"; // 322
+				yield return "IfcEnergyConversionDevice"; // 323
+				yield return "IfcEnergyConversionDeviceType"; // 324
+				yield return "IfcEnergyMeasure"; // 325
+				yield return "IfcEnergyProperties"; // 326
+				yield return "IfcEngine"; // 327
+				yield return "IfcEngineType"; // 328
+				yield return "IfcEnvironmentalImpactValue"; // 329
+				yield return "IfcEquipmentElement"; // 330
+				yield return "IfcEquipmentStandard"; // 331
+				yield return "IfcEvaporativeCooler"; // 332
+				yield return "IfcEvaporativeCoolerType"; // 333
+				yield return "IfcEvaporator"; // 334
+				yield return "IfcEvaporatorType"; // 335
+				yield return "IfcEvent"; // 336
+				yield return "IfcEventTime"; // 337
+				yield return "IfcEventType"; // 338
+				yield return "IfcExtendedMaterialProperties"; // 339
+				yield return "IfcExtendedProperties"; // 340
+				yield return "IfcExternalInformation"; // 341
+				yield return "IfcExternallyDefinedHatchStyle"; // 342
+				yield return "IfcExternallyDefinedSurfaceStyle"; // 343
+				yield return "IfcExternallyDefinedSymbol"; // 344
+				yield return "IfcExternallyDefinedTextFont"; // 345
+				yield return "IfcExternalReference"; // 346
+				yield return "IfcExternalReferenceRelationship"; // 347
+				yield return "IfcExternalSpatialElement"; // 348
+				yield return "IfcExternalSpatialStructureElement"; // 349
+				yield return "IfcExtrudedAreaSolid"; // 350
+				yield return "IfcExtrudedAreaSolidTapered"; // 351
+				yield return "IfcFace"; // 352
+				yield return "IfcFaceBasedSurfaceModel"; // 353
+				yield return "IfcFaceBound"; // 354
+				yield return "IfcFaceOuterBound"; // 355
+				yield return "IfcFaceSurface"; // 356
+				yield return "IfcFacetedBrep"; // 357
+				yield return "IfcFacetedBrepWithVoids"; // 358
+				yield return "IfcFailureConnectionCondition"; // 359
+				yield return "IfcFan"; // 360
+				yield return "IfcFanType"; // 361
+				yield return "IfcFastener"; // 362
+				yield return "IfcFastenerType"; // 363
+				yield return "IfcFeatureElement"; // 364
+				yield return "IfcFeatureElementAddition"; // 365
+				yield return "IfcFeatureElementSubtraction"; // 366
+				yield return "IfcFillAreaStyle"; // 367
+				yield return "IfcFillAreaStyleHatching"; // 368
+				yield return "IfcFillAreaStyleTiles"; // 369
+				yield return "IfcFillAreaStyleTileSymbolWithStyle"; // 370
+				yield return "IfcFilter"; // 371
+				yield return "IfcFilterType"; // 372
+				yield return "IfcFireSuppressionTerminal"; // 373
+				yield return "IfcFireSuppressionTerminalType"; // 374
+				yield return "IfcFixedReferenceSweptAreaSolid"; // 375
+				yield return "IfcFlowController"; // 376
+				yield return "IfcFlowControllerType"; // 377
+				yield return "IfcFlowFitting"; // 378
+				yield return "IfcFlowFittingType"; // 379
+				yield return "IfcFlowInstrument"; // 380
+				yield return "IfcFlowInstrumentType"; // 381
+				yield return "IfcFlowMeter"; // 382
+				yield return "IfcFlowMeterType"; // 383
+				yield return "IfcFlowMovingDevice"; // 384
+				yield return "IfcFlowMovingDeviceType"; // 385
+				yield return "IfcFlowSegment"; // 386
+				yield return "IfcFlowSegmentType"; // 387
+				yield return "IfcFlowStorageDevice"; // 388
+				yield return "IfcFlowStorageDeviceType"; // 389
+				yield return "IfcFlowTerminal"; // 390
+				yield return "IfcFlowTerminalType"; // 391
+				yield return "IfcFlowTreatmentDevice"; // 392
+				yield return "IfcFlowTreatmentDeviceType"; // 393
+				yield return "IfcFluidFlowProperties"; // 394
+				yield return "IfcFontStyle"; // 395
+				yield return "IfcFontVariant"; // 396
+				yield return "IfcFontWeight"; // 397
+				yield return "IfcFooting"; // 398
+				yield return "IfcFootingType"; // 399
+				yield return "IfcForceMeasure"; // 400
+				yield return "IfcFrequencyMeasure"; // 401
+				yield return "IfcFuelProperties"; // 402
+				yield return "IfcFurnishingElement"; // 403
+				yield return "IfcFurnishingElementType"; // 404
+				yield return "IfcFurniture"; // 405
+				yield return "IfcFurnitureStandard"; // 406
+				yield return "IfcFurnitureType"; // 407
+				yield return "IfcGasTerminalType"; // 408
+				yield return "IfcGeneralMaterialProperties"; // 409
+				yield return "IfcGeneralProfileProperties"; // 410
+				yield return "IfcGeographicElement"; // 411
+				yield return "IfcGeographicElementType"; // 412
+				yield return "IfcGeometricCurveSet"; // 413
+				yield return "IfcGeometricRepresentationContext"; // 414
+				yield return "IfcGeometricRepresentationItem"; // 415
+				yield return "IfcGeometricRepresentationSubContext"; // 416
+				yield return "IfcGeometricSet"; // 417
+				yield return "IfcGloballyUniqueId"; // 418
+				yield return "IfcGrid"; // 419
+				yield return "IfcGridAxis"; // 420
+				yield return "IfcGridPlacement"; // 421
+				yield return "IfcGroup"; // 422
+				yield return "IfcHalfSpaceSolid"; // 423
+				yield return "IfcHeatExchanger"; // 424
+				yield return "IfcHeatExchangerType"; // 425
+				yield return "IfcHeatFluxDensityMeasure"; // 426
+				yield return "IfcHeatingValueMeasure"; // 427
+				yield return "IfcHourInDay"; // 428
+				yield return "IfcHumidifier"; // 429
+				yield return "IfcHumidifierType"; // 430
+				yield return "IfcHygroscopicMaterialProperties"; // 431
+				yield return "IfcIdentifier"; // 432
+				yield return "IfcIlluminanceMeasure"; // 433
+				yield return "IfcImageTexture"; // 434
+				yield return "IfcIndexedColourMap"; // 435
+				yield return "IfcIndexedPolyCurve"; // 436
+				yield return "IfcIndexedPolygonalFace"; // 437
+				yield return "IfcIndexedPolygonalFaceWithVoids"; // 438
+				yield return "IfcIndexedTextureMap"; // 439
+				yield return "IfcIndexedTriangleTextureMap"; // 440
+				yield return "IfcInductanceMeasure"; // 441
+				yield return "IfcInteger"; // 442
+				yield return "IfcIntegerCountRateMeasure"; // 443
+				yield return "IfcInterceptor"; // 444
+				yield return "IfcInterceptorType"; // 445
+				yield return "IfcIntersectionCurve"; // 446
+				yield return "IfcInventory"; // 447
+				yield return "IfcIonConcentrationMeasure"; // 448
+				yield return "IfcIrregularTimeSeries"; // 449
+				yield return "IfcIrregularTimeSeriesValue"; // 450
+				yield return "IfcIShapeProfileDef"; // 451
+				yield return "IfcIsothermalMoistureCapacityMeasure"; // 452
+				yield return "IfcJunctionBox"; // 453
+				yield return "IfcJunctionBoxType"; // 454
+				yield return "IfcKinematicViscosityMeasure"; // 455
+				yield return "IfcLabel"; // 456
+				yield return "IfcLaborResource"; // 457
+				yield return "IfcLaborResourceType"; // 458
+				yield return "IfcLagTime"; // 459
+				yield return "IfcLamp"; // 460
+				yield return "IfcLampType"; // 461
+				yield return "IfcLanguageId"; // 462
+				yield return "IfcLengthMeasure"; // 463
+				yield return "IfcLibraryInformation"; // 464
+				yield return "IfcLibraryReference"; // 465
+				yield return "IfcLightDistributionData"; // 466
+				yield return "IfcLightFixture"; // 467
+				yield return "IfcLightFixtureType"; // 468
+				yield return "IfcLightIntensityDistribution"; // 469
+				yield return "IfcLightSource"; // 470
+				yield return "IfcLightSourceAmbient"; // 471
+				yield return "IfcLightSourceDirectional"; // 472
+				yield return "IfcLightSourceGoniometric"; // 473
+				yield return "IfcLightSourcePositional"; // 474
+				yield return "IfcLightSourceSpot"; // 475
+				yield return "IfcLine"; // 476
+				yield return "IfcLinearDimension"; // 477
+				yield return "IfcLinearForceMeasure"; // 478
+				yield return "IfcLinearMomentMeasure"; // 479
+				yield return "IfcLinearPlacement"; // 480
+				yield return "IfcLinearPositioningElement"; // 481
+				yield return "IfcLinearStiffnessMeasure"; // 482
+				yield return "IfcLinearVelocityMeasure"; // 483
+				yield return "IfcLineIndex"; // 484
+				yield return "IfcLineSegment2D"; // 485
+				yield return "IfcLocalPlacement"; // 486
+				yield return "IfcLocalTime"; // 487
+				yield return "IfcLogical"; // 488
+				yield return "IfcLoop"; // 489
+				yield return "IfcLShapeProfileDef"; // 490
+				yield return "IfcLuminousFluxMeasure"; // 491
+				yield return "IfcLuminousIntensityDistributionMeasure"; // 492
+				yield return "IfcLuminousIntensityMeasure"; // 493
+				yield return "IfcMagneticFluxDensityMeasure"; // 494
+				yield return "IfcMagneticFluxMeasure"; // 495
+				yield return "IfcManifoldSolidBrep"; // 496
+				yield return "IfcMapConversion"; // 497
+				yield return "IfcMappedItem"; // 498
+				yield return "IfcMassDensityMeasure"; // 499
+				yield return "IfcMassFlowRateMeasure"; // 500
+				yield return "IfcMassMeasure"; // 501
+				yield return "IfcMassPerLengthMeasure"; // 502
+				yield return "IfcMaterial"; // 503
+				yield return "IfcMaterialClassificationRelationship"; // 504
+				yield return "IfcMaterialConstituent"; // 505
+				yield return "IfcMaterialConstituentSet"; // 506
+				yield return "IfcMaterialDefinition"; // 507
+				yield return "IfcMaterialDefinitionRepresentation"; // 508
+				yield return "IfcMaterialLayer"; // 509
+				yield return "IfcMaterialLayerSet"; // 510
+				yield return "IfcMaterialLayerSetUsage"; // 511
+				yield return "IfcMaterialLayerWithOffsets"; // 512
+				yield return "IfcMaterialList"; // 513
+				yield return "IfcMaterialProfile"; // 514
+				yield return "IfcMaterialProfileSet"; // 515
+				yield return "IfcMaterialProfileSetUsage"; // 516
+				yield return "IfcMaterialProfileSetUsageTapering"; // 517
+				yield return "IfcMaterialProfileWithOffsets"; // 518
+				yield return "IfcMaterialProperties"; // 519
+				yield return "IfcMaterialRelationship"; // 520
+				yield return "IfcMaterialUsageDefinition"; // 521
+				yield return "IfcMeasureWithUnit"; // 522
+				yield return "IfcMechanicalConcreteMaterialProperties"; // 523
+				yield return "IfcMechanicalFastener"; // 524
+				yield return "IfcMechanicalFastenerType"; // 525
+				yield return "IfcMechanicalMaterialProperties"; // 526
+				yield return "IfcMechanicalSteelMaterialProperties"; // 527
+				yield return "IfcMedicalDevice"; // 528
+				yield return "IfcMedicalDeviceType"; // 529
+				yield return "IfcMember"; // 530
+				yield return "IfcMemberStandardCase"; // 531
+				yield return "IfcMemberType"; // 532
+				yield return "IfcMetric"; // 533
+				yield return "IfcMinuteInHour"; // 534
+				yield return "IfcMirroredProfileDef"; // 535
+				yield return "IfcModulusOfElasticityMeasure"; // 536
+				yield return "IfcModulusOfLinearSubgradeReactionMeasure"; // 537
+				yield return "IfcModulusOfRotationalSubgradeReactionMeasure"; // 538
+				yield return "IfcModulusOfSubgradeReactionMeasure"; // 539
+				yield return "IfcMoistureDiffusivityMeasure"; // 540
+				yield return "IfcMolecularWeightMeasure"; // 541
+				yield return "IfcMomentOfInertiaMeasure"; // 542
+				yield return "IfcMonetaryMeasure"; // 543
+				yield return "IfcMonetaryUnit"; // 544
+				yield return "IfcMonthInYearNumber"; // 545
+				yield return "IfcMotorConnection"; // 546
+				yield return "IfcMotorConnectionType"; // 547
+				yield return "IfcMove"; // 548
+				yield return "IfcNamedUnit"; // 549
+				yield return "IfcNonNegativeLengthMeasure"; // 550
+				yield return "IfcNormalisedRatioMeasure"; // 551
+				yield return "IfcNullStyle"; // 552
+				yield return "IfcNumericMeasure"; // 553
+				yield return "IfcObject"; // 554
+				yield return "IfcObjectDefinition"; // 555
+				yield return "IfcObjective"; // 556
+				yield return "IfcObjectPlacement"; // 557
+				yield return "IfcOccupant"; // 558
+				yield return "IfcOffsetCurve"; // 559
+				yield return "IfcOffsetCurve2D"; // 560
+				yield return "IfcOffsetCurve3D"; // 561
+				yield return "IfcOffsetCurveByDistances"; // 562
+				yield return "IfcOneDirectionRepeatFactor"; // 563
+				yield return "IfcOpeningElement"; // 564
+				yield return "IfcOpeningStandardCase"; // 565
+				yield return "IfcOpenShell"; // 566
+				yield return "IfcOpticalMaterialProperties"; // 567
+				yield return "IfcOrderAction"; // 568
+				yield return "IfcOrganization"; // 569
+				yield return "IfcOrganizationRelationship"; // 570
+				yield return "IfcOrientationExpression"; // 571
+				yield return "IfcOrientedEdge"; // 572
+				yield return "IfcOuterBoundaryCurve"; // 573
+				yield return "IfcOutlet"; // 574
+				yield return "IfcOutletType"; // 575
+				yield return "IfcOwnerHistory"; // 576
+				yield return "IfcParameterizedProfileDef"; // 577
+				yield return "IfcParameterValue"; // 578
+				yield return "IfcPath"; // 579
+				yield return "IfcPcurve"; // 580
+				yield return "IfcPerformanceHistory"; // 581
+				yield return "IfcPermeableCoveringProperties"; // 582
+				yield return "IfcPermit"; // 583
+				yield return "IfcPerson"; // 584
+				yield return "IfcPersonAndOrganization"; // 585
+				yield return "IfcPHMeasure"; // 586
+				yield return "IfcPhysicalComplexQuantity"; // 587
+				yield return "IfcPhysicalQuantity"; // 588
+				yield return "IfcPhysicalSimpleQuantity"; // 589
+				yield return "IfcPile"; // 590
+				yield return "IfcPileType"; // 591
+				yield return "IfcPipeFitting"; // 592
+				yield return "IfcPipeFittingType"; // 593
+				yield return "IfcPipeSegment"; // 594
+				yield return "IfcPipeSegmentType"; // 595
+				yield return "IfcPixelTexture"; // 596
+				yield return "IfcPlacement"; // 597
+				yield return "IfcPlanarBox"; // 598
+				yield return "IfcPlanarExtent"; // 599
+				yield return "IfcPlanarForceMeasure"; // 600
+				yield return "IfcPlane"; // 601
+				yield return "IfcPlaneAngleMeasure"; // 602
+				yield return "IfcPlate"; // 603
+				yield return "IfcPlateStandardCase"; // 604
+				yield return "IfcPlateType"; // 605
+				yield return "IfcPoint"; // 606
+				yield return "IfcPointOnCurve"; // 607
+				yield return "IfcPointOnSurface"; // 608
+				yield return "IfcPolygonalBoundedHalfSpace"; // 609
+				yield return "IfcPolygonalFaceSet"; // 610
+				yield return "IfcPolyline"; // 611
+				yield return "IfcPolyLoop"; // 612
+				yield return "IfcPort"; // 613
+				yield return "IfcPositioningElement"; // 614
+				yield return "IfcPositiveInteger"; // 615
+				yield return "IfcPositiveLengthMeasure"; // 616
+				yield return "IfcPositivePlaneAngleMeasure"; // 617
+				yield return "IfcPositiveRatioMeasure"; // 618
+				yield return "IfcPostalAddress"; // 619
+				yield return "IfcPowerMeasure"; // 620
+				yield return "IfcPreDefinedColour"; // 621
+				yield return "IfcPreDefinedCurveFont"; // 622
+				yield return "IfcPreDefinedDimensionSymbol"; // 623
+				yield return "IfcPreDefinedItem"; // 624
+				yield return "IfcPreDefinedPointMarkerSymbol"; // 625
+				yield return "IfcPreDefinedProperties"; // 626
+				yield return "IfcPreDefinedPropertySet"; // 627
+				yield return "IfcPreDefinedSymbol"; // 628
+				yield return "IfcPreDefinedTerminatorSymbol"; // 629
+				yield return "IfcPreDefinedTextFont"; // 630
+				yield return "IfcPresentableText"; // 631
+				yield return "IfcPresentationItem"; // 632
+				yield return "IfcPresentationLayerAssignment"; // 633
+				yield return "IfcPresentationLayerWithStyle"; // 634
+				yield return "IfcPresentationStyle"; // 635
+				yield return "IfcPresentationStyleAssignment"; // 636
+				yield return "IfcPressureMeasure"; // 637
+				yield return "IfcProcedure"; // 638
+				yield return "IfcProcedureType"; // 639
+				yield return "IfcProcess"; // 640
+				yield return "IfcProduct"; // 641
+				yield return "IfcProductDefinitionShape"; // 642
+				yield return "IfcProductRepresentation"; // 643
+				yield return "IfcProductsOfCombustionProperties"; // 644
+				yield return "IfcProfileDef"; // 645
+				yield return "IfcProfileProperties"; // 646
+				yield return "IfcProject"; // 647
+				yield return "IfcProjectedCRS"; // 648
+				yield return "IfcProjectionCurve"; // 649
+				yield return "IfcProjectionElement"; // 650
+				yield return "IfcProjectLibrary"; // 651
+				yield return "IfcProjectOrder"; // 652
+				yield return "IfcProjectOrderRecord"; // 653
+				yield return "IfcProperty"; // 654
+				yield return "IfcPropertyAbstraction"; // 655
+				yield return "IfcPropertyBoundedValue"; // 656
+				yield return "IfcPropertyConstraintRelationship"; // 657
+				yield return "IfcPropertyDefinition"; // 658
+				yield return "IfcPropertyDependencyRelationship"; // 659
+				yield return "IfcPropertyEnumeratedValue"; // 660
+				yield return "IfcPropertyEnumeration"; // 661
+				yield return "IfcPropertyListValue"; // 662
+				yield return "IfcPropertyReferenceValue"; // 663
+				yield return "IfcPropertySet"; // 664
+				yield return "IfcPropertySetDefinition"; // 665
+				yield return "IfcPropertySetDefinitionSet"; // 666
+				yield return "IfcPropertySetTemplate"; // 667
+				yield return "IfcPropertySingleValue"; // 668
+				yield return "IfcPropertyTableValue"; // 669
+				yield return "IfcPropertyTemplate"; // 670
+				yield return "IfcPropertyTemplateDefinition"; // 671
+				yield return "IfcProtectiveDevice"; // 672
+				yield return "IfcProtectiveDeviceTrippingUnit"; // 673
+				yield return "IfcProtectiveDeviceTrippingUnitType"; // 674
+				yield return "IfcProtectiveDeviceType"; // 675
+				yield return "IfcProxy"; // 676
+				yield return "IfcPump"; // 677
+				yield return "IfcPumpType"; // 678
+				yield return "IfcQuantityArea"; // 679
+				yield return "IfcQuantityCount"; // 680
+				yield return "IfcQuantityLength"; // 681
+				yield return "IfcQuantitySet"; // 682
+				yield return "IfcQuantityTime"; // 683
+				yield return "IfcQuantityVolume"; // 684
+				yield return "IfcQuantityWeight"; // 685
+				yield return "IfcRadioActivityMeasure"; // 686
+				yield return "IfcRadiusDimension"; // 687
+				yield return "IfcRailing"; // 688
+				yield return "IfcRailingType"; // 689
+				yield return "IfcRamp"; // 690
+				yield return "IfcRampFlight"; // 691
+				yield return "IfcRampFlightType"; // 692
+				yield return "IfcRampType"; // 693
+				yield return "IfcRatioMeasure"; // 694
+				yield return "IfcRationalBezierCurve"; // 695
+				yield return "IfcRationalBSplineCurveWithKnots"; // 696
+				yield return "IfcRationalBSplineSurfaceWithKnots"; // 697
+				yield return "IfcReal"; // 698
+				yield return "IfcRectangleHollowProfileDef"; // 699
+				yield return "IfcRectangleProfileDef"; // 700
+				yield return "IfcRectangularPyramid"; // 701
+				yield return "IfcRectangularTrimmedSurface"; // 702
+				yield return "IfcRecurrencePattern"; // 703
+				yield return "IfcReference"; // 704
+				yield return "IfcReferencesValueDocument"; // 705
+				yield return "IfcReferent"; // 706
+				yield return "IfcRegularTimeSeries"; // 707
+				yield return "IfcReinforcementBarProperties"; // 708
+				yield return "IfcReinforcementDefinitionProperties"; // 709
+				yield return "IfcReinforcingBar"; // 710
+				yield return "IfcReinforcingBarType"; // 711
+				yield return "IfcReinforcingElement"; // 712
+				yield return "IfcReinforcingElementType"; // 713
+				yield return "IfcReinforcingMesh"; // 714
+				yield return "IfcReinforcingMeshType"; // 715
+				yield return "IfcRelAggregates"; // 716
+				yield return "IfcRelAssigns"; // 717
+				yield return "IfcRelAssignsTasks"; // 718
+				yield return "IfcRelAssignsToActor"; // 719
+				yield return "IfcRelAssignsToControl"; // 720
+				yield return "IfcRelAssignsToGroup"; // 721
+				yield return "IfcRelAssignsToGroupByFactor"; // 722
+				yield return "IfcRelAssignsToProcess"; // 723
+				yield return "IfcRelAssignsToProduct"; // 724
+				yield return "IfcRelAssignsToProjectOrder"; // 725
+				yield return "IfcRelAssignsToResource"; // 726
+				yield return "IfcRelAssociates"; // 727
+				yield return "IfcRelAssociatesAppliedValue"; // 728
+				yield return "IfcRelAssociatesApproval"; // 729
+				yield return "IfcRelAssociatesClassification"; // 730
+				yield return "IfcRelAssociatesConstraint"; // 731
+				yield return "IfcRelAssociatesDocument"; // 732
+				yield return "IfcRelAssociatesLibrary"; // 733
+				yield return "IfcRelAssociatesMaterial"; // 734
+				yield return "IfcRelAssociatesProfileProperties"; // 735
+				yield return "IfcRelationship"; // 736
+				yield return "IfcRelaxation"; // 737
+				yield return "IfcRelConnects"; // 738
+				yield return "IfcRelConnectsElements"; // 739
+				yield return "IfcRelConnectsPathElements"; // 740
+				yield return "IfcRelConnectsPorts"; // 741
+				yield return "IfcRelConnectsPortToElement"; // 742
+				yield return "IfcRelConnectsStructuralActivity"; // 743
+				yield return "IfcRelConnectsStructuralElement"; // 744
+				yield return "IfcRelConnectsStructuralMember"; // 745
+				yield return "IfcRelConnectsWithEccentricity"; // 746
+				yield return "IfcRelConnectsWithRealizingElements"; // 747
+				yield return "IfcRelContainedInSpatialStructure"; // 748
+				yield return "IfcRelCoversBldgElements"; // 749
+				yield return "IfcRelCoversSpaces"; // 750
+				yield return "IfcRelDeclares"; // 751
+				yield return "IfcRelDecomposes"; // 752
+				yield return "IfcRelDefines"; // 753
+				yield return "IfcRelDefinesByObject"; // 754
+				yield return "IfcRelDefinesByProperties"; // 755
+				yield return "IfcRelDefinesByTemplate"; // 756
+				yield return "IfcRelDefinesByType"; // 757
+				yield return "IfcRelFillsElement"; // 758
+				yield return "IfcRelFlowControlElements"; // 759
+				yield return "IfcRelInteractionRequirements"; // 760
+				yield return "IfcRelInterferesElements"; // 761
+				yield return "IfcRelNests"; // 762
+				yield return "IfcRelOccupiesSpaces"; // 763
+				yield return "IfcRelOverridesProperties"; // 764
+				yield return "IfcRelProjectsElement"; // 765
+				yield return "IfcRelReferencedInSpatialStructure"; // 766
+				yield return "IfcRelSchedulesCostItems"; // 767
+				yield return "IfcRelSequence"; // 768
+				yield return "IfcRelServicesBuildings"; // 769
+				yield return "IfcRelSpaceBoundary"; // 770
+				yield return "IfcRelSpaceBoundary1stLevel"; // 771
+				yield return "IfcRelSpaceBoundary2ndLevel"; // 772
+				yield return "IfcRelVoidsElement"; // 773
+				yield return "IfcReparametrisedCompositeCurveSegment"; // 774
+				yield return "IfcRepresentation"; // 775
+				yield return "IfcRepresentationContext"; // 776
+				yield return "IfcRepresentationItem"; // 777
+				yield return "IfcRepresentationMap"; // 778
+				yield return "IfcResource"; // 779
+				yield return "IfcResourceApprovalRelationship"; // 780
+				yield return "IfcResourceConstraintRelationship"; // 781
+				yield return "IfcResourceLevelRelationship"; // 782
+				yield return "IfcResourceTime"; // 783
+				yield return "IfcRevolvedAreaSolid"; // 784
+				yield return "IfcRevolvedAreaSolidTapered"; // 785
+				yield return "IfcRibPlateProfileProperties"; // 786
+				yield return "IfcRightCircularCone"; // 787
+				yield return "IfcRightCircularCylinder"; // 788
+				yield return "IfcRoof"; // 789
+				yield return "IfcRoofType"; // 790
+				yield return "IfcRoot"; // 791
+				yield return "IfcRotationalFrequencyMeasure"; // 792
+				yield return "IfcRotationalMassMeasure"; // 793
+				yield return "IfcRotationalStiffnessMeasure"; // 794
+				yield return "IfcRoundedEdgeFeature"; // 795
+				yield return "IfcRoundedRectangleProfileDef"; // 796
+				yield return "IfcSanitaryTerminal"; // 797
+				yield return "IfcSanitaryTerminalType"; // 798
+				yield return "IfcScheduleTimeControl"; // 799
+				yield return "IfcSchedulingTime"; // 800
+				yield return "IfcSeamCurve"; // 801
+				yield return "IfcSecondInMinute"; // 802
+				yield return "IfcSectionalAreaIntegralMeasure"; // 803
+				yield return "IfcSectionedSolid"; // 804
+				yield return "IfcSectionedSolidHorizontal"; // 805
+				yield return "IfcSectionedSpine"; // 806
+				yield return "IfcSectionModulusMeasure"; // 807
+				yield return "IfcSectionProperties"; // 808
+				yield return "IfcSectionReinforcementProperties"; // 809
+				yield return "IfcSensor"; // 810
+				yield return "IfcSensorType"; // 811
+				yield return "IfcServiceLife"; // 812
+				yield return "IfcServiceLifeFactor"; // 813
+				yield return "IfcShadingDevice"; // 814
+				yield return "IfcShadingDeviceType"; // 815
+				yield return "IfcShapeAspect"; // 816
+				yield return "IfcShapeModel"; // 817
+				yield return "IfcShapeRepresentation"; // 818
+				yield return "IfcShearModulusMeasure"; // 819
+				yield return "IfcShellBasedSurfaceModel"; // 820
+				yield return "IfcSimpleProperty"; // 821
+				yield return "IfcSimplePropertyTemplate"; // 822
+				yield return "IfcSite"; // 823
+				yield return "IfcSIUnit"; // 824
+				yield return "IfcSlab"; // 825
+				yield return "IfcSlabElementedCase"; // 826
+				yield return "IfcSlabStandardCase"; // 827
+				yield return "IfcSlabType"; // 828
+				yield return "IfcSlippageConnectionCondition"; // 829
+				yield return "IfcSolarDevice"; // 830
+				yield return "IfcSolarDeviceType"; // 831
+				yield return "IfcSolidAngleMeasure"; // 832
+				yield return "IfcSolidModel"; // 833
+				yield return "IfcSoundPowerLevelMeasure"; // 834
+				yield return "IfcSoundPowerMeasure"; // 835
+				yield return "IfcSoundPressureLevelMeasure"; // 836
+				yield return "IfcSoundPressureMeasure"; // 837
+				yield return "IfcSoundProperties"; // 838
+				yield return "IfcSoundValue"; // 839
+				yield return "IfcSpace"; // 840
+				yield return "IfcSpaceHeater"; // 841
+				yield return "IfcSpaceHeaterType"; // 842
+				yield return "IfcSpaceProgram"; // 843
+				yield return "IfcSpaceThermalLoadProperties"; // 844
+				yield return "IfcSpaceType"; // 845
+				yield return "IfcSpatialElement"; // 846
+				yield return "IfcSpatialElementType"; // 847
+				yield return "IfcSpatialStructureElement"; // 848
+				yield return "IfcSpatialStructureElementType"; // 849
+				yield return "IfcSpatialZone"; // 850
+				yield return "IfcSpatialZoneType"; // 851
+				yield return "IfcSpecificHeatCapacityMeasure"; // 852
+				yield return "IfcSpecularExponent"; // 853
+				yield return "IfcSpecularRoughness"; // 854
+				yield return "IfcSphere"; // 855
+				yield return "IfcSphericalSurface"; // 856
+				yield return "IfcStackTerminal"; // 857
+				yield return "IfcStackTerminalType"; // 858
+				yield return "IfcStair"; // 859
+				yield return "IfcStairFlight"; // 860
+				yield return "IfcStairFlightType"; // 861
+				yield return "IfcStairType"; // 862
+				yield return "IfcStrippedOptional"; // 863
+				yield return "IfcStructuralAction"; // 864
+				yield return "IfcStructuralActivity"; // 865
+				yield return "IfcStructuralAnalysisModel"; // 866
+				yield return "IfcStructuralConnection"; // 867
+				yield return "IfcStructuralConnectionCondition"; // 868
+				yield return "IfcStructuralCurveAction"; // 869
+				yield return "IfcStructuralCurveConnection"; // 870
+				yield return "IfcStructuralCurveMember"; // 871
+				yield return "IfcStructuralCurveMemberVarying"; // 872
+				yield return "IfcStructuralCurveReaction"; // 873
+				yield return "IfcStructuralItem"; // 874
+				yield return "IfcStructuralLinearAction"; // 875
+				yield return "IfcStructuralLinearActionVarying"; // 876
+				yield return "IfcStructuralLoad"; // 877
+				yield return "IfcStructuralLoadCase"; // 878
+				yield return "IfcStructuralLoadConfiguration"; // 879
+				yield return "IfcStructuralLoadGroup"; // 880
+				yield return "IfcStructuralLoadLinearForce"; // 881
+				yield return "IfcStructuralLoadOrResult"; // 882
+				yield return "IfcStructuralLoadPlanarForce"; // 883
+				yield return "IfcStructuralLoadSingleDisplacement"; // 884
+				yield return "IfcStructuralLoadSingleDisplacementDistortion"; // 885
+				yield return "IfcStructuralLoadSingleForce"; // 886
+				yield return "IfcStructuralLoadSingleForceWarping"; // 887
+				yield return "IfcStructuralLoadStatic"; // 888
+				yield return "IfcStructuralLoadTemperature"; // 889
+				yield return "IfcStructuralMember"; // 890
+				yield return "IfcStructuralPlanarAction"; // 891
+				yield return "IfcStructuralPlanarActionVarying"; // 892
+				yield return "IfcStructuralPointAction"; // 893
+				yield return "IfcStructuralPointConnection"; // 894
+				yield return "IfcStructuralPointReaction"; // 895
+				yield return "IfcStructuralProfileProperties"; // 896
+				yield return "IfcStructuralReaction"; // 897
+				yield return "IfcStructuralResultGroup"; // 898
+				yield return "IfcStructuralSteelProfileProperties"; // 899
+				yield return "IfcStructuralSurfaceAction"; // 900
+				yield return "IfcStructuralSurfaceConnection"; // 901
+				yield return "IfcStructuralSurfaceMember"; // 902
+				yield return "IfcStructuralSurfaceMemberVarying"; // 903
+				yield return "IfcStructuralSurfaceReaction"; // 904
+				yield return "IfcStructuredDimensionCallout"; // 905
+				yield return "IfcStyledItem"; // 906
+				yield return "IfcStyledRepresentation"; // 907
+				yield return "IfcStyleModel"; // 908
+				yield return "IfcSubContractResource"; // 909
+				yield return "IfcSubContractResourceType"; // 910
+				yield return "IfcSubedge"; // 911
+				yield return "IfcSurface"; // 912
+				yield return "IfcSurfaceCurve"; // 913
+				yield return "IfcSurfaceCurveSweptAreaSolid"; // 914
+				yield return "IfcSurfaceFeature"; // 915
+				yield return "IfcSurfaceOfLinearExtrusion"; // 916
+				yield return "IfcSurfaceOfRevolution"; // 917
+				yield return "IfcSurfaceReinforcementArea"; // 918
+				yield return "IfcSurfaceStyle"; // 919
+				yield return "IfcSurfaceStyleLighting"; // 920
+				yield return "IfcSurfaceStyleRefraction"; // 921
+				yield return "IfcSurfaceStyleRendering"; // 922
+				yield return "IfcSurfaceStyleShading"; // 923
+				yield return "IfcSurfaceStyleWithTextures"; // 924
+				yield return "IfcSurfaceTexture"; // 925
+				yield return "IfcSweptAreaSolid"; // 926
+				yield return "IfcSweptDiskSolid"; // 927
+				yield return "IfcSweptDiskSolidPolygonal"; // 928
+				yield return "IfcSweptSurface"; // 929
+				yield return "IfcSwitchingDevice"; // 930
+				yield return "IfcSwitchingDeviceType"; // 931
+				yield return "IfcSymbolStyle"; // 932
+				yield return "IfcSystem"; // 933
+				yield return "IfcSystemFurnitureElement"; // 934
+				yield return "IfcSystemFurnitureElementType"; // 935
+				yield return "IfcTable"; // 936
+				yield return "IfcTableColumn"; // 937
+				yield return "IfcTableRow"; // 938
+				yield return "IfcTank"; // 939
+				yield return "IfcTankType"; // 940
+				yield return "IfcTask"; // 941
+				yield return "IfcTaskTime"; // 942
+				yield return "IfcTaskTimeRecurring"; // 943
+				yield return "IfcTaskType"; // 944
+				yield return "IfcTelecomAddress"; // 945
+				yield return "IfcTemperatureGradientMeasure"; // 946
+				yield return "IfcTemperatureRateOfChangeMeasure"; // 947
+				yield return "IfcTendon"; // 948
+				yield return "IfcTendonAnchor"; // 949
+				yield return "IfcTendonAnchorType"; // 950
+				yield return "IfcTendonType"; // 951
+				yield return "IfcTerminatorSymbol"; // 952
+				yield return "IfcTessellatedFaceSet"; // 953
+				yield return "IfcTessellatedItem"; // 954
+				yield return "IfcText"; // 955
+				yield return "IfcTextAlignment"; // 956
+				yield return "IfcTextDecoration"; // 957
+				yield return "IfcTextFontName"; // 958
+				yield return "IfcTextLiteral"; // 959
+				yield return "IfcTextLiteralWithExtent"; // 960
+				yield return "IfcTextStyle"; // 961
+				yield return "IfcTextStyleFontModel"; // 962
+				yield return "IfcTextStyleForDefinedFont"; // 963
+				yield return "IfcTextStyleTextModel"; // 964
+				yield return "IfcTextStyleWithBoxCharacteristics"; // 965
+				yield return "IfcTextTransformation"; // 966
+				yield return "IfcTextureCoordinate"; // 967
+				yield return "IfcTextureCoordinateGenerator"; // 968
+				yield return "IfcTextureMap"; // 969
+				yield return "IfcTextureVertex"; // 970
+				yield return "IfcTextureVertexList"; // 971
+				yield return "IfcThermalAdmittanceMeasure"; // 972
+				yield return "IfcThermalConductivityMeasure"; // 973
+				yield return "IfcThermalExpansionCoefficientMeasure"; // 974
+				yield return "IfcThermalMaterialProperties"; // 975
+				yield return "IfcThermalResistanceMeasure"; // 976
+				yield return "IfcThermalTransmittanceMeasure"; // 977
+				yield return "IfcThermodynamicTemperatureMeasure"; // 978
+				yield return "IfcTime"; // 979
+				yield return "IfcTimeMeasure"; // 980
+				yield return "IfcTimePeriod"; // 981
+				yield return "IfcTimeSeries"; // 982
+				yield return "IfcTimeSeriesReferenceRelationship"; // 983
+				yield return "IfcTimeSeriesSchedule"; // 984
+				yield return "IfcTimeSeriesValue"; // 985
+				yield return "IfcTimeStamp"; // 986
+				yield return "IfcTopologicalRepresentationItem"; // 987
+				yield return "IfcTopologyRepresentation"; // 988
+				yield return "IfcToroidalSurface"; // 989
+				yield return "IfcTorqueMeasure"; // 990
+				yield return "IfcTransformer"; // 991
+				yield return "IfcTransformerType"; // 992
+				yield return "IfcTransitionCurveSegment2D"; // 993
+				yield return "IfcTransportElement"; // 994
+				yield return "IfcTransportElementType"; // 995
+				yield return "IfcTrapeziumProfileDef"; // 996
+				yield return "IfcTriangulatedFaceSet"; // 997
+				yield return "IfcTriangulatedIrregularNetwork"; // 998
+				yield return "IfcTrimmedCurve"; // 999
+				yield return "IfcTShapeProfileDef"; // 1000
+				yield return "IfcTubeBundle"; // 1001
+				yield return "IfcTubeBundleType"; // 1002
+				yield return "IfcTwoDirectionRepeatFactor"; // 1003
+				yield return "IfcTypeObject"; // 1004
+				yield return "IfcTypeProcess"; // 1005
+				yield return "IfcTypeProduct"; // 1006
+				yield return "IfcTypeResource"; // 1007
+				yield return "IfcUnitaryControlElement"; // 1008
+				yield return "IfcUnitaryControlElementType"; // 1009
+				yield return "IfcUnitaryEquipment"; // 1010
+				yield return "IfcUnitaryEquipmentType"; // 1011
+				yield return "IfcUnitAssignment"; // 1012
+				yield return "IfcURIReference"; // 1013
+				yield return "IfcUShapeProfileDef"; // 1014
+				yield return "IfcValve"; // 1015
+				yield return "IfcValveType"; // 1016
+				yield return "IfcVaporPermeabilityMeasure"; // 1017
+				yield return "IfcVector"; // 1018
+				yield return "IfcVertex"; // 1019
+				yield return "IfcVertexBasedTextureMap"; // 1020
+				yield return "IfcVertexLoop"; // 1021
+				yield return "IfcVertexPoint"; // 1022
+				yield return "IfcVibrationIsolator"; // 1023
+				yield return "IfcVibrationIsolatorType"; // 1024
+				yield return "IfcVirtualElement"; // 1025
+				yield return "IfcVirtualGridIntersection"; // 1026
+				yield return "IfcVoidingFeature"; // 1027
+				yield return "IfcVolumeMeasure"; // 1028
+				yield return "IfcVolumetricFlowRateMeasure"; // 1029
+				yield return "IfcWall"; // 1030
+				yield return "IfcWallElementedCase"; // 1031
+				yield return "IfcWallStandardCase"; // 1032
+				yield return "IfcWallType"; // 1033
+				yield return "IfcWarpingConstantMeasure"; // 1034
+				yield return "IfcWarpingMomentMeasure"; // 1035
+				yield return "IfcWasteTerminal"; // 1036
+				yield return "IfcWasteTerminalType"; // 1037
+				yield return "IfcWaterProperties"; // 1038
+				yield return "IfcWindow"; // 1039
+				yield return "IfcWindowLiningProperties"; // 1040
+				yield return "IfcWindowPanelProperties"; // 1041
+				yield return "IfcWindowStandardCase"; // 1042
+				yield return "IfcWindowStyle"; // 1043
+				yield return "IfcWindowType"; // 1044
+				yield return "IfcWorkCalendar"; // 1045
+				yield return "IfcWorkControl"; // 1046
+				yield return "IfcWorkPlan"; // 1047
+				yield return "IfcWorkSchedule"; // 1048
+				yield return "IfcWorkTime"; // 1049
+				yield return "IfcYearNumber"; // 1050
+				yield return "IfcZone"; // 1051
+				yield return "IfcZShapeProfileDef"; // 1052
             }
         }
 
@@ -795,960 +1076,1179 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             get
             {
-				yield return "Contents";
-				yield return "Name";
-				yield return "Description";
-				yield return "RelatingDraughtingCallout";
-				yield return "RelatedDraughtingCallout";
-				yield return "Item";
-				yield return "Styles";
-				yield return "AnnotatedCurve";
-				yield return "Role";
-				yield return "GlobalId";
-				yield return "OwnerHistory";
-				yield return "RelatingElement";
-				yield return "RelatedStructuralActivity";
-				yield return "RelatingStructuralMember";
-				yield return "RelatedStructuralConnection";
-				yield return "AppliedCondition";
-				yield return "AdditionalConditions";
-				yield return "SupportedLength";
-				yield return "ConditionCoordinateSystem";
-				yield return "ConnectionConstraint";
-				yield return "ObjectType";
-				yield return "ObjectPlacement";
-				yield return "Representation";
-				yield return "AppliedLoad";
-				yield return "GlobalOrLocal";
-				yield return "DestabilizingLoad";
-				yield return "CausedBy";
-				yield return "PredefinedType";
-				yield return "OrientationOf2DPlane";
-				yield return "LoadedBy";
-				yield return "HasResults";
-				yield return "ProjectedOrTrue";
-				yield return "ActionType";
-				yield return "ActionSource";
-				yield return "Coefficient";
-				yield return "Purpose";
-				yield return "TheoryType";
-				yield return "ResultForLoadGroup";
-				yield return "IsLinear";
-				yield return "Thickness";
-				yield return "SubsequentThickness";
-				yield return "VaryingThicknessLocation";
-				yield return "RelatedObjects";
-				yield return "RelatingProfileProperties";
-				yield return "ProfileSectionLocation";
-				yield return "ProfileOrientation";
-				yield return "RelatedStructuralMember";
-				yield return "VaryingAppliedLoadLocation";
-				yield return "SubsequentAppliedLoads";
-				yield return "ProfileName";
-				yield return "ProfileDefinition";
-				yield return "TotalCrossSectionArea";
-				yield return "SteelGrade";
-				yield return "BarSurface";
-				yield return "EffectiveDepth";
-				yield return "NominalBarDiameter";
-				yield return "BarCount";
-				yield return "SectionType";
-				yield return "StartProfile";
-				yield return "EndProfile";
-				yield return "LongitudinalStartPosition";
-				yield return "LongitudinalEndPosition";
-				yield return "TransversePosition";
-				yield return "ReinforcementRole";
-				yield return "SectionDefinition";
-				yield return "CrossSectionReinforcementDefinitions";
-				yield return "PhysicalWeight";
-				yield return "Perimeter";
-				yield return "MinimumPlateThickness";
-				yield return "MaximumPlateThickness";
-				yield return "CrossSectionArea";
-				yield return "RibHeight";
-				yield return "RibWidth";
-				yield return "RibSpacing";
-				yield return "Direction";
-				yield return "TorsionalConstantX";
-				yield return "MomentOfInertiaYZ";
-				yield return "MomentOfInertiaY";
-				yield return "MomentOfInertiaZ";
-				yield return "WarpingConstant";
-				yield return "ShearCentreZ";
-				yield return "ShearCentreY";
-				yield return "ShearDeformationAreaZ";
-				yield return "ShearDeformationAreaY";
-				yield return "MaximumSectionModulusY";
-				yield return "MinimumSectionModulusY";
-				yield return "MaximumSectionModulusZ";
-				yield return "MinimumSectionModulusZ";
-				yield return "TorsionalSectionModulus";
-				yield return "CentreOfGravityInX";
-				yield return "CentreOfGravityInY";
-				yield return "ShearAreaZ";
-				yield return "ShearAreaY";
-				yield return "PlasticShapeFactorY";
-				yield return "PlasticShapeFactorZ";
-				yield return "ProcedureID";
-				yield return "ProcedureType";
-				yield return "UserDefinedProcedureType";
-				yield return "TaskId";
-				yield return "Status";
-				yield return "WorkMethod";
-				yield return "IsMilestone";
-				yield return "Priority";
-				yield return "Identifier";
-				yield return "CreationDate";
-				yield return "Creators";
-				yield return "Duration";
-				yield return "TotalFloat";
-				yield return "StartTime";
-				yield return "FinishTime";
-				yield return "WorkControlType";
-				yield return "UserDefinedControlType";
-				yield return "RelatedObjectsType";
-				yield return "RelatingControl";
-				yield return "TimeForTask";
-				yield return "ActualStart";
-				yield return "EarlyStart";
-				yield return "LateStart";
-				yield return "ScheduleStart";
-				yield return "ActualFinish";
-				yield return "EarlyFinish";
-				yield return "LateFinish";
-				yield return "ScheduleFinish";
-				yield return "ScheduleDuration";
-				yield return "ActualDuration";
-				yield return "RemainingTime";
-				yield return "FreeFloat";
-				yield return "IsCritical";
-				yield return "StatusTime";
-				yield return "StartFloat";
-				yield return "FinishFloat";
-				yield return "Completion";
-				yield return "HasQuantities";
-				yield return "Discrimination";
-				yield return "Quality";
-				yield return "Usage";
-				yield return "Unit";
-				yield return "AreaValue";
-				yield return "CountValue";
-				yield return "LengthValue";
-				yield return "TimeValue";
-				yield return "VolumeValue";
-				yield return "WeightValue";
-				yield return "Material";
-				yield return "ExtendedProperties";
-				yield return "CombustionTemperature";
-				yield return "CarbonContent";
-				yield return "LowerHeatingValue";
-				yield return "HigherHeatingValue";
-				yield return "MolecularWeight";
-				yield return "Porosity";
-				yield return "MassDensity";
-				yield return "UpperVaporResistanceFactor";
-				yield return "LowerVaporResistanceFactor";
-				yield return "IsothermalMoistureCapacity";
-				yield return "VaporPermeability";
-				yield return "MoistureDiffusivity";
-				yield return "DynamicViscosity";
-				yield return "YoungModulus";
-				yield return "ShearModulus";
-				yield return "PoissonRatio";
-				yield return "ThermalExpansionCoefficient";
-				yield return "CompressiveStrength";
-				yield return "MaxAggregateSize";
-				yield return "AdmixturesDescription";
-				yield return "Workability";
-				yield return "ProtectivePoreRatio";
-				yield return "WaterImpermeability";
-				yield return "YieldStress";
-				yield return "UltimateStress";
-				yield return "UltimateStrain";
-				yield return "HardeningModule";
-				yield return "ProportionalStress";
-				yield return "PlasticStrain";
-				yield return "Relaxations";
-				yield return "VisibleTransmittance";
-				yield return "SolarTransmittance";
-				yield return "ThermalIrTransmittance";
-				yield return "ThermalIrEmissivityBack";
-				yield return "ThermalIrEmissivityFront";
-				yield return "VisibleReflectanceBack";
-				yield return "VisibleReflectanceFront";
-				yield return "SolarReflectanceFront";
-				yield return "SolarReflectanceBack";
-				yield return "SpecificHeatCapacity";
-				yield return "N20Content";
-				yield return "COContent";
-				yield return "CO2Content";
-				yield return "RelaxationValue";
-				yield return "InitialStress";
-				yield return "BoilingPoint";
-				yield return "FreezingPoint";
-				yield return "ThermalConductivity";
-				yield return "IsPotable";
-				yield return "Hardness";
-				yield return "AlkalinityConcentration";
-				yield return "AcidityConcentration";
-				yield return "ImpuritiesContent";
-				yield return "PHLevel";
-				yield return "DissolvedSolidsContent";
-				yield return "MaterialClassifications";
-				yield return "ClassifiedMaterial";
-				yield return "LayerThickness";
-				yield return "IsVentilated";
-				yield return "MaterialLayers";
-				yield return "LayerSetName";
-				yield return "ForLayerSet";
-				yield return "LayerSetDirection";
-				yield return "DirectionSense";
-				yield return "OffsetFromReferenceLine";
-				yield return "Materials";
-				yield return "MainPlaneAngle";
-				yield return "SecondaryPlaneAngle";
-				yield return "LuminousIntensity";
-				yield return "LightDistributionCurve";
-				yield return "DistributionData";
-				yield return "LightColour";
-				yield return "AmbientIntensity";
-				yield return "Intensity";
-				yield return "Orientation";
-				yield return "Position";
-				yield return "ColourAppearance";
-				yield return "ColourTemperature";
-				yield return "LuminousFlux";
-				yield return "LightEmissionSource";
-				yield return "LightDistributionDataSource";
-				yield return "Radius";
-				yield return "ConstantAttenuation";
-				yield return "DistanceAttenuation";
-				yield return "QuadricAttenuation";
-				yield return "ConcentrationExponent";
-				yield return "SpreadAngle";
-				yield return "BeamWidthAngle";
-				yield return "AssignedItems";
-				yield return "LayerOn";
-				yield return "LayerFrozen";
-				yield return "LayerBlocked";
-				yield return "LayerStyles";
-				yield return "EndTime";
-				yield return "TimeSeriesDataType";
-				yield return "DataOrigin";
-				yield return "UserDefinedDataOrigin";
-				yield return "Values";
-				yield return "TimeStamp";
-				yield return "ListValues";
-				yield return "TimeStep";
-				yield return "ReferencedTimeSeries";
-				yield return "TimeSeriesReferences";
-				yield return "ContextIdentifier";
-				yield return "ContextType";
-				yield return "CoordinateSpaceDimension";
-				yield return "Precision";
-				yield return "WorldCoordinateSystem";
-				yield return "TrueNorth";
-				yield return "ParentContext";
-				yield return "TargetScale";
-				yield return "TargetView";
-				yield return "UserDefinedTargetView";
-				yield return "Representations";
-				yield return "RepresentedMaterial";
-				yield return "ContextOfItems";
-				yield return "RepresentationIdentifier";
-				yield return "RepresentationType";
-				yield return "Items";
-				yield return "ShapeRepresentations";
-				yield return "ProductDefinitional";
-				yield return "PartOfProductDefinitionShape";
-				yield return "ApplicableOccurrence";
-				yield return "HasPropertySets";
-				yield return "RepresentationMaps";
-				yield return "Tag";
-				yield return "ElementType";
-				yield return "ControlElementId";
-				yield return "FlowDirection";
-				yield return "RelatedControlElements";
-				yield return "RelatingFlowElement";
-				yield return "EnergySequence";
-				yield return "UserDefinedEnergySequence";
-				yield return "ElectricCurrentType";
-				yield return "InputVoltage";
-				yield return "InputFrequency";
-				yield return "FullLoadCurrent";
-				yield return "MinimumCircuitCurrent";
-				yield return "MaximumPowerInput";
-				yield return "RatedPowerInput";
-				yield return "InputPhase";
-				yield return "PropertySource";
-				yield return "FlowConditionTimeSeries";
-				yield return "VelocityTimeSeries";
-				yield return "FlowrateTimeSeries";
-				yield return "Fluid";
-				yield return "PressureTimeSeries";
-				yield return "UserDefinedPropertySource";
-				yield return "TemperatureSingleValue";
-				yield return "WetBulbTemperatureSingleValue";
-				yield return "WetBulbTemperatureTimeSeries";
-				yield return "TemperatureTimeSeries";
-				yield return "FlowrateSingleValue";
-				yield return "FlowConditionSingleValue";
-				yield return "VelocitySingleValue";
-				yield return "PressureSingleValue";
-				yield return "IsAttenuating";
-				yield return "SoundScale";
-				yield return "SoundValues";
-				yield return "SoundLevelTimeSeries";
-				yield return "Frequency";
-				yield return "SoundLevelSingleValue";
-				yield return "ApplicableValueRatio";
-				yield return "ThermalLoadSource";
-				yield return "SourceDescription";
-				yield return "MaximumValue";
-				yield return "MinimumValue";
-				yield return "ThermalLoadTimeSeriesValues";
-				yield return "UserDefinedThermalLoadSource";
-				yield return "ThermalLoadType";
-				yield return "NominalDiameter";
-				yield return "NominalLength";
-				yield return "FeatureLength";
-				yield return "Width";
-				yield return "Height";
-				yield return "SubmittedBy";
-				yield return "PreparedBy";
-				yield return "SubmittedOn";
-				yield return "TargetUsers";
-				yield return "UpdateDate";
-				yield return "ID";
-				yield return "Records";
-				yield return "RelatingAppliedValue";
-				yield return "Dimensions";
-				yield return "UnitType";
-				yield return "ConversionFactor";
-				yield return "Elements";
-				yield return "UserDefinedType";
-				yield return "Exponent";
-				yield return "LengthExponent";
-				yield return "MassExponent";
-				yield return "TimeExponent";
-				yield return "ElectricCurrentExponent";
-				yield return "ThermodynamicTemperatureExponent";
-				yield return "AmountOfSubstanceExponent";
-				yield return "LuminousIntensityExponent";
-				yield return "ValueComponent";
-				yield return "UnitComponent";
-				yield return "Currency";
-				yield return "Prefix";
-				yield return "Units";
-				yield return "UsageName";
-				yield return "HasProperties";
-				yield return "UpperBoundValue";
-				yield return "LowerBoundValue";
-				yield return "DependingProperty";
-				yield return "DependantProperty";
-				yield return "Expression";
-				yield return "EnumerationValues";
-				yield return "EnumerationReference";
-				yield return "PropertyReference";
-				yield return "NominalValue";
-				yield return "DefiningValues";
-				yield return "DefinedValues";
-				yield return "DefiningUnit";
-				yield return "DefinedUnit";
-				yield return "Red";
-				yield return "Green";
-				yield return "Blue";
-				yield return "Location";
-				yield return "ItemReference";
-				yield return "SizeInX";
-				yield return "SizeInY";
-				yield return "Placement";
-				yield return "FontFamily";
-				yield return "FontStyle";
-				yield return "FontVariant";
-				yield return "FontWeight";
-				yield return "FontSize";
-				yield return "CfsFaces";
-				yield return "EdgeStart";
-				yield return "EdgeEnd";
-				yield return "EdgeGeometry";
-				yield return "SameSense";
-				yield return "EdgeList";
-				yield return "Bounds";
-				yield return "Bound";
-				yield return "FaceSurface";
-				yield return "EdgeElement";
-				yield return "Polygon";
-				yield return "ParentEdge";
-				yield return "LoopVertex";
-				yield return "VertexGeometry";
-				yield return "ConstructionType";
-				yield return "DefinitionType";
-				yield return "ReinforcementSectionDefinitions";
-				yield return "BarLength";
-				yield return "BarRole";
-				yield return "MeshLength";
-				yield return "MeshWidth";
-				yield return "LongitudinalBarNominalDiameter";
-				yield return "TransverseBarNominalDiameter";
-				yield return "LongitudinalBarCrossSectionArea";
-				yield return "TransverseBarCrossSectionArea";
-				yield return "LongitudinalBarSpacing";
-				yield return "TransverseBarSpacing";
-				yield return "TensionForce";
-				yield return "PreStress";
-				yield return "FrictionCoefficient";
-				yield return "AnchorageSlip";
-				yield return "MinCurvatureRadius";
-				yield return "LinearStiffnessByLengthX";
-				yield return "LinearStiffnessByLengthY";
-				yield return "LinearStiffnessByLengthZ";
-				yield return "RotationalStiffnessByLengthX";
-				yield return "RotationalStiffnessByLengthY";
-				yield return "RotationalStiffnessByLengthZ";
-				yield return "LinearStiffnessByAreaX";
-				yield return "LinearStiffnessByAreaY";
-				yield return "LinearStiffnessByAreaZ";
-				yield return "LinearStiffnessX";
-				yield return "LinearStiffnessY";
-				yield return "LinearStiffnessZ";
-				yield return "RotationalStiffnessX";
-				yield return "RotationalStiffnessY";
-				yield return "RotationalStiffnessZ";
-				yield return "WarpingStiffness";
-				yield return "TensionFailureX";
-				yield return "TensionFailureY";
-				yield return "TensionFailureZ";
-				yield return "CompressionFailureX";
-				yield return "CompressionFailureY";
-				yield return "CompressionFailureZ";
-				yield return "SlippageX";
-				yield return "SlippageY";
-				yield return "SlippageZ";
-				yield return "LinearForceX";
-				yield return "LinearForceY";
-				yield return "LinearForceZ";
-				yield return "LinearMomentX";
-				yield return "LinearMomentY";
-				yield return "LinearMomentZ";
-				yield return "PlanarForceX";
-				yield return "PlanarForceY";
-				yield return "PlanarForceZ";
-				yield return "DisplacementX";
-				yield return "DisplacementY";
-				yield return "DisplacementZ";
-				yield return "RotationalDisplacementRX";
-				yield return "RotationalDisplacementRY";
-				yield return "RotationalDisplacementRZ";
-				yield return "Distortion";
-				yield return "ForceX";
-				yield return "ForceY";
-				yield return "ForceZ";
-				yield return "MomentX";
-				yield return "MomentY";
-				yield return "MomentZ";
-				yield return "WarpingMoment";
-				yield return "DeltaT_Constant";
-				yield return "DeltaT_Y";
-				yield return "DeltaT_Z";
-				yield return "RepeatS";
-				yield return "RepeatT";
-				yield return "TextureType";
-				yield return "TextureTransform";
-				yield return "RasterFormat";
-				yield return "RasterCode";
-				yield return "CurveFont";
-				yield return "CurveWidth";
-				yield return "CurveColour";
-				yield return "PatternList";
-				yield return "CurveFontScaling";
-				yield return "VisibleSegmentLength";
-				yield return "InvisibleSegmentLength";
-				yield return "FillStyles";
-				yield return "HatchLineAppearance";
-				yield return "StartOfNextHatchLine";
-				yield return "PointOfReferenceHatchLine";
-				yield return "PatternStart";
-				yield return "HatchLineAngle";
-				yield return "TilingPattern";
-				yield return "Tiles";
-				yield return "TilingScale";
-				yield return "UrlReference";
-				yield return "ColourComponents";
-				yield return "Pixel";
-				yield return "Side";
-				yield return "DiffuseTransmissionColour";
-				yield return "DiffuseReflectionColour";
-				yield return "TransmissionColour";
-				yield return "ReflectanceColour";
-				yield return "RefractionIndex";
-				yield return "DispersionFactor";
-				yield return "SurfaceColour";
-				yield return "Transparency";
-				yield return "DiffuseColour";
-				yield return "ReflectionColour";
-				yield return "SpecularColour";
-				yield return "SpecularHighlight";
-				yield return "ReflectanceMethod";
-				yield return "Textures";
-				yield return "TextCharacterAppearance";
-				yield return "TextStyle";
-				yield return "TextFontStyle";
-				yield return "Colour";
-				yield return "BackgroundColour";
-				yield return "TextIndent";
-				yield return "TextAlign";
-				yield return "TextDecoration";
-				yield return "LetterSpacing";
-				yield return "WordSpacing";
-				yield return "TextTransform";
-				yield return "LineHeight";
-				yield return "Symbol";
-				yield return "RepeatFactor";
-				yield return "StyleOfSymbol";
-				yield return "BoxHeight";
-				yield return "BoxWidth";
-				yield return "BoxSlantAngle";
-				yield return "BoxRotateAngle";
-				yield return "CharacterSpacing";
-				yield return "SecondRepeatFactor";
-				yield return "OverallHeight";
-				yield return "OverallWidth";
-				yield return "LiningDepth";
-				yield return "LiningThickness";
-				yield return "ThresholdDepth";
-				yield return "ThresholdThickness";
-				yield return "TransomThickness";
-				yield return "TransomOffset";
-				yield return "LiningOffset";
-				yield return "ThresholdOffset";
-				yield return "CasingThickness";
-				yield return "CasingDepth";
-				yield return "ShapeAspectStyle";
-				yield return "PanelDepth";
-				yield return "PanelOperation";
-				yield return "PanelWidth";
-				yield return "PanelPosition";
-				yield return "OperationType";
-				yield return "ParameterTakesPrecedence";
-				yield return "Sizeable";
-				yield return "ShapeType";
-				yield return "ConnectionGeometry";
-				yield return "RelatedElement";
-				yield return "RelatingPriorities";
-				yield return "RelatedPriorities";
-				yield return "RelatedConnectionType";
-				yield return "RelatingConnectionType";
-				yield return "NumberOfRiser";
-				yield return "NumberOfTreads";
-				yield return "RiserHeight";
-				yield return "TreadLength";
-				yield return "MullionThickness";
-				yield return "FirstTransomOffset";
-				yield return "SecondTransomOffset";
-				yield return "FirstMullionOffset";
-				yield return "SecondMullionOffset";
-				yield return "FrameDepth";
-				yield return "FrameThickness";
-				yield return "AssetID";
-				yield return "OriginalValue";
-				yield return "CurrentValue";
-				yield return "TotalReplacementCost";
-				yield return "Owner";
-				yield return "User";
-				yield return "ResponsiblePerson";
-				yield return "IncorporationDate";
-				yield return "DepreciatedValue";
-				yield return "AssemblyPlace";
-				yield return "InventoryType";
-				yield return "Jurisdiction";
-				yield return "ResponsiblePersons";
-				yield return "LastUpdateDate";
-				yield return "TheActor";
-				yield return "RelatingActor";
-				yield return "ActingRole";
-				yield return "ServiceLifeType";
-				yield return "ServiceLifeDuration";
-				yield return "UpperValue";
-				yield return "MostUsedValue";
-				yield return "LowerValue";
-				yield return "ProfileType";
-				yield return "OuterCurve";
-				yield return "Curve";
-				yield return "InnerCurves";
-				yield return "OverallDepth";
-				yield return "WebThickness";
-				yield return "FlangeThickness";
-				yield return "FilletRadius";
-				yield return "TopFlangeWidth";
-				yield return "TopFlangeThickness";
-				yield return "TopFlangeFilletRadius";
-				yield return "WallThickness";
-				yield return "Profiles";
-				yield return "Label";
-				yield return "Depth";
-				yield return "Girth";
-				yield return "InternalFilletRadius";
-				yield return "ParentProfile";
-				yield return "Operator";
-				yield return "SemiAxis1";
-				yield return "SemiAxis2";
-				yield return "EdgeRadius";
-				yield return "LegSlope";
-				yield return "XDim";
-				yield return "YDim";
-				yield return "InnerFilletRadius";
-				yield return "OuterFilletRadius";
-				yield return "RoundingRadius";
-				yield return "BottomXDim";
-				yield return "TopXDim";
-				yield return "TopXOffset";
-				yield return "FlangeWidth";
-				yield return "FlangeEdgeRadius";
-				yield return "WebEdgeRadius";
-				yield return "WebSlope";
-				yield return "FlangeSlope";
-				yield return "BaseWidth2";
-				yield return "HeadWidth";
-				yield return "HeadDepth2";
-				yield return "HeadDepth3";
-				yield return "BaseWidth4";
-				yield return "BaseDepth1";
-				yield return "BaseDepth2";
-				yield return "BaseDepth3";
-				yield return "ApplicationDeveloper";
-				yield return "Version";
-				yield return "ApplicationFullName";
-				yield return "ApplicationIdentifier";
-				yield return "OwningUser";
-				yield return "OwningApplication";
-				yield return "State";
-				yield return "ChangeAction";
-				yield return "LastModifiedDate";
-				yield return "LastModifyingUser";
-				yield return "LastModifyingApplication";
-				yield return "Rows";
-				yield return "RowCells";
-				yield return "IsHeading";
-				yield return "OuterBoundary";
-				yield return "InnerBoundaries";
-				yield return "Literal";
-				yield return "Path";
-				yield return "Extent";
-				yield return "BoxAlignment";
-				yield return "Mode";
-				yield return "Parameter";
-				yield return "TextureMaps";
-				yield return "Coordinates";
-				yield return "FillStyleTarget";
-				yield return "TextureCoordinates";
-				yield return "Definition";
-				yield return "Target";
-				yield return "TextureVertices";
-				yield return "TexturePoints";
-				yield return "LongName";
-				yield return "CompositionType";
-				yield return "ElevationOfRefHeight";
-				yield return "ElevationOfTerrain";
-				yield return "BuildingAddress";
-				yield return "Elevation";
-				yield return "MethodOfMeasurement";
-				yield return "Quantities";
-				yield return "UAxes";
-				yield return "VAxes";
-				yield return "WAxes";
-				yield return "RelatingMaterial";
-				yield return "RelatingPort";
-				yield return "RelatedPort";
-				yield return "RealizingElement";
-				yield return "RealizingElements";
-				yield return "ConnectionType";
-				yield return "RelatedElements";
-				yield return "RelatingStructure";
-				yield return "RelatingBuildingElement";
-				yield return "RelatedCoverings";
-				yield return "RelatedSpace";
-				yield return "RelatingOpeningElement";
-				yield return "RelatedBuildingElement";
-				yield return "RelatedFeatureElement";
-				yield return "RelatingSystem";
-				yield return "RelatedBuildings";
-				yield return "RelatingSpace";
-				yield return "PhysicalOrVirtualBoundary";
-				yield return "InternalOrExternalBoundary";
-				yield return "RelatedOpeningElement";
-				yield return "RefLatitude";
-				yield return "RefLongitude";
-				yield return "RefElevation";
-				yield return "LandTitleNumber";
-				yield return "SiteAddress";
-				yield return "InteriorOrExteriorSpace";
-				yield return "ElevationWithFlooring";
-				yield return "CapacityByWeight";
-				yield return "CapacityByNumber";
-				yield return "Phase";
-				yield return "RepresentationContexts";
-				yield return "UnitsInContext";
-				yield return "ProxyType";
-				yield return "RelatingObject";
-				yield return "RelatingGroup";
-				yield return "RelatingProcess";
-				yield return "QuantityInProcess";
-				yield return "RelatingProduct";
-				yield return "RelatingResource";
-				yield return "RelatingClassification";
-				yield return "RelatingDocument";
-				yield return "RelatingLibrary";
-				yield return "RelatingPropertyDefinition";
-				yield return "RelatingType";
-				yield return "RelatedProcess";
-				yield return "TimeLag";
-				yield return "SequenceType";
-				yield return "OverridingProperties";
-				yield return "Segments";
-				yield return "SelfIntersect";
-				yield return "Axis";
-				yield return "RefDirection";
-				yield return "Degree";
-				yield return "ControlPointsList";
-				yield return "CurveForm";
-				yield return "ClosedCurve";
-				yield return "Axis1";
-				yield return "Axis2";
-				yield return "LocalOrigin";
-				yield return "Scale";
-				yield return "Scale2";
-				yield return "Axis3";
-				yield return "Scale3";
-				yield return "Transition";
-				yield return "ParentCurve";
-				yield return "BasisSurface";
-				yield return "DirectionRatios";
-				yield return "Pnt";
-				yield return "Dir";
-				yield return "MappingSource";
-				yield return "MappingTarget";
-				yield return "BasisCurve";
-				yield return "Distance";
-				yield return "PointParameter";
-				yield return "PointParameterU";
-				yield return "PointParameterV";
-				yield return "Points";
-				yield return "WeightsData";
-				yield return "U1";
-				yield return "V1";
-				yield return "U2";
-				yield return "V2";
-				yield return "Usense";
-				yield return "Vsense";
-				yield return "MappingOrigin";
-				yield return "MappedRepresentation";
-				yield return "SweptCurve";
-				yield return "ExtrudedDirection";
-				yield return "AxisPosition";
-				yield return "Trim1";
-				yield return "Trim2";
-				yield return "SenseAgreement";
-				yield return "MasterRepresentation";
-				yield return "Magnitude";
-				yield return "XLength";
-				yield return "YLength";
-				yield return "ZLength";
-				yield return "FirstOperand";
-				yield return "SecondOperand";
-				yield return "Corner";
-				yield return "ZDim";
-				yield return "BaseSurface";
-				yield return "AgreementFlag";
-				yield return "Enclosure";
-				yield return "TreeRootExpression";
-				yield return "SweptArea";
-				yield return "FbsmFaces";
-				yield return "Outer";
-				yield return "Voids";
-				yield return "PolygonalBoundary";
-				yield return "Angle";
-				yield return "BottomRadius";
-				yield return "SpineCurve";
-				yield return "CrossSections";
-				yield return "CrossSectionPositions";
-				yield return "SbsmBoundary";
-				yield return "Directrix";
-				yield return "StartParam";
-				yield return "EndParam";
-				yield return "ReferenceSurface";
-				yield return "InnerRadius";
-				yield return "CurveOnRelatingElement";
-				yield return "CurveOnRelatedElement";
-				yield return "PointOnRelatingElement";
-				yield return "PointOnRelatedElement";
-				yield return "EccentricityInX";
-				yield return "EccentricityInY";
-				yield return "EccentricityInZ";
-				yield return "LocationAtRelatingElement";
-				yield return "LocationAtRelatedElement";
-				yield return "ProfileOfPort";
-				yield return "SurfaceOnRelatingElement";
-				yield return "SurfaceOnRelatedElement";
-				yield return "AxisTag";
-				yield return "AxisCurve";
-				yield return "PlacementLocation";
-				yield return "PlacementRefDirection";
-				yield return "PlacementRelTo";
-				yield return "RelativePlacement";
-				yield return "IntersectingAxes";
-				yield return "OffsetDistances";
-				yield return "RequestID";
-				yield return "Criterion";
-				yield return "CriterionDateTime";
-				yield return "MoveFrom";
-				yield return "MoveTo";
-				yield return "PunchList";
-				yield return "ActionID";
-				yield return "PermitID";
-				yield return "Source";
-				yield return "Edition";
-				yield return "EditionDate";
-				yield return "Notation";
-				yield return "ItemOf";
-				yield return "Title";
-				yield return "RelatingItem";
-				yield return "RelatedItems";
-				yield return "NotationFacets";
-				yield return "NotationValue";
-				yield return "ReferencedSource";
-				yield return "FileExtension";
-				yield return "MimeContentType";
-				yield return "MimeSubtype";
-				yield return "DocumentId";
-				yield return "DocumentReferences";
-				yield return "IntendedUse";
-				yield return "Scope";
-				yield return "Revision";
-				yield return "DocumentOwner";
-				yield return "Editors";
-				yield return "CreationTime";
-				yield return "LastRevisionTime";
-				yield return "ElectronicFormat";
-				yield return "ValidFrom";
-				yield return "ValidUntil";
-				yield return "Confidentiality";
-				yield return "RelatedDocuments";
-				yield return "RelationshipType";
-				yield return "Publisher";
-				yield return "VersionDate";
-				yield return "LibraryReference";
-				yield return "DistributionPointFunction";
-				yield return "UserDefinedFunction";
-				yield return "DayComponent";
-				yield return "MonthComponent";
-				yield return "YearComponent";
-				yield return "HourOffset";
-				yield return "MinuteOffset";
-				yield return "Sense";
-				yield return "DateComponent";
-				yield return "TimeComponent";
-				yield return "HourComponent";
-				yield return "MinuteComponent";
-				yield return "SecondComponent";
-				yield return "Zone";
-				yield return "DaylightSavingOffset";
-				yield return "AppliedValue";
-				yield return "UnitBasis";
-				yield return "ApplicableDate";
-				yield return "FixedUntilDate";
-				yield return "ComponentOfTotal";
-				yield return "Components";
-				yield return "ArithmeticOperator";
-				yield return "CostType";
-				yield return "Condition";
-				yield return "RelatingMonetaryUnit";
-				yield return "RelatedMonetaryUnit";
-				yield return "ExchangeRate";
-				yield return "RateDateTime";
-				yield return "RateSource";
-				yield return "ImpactType";
-				yield return "Category";
-				yield return "UserDefinedCategory";
-				yield return "ReferencedDocument";
-				yield return "ReferencingValues";
-				yield return "LifeCyclePhase";
-				yield return "RelatingApproval";
-				yield return "Intent";
-				yield return "RelatingConstraint";
-				yield return "ApplicableDates";
-				yield return "TimeSeriesScheduleType";
-				yield return "TimeSeries";
-				yield return "ResourceIdentifier";
-				yield return "ResourceGroup";
-				yield return "ResourceConsumption";
-				yield return "BaseQuantity";
-				yield return "Suppliers";
-				yield return "UsageRatio";
-				yield return "SkillSet";
-				yield return "SubContractor";
-				yield return "JobDescription";
-				yield return "ConstraintGrade";
-				yield return "ConstraintSource";
-				yield return "CreatingActor";
-				yield return "UserDefinedGrade";
-				yield return "RelatedConstraints";
-				yield return "LogicalAggregator";
-				yield return "ClassifiedConstraint";
-				yield return "RelatedClassifications";
-				yield return "Benchmark";
-				yield return "ValueSource";
-				yield return "DataValue";
-				yield return "BenchmarkValues";
-				yield return "ResultValues";
-				yield return "ObjectiveQualifier";
-				yield return "UserDefinedQualifier";
-				yield return "RelatedProperties";
-				yield return "DailyInteraction";
-				yield return "ImportanceRating";
-				yield return "LocationOfInteraction";
-				yield return "RelatedSpaceProgram";
-				yield return "RelatingSpaceProgram";
-				yield return "SpaceProgramIdentifier";
-				yield return "MaxRequiredArea";
-				yield return "MinRequiredArea";
-				yield return "RequestedLocation";
-				yield return "StandardRequiredArea";
-				yield return "ApprovalDateTime";
-				yield return "ApprovalStatus";
-				yield return "ApprovalLevel";
-				yield return "ApprovalQualifier";
-				yield return "Actor";
-				yield return "Approval";
-				yield return "ApprovedProperties";
-				yield return "RelatedApproval";
-				yield return "UserDefinedRole";
-				yield return "UserDefinedPurpose";
-				yield return "Id";
-				yield return "Roles";
-				yield return "Addresses";
-				yield return "RelatingOrganization";
-				yield return "RelatedOrganizations";
-				yield return "FamilyName";
-				yield return "GivenName";
-				yield return "MiddleNames";
-				yield return "PrefixTitles";
-				yield return "SuffixTitles";
-				yield return "ThePerson";
-				yield return "TheOrganization";
-				yield return "InternalLocation";
-				yield return "AddressLines";
-				yield return "PostalBox";
-				yield return "Town";
-				yield return "Region";
-				yield return "PostalCode";
-				yield return "Country";
-				yield return "TelephoneNumbers";
-				yield return "FacsimileNumbers";
-				yield return "PagerNumber";
-				yield return "ElectronicMailAddresses";
-				yield return "WWWHomePageURL";
+				yield return "AccessState"; // 1
+				yield return "AcidityConcentration"; // 2
+				yield return "ActingRole"; // 3
+				yield return "ActionID"; // 4
+				yield return "ActionSource"; // 5
+				yield return "ActionType"; // 6
+				yield return "Actor"; // 7
+				yield return "ActualDate"; // 8
+				yield return "ActualDuration"; // 9
+				yield return "ActualFinish"; // 10
+				yield return "ActualStart"; // 11
+				yield return "ActualUsage"; // 12
+				yield return "ActualWork"; // 13
+				yield return "AdditionalConditions"; // 14
+				yield return "Addresses"; // 15
+				yield return "AddressLines"; // 16
+				yield return "AdmixturesDescription"; // 17
+				yield return "AgreementFlag"; // 18
+				yield return "AlkalinityConcentration"; // 19
+				yield return "AlongHorizontal"; // 20
+				yield return "AmbientIntensity"; // 21
+				yield return "AmountOfSubstanceExponent"; // 22
+				yield return "AnchorageSlip"; // 23
+				yield return "Angle"; // 24
+				yield return "AnnotatedCurve"; // 25
+				yield return "ApplicableDate"; // 26
+				yield return "ApplicableDates"; // 27
+				yield return "ApplicableEntity"; // 28
+				yield return "ApplicableOccurrence"; // 29
+				yield return "ApplicableValueRatio"; // 30
+				yield return "ApplicationDeveloper"; // 31
+				yield return "ApplicationFullName"; // 32
+				yield return "ApplicationIdentifier"; // 33
+				yield return "AppliedCondition"; // 34
+				yield return "AppliedLoad"; // 35
+				yield return "AppliedValue"; // 36
+				yield return "Approval"; // 37
+				yield return "ApprovalDateTime"; // 38
+				yield return "ApprovalLevel"; // 39
+				yield return "ApprovalQualifier"; // 40
+				yield return "ApprovalStatus"; // 41
+				yield return "ApprovedProperties"; // 42
+				yield return "AreaValue"; // 43
+				yield return "ArithmeticOperator"; // 44
+				yield return "AssemblyPlace"; // 45
+				yield return "AssetID"; // 46
+				yield return "AssignedItems"; // 47
+				yield return "AssociatedGeometry"; // 48
+				yield return "AttributeIdentifier"; // 49
+				yield return "Axis"; // 50
+				yield return "Axis1"; // 51
+				yield return "Axis2"; // 52
+				yield return "Axis3"; // 53
+				yield return "AxisCurve"; // 54
+				yield return "AxisPosition"; // 55
+				yield return "AxisTag"; // 56
+				yield return "BackgroundColour"; // 57
+				yield return "BarCount"; // 58
+				yield return "BarLength"; // 59
+				yield return "BarRole"; // 60
+				yield return "BarSurface"; // 61
+				yield return "BaseCosts"; // 62
+				yield return "BaseDepth1"; // 63
+				yield return "BaseDepth2"; // 64
+				yield return "BaseDepth3"; // 65
+				yield return "BaseQuantity"; // 66
+				yield return "BaseSurface"; // 67
+				yield return "BaseWidth2"; // 68
+				yield return "BaseWidth4"; // 69
+				yield return "BasisCurve"; // 70
+				yield return "BasisSurface"; // 71
+				yield return "BeamWidthAngle"; // 72
+				yield return "Benchmark"; // 73
+				yield return "BenchmarkValues"; // 74
+				yield return "BendingParameters"; // 75
+				yield return "BendingShapeCode"; // 76
+				yield return "Blue"; // 77
+				yield return "BoilingPoint"; // 78
+				yield return "BottomFlangeEdgeRadius"; // 79
+				yield return "BottomFlangeFilletRadius"; // 80
+				yield return "BottomFlangeSlope"; // 81
+				yield return "BottomFlangeThickness"; // 82
+				yield return "BottomFlangeWidth"; // 83
+				yield return "BottomRadius"; // 84
+				yield return "BottomXDim"; // 85
+				yield return "Bound"; // 86
+				yield return "Boundaries"; // 87
+				yield return "Bounds"; // 88
+				yield return "BoxAlignment"; // 89
+				yield return "BoxHeight"; // 90
+				yield return "BoxRotateAngle"; // 91
+				yield return "BoxSlantAngle"; // 92
+				yield return "BoxWidth"; // 93
+				yield return "BuildingAddress"; // 94
+				yield return "CapacityByNumber"; // 95
+				yield return "CapacityByWeight"; // 96
+				yield return "CarbonContent"; // 97
+				yield return "CardinalEndPoint"; // 98
+				yield return "CardinalPoint"; // 99
+				yield return "CartesianPosition"; // 100
+				yield return "CasingDepth"; // 101
+				yield return "CasingThickness"; // 102
+				yield return "Category"; // 103
+				yield return "CausedBy"; // 104
+				yield return "CentreOfGravityInX"; // 105
+				yield return "CentreOfGravityInY"; // 106
+				yield return "CfsFaces"; // 107
+				yield return "ChangeAction"; // 108
+				yield return "CharacterSpacing"; // 109
+				yield return "ClassifiedConstraint"; // 110
+				yield return "ClassifiedMaterial"; // 111
+				yield return "Closed"; // 112
+				yield return "ClosedCurve"; // 113
+				yield return "CO2Content"; // 114
+				yield return "COContent"; // 115
+				yield return "Coefficient"; // 116
+				yield return "Colour"; // 117
+				yield return "ColourAppearance"; // 118
+				yield return "ColourComponents"; // 119
+				yield return "ColourIndex"; // 120
+				yield return "ColourList"; // 121
+				yield return "Colours"; // 122
+				yield return "ColourTemperature"; // 123
+				yield return "Columns"; // 124
+				yield return "CombustionTemperature"; // 125
+				yield return "Completion"; // 126
+				yield return "ComponentOfTotal"; // 127
+				yield return "Components"; // 128
+				yield return "CompositeProfile"; // 129
+				yield return "CompositionType"; // 130
+				yield return "CompressionFailureX"; // 131
+				yield return "CompressionFailureY"; // 132
+				yield return "CompressionFailureZ"; // 133
+				yield return "CompressiveStrength"; // 134
+				yield return "ConcentrationExponent"; // 135
+				yield return "Condition"; // 136
+				yield return "ConditionCoordinateSystem"; // 137
+				yield return "Confidentiality"; // 138
+				yield return "ConnectionConstraint"; // 139
+				yield return "ConnectionGeometry"; // 140
+				yield return "ConnectionType"; // 141
+				yield return "ConstantAttenuation"; // 142
+				yield return "ConstraintGrade"; // 143
+				yield return "ConstraintSource"; // 144
+				yield return "ConstructionType"; // 145
+				yield return "Contents"; // 146
+				yield return "ContextIdentifier"; // 147
+				yield return "ContextOfItems"; // 148
+				yield return "ContextType"; // 149
+				yield return "ControlElementId"; // 150
+				yield return "ControlPointsList"; // 151
+				yield return "ConversionFactor"; // 152
+				yield return "ConversionOffset"; // 153
+				yield return "Coordinates"; // 154
+				yield return "CoordinateSpaceDimension"; // 155
+				yield return "CoordIndex"; // 156
+				yield return "CoordList"; // 157
+				yield return "Corner"; // 158
+				yield return "CorrespondingBoundary"; // 159
+				yield return "CostQuantities"; // 160
+				yield return "CostType"; // 161
+				yield return "CostValues"; // 162
+				yield return "Country"; // 163
+				yield return "CountValue"; // 164
+				yield return "CreatingActor"; // 165
+				yield return "CreationDate"; // 166
+				yield return "CreationTime"; // 167
+				yield return "Creators"; // 168
+				yield return "Criterion"; // 169
+				yield return "CriterionDateTime"; // 170
+				yield return "CrossSectionArea"; // 171
+				yield return "CrossSectionPositions"; // 172
+				yield return "CrossSectionReinforcementDefinitions"; // 173
+				yield return "CrossSections"; // 174
+				yield return "Currency"; // 175
+				yield return "CurrentValue"; // 176
+				yield return "Curve"; // 177
+				yield return "Curve3D"; // 178
+				yield return "CurveColour"; // 179
+				yield return "CurveFont"; // 180
+				yield return "CurveFontScaling"; // 181
+				yield return "CurveForm"; // 182
+				yield return "CurveGeometry"; // 183
+				yield return "CurveInterpolation"; // 184
+				yield return "CurveOnRelatedElement"; // 185
+				yield return "CurveOnRelatingElement"; // 186
+				yield return "CurveWidth"; // 187
+				yield return "DailyInteraction"; // 188
+				yield return "DataOrigin"; // 189
+				yield return "DataValue"; // 190
+				yield return "DateComponent"; // 191
+				yield return "DayComponent"; // 192
+				yield return "DaylightSavingOffset"; // 193
+				yield return "DefinedUnit"; // 194
+				yield return "DefinedValues"; // 195
+				yield return "DefiningUnit"; // 196
+				yield return "DefiningValues"; // 197
+				yield return "Definition"; // 198
+				yield return "DefinitionType"; // 199
+				yield return "Degree"; // 200
+				yield return "DeltaT_Constant"; // 201
+				yield return "DeltaT_Y"; // 202
+				yield return "DeltaT_Z"; // 203
+				yield return "DeltaTConstant"; // 204
+				yield return "DeltaTY"; // 205
+				yield return "DeltaTZ"; // 206
+				yield return "DependantProperty"; // 207
+				yield return "DependingProperty"; // 208
+				yield return "DepreciatedValue"; // 209
+				yield return "Depth"; // 210
+				yield return "Description"; // 211
+				yield return "DestabilizingLoad"; // 212
+				yield return "DiffuseColour"; // 213
+				yield return "DiffuseReflectionColour"; // 214
+				yield return "DiffuseTransmissionColour"; // 215
+				yield return "Dimensions"; // 216
+				yield return "Dir"; // 217
+				yield return "Direction"; // 218
+				yield return "DirectionRatios"; // 219
+				yield return "DirectionSense"; // 220
+				yield return "Directrix"; // 221
+				yield return "Discrimination"; // 222
+				yield return "DispersionFactor"; // 223
+				yield return "DisplacementX"; // 224
+				yield return "DisplacementY"; // 225
+				yield return "DisplacementZ"; // 226
+				yield return "DissolvedSolidsContent"; // 227
+				yield return "Distance"; // 228
+				yield return "DistanceAlong"; // 229
+				yield return "DistanceAttenuation"; // 230
+				yield return "Distortion"; // 231
+				yield return "DistributionData"; // 232
+				yield return "DistributionPointFunction"; // 233
+				yield return "DocumentId"; // 234
+				yield return "DocumentOwner"; // 235
+				yield return "DocumentReferences"; // 236
+				yield return "Duration"; // 237
+				yield return "DurationType"; // 238
+				yield return "DynamicViscosity"; // 239
+				yield return "EarlyDate"; // 240
+				yield return "EarlyFinish"; // 241
+				yield return "EarlyStart"; // 242
+				yield return "Eastings"; // 243
+				yield return "EccentricityInX"; // 244
+				yield return "EccentricityInY"; // 245
+				yield return "EccentricityInZ"; // 246
+				yield return "EdgeElement"; // 247
+				yield return "EdgeEnd"; // 248
+				yield return "EdgeGeometry"; // 249
+				yield return "EdgeList"; // 250
+				yield return "EdgeRadius"; // 251
+				yield return "EdgeStart"; // 252
+				yield return "Edition"; // 253
+				yield return "EditionDate"; // 254
+				yield return "Editors"; // 255
+				yield return "EffectiveDepth"; // 256
+				yield return "ElectricCurrentExponent"; // 257
+				yield return "ElectricCurrentType"; // 258
+				yield return "ElectronicFormat"; // 259
+				yield return "ElectronicMailAddresses"; // 260
+				yield return "Elements"; // 261
+				yield return "ElementType"; // 262
+				yield return "Elevation"; // 263
+				yield return "ElevationOfRefHeight"; // 264
+				yield return "ElevationOfTerrain"; // 265
+				yield return "ElevationWithFlooring"; // 266
+				yield return "Enclosure"; // 267
+				yield return "EndParam"; // 268
+				yield return "EndProfile"; // 269
+				yield return "EndRadius"; // 270
+				yield return "EndSweptArea"; // 271
+				yield return "EndTag"; // 272
+				yield return "EndTime"; // 273
+				yield return "EnergySequence"; // 274
+				yield return "EnumerationReference"; // 275
+				yield return "EnumerationValues"; // 276
+				yield return "Enumerators"; // 277
+				yield return "EventOccurenceTime"; // 278
+				yield return "EventTriggerType"; // 279
+				yield return "ExceptionTimes"; // 280
+				yield return "ExchangeRate"; // 281
+				yield return "Exponent"; // 282
+				yield return "Expression"; // 283
+				yield return "ExtendedProperties"; // 284
+				yield return "Extent"; // 285
+				yield return "ExtrudedDirection"; // 286
+				yield return "Faces"; // 287
+				yield return "FaceSurface"; // 288
+				yield return "FacsimileNumbers"; // 289
+				yield return "Factor"; // 290
+				yield return "FamilyName"; // 291
+				yield return "FbsmFaces"; // 292
+				yield return "FeatureLength"; // 293
+				yield return "FileExtension"; // 294
+				yield return "FilletRadius"; // 295
+				yield return "FillStyles"; // 296
+				yield return "FillStyleTarget"; // 297
+				yield return "Finish"; // 298
+				yield return "FinishFloat"; // 299
+				yield return "FinishTime"; // 300
+				yield return "FirstMullionOffset"; // 301
+				yield return "FirstOperand"; // 302
+				yield return "FirstTransomOffset"; // 303
+				yield return "FixedAxisVertical"; // 304
+				yield return "FixedReference"; // 305
+				yield return "FixedUntilDate"; // 306
+				yield return "Flags"; // 307
+				yield return "FlangeEdgeRadius"; // 308
+				yield return "FlangeSlope"; // 309
+				yield return "FlangeThickness"; // 310
+				yield return "FlangeWidth"; // 311
+				yield return "FlowConditionSingleValue"; // 312
+				yield return "FlowConditionTimeSeries"; // 313
+				yield return "FlowDirection"; // 314
+				yield return "FlowrateSingleValue"; // 315
+				yield return "FlowrateTimeSeries"; // 316
+				yield return "Fluid"; // 317
+				yield return "FontFamily"; // 318
+				yield return "FontSize"; // 319
+				yield return "FontStyle"; // 320
+				yield return "FontVariant"; // 321
+				yield return "FontWeight"; // 322
+				yield return "ForceX"; // 323
+				yield return "ForceY"; // 324
+				yield return "ForceZ"; // 325
+				yield return "ForLayerSet"; // 326
+				yield return "Formula"; // 327
+				yield return "ForProfileEndSet"; // 328
+				yield return "ForProfileSet"; // 329
+				yield return "Fraction"; // 330
+				yield return "FrameDepth"; // 331
+				yield return "FrameThickness"; // 332
+				yield return "FreeFloat"; // 333
+				yield return "FreezingPoint"; // 334
+				yield return "Frequency"; // 335
+				yield return "FrictionCoefficient"; // 336
+				yield return "FullLoadCurrent"; // 337
+				yield return "GeodeticDatum"; // 338
+				yield return "Girth"; // 339
+				yield return "GivenName"; // 340
+				yield return "GivingApproval"; // 341
+				yield return "GlobalId"; // 342
+				yield return "GlobalOrLocal"; // 343
+				yield return "Green"; // 344
+				yield return "HardeningModule"; // 345
+				yield return "Hardness"; // 346
+				yield return "HasProperties"; // 347
+				yield return "HasPropertySets"; // 348
+				yield return "HasPropertyTemplates"; // 349
+				yield return "HasQuantities"; // 350
+				yield return "HasResults"; // 351
+				yield return "HatchLineAngle"; // 352
+				yield return "HatchLineAppearance"; // 353
+				yield return "HeadDepth2"; // 354
+				yield return "HeadDepth3"; // 355
+				yield return "HeadWidth"; // 356
+				yield return "Height"; // 357
+				yield return "HigherHeatingValue"; // 358
+				yield return "Horizontal"; // 359
+				yield return "HorizontalLength"; // 360
+				yield return "HourComponent"; // 361
+				yield return "HourOffset"; // 362
+				yield return "Id"; // 363
+				yield return "ID"; // 364
+				yield return "Identification"; // 365
+				yield return "Identifier"; // 366
+				yield return "ImpactType"; // 367
+				yield return "ImplicitOuter"; // 368
+				yield return "ImpliedOrder"; // 369
+				yield return "ImportanceRating"; // 370
+				yield return "ImpuritiesContent"; // 371
+				yield return "IncorporationDate"; // 372
+				yield return "InitialStress"; // 373
+				yield return "InnerBoundaries"; // 374
+				yield return "InnerCoordIndices"; // 375
+				yield return "InnerCurves"; // 376
+				yield return "InnerFilletRadius"; // 377
+				yield return "InnerRadius"; // 378
+				yield return "InnerReference"; // 379
+				yield return "InputFrequency"; // 380
+				yield return "InputPhase"; // 381
+				yield return "InputVoltage"; // 382
+				yield return "InstanceName"; // 383
+				yield return "IntendedUse"; // 384
+				yield return "Intensity"; // 385
+				yield return "Intent"; // 386
+				yield return "InterferenceGeometry"; // 387
+				yield return "InterferenceType"; // 388
+				yield return "InteriorOrExteriorSpace"; // 389
+				yield return "InternalFilletRadius"; // 390
+				yield return "InternalLocation"; // 391
+				yield return "InternalOrExternalBoundary"; // 392
+				yield return "IntersectingAxes"; // 393
+				yield return "Interval"; // 394
+				yield return "InventoryType"; // 395
+				yield return "InvisibleSegmentLength"; // 396
+				yield return "IsAttenuating"; // 397
+				yield return "IsCCW"; // 398
+				yield return "IsConvex"; // 399
+				yield return "IsCritical"; // 400
+				yield return "IsEndRadiusCCW"; // 401
+				yield return "IsHeading"; // 402
+				yield return "IsLinear"; // 403
+				yield return "IsMilestone"; // 404
+				yield return "IsothermalMoistureCapacity"; // 405
+				yield return "IsOverAllocated"; // 406
+				yield return "IsPotable"; // 407
+				yield return "IsStartRadiusCCW"; // 408
+				yield return "IsVentilated"; // 409
+				yield return "Item"; // 410
+				yield return "ItemOf"; // 411
+				yield return "ItemReference"; // 412
+				yield return "Items"; // 413
+				yield return "JobDescription"; // 414
+				yield return "Jurisdiction"; // 415
+				yield return "KnotMultiplicities"; // 416
+				yield return "Knots"; // 417
+				yield return "KnotSpec"; // 418
+				yield return "Label"; // 419
+				yield return "LagValue"; // 420
+				yield return "LandTitleNumber"; // 421
+				yield return "Language"; // 422
+				yield return "LastModifiedDate"; // 423
+				yield return "LastModifyingApplication"; // 424
+				yield return "LastModifyingUser"; // 425
+				yield return "LastRevisionTime"; // 426
+				yield return "LastUpdateDate"; // 427
+				yield return "LateDate"; // 428
+				yield return "LateFinish"; // 429
+				yield return "LateralAxisDirection"; // 430
+				yield return "LateStart"; // 431
+				yield return "LayerBlocked"; // 432
+				yield return "LayerFrozen"; // 433
+				yield return "LayerOn"; // 434
+				yield return "LayerSetDirection"; // 435
+				yield return "LayerSetName"; // 436
+				yield return "LayerStyles"; // 437
+				yield return "LayerThickness"; // 438
+				yield return "LegSlope"; // 439
+				yield return "LengthExponent"; // 440
+				yield return "LengthValue"; // 441
+				yield return "LetterSpacing"; // 442
+				yield return "Level"; // 443
+				yield return "LevelingDelay"; // 444
+				yield return "LibraryReference"; // 445
+				yield return "LifeCyclePhase"; // 446
+				yield return "LightColour"; // 447
+				yield return "LightDistributionCurve"; // 448
+				yield return "LightDistributionDataSource"; // 449
+				yield return "LightEmissionSource"; // 450
+				yield return "LinearForceX"; // 451
+				yield return "LinearForceY"; // 452
+				yield return "LinearForceZ"; // 453
+				yield return "LinearMomentX"; // 454
+				yield return "LinearMomentY"; // 455
+				yield return "LinearMomentZ"; // 456
+				yield return "LinearStiffnessByAreaX"; // 457
+				yield return "LinearStiffnessByAreaY"; // 458
+				yield return "LinearStiffnessByAreaZ"; // 459
+				yield return "LinearStiffnessByLengthX"; // 460
+				yield return "LinearStiffnessByLengthY"; // 461
+				yield return "LinearStiffnessByLengthZ"; // 462
+				yield return "LinearStiffnessX"; // 463
+				yield return "LinearStiffnessY"; // 464
+				yield return "LinearStiffnessZ"; // 465
+				yield return "LineHeight"; // 466
+				yield return "LiningDepth"; // 467
+				yield return "LiningOffset"; // 468
+				yield return "LiningThickness"; // 469
+				yield return "LiningToPanelOffsetX"; // 470
+				yield return "LiningToPanelOffsetY"; // 471
+				yield return "ListPositions"; // 472
+				yield return "ListValues"; // 473
+				yield return "Literal"; // 474
+				yield return "LoadedBy"; // 475
+				yield return "LocalOrigin"; // 476
+				yield return "Location"; // 477
+				yield return "LocationAtRelatedElement"; // 478
+				yield return "LocationAtRelatingElement"; // 479
+				yield return "LocationOfInteraction"; // 480
+				yield return "Locations"; // 481
+				yield return "LogicalAggregator"; // 482
+				yield return "LongDescription"; // 483
+				yield return "LongitudinalBarCrossSectionArea"; // 484
+				yield return "LongitudinalBarNominalDiameter"; // 485
+				yield return "LongitudinalBarSpacing"; // 486
+				yield return "LongitudinalEndPosition"; // 487
+				yield return "LongitudinalStartPosition"; // 488
+				yield return "LongName"; // 489
+				yield return "LoopVertex"; // 490
+				yield return "LowerBoundValue"; // 491
+				yield return "LowerHeatingValue"; // 492
+				yield return "LowerValue"; // 493
+				yield return "LowerVaporResistanceFactor"; // 494
+				yield return "LuminousFlux"; // 495
+				yield return "LuminousIntensity"; // 496
+				yield return "LuminousIntensityExponent"; // 497
+				yield return "Magnitude"; // 498
+				yield return "MainPlaneAngle"; // 499
+				yield return "MajorRadius"; // 500
+				yield return "MappedRepresentation"; // 501
+				yield return "MappedTo"; // 502
+				yield return "MappingOrigin"; // 503
+				yield return "MappingSource"; // 504
+				yield return "MappingTarget"; // 505
+				yield return "MapProjection"; // 506
+				yield return "Maps"; // 507
+				yield return "MapUnit"; // 508
+				yield return "MapZone"; // 509
+				yield return "MassDensity"; // 510
+				yield return "MassExponent"; // 511
+				yield return "MasterRepresentation"; // 512
+				yield return "Material"; // 513
+				yield return "MaterialClassifications"; // 514
+				yield return "MaterialConstituents"; // 515
+				yield return "MaterialLayers"; // 516
+				yield return "MaterialProfiles"; // 517
+				yield return "Materials"; // 518
+				yield return "MaxAggregateSize"; // 519
+				yield return "MaximumPlateThickness"; // 520
+				yield return "MaximumPowerInput"; // 521
+				yield return "MaximumSectionModulusY"; // 522
+				yield return "MaximumSectionModulusZ"; // 523
+				yield return "MaximumValue"; // 524
+				yield return "MaxRequiredArea"; // 525
+				yield return "MeshLength"; // 526
+				yield return "MeshWidth"; // 527
+				yield return "MessagingIDs"; // 528
+				yield return "MethodOfMeasurement"; // 529
+				yield return "MiddleNames"; // 530
+				yield return "MimeContentType"; // 531
+				yield return "MimeSubtype"; // 532
+				yield return "MinCurvatureRadius"; // 533
+				yield return "MinimumCircuitCurrent"; // 534
+				yield return "MinimumPlateThickness"; // 535
+				yield return "MinimumSectionModulusY"; // 536
+				yield return "MinimumSectionModulusZ"; // 537
+				yield return "MinimumValue"; // 538
+				yield return "MinorRadius"; // 539
+				yield return "MinRequiredArea"; // 540
+				yield return "MinuteComponent"; // 541
+				yield return "MinuteOffset"; // 542
+				yield return "Mode"; // 543
+				yield return "ModelorDraughting"; // 544
+				yield return "ModelOrDraughting"; // 545
+				yield return "MoistureDiffusivity"; // 546
+				yield return "MolecularWeight"; // 547
+				yield return "MomentOfInertiaY"; // 548
+				yield return "MomentOfInertiaYZ"; // 549
+				yield return "MomentOfInertiaZ"; // 550
+				yield return "MomentX"; // 551
+				yield return "MomentY"; // 552
+				yield return "MomentZ"; // 553
+				yield return "MonthComponent"; // 554
+				yield return "MostUsedValue"; // 555
+				yield return "MoveFrom"; // 556
+				yield return "MoveTo"; // 557
+				yield return "MullionThickness"; // 558
+				yield return "N20Content"; // 559
+				yield return "Name"; // 560
+				yield return "NominalBarDiameter"; // 561
+				yield return "NominalDiameter"; // 562
+				yield return "NominalLength"; // 563
+				yield return "NominalValue"; // 564
+				yield return "Normals"; // 565
+				yield return "Northings"; // 566
+				yield return "Notation"; // 567
+				yield return "NotationFacets"; // 568
+				yield return "NotationValue"; // 569
+				yield return "NumberOfRiser"; // 570
+				yield return "NumberOfRisers"; // 571
+				yield return "NumberOfTreads"; // 572
+				yield return "ObjectiveQualifier"; // 573
+				yield return "ObjectPlacement"; // 574
+				yield return "ObjectType"; // 575
+				yield return "Occurrences"; // 576
+				yield return "OffsetDirection"; // 577
+				yield return "OffsetDistances"; // 578
+				yield return "OffsetFromReferenceLine"; // 579
+				yield return "OffsetLateral"; // 580
+				yield return "OffsetLongitudinal"; // 581
+				yield return "OffsetValues"; // 582
+				yield return "OffsetVertical"; // 583
+				yield return "Opacity"; // 584
+				yield return "OperationType"; // 585
+				yield return "Operator"; // 586
+				yield return "Orientation"; // 587
+				yield return "OrientationOf2DPlane"; // 588
+				yield return "OriginalValue"; // 589
+				yield return "OrthogonalHeight"; // 590
+				yield return "Outer"; // 591
+				yield return "OuterBoundary"; // 592
+				yield return "OuterCurve"; // 593
+				yield return "OuterFilletRadius"; // 594
+				yield return "OverallDepth"; // 595
+				yield return "OverallHeight"; // 596
+				yield return "OverallWidth"; // 597
+				yield return "OverridingProperties"; // 598
+				yield return "Owner"; // 599
+				yield return "OwnerHistory"; // 600
+				yield return "OwningApplication"; // 601
+				yield return "OwningUser"; // 602
+				yield return "PagerNumber"; // 603
+				yield return "PanelDepth"; // 604
+				yield return "PanelOperation"; // 605
+				yield return "PanelPosition"; // 606
+				yield return "PanelWidth"; // 607
+				yield return "ParabolaConstant"; // 608
+				yield return "Parameter"; // 609
+				yield return "ParameterTakesPrecedence"; // 610
+				yield return "ParamLength"; // 611
+				yield return "ParentBoundary"; // 612
+				yield return "ParentContext"; // 613
+				yield return "ParentCurve"; // 614
+				yield return "ParentEdge"; // 615
+				yield return "ParentProfile"; // 616
+				yield return "PartitioningType"; // 617
+				yield return "PartOfProductDefinitionShape"; // 618
+				yield return "Path"; // 619
+				yield return "PatternList"; // 620
+				yield return "PatternStart"; // 621
+				yield return "Perimeter"; // 622
+				yield return "PermitID"; // 623
+				yield return "Phase"; // 624
+				yield return "PHLevel"; // 625
+				yield return "PhysicalOrVirtualBoundary"; // 626
+				yield return "PhysicalWeight"; // 627
+				yield return "Pixel"; // 628
+				yield return "Placement"; // 629
+				yield return "PlacementLocation"; // 630
+				yield return "PlacementRefDirection"; // 631
+				yield return "PlacementRelTo"; // 632
+				yield return "PlanarForceX"; // 633
+				yield return "PlanarForceY"; // 634
+				yield return "PlanarForceZ"; // 635
+				yield return "PlasticShapeFactorY"; // 636
+				yield return "PlasticShapeFactorZ"; // 637
+				yield return "PlasticStrain"; // 638
+				yield return "PnIndex"; // 639
+				yield return "Pnt"; // 640
+				yield return "PointOfReferenceHatchLine"; // 641
+				yield return "PointOnRelatedElement"; // 642
+				yield return "PointOnRelatingElement"; // 643
+				yield return "PointParameter"; // 644
+				yield return "PointParameterU"; // 645
+				yield return "PointParameterV"; // 646
+				yield return "Points"; // 647
+				yield return "PoissonRatio"; // 648
+				yield return "Polygon"; // 649
+				yield return "PolygonalBoundary"; // 650
+				yield return "Porosity"; // 651
+				yield return "Position"; // 652
+				yield return "PostalBox"; // 653
+				yield return "PostalCode"; // 654
+				yield return "Precision"; // 655
+				yield return "PredefinedType"; // 656
+				yield return "Prefix"; // 657
+				yield return "PrefixTitles"; // 658
+				yield return "PreparedBy"; // 659
+				yield return "PressureSingleValue"; // 660
+				yield return "PressureTimeSeries"; // 661
+				yield return "PreStress"; // 662
+				yield return "PrimaryMeasureType"; // 663
+				yield return "PrimaryUnit"; // 664
+				yield return "Priority"; // 665
+				yield return "ProcedureID"; // 666
+				yield return "ProcedureType"; // 667
+				yield return "ProcessType"; // 668
+				yield return "ProductDefinitional"; // 669
+				yield return "Profile"; // 670
+				yield return "ProfileDefinition"; // 671
+				yield return "ProfileName"; // 672
+				yield return "ProfileOfPort"; // 673
+				yield return "ProfileOrientation"; // 674
+				yield return "Profiles"; // 675
+				yield return "ProfileSectionLocation"; // 676
+				yield return "ProfileType"; // 677
+				yield return "ProjectedOrTrue"; // 678
+				yield return "Properties"; // 679
+				yield return "PropertyReference"; // 680
+				yield return "PropertySource"; // 681
+				yield return "ProportionalStress"; // 682
+				yield return "ProtectivePoreRatio"; // 683
+				yield return "ProxyType"; // 684
+				yield return "Publisher"; // 685
+				yield return "PunchList"; // 686
+				yield return "Purpose"; // 687
+				yield return "QuadricAttenuation"; // 688
+				yield return "Qualifier"; // 689
+				yield return "Quality"; // 690
+				yield return "Quantities"; // 691
+				yield return "QuantityInProcess"; // 692
+				yield return "Radius"; // 693
+				yield return "RasterCode"; // 694
+				yield return "RasterFormat"; // 695
+				yield return "RateDateTime"; // 696
+				yield return "RatedPowerInput"; // 697
+				yield return "RateSource"; // 698
+				yield return "RealizingElement"; // 699
+				yield return "RealizingElements"; // 700
+				yield return "Records"; // 701
+				yield return "Recurrence"; // 702
+				yield return "RecurrencePattern"; // 703
+				yield return "RecurrenceType"; // 704
+				yield return "Red"; // 705
+				yield return "RefDirection"; // 706
+				yield return "RefElevation"; // 707
+				yield return "ReferenceCurve"; // 708
+				yield return "ReferencedDocument"; // 709
+				yield return "ReferencedLibrary"; // 710
+				yield return "ReferencedSource"; // 711
+				yield return "ReferencedTimeSeries"; // 712
+				yield return "ReferenceExtent"; // 713
+				yield return "ReferencePath"; // 714
+				yield return "ReferenceSurface"; // 715
+				yield return "ReferenceTokens"; // 716
+				yield return "ReferencingValues"; // 717
+				yield return "RefLatitude"; // 718
+				yield return "ReflectanceColour"; // 719
+				yield return "ReflectanceMethod"; // 720
+				yield return "ReflectionColour"; // 721
+				yield return "RefLongitude"; // 722
+				yield return "RefractionIndex"; // 723
+				yield return "Region"; // 724
+				yield return "ReinforcementRole"; // 725
+				yield return "ReinforcementSectionDefinitions"; // 726
+				yield return "RelatedApproval"; // 727
+				yield return "RelatedApprovals"; // 728
+				yield return "RelatedBuildingElement"; // 729
+				yield return "RelatedBuildings"; // 730
+				yield return "RelatedClassifications"; // 731
+				yield return "RelatedConnectionType"; // 732
+				yield return "RelatedConstraints"; // 733
+				yield return "RelatedControlElements"; // 734
+				yield return "RelatedCoverings"; // 735
+				yield return "RelatedDefinitions"; // 736
+				yield return "RelatedDocuments"; // 737
+				yield return "RelatedDraughtingCallout"; // 738
+				yield return "RelatedElement"; // 739
+				yield return "RelatedElements"; // 740
+				yield return "RelatedFeatureElement"; // 741
+				yield return "RelatedItems"; // 742
+				yield return "RelatedMaterials"; // 743
+				yield return "RelatedMonetaryUnit"; // 744
+				yield return "RelatedObjects"; // 745
+				yield return "RelatedObjectsType"; // 746
+				yield return "RelatedOpeningElement"; // 747
+				yield return "RelatedOrganizations"; // 748
+				yield return "RelatedPort"; // 749
+				yield return "RelatedPriorities"; // 750
+				yield return "RelatedProcess"; // 751
+				yield return "RelatedProperties"; // 752
+				yield return "RelatedPropertySets"; // 753
+				yield return "RelatedResourceObjects"; // 754
+				yield return "RelatedSpace"; // 755
+				yield return "RelatedSpaceProgram"; // 756
+				yield return "RelatedStructuralActivity"; // 757
+				yield return "RelatedStructuralConnection"; // 758
+				yield return "RelatedStructuralMember"; // 759
+				yield return "RelatingActor"; // 760
+				yield return "RelatingAppliedValue"; // 761
+				yield return "RelatingApproval"; // 762
+				yield return "RelatingBuildingElement"; // 763
+				yield return "RelatingClassification"; // 764
+				yield return "RelatingConnectionType"; // 765
+				yield return "RelatingConstraint"; // 766
+				yield return "RelatingContext"; // 767
+				yield return "RelatingControl"; // 768
+				yield return "RelatingDocument"; // 769
+				yield return "RelatingDraughtingCallout"; // 770
+				yield return "RelatingElement"; // 771
+				yield return "RelatingFlowElement"; // 772
+				yield return "RelatingGroup"; // 773
+				yield return "RelatingItem"; // 774
+				yield return "RelatingLibrary"; // 775
+				yield return "RelatingMaterial"; // 776
+				yield return "RelatingMonetaryUnit"; // 777
+				yield return "RelatingObject"; // 778
+				yield return "RelatingOpeningElement"; // 779
+				yield return "RelatingOrganization"; // 780
+				yield return "RelatingPort"; // 781
+				yield return "RelatingPriorities"; // 782
+				yield return "RelatingProcess"; // 783
+				yield return "RelatingProduct"; // 784
+				yield return "RelatingProfileProperties"; // 785
+				yield return "RelatingPropertyDefinition"; // 786
+				yield return "RelatingReference"; // 787
+				yield return "RelatingResource"; // 788
+				yield return "RelatingSpace"; // 789
+				yield return "RelatingSpaceProgram"; // 790
+				yield return "RelatingStructuralMember"; // 791
+				yield return "RelatingStructure"; // 792
+				yield return "RelatingSystem"; // 793
+				yield return "RelatingTemplate"; // 794
+				yield return "RelatingType"; // 795
+				yield return "RelationshipType"; // 796
+				yield return "RelativePlacement"; // 797
+				yield return "Relaxations"; // 798
+				yield return "RelaxationValue"; // 799
+				yield return "RemainingTime"; // 800
+				yield return "RemainingUsage"; // 801
+				yield return "RemainingWork"; // 802
+				yield return "RepeatFactor"; // 803
+				yield return "RepeatS"; // 804
+				yield return "RepeatT"; // 805
+				yield return "Representation"; // 806
+				yield return "RepresentationContexts"; // 807
+				yield return "RepresentationIdentifier"; // 808
+				yield return "RepresentationMaps"; // 809
+				yield return "Representations"; // 810
+				yield return "RepresentationType"; // 811
+				yield return "RepresentedMaterial"; // 812
+				yield return "RequestedLocation"; // 813
+				yield return "RequestID"; // 814
+				yield return "RequestingApproval"; // 815
+				yield return "ResourceConsumption"; // 816
+				yield return "ResourceGroup"; // 817
+				yield return "ResourceIdentifier"; // 818
+				yield return "ResourceType"; // 819
+				yield return "ResponsiblePerson"; // 820
+				yield return "ResponsiblePersons"; // 821
+				yield return "RestartDistance"; // 822
+				yield return "ResultForLoadGroup"; // 823
+				yield return "ResultValues"; // 824
+				yield return "Revision"; // 825
+				yield return "RibHeight"; // 826
+				yield return "RibSpacing"; // 827
+				yield return "RibWidth"; // 828
+				yield return "RiserHeight"; // 829
+				yield return "Role"; // 830
+				yield return "Roles"; // 831
+				yield return "RotationalDisplacementRX"; // 832
+				yield return "RotationalDisplacementRY"; // 833
+				yield return "RotationalDisplacementRZ"; // 834
+				yield return "RotationalStiffnessByLengthX"; // 835
+				yield return "RotationalStiffnessByLengthY"; // 836
+				yield return "RotationalStiffnessByLengthZ"; // 837
+				yield return "RotationalStiffnessX"; // 838
+				yield return "RotationalStiffnessY"; // 839
+				yield return "RotationalStiffnessZ"; // 840
+				yield return "RoundingRadius"; // 841
+				yield return "RowCells"; // 842
+				yield return "Rows"; // 843
+				yield return "SameSense"; // 844
+				yield return "SbsmBoundary"; // 845
+				yield return "Scale"; // 846
+				yield return "Scale2"; // 847
+				yield return "Scale3"; // 848
+				yield return "ScheduleContour"; // 849
+				yield return "ScheduleDate"; // 850
+				yield return "ScheduleDuration"; // 851
+				yield return "ScheduleFinish"; // 852
+				yield return "ScheduleStart"; // 853
+				yield return "ScheduleUsage"; // 854
+				yield return "ScheduleWork"; // 855
+				yield return "Scope"; // 856
+				yield return "SecondaryMeasureType"; // 857
+				yield return "SecondaryPlaneAngle"; // 858
+				yield return "SecondaryUnit"; // 859
+				yield return "SecondComponent"; // 860
+				yield return "SecondMullionOffset"; // 861
+				yield return "SecondOperand"; // 862
+				yield return "SecondRepeatFactor"; // 863
+				yield return "SecondTransomOffset"; // 864
+				yield return "SectionDefinition"; // 865
+				yield return "SectionType"; // 866
+				yield return "SegmentLength"; // 867
+				yield return "Segments"; // 868
+				yield return "SelfIntersect"; // 869
+				yield return "SelfWeightCoefficients"; // 870
+				yield return "SemiAxis1"; // 871
+				yield return "SemiAxis2"; // 872
+				yield return "Sense"; // 873
+				yield return "SenseAgreement"; // 874
+				yield return "SequenceType"; // 875
+				yield return "ServiceLifeDuration"; // 876
+				yield return "ServiceLifeType"; // 877
+				yield return "SetPointValue"; // 878
+				yield return "ShapeAspectStyle"; // 879
+				yield return "ShapeRepresentations"; // 880
+				yield return "ShapeType"; // 881
+				yield return "SharedPlacement"; // 882
+				yield return "ShearAreaY"; // 883
+				yield return "ShearAreaZ"; // 884
+				yield return "ShearCentreY"; // 885
+				yield return "ShearCentreZ"; // 886
+				yield return "ShearDeformationAreaY"; // 887
+				yield return "ShearDeformationAreaZ"; // 888
+				yield return "ShearModulus"; // 889
+				yield return "ShearReinforcement"; // 890
+				yield return "SheathDiameter"; // 891
+				yield return "Side"; // 892
+				yield return "SiteAddress"; // 893
+				yield return "Sizeable"; // 894
+				yield return "SizeInX"; // 895
+				yield return "SizeInY"; // 896
+				yield return "SkillSet"; // 897
+				yield return "SlippageX"; // 898
+				yield return "SlippageY"; // 899
+				yield return "SlippageZ"; // 900
+				yield return "SolarReflectanceBack"; // 901
+				yield return "SolarReflectanceFront"; // 902
+				yield return "SolarTransmittance"; // 903
+				yield return "Sort"; // 904
+				yield return "SoundLevelSingleValue"; // 905
+				yield return "SoundLevelTimeSeries"; // 906
+				yield return "SoundScale"; // 907
+				yield return "SoundValues"; // 908
+				yield return "Source"; // 909
+				yield return "SourceCRS"; // 910
+				yield return "SourceDescription"; // 911
+				yield return "SpaceProgramIdentifier"; // 912
+				yield return "SpecificHeatCapacity"; // 913
+				yield return "SpecularColour"; // 914
+				yield return "SpecularHighlight"; // 915
+				yield return "SpineCurve"; // 916
+				yield return "SpreadAngle"; // 917
+				yield return "StandardRequiredArea"; // 918
+				yield return "Start"; // 919
+				yield return "StartDirection"; // 920
+				yield return "StartDistAlong"; // 921
+				yield return "StartFloat"; // 922
+				yield return "StartGradient"; // 923
+				yield return "StartHeight"; // 924
+				yield return "StartOfNextHatchLine"; // 925
+				yield return "StartParam"; // 926
+				yield return "StartPoint"; // 927
+				yield return "StartProfile"; // 928
+				yield return "StartRadius"; // 929
+				yield return "StartTag"; // 930
+				yield return "StartTime"; // 931
+				yield return "State"; // 932
+				yield return "Status"; // 933
+				yield return "StatusTime"; // 934
+				yield return "SteelGrade"; // 935
+				yield return "StyleOfSymbol"; // 936
+				yield return "Styles"; // 937
+				yield return "SubContractor"; // 938
+				yield return "SubmittedBy"; // 939
+				yield return "SubmittedOn"; // 940
+				yield return "SubsequentAppliedLoads"; // 941
+				yield return "SubsequentThickness"; // 942
+				yield return "SuffixTitles"; // 943
+				yield return "Suppliers"; // 944
+				yield return "SupportedLength"; // 945
+				yield return "SurfaceColour"; // 946
+				yield return "SurfaceForm"; // 947
+				yield return "SurfaceOnRelatedElement"; // 948
+				yield return "SurfaceOnRelatingElement"; // 949
+				yield return "SurfaceReinforcement1"; // 950
+				yield return "SurfaceReinforcement2"; // 951
+				yield return "SweptArea"; // 952
+				yield return "SweptCurve"; // 953
+				yield return "Symbol"; // 954
+				yield return "SystemType"; // 955
+				yield return "Tag"; // 956
+				yield return "TagList"; // 957
+				yield return "TangentialContinuity"; // 958
+				yield return "Target"; // 959
+				yield return "TargetCRS"; // 960
+				yield return "TargetScale"; // 961
+				yield return "TargetUsers"; // 962
+				yield return "TargetView"; // 963
+				yield return "TaskId"; // 964
+				yield return "TaskTime"; // 965
+				yield return "TelephoneNumbers"; // 966
+				yield return "TemperatureSingleValue"; // 967
+				yield return "TemperatureTimeSeries"; // 968
+				yield return "TemplateType"; // 969
+				yield return "TensionFailureX"; // 970
+				yield return "TensionFailureY"; // 971
+				yield return "TensionFailureZ"; // 972
+				yield return "TensionForce"; // 973
+				yield return "TexCoordIndex"; // 974
+				yield return "TexCoords"; // 975
+				yield return "TexCoordsList"; // 976
+				yield return "TextAlign"; // 977
+				yield return "TextCharacterAppearance"; // 978
+				yield return "TextDecoration"; // 979
+				yield return "TextFontStyle"; // 980
+				yield return "TextIndent"; // 981
+				yield return "TextStyle"; // 982
+				yield return "TextTransform"; // 983
+				yield return "TextureCoordinates"; // 984
+				yield return "TextureMaps"; // 985
+				yield return "TexturePoints"; // 986
+				yield return "Textures"; // 987
+				yield return "TextureTransform"; // 988
+				yield return "TextureType"; // 989
+				yield return "TextureVertices"; // 990
+				yield return "TheActor"; // 991
+				yield return "TheOrganization"; // 992
+				yield return "TheoryType"; // 993
+				yield return "ThePerson"; // 994
+				yield return "ThermalConductivity"; // 995
+				yield return "ThermalExpansionCoefficient"; // 996
+				yield return "ThermalIrEmissivityBack"; // 997
+				yield return "ThermalIrEmissivityFront"; // 998
+				yield return "ThermalIrTransmittance"; // 999
+				yield return "ThermalLoadSource"; // 1000
+				yield return "ThermalLoadTimeSeriesValues"; // 1001
+				yield return "ThermalLoadType"; // 1002
+				yield return "ThermodynamicTemperatureExponent"; // 1003
+				yield return "Thickness"; // 1004
+				yield return "ThresholdDepth"; // 1005
+				yield return "ThresholdOffset"; // 1006
+				yield return "ThresholdThickness"; // 1007
+				yield return "Tiles"; // 1008
+				yield return "TilingPattern"; // 1009
+				yield return "TilingScale"; // 1010
+				yield return "TimeComponent"; // 1011
+				yield return "TimeExponent"; // 1012
+				yield return "TimeForTask"; // 1013
+				yield return "TimeLag"; // 1014
+				yield return "TimeOfApproval"; // 1015
+				yield return "TimePeriods"; // 1016
+				yield return "TimeSeries"; // 1017
+				yield return "TimeSeriesDataType"; // 1018
+				yield return "TimeSeriesReferences"; // 1019
+				yield return "TimeSeriesScheduleType"; // 1020
+				yield return "TimeStamp"; // 1021
+				yield return "TimeStep"; // 1022
+				yield return "TimeValue"; // 1023
+				yield return "Title"; // 1024
+				yield return "TopFlangeEdgeRadius"; // 1025
+				yield return "TopFlangeFilletRadius"; // 1026
+				yield return "TopFlangeSlope"; // 1027
+				yield return "TopFlangeThickness"; // 1028
+				yield return "TopFlangeWidth"; // 1029
+				yield return "TopXDim"; // 1030
+				yield return "TopXOffset"; // 1031
+				yield return "TorsionalConstantX"; // 1032
+				yield return "TorsionalSectionModulus"; // 1033
+				yield return "TotalCrossSectionArea"; // 1034
+				yield return "TotalFloat"; // 1035
+				yield return "TotalReplacementCost"; // 1036
+				yield return "Town"; // 1037
+				yield return "Transition"; // 1038
+				yield return "TransitionCurveType"; // 1039
+				yield return "TranslationalStiffnessByAreaX"; // 1040
+				yield return "TranslationalStiffnessByAreaY"; // 1041
+				yield return "TranslationalStiffnessByAreaZ"; // 1042
+				yield return "TranslationalStiffnessByLengthX"; // 1043
+				yield return "TranslationalStiffnessByLengthY"; // 1044
+				yield return "TranslationalStiffnessByLengthZ"; // 1045
+				yield return "TranslationalStiffnessX"; // 1046
+				yield return "TranslationalStiffnessY"; // 1047
+				yield return "TranslationalStiffnessZ"; // 1048
+				yield return "TransmissionColour"; // 1049
+				yield return "TransomOffset"; // 1050
+				yield return "TransomThickness"; // 1051
+				yield return "Transparency"; // 1052
+				yield return "TransverseBarCrossSectionArea"; // 1053
+				yield return "TransverseBarNominalDiameter"; // 1054
+				yield return "TransverseBarSpacing"; // 1055
+				yield return "TransversePosition"; // 1056
+				yield return "TreadLength"; // 1057
+				yield return "TreeRootExpression"; // 1058
+				yield return "Trim1"; // 1059
+				yield return "Trim2"; // 1060
+				yield return "TrueNorth"; // 1061
+				yield return "TypeIdentifier"; // 1062
+				yield return "U1"; // 1063
+				yield return "U2"; // 1064
+				yield return "UAxes"; // 1065
+				yield return "UClosed"; // 1066
+				yield return "UDegree"; // 1067
+				yield return "UKnots"; // 1068
+				yield return "UltimateStrain"; // 1069
+				yield return "UltimateStress"; // 1070
+				yield return "UMultiplicities"; // 1071
+				yield return "Unit"; // 1072
+				yield return "UnitBasis"; // 1073
+				yield return "UnitComponent"; // 1074
+				yield return "Units"; // 1075
+				yield return "UnitsInContext"; // 1076
+				yield return "UnitType"; // 1077
+				yield return "UpdateDate"; // 1078
+				yield return "UpperBoundValue"; // 1079
+				yield return "UpperValue"; // 1080
+				yield return "UpperVaporResistanceFactor"; // 1081
+				yield return "UrlReference"; // 1082
+				yield return "URLReference"; // 1083
+				yield return "Usage"; // 1084
+				yield return "UsageName"; // 1085
+				yield return "UsageRatio"; // 1086
+				yield return "Usense"; // 1087
+				yield return "User"; // 1088
+				yield return "UserDefinedCategory"; // 1089
+				yield return "UserDefinedControlType"; // 1090
+				yield return "UserDefinedDataOrigin"; // 1091
+				yield return "UserDefinedEnergySequence"; // 1092
+				yield return "UserDefinedEventTriggerType"; // 1093
+				yield return "UserDefinedFunction"; // 1094
+				yield return "UserDefinedGrade"; // 1095
+				yield return "UserDefinedOperationType"; // 1096
+				yield return "UserDefinedPartitioningType"; // 1097
+				yield return "UserDefinedProcedureType"; // 1098
+				yield return "UserDefinedPropertySource"; // 1099
+				yield return "UserDefinedPurpose"; // 1100
+				yield return "UserDefinedQualifier"; // 1101
+				yield return "UserDefinedRole"; // 1102
+				yield return "UserDefinedSequenceType"; // 1103
+				yield return "UserDefinedTargetView"; // 1104
+				yield return "UserDefinedThermalLoadSource"; // 1105
+				yield return "UserDefinedType"; // 1106
+				yield return "V1"; // 1107
+				yield return "V2"; // 1108
+				yield return "ValidFrom"; // 1109
+				yield return "ValidUntil"; // 1110
+				yield return "ValueComponent"; // 1111
+				yield return "Values"; // 1112
+				yield return "ValueSource"; // 1113
+				yield return "VaporPermeability"; // 1114
+				yield return "VaryingAppliedLoadLocation"; // 1115
+				yield return "VaryingThicknessLocation"; // 1116
+				yield return "VAxes"; // 1117
+				yield return "VClosed"; // 1118
+				yield return "VDegree"; // 1119
+				yield return "VelocitySingleValue"; // 1120
+				yield return "VelocityTimeSeries"; // 1121
+				yield return "Version"; // 1122
+				yield return "VersionDate"; // 1123
+				yield return "VertexGeometry"; // 1124
+				yield return "Vertical"; // 1125
+				yield return "VerticalAxisDirection"; // 1126
+				yield return "VerticalDatum"; // 1127
+				yield return "Vertices"; // 1128
+				yield return "VisibleReflectanceBack"; // 1129
+				yield return "VisibleReflectanceFront"; // 1130
+				yield return "VisibleSegmentLength"; // 1131
+				yield return "VisibleTransmittance"; // 1132
+				yield return "VKnots"; // 1133
+				yield return "VMultiplicities"; // 1134
+				yield return "Voids"; // 1135
+				yield return "VolumeOnRelatedElement"; // 1136
+				yield return "VolumeOnRelatingElement"; // 1137
+				yield return "VolumeValue"; // 1138
+				yield return "Vsense"; // 1139
+				yield return "WallThickness"; // 1140
+				yield return "WarpingConstant"; // 1141
+				yield return "WarpingMoment"; // 1142
+				yield return "WarpingStiffness"; // 1143
+				yield return "WaterImpermeability"; // 1144
+				yield return "WAxes"; // 1145
+				yield return "WebEdgeRadius"; // 1146
+				yield return "WebSlope"; // 1147
+				yield return "WebThickness"; // 1148
+				yield return "WeekdayComponent"; // 1149
+				yield return "WeightsData"; // 1150
+				yield return "WeightValue"; // 1151
+				yield return "WetBulbTemperatureSingleValue"; // 1152
+				yield return "WetBulbTemperatureTimeSeries"; // 1153
+				yield return "Width"; // 1154
+				yield return "WordSpacing"; // 1155
+				yield return "Workability"; // 1156
+				yield return "WorkControlType"; // 1157
+				yield return "WorkingTimes"; // 1158
+				yield return "WorkMethod"; // 1159
+				yield return "WorldCoordinateSystem"; // 1160
+				yield return "WWWHomePageURL"; // 1161
+				yield return "XAxisAbscissa"; // 1162
+				yield return "XAxisOrdinate"; // 1163
+				yield return "XDim"; // 1164
+				yield return "XLength"; // 1165
+				yield return "YDim"; // 1166
+				yield return "YearComponent"; // 1167
+				yield return "YieldStress"; // 1168
+				yield return "YLength"; // 1169
+				yield return "YoungModulus"; // 1170
+				yield return "ZDim"; // 1171
+				yield return "ZLength"; // 1172
+				yield return "Zone"; // 1173
             }
         }
     }
