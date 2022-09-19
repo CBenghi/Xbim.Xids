@@ -56,6 +56,14 @@ namespace Xbim.InformationSpecifications.Generator
             string dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\PropertySetInfo.Generated.cs");
             File.WriteAllText(dest, tPropGen);
 
+            // perhaps temporary, depending on IDS development work out all class and direct attribute names
+            //
+            Console.WriteLine("Running full schema/attribute generation...");
+            var tFullClassGen = FullClassAttributeGenerator.Execute();
+            dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.EntireSchema.Generated.cs");
+            File.WriteAllText(dest, tFullClassGen);
+
+
             // depends on ExpressMetaData and IfcClassStudy classes
             Console.WriteLine("Running class generation...");
             var tClassGen = ClassGenerator.Execute();

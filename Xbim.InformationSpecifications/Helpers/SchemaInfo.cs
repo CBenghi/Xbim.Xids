@@ -212,19 +212,19 @@ namespace Xbim.InformationSpecifications.Helpers
         }
 
 
-        private static List<string>? allSchemaAttributes = null;
+        //private static List<string>? allSchemaAttributes = null;
 
-        /// <summary>
-        /// The names of all attributes across all schemas.
-        /// </summary>
-        public static IEnumerable<string> AllSchemasAttributes
-        {
-            get
-            {
-                allSchemaAttributes ??= SchemaIfc2x3.GetAttributeNames().Union(SchemaIfc4.GetAttributeNames()).Distinct().ToList();
-                return allSchemaAttributes; 
-            }
-        }
+        ///// <summary>
+        ///// The names of all attributes across all schemas.
+        ///// </summary>
+        //public static IEnumerable<string> AllSchemasAttributes
+        //{
+        //    get
+        //    {
+        //        allSchemaAttributes ??= SchemaIfc2x3.GetAttributeNames().Union(SchemaIfc4.GetAttributeNames()).Distinct().ToList();
+        //        return allSchemaAttributes; 
+        //    }
+        //}
 
         private static SchemaInfo? schemaIFC2x3;
         /// <summary>

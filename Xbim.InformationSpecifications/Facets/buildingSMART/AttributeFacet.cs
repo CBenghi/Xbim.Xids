@@ -63,7 +63,7 @@ namespace Xbim.InformationSpecifications
         {
             return FacetBase.IsValid(AttributeName)
                 && FacetBase.IsValidOrNull(AttributeValue)
-                && SchemaInfo.AllSchemasAttributes.Any(x => AttributeName.IsSatisfiedBy(x));
+                && SchemaInfo.AllSchemasAttributeNames.Any(x => AttributeName.IsSatisfiedBy(x));
         }
     }
 }
