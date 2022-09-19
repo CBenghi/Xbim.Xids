@@ -344,7 +344,7 @@ namespace Xbim.InformationSpecifications
         {
             // special casts for ifcTypes
             if (toCheck.GetType().Name == "IfcGloballyUniqueId")
-                return toCheck.ToString().Equals(candiatateValue);   
+                return toCheck.ToString()!.Equals(candiatateValue);   
             return toCheck.Equals(candiatateValue);
         }
     }

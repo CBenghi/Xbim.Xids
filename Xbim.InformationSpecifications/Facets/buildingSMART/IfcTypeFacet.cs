@@ -79,7 +79,7 @@ namespace Xbim.InformationSpecifications
         public bool IsValid()
         {
             return FacetBase.IsValidAndNotEmpty(IfcType)
-                && FacetBase.IsValidButOptional(PredefinedType);
+                && FacetBase.IsValidOrNull(PredefinedType);
         }
     }
 }

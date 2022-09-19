@@ -197,7 +197,7 @@ namespace Xbim.InformationSpecifications
         /// <returns>Any convertible value, empty enumeration is possible if conversions cannot be carried out.</returns>
         public IEnumerable<Container> GetContainers()
         {
-            if (EntityType is null)
+            if (EntityType?.AcceptedValues is null)
                 yield break;
             foreach (var value in EntityType.AcceptedValues.OfType<ExactConstraint>())
             {
@@ -234,7 +234,7 @@ namespace Xbim.InformationSpecifications
         public bool IsValid()
         {
             return GetRelation() != PartOfRelation.Undefined
-                && FacetBase.IsValidButOptional(EntityType);
+                && FacetBase.IsValidOrNull(EntityType);
         }
 
         /// <inheritdoc />

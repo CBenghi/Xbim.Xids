@@ -99,7 +99,7 @@ namespace Xbim.InformationSpecifications
             return
                 FacetBase.IsValidAndNotEmpty(PropertySetName)
                 && FacetBase.IsValidAndNotEmpty(PropertyName)
-                && FacetBase.IsValidButOptional(PropertyValue);
+                && FacetBase.IsValidOrNull(PropertyValue);
         }
     }
 }

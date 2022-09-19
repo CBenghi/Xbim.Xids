@@ -124,14 +124,11 @@ namespace Xbim.InformationSpecifications
             FacetGroup? requirement = null
             )
         {
-            if (applicability == null)
-                applicability = new FacetGroup(FacetRepository);
-            if (requirement == null)
-                requirement = new FacetGroup(FacetRepository);
+            applicability ??= new FacetGroup(FacetRepository);
+            requirement ??= new FacetGroup(FacetRepository);
 
             // checks and/or prepares destination
-            if (destinationGroup == null) // if one exists get that
-                destinationGroup = SpecificationsGroups.FirstOrDefault();
+            destinationGroup ??= SpecificationsGroups.FirstOrDefault();
             if (destinationGroup == null)
             {
                 destinationGroup = new SpecificationsGroup(this);

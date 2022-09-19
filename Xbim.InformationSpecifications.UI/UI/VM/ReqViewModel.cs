@@ -48,10 +48,7 @@ namespace Xbim.InformationSpecifications.UI.VM
         {
             get
             {
-                if (editExpectationCommand == null)
-                {
-                    editExpectationCommand = new ActionCommand(parameter => EditExpectation());
-                }
+                editExpectationCommand ??= new ActionCommand(parameter => EditExpectation());
                 return editExpectationCommand;
             }
         }

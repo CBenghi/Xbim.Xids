@@ -59,7 +59,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="constraint">The constraint to test</param>
         /// <returns>True if constraint is not null and valid</returns>
-        protected static bool IsValid(ValueConstraint? constraint)
+        protected static bool IsValid([NotNullWhen(true)]ValueConstraint? constraint)
         {
             if (constraint is null)
                 return false;
@@ -83,7 +83,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="constraint">The constraint to test</param>
         /// <returns>True if constraint is either null or valid</returns>
-        protected static bool IsValidButOptional(ValueConstraint? constraint)
+        protected static bool IsValidOrNull(ValueConstraint? constraint)
         {
             if (constraint is null)
                 return true;

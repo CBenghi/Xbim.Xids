@@ -25,8 +25,7 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             if (_options == null)
             {
-                if (options == null)
-                    options = new JsonSerializerOptions();
+                options ??= new JsonSerializerOptions();
                 _options = new JsonSerializerOptions()
                 {
                     DefaultIgnoreCondition = options.DefaultIgnoreCondition

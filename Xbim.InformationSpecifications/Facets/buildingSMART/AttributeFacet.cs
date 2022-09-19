@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -60,7 +62,8 @@ namespace Xbim.InformationSpecifications
         public bool IsValid()
         {
             return FacetBase.IsValid(AttributeName)
-                && FacetBase.IsValidButOptional(AttributeValue);
+                && FacetBase.IsValidOrNull(AttributeValue)
+                && SchemaInfo.AllSchemasAttributes.Any(x => AttributeName.IsSatisfiedBy(x));
         }
     }
 }

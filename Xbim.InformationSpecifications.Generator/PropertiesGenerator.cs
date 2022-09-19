@@ -21,8 +21,7 @@ namespace Xbim.InformationSpecifications.Generator
             {
                 var sb = new StringBuilder();
                 var propertyDefinitions = new Definitions<PropertySetDef>(schema);
-                if (propertyDefinitions != null)
-                    propertyDefinitions.LoadAllDefault();
+                propertyDefinitions.LoadAllDefault();
                 foreach (var set in propertyDefinitions.DefinitionSets)
                 {
                     var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();

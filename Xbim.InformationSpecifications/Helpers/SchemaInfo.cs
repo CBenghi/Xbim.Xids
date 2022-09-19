@@ -58,8 +58,7 @@ namespace Xbim.InformationSpecifications.Helpers
         public void Add(ClassInfo classToAdd)
         {
             linked = false;
-            if (Classes == null)
-                Classes = new Dictionary<string, ClassInfo>();
+            Classes ??= new Dictionary<string, ClassInfo>();
             Classes.Add(classToAdd.Name, classToAdd);
         }
 
@@ -83,7 +82,7 @@ namespace Xbim.InformationSpecifications.Helpers
             linked = true;
         }
 
-        private static SchemaInfo? schemaIFC4;
+        private static SchemaInfo? schemaIfc4;
         /// <summary>
         /// Static property for the Ifc4 schema
         /// </summary>
@@ -91,15 +90,15 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             get
             {
-                if (schemaIFC4 == null)
+                if (schemaIfc4 == null)
                 {
                     var t = GetClassesIFC4();
                     GetRelationTypesIFC4(t);
                     GetAttributesIFC4(t);
                     SetTypeObject(t, "IfcTypeObject");
-                    schemaIFC4 = t;
+                    schemaIfc4 = t;
                 }
-                return schemaIFC4;
+                return schemaIfc4;
             }
         }
 
@@ -212,6 +211,21 @@ namespace Xbim.InformationSpecifications.Helpers
             public ClassAttributeMode Connection { get; set; }
         }
 
+
+        private static List<string>? allSchemaAttributes = null;
+
+        /// <summary>
+        /// The names of all attributes across all schemas.
+        /// </summary>
+        public static IEnumerable<string> AllSchemasAttributes
+        {
+            get
+            {
+                allSchemaAttributes ??= SchemaIfc2x3.GetAttributeNames().Union(SchemaIfc4.GetAttributeNames()).Distinct().ToList();
+                return allSchemaAttributes; 
+            }
+        }
+
         private static SchemaInfo? schemaIFC2x3;
         /// <summary>
         /// Static property for the Ifc2x3 schema
@@ -265,12 +279,10 @@ namespace Xbim.InformationSpecifications.Helpers
 
         private void AddAttribute(string attributeName, string[] topClassNames, string[] allClassNames)
         {
-            if (AttributesToAllClasses == null)
-                AttributesToAllClasses = new Dictionary<string, string[]>();
+            AttributesToAllClasses ??= new Dictionary<string, string[]>();
             AttributesToAllClasses.Add(attributeName, allClassNames);
 
-            if (AttributesToTopClasses == null)
-                AttributesToTopClasses = new Dictionary<string, string[]>();
+            AttributesToTopClasses ??= new Dictionary<string, string[]>();
             AttributesToTopClasses.Add(attributeName, topClassNames);
         }
 

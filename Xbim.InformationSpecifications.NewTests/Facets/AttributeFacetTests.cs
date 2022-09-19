@@ -72,5 +72,42 @@ namespace Xbim.InformationSpecifications.Tests.Facets
                 Uri = "http://www.google.com",
             };
         }
+
+        [Fact]
+        void ValidityTests()
+        {
+            var t = new AttributeFacet
+            {
+                AttributeName = "EngagedIn"
+            };
+            t.IsValid().Should().BeFalse(); // EngagedIn is an inverse property
+            t = new AttributeFacet
+            {
+                AttributeName = ValueConstraint.CreatePattern("Enga.*In") // no matching direct property should be found
+            };
+            t.IsValid().Should().BeFalse(); // EngagedIn is an inverse property
+
+
+            t = new AttributeFacet
+            {
+                AttributeName = "Name"
+            };
+            t.IsValid().Should().BeTrue(); // Name is not an inverse property
+
+
+            t = new AttributeFacet
+            {
+                AttributeName = "Name"
+            };
+            t.IsValid().Should().BeTrue(); // Name is not an inverse property
+            t = new AttributeFacet
+            {
+                AttributeName = ValueConstraint.CreatePattern("Repre.*ation") // Representation should be valid
+            };
+            t.IsValid().Should().BeTrue(); // Name is not an inverse property
+            
+        }
+
+        
     }
 }

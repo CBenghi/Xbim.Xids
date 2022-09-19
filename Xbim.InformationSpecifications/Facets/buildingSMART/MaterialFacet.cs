@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications
         /// always valid (see <see cref="IFacet.IsValid"/>).
 		public bool IsValid()
         {
-            return FacetBase.IsValidButOptional(Value);
+            return FacetBase.IsValidOrNull(Value);
         }
     }
 }

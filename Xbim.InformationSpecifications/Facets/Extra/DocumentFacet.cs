@@ -116,11 +116,11 @@ namespace Xbim.InformationSpecifications
                     ValueConstraint.IsNotEmpty(DocPurpose) ||
                     ValueConstraint.IsNotEmpty(DocIntendedUse)
                 ) // but they are all valid, if defined
-                && FacetBase.IsValidButOptional(DocId)
-                && FacetBase.IsValidButOptional(DocName)
-                && FacetBase.IsValidButOptional(DocLocation)
-                && FacetBase.IsValidButOptional(DocPurpose)
-                && FacetBase.IsValidButOptional(DocIntendedUse);
+                && FacetBase.IsValidOrNull(DocId)
+                && FacetBase.IsValidOrNull(DocName)
+                && FacetBase.IsValidOrNull(DocLocation)
+                && FacetBase.IsValidOrNull(DocPurpose)
+                && FacetBase.IsValidOrNull(DocIntendedUse);
         }
     }
 }

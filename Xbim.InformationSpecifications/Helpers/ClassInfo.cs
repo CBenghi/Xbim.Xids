@@ -132,17 +132,14 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Public constructor
         /// </summary>
-		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace, IEnumerable<string> directAttributes = null)
+		public ClassInfo(string name, string parentName, ClassType type, IEnumerable<string> predefined, string nameSpace, IEnumerable<string> directAttributes)
         {
             Name = name;
             ParentName = parentName;
             Type = type;
             PredefinedTypeValues = predefined;
             NameSpace = nameSpace;
-            if (directAttributes == null)
-                DirectAttributes = new List<string>();
-            else
-                DirectAttributes = directAttributes;
+            DirectAttributes = directAttributes;
         }
 
         /// <summary>

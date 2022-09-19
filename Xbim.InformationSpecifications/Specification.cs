@@ -153,8 +153,7 @@ namespace Xbim.InformationSpecifications
         {
             get
             {
-                if (applicability == null)
-                    applicability = new FacetGroup(GetIds().FacetRepository);
+                applicability ??= new FacetGroup(GetIds().FacetRepository);
                 return applicability;
             }
             set => applicability = value;
@@ -237,8 +236,7 @@ namespace Xbim.InformationSpecifications
                 Requirement = existing;
                 return;
             }
-            if (Requirement == null)
-                Requirement = new FacetGroup(GetIds().FacetRepository);
+            Requirement ??= new FacetGroup(GetIds().FacetRepository);
             foreach (var item in fs)
             {
                 Requirement.Facets.Add(item);
@@ -253,8 +251,7 @@ namespace Xbim.InformationSpecifications
                 Applicability = existing;
                 return;
             }
-            if (Applicability == null)
-                Applicability = new FacetGroup(GetIds().FacetRepository);
+            Applicability ??= new FacetGroup(GetIds().FacetRepository);
             foreach (var item in fs)
             {
                 Applicability.Facets.Add(item);
