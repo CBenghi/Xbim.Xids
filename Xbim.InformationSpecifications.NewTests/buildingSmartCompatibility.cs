@@ -50,12 +50,12 @@ namespace Xbim.InformationSpecifications.Tests
             var c = GetValidator(tmpFile);
 
             StringWriter s = new();
-            var res = IdsLib.CheckOptions.Run(c, s);
-            if (res != IdsLib.CheckOptions.Status.Ok)
+            var res = CheckOptions.Run(c, s);
+            if (res != CheckOptions.Status.Ok)
             {
                 Debug.WriteLine(s.ToString());
             }
-            Assert.Equal(IdsLib.CheckOptions.Status.Ok, res);
+            Assert.Equal(CheckOptions.Status.Ok, res);
         }
 
         private static CheckOptions GetValidator(string tmpFile)
@@ -105,13 +105,13 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Theory]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml")]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml")]
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids")]
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids")]
         public void FullSchemaImportTest(string fileName)
         {
             var res = Validate(fileName);
-            res.Should().Be(IdsLib.CheckOptions.Status.Ok, "the input file needs to be valid.");
-            var x = Xids.LoadBuildingSmartIDS(fileName);
+            res.Should().Be(CheckOptions.Status.Ok, "the input file needs to be valid");
+            var x = LoadBuildingSmartIDS(fileName);
             var exportedFile = Path.GetTempFileName();
 
             ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
@@ -121,7 +121,7 @@ namespace Xbim.InformationSpecifications.Tests
             var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
             loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
             res = Validate(exportedFile);
-            res.Should().Be(IdsLib.CheckOptions.Status.Ok , "the generated file needs to be valid.");
+            res.Should().Be(CheckOptions.Status.Ok , "the generated file needs to be valid");
 
             // we should be able to save our format
             var exportedJsonFile = Path.GetTempFileName();
@@ -141,8 +141,8 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var c = GetValidator(fileName);
             StringWriter debugOutputWriter = new();
-            var validationResult = IdsLib.CheckOptions.Run(c, debugOutputWriter);
-            if (validationResult != IdsLib.CheckOptions.Status.Ok)
+            var validationResult = CheckOptions.Run(c, debugOutputWriter);
+            if (validationResult != CheckOptions.Status.Ok)
             {
                 Debug.WriteLine(debugOutputWriter.ToString());
             }

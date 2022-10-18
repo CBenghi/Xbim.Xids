@@ -22,7 +22,7 @@ namespace Xbim.InformationSpecifications.Helpers
                 return false;
             }
             var t = SchemaInfo.GetMeasure(svp.DataType);
-            if (t.HasValue && Enum.TryParse<IfcMeasures>(t.Value.ID, out var found))
+            if (t is not null && Enum.TryParse<IfcMeasures>(t.ID, out var found))
             {
                 measure = found;
                 return true;

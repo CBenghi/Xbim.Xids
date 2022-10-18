@@ -38,7 +38,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="bsFiles\bsFilesSelf\SimpleValueRestriction.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="bsFiles\bsFilesSelf\SimpleValueRestriction.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="bsFiles\bsFilesSelf\SimpleValueString.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="bsFiles\bsFilesSelf\SimpleValueString.xml">

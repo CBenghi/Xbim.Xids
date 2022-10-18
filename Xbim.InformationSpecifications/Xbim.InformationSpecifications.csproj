@@ -60,6 +60,8 @@
 	<!-- 
 	the following two targets tag the "product version" with version and commit hash 
 	such information is visible in the dll proprty information dialog.
+  
+  this requires the <SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
 	-->
 	<Target Name="InitializeSourceControlInformation" />
 	<Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">

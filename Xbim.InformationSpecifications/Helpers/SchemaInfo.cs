@@ -105,11 +105,11 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Get the ifc measure metadata from a string
         /// </summary>
-        /// <param name="ifcMeasureString">the string value of the measure</param>
+        /// <param name="ifcMeasureId">the string value of the measure</param>
         /// <returns>Null if the string is not meaningful, for a sure hit, use <see cref="GetMeasure(Helpers.IfcMeasures)"/></returns>
-        public static IfcMeasureInfo? GetMeasure(string ifcMeasureString)
+        public static IValueProvider? GetMeasure(string ifcMeasureId)
         {
-            return IfcMeasures.Values.FirstOrDefault(x => x.IfcMeasure == ifcMeasureString);
+            return IfcMeasures.Values.FirstOrDefault(x => x.ID == ifcMeasureId);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// </summary>
         /// <param name="measure"></param>
         /// <returns></returns>
-        public static IfcMeasureInfo GetMeasure(IfcMeasures measure)
+        public static IValueProvider GetMeasure(IfcMeasures measure)
         {
             return IfcMeasures[measure.ToString()];
         }
@@ -313,7 +313,7 @@ namespace Xbim.InformationSpecifications.Helpers
             if (_dicUnits == null)
             {
                 _dicUnits = new Dictionary<string, object>();
-                foreach (var item in IfcMeasures.Values)
+                foreach (var item in IfcMeasures.Values.OfType<IfcMeasureInfo>())
                 {
                     if (!string.IsNullOrWhiteSpace(item.UnitSymbol) && !_dicUnits.ContainsKey(item.UnitSymbol))
                     {

@@ -58,7 +58,7 @@ namespace Xbim.InformationSpecifications.Generator
 
             string simpleValueSignature = "<ids:simpleValue>string</ids:simpleValue>";
             inst = inst.Replace("<restriction />", simpleValueSignature);
-            var sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueString.xml";
+            var sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueString.ids";
             File.WriteAllText(sampleFile, inst);
 
             // second conversion
@@ -66,7 +66,7 @@ namespace Xbim.InformationSpecifications.Generator
             // previously done via schema modification, now a simple replacement
             //
             inst = inst.Replace(simpleValueSignature, @"<xs:restriction base=""xs:string""><xs:enumeration value=""AlternativeOne""/><xs:enumeration value=""AlternativeTwo""/></xs:restriction>");
-            sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueRestriction.xml";
+            sampleFile = @"..\..\..\..\Xbim.InformationSpecifications.NewTests\bsFiles\bsFilesSelf\SimpleValueRestriction.ids";
             File.WriteAllText(sampleFile, inst);
             Debug.WriteLine(inst);
         }
@@ -98,7 +98,7 @@ namespace Xbim.InformationSpecifications.Generator
             var idsSignature = @"<ids:ids xmlns:xml=""http://www.w3.org/XML/1998/namespace"" xmlns:xhtml=""http://www.w3.org/1999/xhtml"" xmlns:ids=""http://standards.buildingsmart.org/IDS"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:hfp=""http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"" xmlns=""http://www.w3.org/2001/XMLSchema"" xsi:schemaLocation=""http://standards.buildingsmart.org/IDS schema.xsd"">";
             if (!inst.Contains(idsSignature))
                 Console.WriteLine("ERROR: IDS signature not found");
-            var correctSignature = @"<ids:ids xmlns:xs=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:schemaLocation=""http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd"" xmlns:ids=""http://standards.buildingsmart.org/IDS"">";
+            var correctSignature = @"<ids:ids xmlns:ids=""http://standards.buildingsmart.org/IDS"" xmlns:xs=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:schemaLocation=""http://standards.buildingsmart.org/IDS  ids_09.xsd"">";
             inst = inst.Replace(idsSignature, correctSignature);
             return inst;
         }

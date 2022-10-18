@@ -16,7 +16,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         static public IEnumerable<Measure> GetFromDocumentation()
         {
             var splitter = new string[] { "|" };
-            FileInfo f = new("Files/Physical_Quantities_and_Units.md");
+            FileInfo f = new("Files/Units.md");
             var allDocumentation = File.ReadAllLines(f.FullName);
             var isParsing = false;
             var tally = 0;
@@ -25,20 +25,20 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                 if (isParsing)
                 {
                     var parts = oneLine.Split(splitter, StringSplitOptions.TrimEntries);
-                    if (parts.Length != 9)
+                    if (parts.Length != 7) 
                     {
-                        Debug.Assert(tally == 51); // need to review the info from the documentation
+                        // we are leaving the loop, check the expected tally
+                        if (tally != 50) // need to review the info from the documentation
+                            throw new Exception("Unexpected number of measures.");
                         yield break; // no more measures to find.
                     }
                     var retMeasurement = new Measure()
                     {
-                        PhysicalQuantity = parts[1],
-                        Key = parts[2],
+                        IfcMeasure = parts[1],
+                        Description = parts[2],
                         Unit = parts[3],
                         UnitSymbol = parts[4],
-                        IfcMeasure = parts[5],
-                        DimensionalExponents = parts[6],
-                        QUDT = parts[7],
+                        DimensionalExponents = parts[5],
                     };
                     tally++;
                     yield return retMeasurement;
@@ -94,7 +94,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                     if (allSym)
                     {
                         DimensionalExponents d = null;
-                        Debug.WriteLine($"Can do {missingExp.PhysicalQuantity} - {missingExp.UnitSymbol}");
+                        Debug.WriteLine($"Can do {missingExp.Description} - {missingExp.UnitSymbol}");
                         foreach (var sym in neededSymbols)
                         {
                             var found = m.GetByUnit(sym.UnitSymbol);
@@ -117,14 +117,14 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                     }
                     else
                     {
-                        Debug.WriteLine($"Cannot do {missingExp.PhysicalQuantity} - {missingExp.UnitSymbol}\r\n");
+                        Debug.WriteLine($"Cannot do {missingExp.Description} - {missingExp.UnitSymbol}\r\n");
                     }
                 }
             }
             var sb = new StringBuilder();
             foreach (var item in m.MeasureList)
             {
-                sb.AppendLine($"{item.PhysicalQuantity}\t{item.DimensionalExponents}");
+                sb.AppendLine($"{item.Description}\t{item.DimensionalExponents}");
             }
             Debug.WriteLine(sb.ToString());
             return sb.ToString();
@@ -160,30 +160,34 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             foreach (var measure in mCollection.MeasureList)
             {
                 var concreteClasses = new List<string>();
+                
                 var expectedUnitsTypes = new[] {
-                    measure.Key.ToUpperInvariant() + "UNIT",
+                    measure.Description.ToUpperInvariant().Replace(" ", "") + "UNIT",
+                    measure.IfcMeasure[3..^7].ToUpperInvariant() + "UNIT",
                     //measure.Key.ToUpperInvariant() + "VALUEUNIT",
                     //"THERMODYNAMIC" + measure.Key.ToUpperInvariant() + "UNIT",
                     };
+                expectedUnitsTypes = expectedUnitsTypes.Distinct().ToArray();
                 // special cases
                 //
-                if (measure.Key == "Speed")
-                    expectedUnitsTypes = new[] { "LINEARVELOCITYUNIT" }; 
-                else if (measure.Key == "ThermalConductivity")
-                    expectedUnitsTypes = new[] { "THERMALCONDUCTANCEUNIT" };                
-                else if (measure.Key == "Heating")
-                    expectedUnitsTypes = new[] { "HEATINGVALUEUNIT" };
-                else if (measure.Key == "Temperature")
-                    expectedUnitsTypes = new[] { "THERMODYNAMICTEMPERATUREUNIT"};
-                else if (measure.Key == "Angle")
-                    expectedUnitsTypes = new[] { "PLANEANGLEUNIT" };
+                //if (measure.Key == "Speed")
+                //    expectedUnitsTypes = new[] { "LINEARVELOCITYUNIT" }; 
+                if (measure.IfcMeasure == "IfcThermalConductivityMeasure")
+                    expectedUnitsTypes = new[] { "THERMALCONDUCTANCEUNIT" };
+                //else if (measure.Key == "Heating")
+                //    expectedUnitsTypes = new[] { "HEATINGVALUEUNIT" };
+                //else if (measure.Key == "Temperature")
+                //    expectedUnitsTypes = new[] { "THERMODYNAMICTEMPERATUREUNIT"};
+                //else if (measure.Key == "Angle")
+                //    expectedUnitsTypes = new[] { "PLANEANGLEUNIT" };
 
                 var expectedUnitType = "";
                 foreach (var item in expectedUnitsTypes)
                 {
-                    if (allUnits.Contains(item))
+                    var t = allUnits.FirstOrDefault(x => x.EndsWith($".{item}"));
+                    if (t is not null)
                     {
-                        expectedUnitType = item;
+                        expectedUnitType = t;
                         break;
                     }
                 }
@@ -203,7 +207,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         }
                     }
                 }
-                sb.AppendLine($"\t\t\t{{ \"{measure.Key}\", new IfcMeasureInfo(\"{measure.Key}\", \"{measure.IfcMeasure}\", \"{measure.PhysicalQuantity}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {NewStringArray(concreteClasses.ToArray())}, \"{expectedUnitType}\") }},");
+                sb.AppendLine($"\t\t\t{{ \"{measure.IfcMeasure}\", new IfcMeasureInfo(\"{measure.IfcMeasure}\", \"{measure.Description}\", \"{measure.Unit}\", \"{measure.UnitSymbol}\", \"{measure.DimensionalExponents}\", {NewStringArray(concreteClasses.ToArray())}, \"{expectedUnitType}\") }},");
             }
 
             source = source.Replace($"\t\t\t<PlaceHolder>\r\n", sb.ToString());
@@ -212,10 +216,10 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 
         private static IList<string> GetSchemaUnits()
         {
-            var all = Enum.GetValues<Ifc2x3.MeasureResource.IfcDerivedUnitEnum>().Select(x => x.ToString());
-            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcDerivedUnitEnum>().Select(x => x.ToString()));
-            all = all.Union(Enum.GetValues<Ifc2x3.MeasureResource.IfcUnitEnum>().Select(x => x.ToString()));
-            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcUnitEnum>().Select(x => x.ToString()));
+            var all = Enum.GetValues<Ifc2x3.MeasureResource.IfcDerivedUnitEnum>().Select(x => $"IfcDerivedUnitEnum.{x}");
+            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcDerivedUnitEnum>().Select(x => $"IfcDerivedUnitEnum.{x}"));
+            all = all.Union(Enum.GetValues<Ifc2x3.MeasureResource.IfcUnitEnum>().Select(x => $"IfcUnitEnum.{x}"));
+            all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcUnitEnum>().Select(x => $"IfcUnitEnum.{x}"));
             return all.Distinct().OrderBy(x=>x).ToList();
         }
 
@@ -248,8 +252,9 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 
         private static IEnumerable<Measure> ExtraMeaures()
         {
-            yield return new Measure() { Key = "String" };
-            yield return new Measure() { Key = "Number" };
+            yield break;
+            //yield return new Measure() { IfcMeasure = "String" };
+            //yield return new Measure() { Key = "Number" };
         }
 
 
@@ -261,12 +266,9 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         {
             foreach (var measVal in SchemaInfo.IfcMeasures.Values)
             {
-                if (measVal.ID == "String")
-                    continue;
-                if (measVal.ID == "Number")
-                    continue;
                 if (measVal.UnitTypeEnum == "")
-                    Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.ID}' lacks UnitType for {measVal.IfcMeasure}.");
+                    Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.ID}' lacks UnitType.");
+                // Debug.WriteLine($"{measVal.UnitTypeEnum}");
             }
             return false;
         }

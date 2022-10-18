@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
-<ids:ids xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd" xmlns:ids="http://standards.buildingsmart.org/IDS">
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS  ids_09.xsd">
   <ids:info>
     <ids:title>string</ids:title>
     <ids:copyright>string</ids:copyright>
     <ids:version>string</ids:version>
     <ids:description>string</ids:description>
-    <ids:author>1a3\6@&amp;q,3M;8,'&amp;.5</ids:author>
-    <ids:date>2002-10-18</ids:date>
+    <ids:author>^@).Uj</ids:author>
+    <ids:date>2007-09-18</ids:date>
     <ids:purpose>string</ids:purpose>
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification name="string" ifcVersion="IFC2X3 IFC4 IFC4X3 IFC4 IFC4X3" description="string" instructions="string">
+    <ids:specification name="string" ifcVersion="IFC4 IFC2X3 IFC4X3 IFC2X3 IFC4 IFC2X3" description="string" instructions="string">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -22,9 +22,14 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf relation="IfcRelAggregates">
+        <ids:partOf relation="IfcRelAssignsToGroup">
           <ids:entity>
-            <ids:simpleValue>string</ids:simpleValue>
+            <ids:name>
+              <ids:simpleValue>string</ids:simpleValue>
+            </ids:name>
+            <ids:predefinedType>
+              <ids:simpleValue>string</ids:simpleValue>
+            </ids:predefinedType>
           </ids:entity>
         </ids:partOf>
         <ids:classification>
@@ -69,9 +74,14 @@
             <ids:simpleValue>string</ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf instructions="string" relation="IfcRelContainedInSpatialStructure">
+        <ids:partOf instructions="string" relation="IfcRelAggregates">
           <ids:entity>
-            <ids:simpleValue>string</ids:simpleValue>
+            <ids:name>
+              <ids:simpleValue>string</ids:simpleValue>
+            </ids:name>
+            <ids:predefinedType>
+              <ids:simpleValue>string</ids:simpleValue>
+            </ids:predefinedType>
           </ids:entity>
         </ids:partOf>
         <ids:classification uri="https://www.liquid-technologies.com" instructions="string">

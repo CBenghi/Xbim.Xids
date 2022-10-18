@@ -10,14 +10,14 @@
     /// Metadata about measure conversion behaviours.
     /// Use <see cref="Measures.MeasureUnit" /> for the quantitative conversion services.
     /// </summary>
-    public struct IfcMeasureInfo
+    public struct IfcMeasureInfo: IValueProvider
     {
         /// <summary>
         /// basic constructor
         /// </summary>
-        public IfcMeasureInfo(string id, string measure, string description, string unit, string symbol, string exponents, string[] concrete, string unitTypeEnum)
+        public IfcMeasureInfo(string measure, string description, string unit, string symbol, string exponents, string[] concrete, string unitTypeEnum)
         {
-            ID = id;
+            ID = measure;
             IfcMeasure = measure;
             Description = description;
             Unit = unit;
@@ -35,6 +35,7 @@
         /// String of the Ifc type expected
         /// </summary>
         public string IfcMeasure { get; }
+        
         /// <summary>
         /// A textual description, e.g. "Amount of substance"
         /// </summary>
@@ -65,7 +66,7 @@
         /// <summary>
         /// Retuns the SI preferred unit.
         /// </summary>
-        /// <returns>empty string for measures that do not have expected measures (strings and numbers)</returns>
+        /// <returns>empty string for measures that do not have expected measures</returns>
         public string GetUnit()
         {
             if (!string.IsNullOrEmpty(Unit))

@@ -76,14 +76,14 @@ namespace Xbim.InformationSpecifications.Generator
             dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\SchemaInfo.IfcMeasures.cs");
             File.WriteAllText(dest, tMeasures);
 
-            //if (false) // enums removed from schema
-            //{
-            //    // depends on schema
-            //    Console.WriteLine("Ifc ifcMeasure enum generation...");
-            //    var tEnum = MeasureAutomation.Execute_GenerateIfcMeasureEnum();
-            //    dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\Measures\Enums.cs");
-            //    File.WriteAllText(dest, tEnum);
-            //}
+            if (false) // enums removed from schema
+            {
+                // depends on schema
+                Console.WriteLine("Ifc ifcMeasure enum generation...");
+                var tEnum = MeasureAutomation.Execute_GenerateIfcMeasureEnum();
+                dest = Path.Combine(destPath.FullName, @"Xbim.InformationSpecifications\Helpers\Measures\Enums.cs");
+                File.WriteAllText(dest, tEnum);
+            }
 
             // depends on ExpressMetaData and IfcClassStudy classes
             Console.WriteLine("Running attributes generation...");

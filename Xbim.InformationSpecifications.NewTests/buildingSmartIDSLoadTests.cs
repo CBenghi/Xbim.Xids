@@ -20,20 +20,20 @@ namespace Xbim.InformationSpecifications.Tests
         private ITestOutputHelper OutputHelper { get; }
 
         [Theory]
-        [InlineData("bsFiles/IDS_aachen_example.xml", 1, 2, 0)]
-        [InlineData("bsFiles/IDS_Aedes_example.xml", 1, 2, 0)]
-        [InlineData("bsFiles/IDS_ArcDox.xml", 5, 21, 0)]
-        [InlineData("bsFiles/IDS_random_example.xml", 2, 7, 1)]
-        [InlineData("bsFiles/IDS_SimpleBIM_examples.xml", 3, 9, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.xml", 2, 16, 0)]
-        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.xml", 1, 9, 0)]
-        [InlineData("bsFiles/IDS_wooden-windows.xml", 5, 31, 3)]
-        [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.xml", 3, 8, 0)]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.xml", -1, -1, 0)]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.xml", -1, -1, 0)]
+        [InlineData("bsFiles/IDS_aachen_example.ids", 1, 2, 0)]
+        [InlineData("bsFiles/IDS_Aedes_example.ids", 1, 2, 0)]
+        [InlineData("bsFiles/IDS_ArcDox.ids", 5, 21, 0)]
+        [InlineData("bsFiles/IDS_random_example.ids", 2, 7, 1)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.ids", 3, 9, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids", 2, 16, 0)]
+        [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.ids", 1, 9, 0)]
+        [InlineData("bsFiles/IDS_wooden-windows.ids", 5, 31, 3)]
+        [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.ids", 3, 8, 0)]
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids", -1, -1, 0)]
+        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids", -1, -1, 0)]
         public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int expectedErrCount)
         {
-            var outputFile = Path.Combine(Path.GetTempPath(), "out.xml");
+            var outputFile = Path.Combine(Path.GetTempPath(), "out.ids");
             outputFile = Path.GetTempFileName();
             try
             {
