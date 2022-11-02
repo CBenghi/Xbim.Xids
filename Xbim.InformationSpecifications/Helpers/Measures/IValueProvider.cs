@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xbim.InformationSpecifications.Helpers
+namespace Xbim.InformationSpecifications.Helpers.Measures
 {
     /// <summary>
     /// Interface to extract values to be evaluated
@@ -12,8 +12,8 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// The string ID found in the XML persistence
         /// </summary>
-        public string ID { get; }
-        
+        public string Id { get; }
+
         /// <summary>
         /// Dimensional exponents useful for conversion to other units.
         /// </summary>

@@ -1,11 +1,13 @@
-﻿namespace Xbim.InformationSpecifications.Helpers
+﻿using Xbim.InformationSpecifications.Helpers.Measures;
+
+namespace Xbim.InformationSpecifications.Helpers
 {
     // todo: Extension methods for the conversion of the value given 
     // If 
     //    Stringa -> No conversion
     //    number -> No conversion
     // Extension method To/From - con (double value, string unit) (m2/kg)
-    
+
     /// <summary>
     /// Metadata about measure conversion behaviours.
     /// Use <see cref="Measures.MeasureUnit" /> for the quantitative conversion services.
@@ -17,7 +19,7 @@
         /// </summary>
         public IfcMeasureInfo(string measure, string description, string unit, string symbol, string exponents, string[] concrete, string unitTypeEnum)
         {
-            ID = measure;
+            Id = measure;
             IfcMeasure = measure;
             Description = description;
             Unit = unit;
@@ -30,7 +32,7 @@
         /// <summary>
         /// The string ID found in the XML persistence
         /// </summary>
-        public string ID { get; }
+        public string Id { get; }
         /// <summary>
         /// String of the Ifc type expected
         /// </summary>

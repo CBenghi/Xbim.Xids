@@ -14,7 +14,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <param name="prop">The property to be evaluated</param>
         /// <param name="measure"></param>
         /// <returns></returns>
-        public static bool IsMeasureProperty(this IPropertyTypeInfo prop, [NotNullWhen(true)] out IfcMeasures? measure)
+        public static bool IsMeasureProperty(this IPropertyTypeInfo prop, [NotNullWhen(true)] out IfcValue? measure)
         {
             if (prop is not SingleValuePropertyType svp)
             {
@@ -22,19 +22,20 @@ namespace Xbim.InformationSpecifications.Helpers
                 return false;
             }
             var t = SchemaInfo.GetMeasure(svp.DataType);
-            if (t is not null && Enum.TryParse<IfcMeasures>(t.ID, out var found))
+            if (t is not null && Enum.TryParse<IfcValue>(t.Id, out var found))
             {
                 measure = found;
                 return true;
             }
+
+            if (Enum.TryParse<IfcValue>(svp.DataType, out var fnd))
+            {
+                measure = fnd;
+                return true;
+            }
+
             switch (svp.DataType)
             {
-                //// these could be number, but it needs to be addressed
-                //case "IfcNormalisedRatioMeasure":
-                //case "IfcThermalTransmittanceMeasure":
-                //    measure = IfcMeasures.Undefined;
-                //    return false;
-
                 case "IfcText":
                 case "IfcLabel":
                 case "IfcBoolean":
@@ -44,8 +45,8 @@ namespace Xbim.InformationSpecifications.Helpers
                 case "IfcDate": // from schema = STRING;
                 case "IfcDuration": // from schema = STRING;
                 case "IfcTime": // from schema = STRING;
-                    measure = IfcMeasures.String;
-                    return true;
+                    measure = null; 
+                    return false;
                 case "IfcInteger":
                 case "IfcReal":
                 case "IfcThermalTransmittanceMeasure":
@@ -53,18 +54,18 @@ namespace Xbim.InformationSpecifications.Helpers
                 case "IfcWarpingConstantMeasure":
                 case "IfcThermalResistanceMeasure":
                 case "IfcThermalExpansionCoefficientMeasure":
-                    measure = IfcMeasures.Number;
-                    return true;
+                    measure = null;
+                    return false;
                 case "IfcNonNegativeLengthMeasure":
                 case "IfcPositiveLengthMeasure":
-                    measure = IfcMeasures.Length;
+                    measure = IfcValue.IfcLengthMeasure;
                     return true;
                 case "IfcPositiveRatioMeasure":
                 case "IfcNormalisedRatioMeasure":
-                    measure = IfcMeasures.Ratio;
+                    measure = IfcValue.IfcRatioMeasure;
                     return true;
                 case "IfcPositivePlaneAngleMeasure":
-                    measure = IfcMeasures.PlaneAngle;
+                    measure = IfcValue.IfcPlaneAngleMeasure;
                     return true;
                 default:
                     break;

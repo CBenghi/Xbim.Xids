@@ -80,31 +80,26 @@ namespace Xbim.InformationSpecifications.Tests.Facets
             {
                 AttributeName = "EngagedIn"
             };
-            t.IsValid().Should().BeFalse(); // EngagedIn is an inverse property
+            t.IsValid().Should().BeFalse("EngagedIn is an inverse property"); 
+
             t = new AttributeFacet
             {
                 AttributeName = ValueConstraint.CreatePattern("Enga.*In") // no matching direct property should be found
             };
-            t.IsValid().Should().BeFalse(); // EngagedIn is an inverse property
+            t.IsValid().Should().BeFalse("only properties matched by the pattern (EngagedIn) are invalid because inverse"); 
 
 
             t = new AttributeFacet
             {
                 AttributeName = "Name"
             };
-            t.IsValid().Should().BeTrue(); // Name is not an inverse property
-
+            t.IsValid().Should().BeTrue("Name is a direct property");
 
             t = new AttributeFacet
             {
-                AttributeName = "Name"
+                AttributeName = ValueConstraint.CreatePattern("Repre.*ation") 
             };
-            t.IsValid().Should().BeTrue(); // Name is not an inverse property
-            t = new AttributeFacet
-            {
-                AttributeName = ValueConstraint.CreatePattern("Repre.*ation") // Representation should be valid
-            };
-            t.IsValid().Should().BeTrue(); // Name is not an inverse property
+            t.IsValid().Should().BeTrue("Representation should be matched and should be valid"); 
             
         }
 

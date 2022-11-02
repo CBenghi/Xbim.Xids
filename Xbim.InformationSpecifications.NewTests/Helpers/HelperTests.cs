@@ -27,14 +27,14 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [Fact]
         public void IfcMeasure_Helpers_Populated()
         {
-            var area = SchemaInfo.IfcMeasures["Area"];
+            var area = SchemaInfo.IfcMeasures["IfcAreaMeasure"];
             area.Should().NotBeNull();
             area.Exponents.Should().NotBeNull();
             area.Exponents.ToUnitSymbol().Should().Be("m2");
 
-            foreach (var item in Enum.GetValues<IfcMeasures>())
+            foreach (var item in Enum.GetValues<IfcValue>())
             {
-                SchemaInfo.IfcMeasures[item.ToString()].Should().NotBeNull($"{item} is a valid key in the schema.");
+                SchemaInfo.GetMeasure(item.ToString()).Should().NotBeNull($"{item} is a valid key in the schema.");
             }
         }
     }

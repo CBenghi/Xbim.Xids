@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications
 
         /// <summary>
         /// Constrained type of the identified property value.
-        /// Use the <see cref="HasMeasure(out IfcMeasures?)"/> method to test for the enumeration.
+        /// Use the <see cref="HasMeasure(out IfcValue?)"/> method to test for the enumeration.
         /// </summary>
         public string? Measure { get; set; }
 
@@ -38,9 +38,9 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="measure">value of the parsing of the string into the enum</param>
         /// <returns>true if parsing successful</returns>
-        public bool HasMeasure([NotNullWhen(true)] out IfcMeasures? measure)
+        public bool HasMeasure([NotNullWhen(true)] out IfcValue? measure)
         {
-            if (Measure is not null && Enum.TryParse<IfcMeasures>(Measure, out var found))
+            if (Measure is not null && Enum.TryParse<IfcValue>(Measure, out var found))
             {
                 measure = found;
                 return true;

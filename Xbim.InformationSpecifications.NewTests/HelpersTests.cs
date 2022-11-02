@@ -148,9 +148,9 @@ namespace Xbim.InformationSpecifications.Test.Helpers
             var prop = PropertySetInfo.Get(IfcSchemaVersion.IFC2X3, "Pset_DuctFittingTypeCommon", "SubType");
             prop.Should().NotBeNull();
 
-            var t = prop.IsMeasureProperty(out var measure);
-            t.Should().BeTrue();
-            measure.Should().Be(IfcMeasures.String);
+            var t = prop.IsMeasureProperty(out var measure); 
+            t.Should().BeTrue("IfcText is a measure");
+            measure.Should().Be(IfcValue.IfcText);
 
             foreach (var item in FindMeasureTypes())
             {
@@ -182,7 +182,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         [Fact]
         public void MeasureInfoNeverNull()
         {
-            foreach (var m in Enum.GetValues<IfcMeasures>())
+            foreach (var m in Enum.GetValues<IfcValue>())
             {
                 SchemaInfo.GetMeasure(m).Should().NotBeNull($"{m} is needed.");
             }

@@ -29,7 +29,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
                 foreach (var meas in t)
                 {
-                    Debug.WriteLine($"{meas.ID} {meas.Exponents} - {meas.Exponents!.ToUnitSymbol()}");
+                    Debug.WriteLine($"{meas.Id} {meas.Exponents} - {meas.Exponents!.ToUnitSymbol()}");
                 }
             }
         }
@@ -46,31 +46,31 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
         //Foot per second squared to Meter per second squared 1 ft² = 0. 3048 m² - acceleration is not defined
         [Theory]
-        [InlineData(1.0, "ft", IfcMeasures.Length, 0.3048)]
-        [InlineData(2.0, "ft", IfcMeasures.Length, 0.6096)]
-        [InlineData(1.0, "ft2", IfcMeasures.Area, 0.09290304)]//Square foot to Square meter	 		1 ft² = 0.092903 m²
-        [InlineData(1.0, "ft3", IfcMeasures.Volume, 0.028316846592000004)] //Cubic foot to  Cubic meter	 		1 ft³ = 0.028316 m³
-        [InlineData(1.0, "lb / in3", IfcMeasures.MassDensity, 27680.370321370567)] //Pound per cubic inch to Kilogram per cubic meter	 		1 lb/in³ = 27679.9 047102 kg/m³
-        [InlineData(1.0, "gal / min", IfcMeasures.VolumetricFlowRate, 6.309033333333333E-05)] //Gallon per minute X to m3 / s
-        [InlineData(1.0, "lb / ft2", IfcMeasures.AreaDensity, 4.88250976501953)]
-        [InlineData(1.0, "acre ft / day", IfcMeasures.VolumetricFlowRate, 0.014276467263055554)] //Acre foot per day = Cubic meter per second	 		1 Acre foot per day= 0.01428 m^3/s (cubic meters per second) (wolfram)
-        [InlineData(1.0, "lbf / ft2", IfcMeasures.Pressure, 47.880263121637356)]   //Pound per Square Foot to Pascal	 		1 lbf/ft2 = 47.88025 Pascal
-        [InlineData(1.0, "lbf / in2", IfcMeasures.Pressure, 6894.75788951578)]   //Pound per square inch X 6.894 = Kilopascal	KPa
-        [InlineData(1.0, "°F", IfcMeasures.Temperature, 255.9277777777778)]
-        [InlineData(1.0, "°C", IfcMeasures.Temperature, 274.15)]
-        [InlineData(1.0, "lbf", IfcMeasures.Force, 4.448222)] //Pound force = Newton	 		1 Pound force = 4.448222 Newton
-        [InlineData(1.0, "acre", IfcMeasures.Area, 4046.87261)] //Acre to square meter			1 acre = 4046.856 m²
-        [InlineData(1.0, "ft3/sec", IfcMeasures.VolumetricFlowRate, 0.028316846592000004)]  //Cubic foot per second = Cubic meter per second	 		1 ft³/s = 0.028316847 m³/s
-        [InlineData(1.0, "ft lbf", IfcMeasures.Torque, 1.3558180656)]  //Foot pound torque X 1.356 = Newton meter	N-m
-        [InlineData(1.0, "kip ft", IfcMeasures.Torque, 1355.8180656000002)]  //Kip foot X 1.355 = Kilonewton meter	LN-m
-        [InlineData(1.0, "kip / in2", IfcMeasures.Pressure, 6894757.889515781)]  //Kip per square inch X 6.89 = Megapascal	MPa	
-        [InlineData(1.0, "cm2", IfcMeasures.Area, 0.0001)]
-        [InlineData(1.0, "mol", IfcMeasures.AmountOfSubstance, 1)]
-        [InlineData(1.0, "kg", IfcMeasures.Mass, 1)]
-        [InlineData(12.0, "°F/s", IfcMeasures.TemperatureRateOfChange, 6.666666666666667)]
-        [InlineData(5.0, "m2 / s2 °F", IfcMeasures.SpecificHeatCapacity, 9)]
-        [InlineData(5.0, "J / kg °F", IfcMeasures.SpecificHeatCapacity, 9)]
-        public void CheckUnit(double originalUnit, string complexUnit, IfcMeasures measure, double expected)
+        [InlineData(1.0, "ft", IfcValue.IfcLengthMeasure, 0.3048)]
+        [InlineData(2.0, "ft", IfcValue.IfcLengthMeasure, 0.6096)]
+        [InlineData(1.0, "ft2", IfcValue.IfcAreaMeasure, 0.09290304)]//Square foot to Square meter	 		1 ft² = 0.092903 m²
+        [InlineData(1.0, "ft3", IfcValue.IfcVolumeMeasure, 0.028316846592000004)] //Cubic foot to  Cubic meter	 		1 ft³ = 0.028316 m³
+        [InlineData(1.0, "lb / in3", IfcValue.IfcMassDensityMeasure, 27680.370321370567)] //Pound per cubic inch to Kilogram per cubic meter	 		1 lb/in³ = 27679.9 047102 kg/m³
+        [InlineData(1.0, "gal / min", IfcValue.IfcVolumetricFlowRateMeasure, 6.309033333333333E-05)] //Gallon per minute X to m3 / s
+        [InlineData(1.0, "lb / ft2", IfcValue.IfcAreaDensityMeasure, 4.88250976501953)]
+        [InlineData(1.0, "acre ft / day", IfcValue.IfcVolumetricFlowRateMeasure, 0.014276467263055554)] //Acre foot per day = Cubic meter per second	 		1 Acre foot per day= 0.01428 m^3/s (cubic meters per second) (wolfram)
+        [InlineData(1.0, "lbf / ft2", IfcValue.IfcPressureMeasure, 47.880263121637356)]   //Pound per Square Foot to Pascal	 		1 lbf/ft2 = 47.88025 Pascal
+        [InlineData(1.0, "lbf / in2", IfcValue.IfcPressureMeasure, 6894.75788951578)]   //Pound per square inch X 6.894 = Kilopascal	KPa
+        [InlineData(1.0, "°F", IfcValue.IfcThermodynamicTemperatureMeasure, 255.9277777777778)]
+        [InlineData(1.0, "°C", IfcValue.IfcThermodynamicTemperatureMeasure, 274.15)]
+        [InlineData(1.0, "lbf", IfcValue.IfcForceMeasure, 4.448222)] //Pound force = Newton	 		1 Pound force = 4.448222 Newton
+        [InlineData(1.0, "acre", IfcValue.IfcAreaMeasure, 4046.87261)] //Acre to square meter			1 acre = 4046.856 m²
+        [InlineData(1.0, "ft3/sec", IfcValue.IfcVolumetricFlowRateMeasure, 0.028316846592000004)]  //Cubic foot per second = Cubic meter per second	 		1 ft³/s = 0.028316847 m³/s
+        [InlineData(1.0, "ft lbf", IfcValue.IfcTorqueMeasure, 1.3558180656)]  //Foot pound torque X 1.356 = Newton meter	N-m
+        [InlineData(1.0, "kip ft", IfcValue.IfcTorqueMeasure, 1355.8180656000002)]  //Kip foot X 1.355 = Kilonewton meter	LN-m
+        [InlineData(1.0, "kip / in2", IfcValue.IfcPressureMeasure, 6894757.889515781)]  //Kip per square inch X 6.89 = Megapascal	MPa	
+        [InlineData(1.0, "cm2", IfcValue.IfcAreaMeasure, 0.0001)]
+        [InlineData(1.0, "mol", IfcValue.IfcAmountOfSubstanceMeasure, 1)]
+        [InlineData(1.0, "kg", IfcValue.IfcMassMeasure, 1)]
+        [InlineData(12.0, "°F/s", IfcValue.IfcTemperatureRateOfChangeMeasure, 6.666666666666667)]
+        [InlineData(5.0, "m2 / s2 °F", IfcValue.IfcSpecificHeatCapacityMeasure, 9)]
+        [InlineData(5.0, "J / kg °F", IfcValue.IfcSpecificHeatCapacityMeasure, 9)]
+        public void CheckUnit(double originalUnit, string complexUnit, IfcValue measure, double expected)
         {
             var sourceUnit = new MeasureUnit(complexUnit);
             var t = SchemaInfo.IfcMeasures[measure.ToString()];
@@ -82,13 +82,15 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             cnvBack.Should().BeApproximately(originalUnit, 1.0E-07);
         }
 
-        public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcMeasures>().Select(x => new object[] { x }).ToArray();
+        public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcValue>().Select(x => new object[] { x }).ToArray();
 
         [Theory]
         [MemberData(nameof(GetMeasures))]
-        public void VerifyMeasureUnit(IfcMeasures item)
+        public void VerifyMeasureUnit(IfcValue item)
         {
             var measUnit = SchemaInfo.GetMeasure(item);
+            if (measUnit is DirectValue)
+                return; // todo: do we need to extend this test?
             if (measUnit.Exponents is null)
                 return;
             var standard = measUnit.GetUnit();

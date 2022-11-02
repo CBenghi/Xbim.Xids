@@ -156,7 +156,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 
             var allUnits = GetSchemaUnits();
 
-            MeasureCollection mCollection = new(GetFromDocumentation().Concat(ExtraMeaures()));
+            MeasureCollection mCollection = new(GetFromDocumentation().Concat(ExtraMeasures()));
             foreach (var measure in mCollection.MeasureList)
             {
                 var concreteClasses = new List<string>();
@@ -223,16 +223,22 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             return all.Distinct().OrderBy(x=>x).ToList();
         }
 
+
+        public static (string, string)[] ExtraMeasureTypes = new[]
+        {
+            ("IfcText", "A string"),
+            ("IfcIdentifier", "An identifier expressed as string"),
+        };
+
         public static string Execute_GenerateIfcMeasureEnum()
         {
             var source = stubEnums;
             var sb = new StringBuilder();
 
-            var doc = Program.GetBuildingSmartSchemaXML();
-            var measureEnum = GetMeasureRestrictionsFromSchema(doc).ToList();
-            foreach (var measure in measureEnum)
+            // an enum used to be defined in the schema, now it's a simple text
+            foreach (var measure in SchemaInfo.IfcMeasures.Values)
             {
-                if (SchemaInfo.IfcMeasures.TryGetValue(measure, out var found))
+                if (SchemaInfo.IfcMeasures.TryGetValue(measure.Id, out var found))
                 {
                     if (found.Exponents != null)
                     {
@@ -243,14 +249,19 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         sb.AppendLine($"\t\t/// {measure}, no unit conversion");
                     }
                 }
-                sb.AppendLine($"\t\t{measure},");
+                sb.AppendLine($"\t\t{measure.Id},");
+            }
+            foreach (var measure in ExtraMeasureTypes)
+            {
+                sb.AppendLine($"\t\t/// {measure.Item2},");
+                sb.AppendLine($"\t\t{measure.Item1},");
             }
 
             source = Regex.Replace(source, $"[\t ]*<PlaceHolder>", sb.ToString());
             return source;
         }
 
-        private static IEnumerable<Measure> ExtraMeaures()
+        private static IEnumerable<Measure> ExtraMeasures()
         {
             yield break;
             //yield return new Measure() { IfcMeasure = "String" };
@@ -264,10 +275,10 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// <returns>False if no warnings</returns>
         public static bool Execute_CheckMeasureMetadata()
         {
-            foreach (var measVal in SchemaInfo.IfcMeasures.Values)
+            foreach (var measVal in SchemaInfo.IfcMeasures.Values.OfType<IfcMeasureInfo>())
             {
                 if (measVal.UnitTypeEnum == "")
-                    Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.ID}' lacks UnitType.");
+                    Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.Id}' lacks UnitType.");
                 // Debug.WriteLine($"{measVal.UnitTypeEnum}");
             }
             return false;
@@ -310,7 +321,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             }
         }
 
-        private const string stub = @"// generated running xbim.xids.generator
+        private const string stub = @"// when running xbim.xids.generator
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -328,7 +339,7 @@ namespace Xbim.InformationSpecifications.Helpers
 }
 ";
 
-        private const string stubEnums = @"// generated running xbim.xids.generator
+        private const string stubEnums = @"// when running xbim.xids.generator
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -338,7 +349,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// <summary>
     /// Determins data type constraints and conversion for measures.
     /// </summary>
-    public enum IfcMeasures
+    public enum IfcValue
     {
         <PlaceHolder>
     }

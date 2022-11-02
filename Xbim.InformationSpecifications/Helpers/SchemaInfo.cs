@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Xbim.InformationSpecifications.Helpers.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
@@ -106,10 +107,10 @@ namespace Xbim.InformationSpecifications.Helpers
         /// Get the ifc measure metadata from a string
         /// </summary>
         /// <param name="ifcMeasureId">the string value of the measure</param>
-        /// <returns>Null if the string is not meaningful, for a sure hit, use <see cref="GetMeasure(Helpers.IfcMeasures)"/></returns>
+        /// <returns>Null if the string is not meaningful, for a certain hit, use <see cref="GetMeasure(Helpers.IfcValue)"/></returns>
         public static IValueProvider? GetMeasure(string ifcMeasureId)
         {
-            return IfcMeasures.Values.FirstOrDefault(x => x.ID == ifcMeasureId);
+            return IfcMeasures.Values.FirstOrDefault(x => x.Id == ifcMeasureId);
         }
 
         /// <summary>
@@ -117,8 +118,14 @@ namespace Xbim.InformationSpecifications.Helpers
         /// </summary>
         /// <param name="measure"></param>
         /// <returns></returns>
-        public static IValueProvider GetMeasure(IfcMeasures measure)
+        public static IValueProvider GetMeasure(IfcValue measure)
         {
+            switch (measure)
+            {
+                case IfcValue.IfcText:
+                case IfcValue.IfcIdentifier:
+                    return DirectValue.DirectValues[measure];
+            }
             return IfcMeasures[measure.ToString()];
         }
 
