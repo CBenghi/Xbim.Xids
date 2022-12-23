@@ -8,7 +8,7 @@
 		https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries#how-to-multitarget
 		
 		-->
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
 		<Authors>Claudio Benghi</Authors>
 		<LangVersion>latest</LangVersion>
 		<Description>Xbim's Information Delivery Specification format.</Description>
@@ -19,7 +19,7 @@
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<AssemblyVersion>0.3.24</AssemblyVersion>
+		<AssemblyVersion>0.3.30</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>

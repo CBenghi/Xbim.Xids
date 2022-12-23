@@ -27,7 +27,7 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_SimpleBIM_examples.ids", 3, 9, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids", 2, 16, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.ids", 1, 9, 0)]
-        [InlineData("bsFiles/IDS_wooden-windows.ids", 5, 31, 0)]
+        [InlineData("bsFiles/IDS_wooden-windows.ids", 5, 33, 0)]
         [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.ids", 3, 8, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids", -1, -1, 0)]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids", -1, -1, 0)]
