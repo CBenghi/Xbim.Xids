@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -200,7 +201,7 @@ namespace Xbim.InformationSpecifications.Helpers
             var res = new int[arr.Length];
             for (int i = 0; i < arr.Length; i++)
             {
-                if (!int.TryParse(arr[i], out res[i]))
+                if (!int.TryParse(arr[i], NumberStyles.Integer, CultureHelper.SystemCulture, out res[i]))
                     return null;
             }
             return new DimensionalExponents(

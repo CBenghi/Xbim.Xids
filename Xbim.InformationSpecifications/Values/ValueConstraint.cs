@@ -124,6 +124,15 @@ namespace Xbim.InformationSpecifications
                 if (typeof(long) == passedType)
                     return true;
             }
+            if (destType == typeof(decimal))
+            {
+                if (typeof(double) == passedType)
+                    return true;
+                if (typeof(int) == passedType)
+                    return true;
+                if (typeof(long) == passedType)
+                    return true;
+            }
             if (destType.IsAssignableFrom(passedType))
                 return true;
             if (destType == typeof(string))

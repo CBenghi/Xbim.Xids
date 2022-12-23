@@ -107,6 +107,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Theory]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids")]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids")]
+        [InlineData("bsFiles/bsFilesSelf/TestFile.ids")]
         public void FullSchemaImportTest(string fileName)
         {
             var res = Validate(fileName);

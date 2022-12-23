@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -252,6 +254,7 @@ namespace Xbim.InformationSpecifications
         {
             switch (castingObjectForType)
             {
+                // TODO: Decimal
                 case double:
                     return GetObject(value, NetTypeName.Double);
                 case float:
@@ -274,6 +277,7 @@ namespace Xbim.InformationSpecifications
         /// <returns>Null if parsing or conversion are not succesful, a nullable string in case of undefined type</returns>
 		public static object? GetObject(string? value, NetTypeName typeName)
         {
+            var culture = CultureHelper.SystemCulture;
             if (string.IsNullOrEmpty(value))
                 return null;
             switch (typeName)
@@ -287,29 +291,29 @@ namespace Xbim.InformationSpecifications
                 case NetTypeName.String:
                     return value;
                 case NetTypeName.Integer:
-                    if (int.TryParse(value, out var ival))
+                    if (int.TryParse(value, NumberStyles.Integer, culture, out var ival))
                         return ival;
                     return null;
                 case NetTypeName.Floating:
-                    if (float.TryParse(value, out var fval))
+                    if (float.TryParse(value, NumberStyles.Float, culture, out var fval))
                         return fval;
                     return null;
                 case NetTypeName.Double:
-                    if (double.TryParse(value, out var dblval))
+                    if (double.TryParse(value, NumberStyles.Float, culture, out var dblval))
                         return dblval;
                     return null;
                 case NetTypeName.Decimal:
-                    if (decimal.TryParse(value, out var dval))
+                    if (decimal.TryParse(value, NumberStyles.Number, culture, out var dval))
                         return dval;
                     return null;
                 case NetTypeName.Date:
                 case NetTypeName.DateTime:
-                    if (DateTime.TryParse(value, out var dateval))
+                    if (DateTime.TryParse(value, culture, DateTimeStyles.AssumeUniversal, out var dateval))
                         return dateval.Date;
                     return null;
                 case NetTypeName.Time:
                 case NetTypeName.Duration:
-                    if (TimeSpan.TryParse(value, out var timeval))
+                    if (TimeSpan.TryParse(value, culture, out var timeval))
                         return timeval;
                     return null;
                 case NetTypeName.Uri:

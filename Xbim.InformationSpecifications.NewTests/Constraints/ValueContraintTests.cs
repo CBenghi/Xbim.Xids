@@ -73,6 +73,25 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void ConstraintWithSpecificallyFormattedNumbers()
+        {
+            // from IDS test attributes/fail-only_specifically_formatted_numbers_are_allowed_2_4
+            ValueConstraint vc = "123,4.5";
+            vc.IsSatisfiedBy("1234.5").Should().BeFalse();
+            vc.IsSatisfiedBy(1234.5d).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ConstraintWithSpecificallyFormattedNumbers2()
+        {
+            // from IDS test attributes/fail-only_specifically_formatted_numbers_are_allowed_2_4
+            ValueConstraint vc = "43,3";
+            vc.IsSatisfiedBy("42.3").Should().BeFalse();
+            vc.IsSatisfiedBy(42.3d).Should().BeFalse();
+        }
+
+
+        [Fact]
         public void CaseSensitiviyTests()
         {
             ValueConstraint t2 = "ABC";
@@ -118,6 +137,26 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void DecimalRangesAreInclusive()
+        {
+            var vc = new ValueConstraint(NetTypeName.Decimal);
+            var t = new RangeConstraint()
+            {
+                MinValue = 42.ToString(),
+                MinInclusive = true,
+                MaxValue = 42.ToString(),
+                MaxInclusive = true,
+            };
+            vc.AddAccepted(t);
+
+            vc.IsSatisfiedBy(42.1).Should().BeFalse("40.1 failure");
+            vc.IsSatisfiedBy(41.999999f).Should().BeFalse("41.9999 failure");
+            vc.IsSatisfiedBy(42L).Should().BeTrue("42L failure");
+            vc.IsSatisfiedBy(42M).Should().BeTrue("42M failure");
+            vc.IsSatisfiedBy(42d).Should().BeTrue("42d failure");
+        }
+
+        [Fact]
         public void EnumConstraintSatisfactionTest()
         {
             var vc = new ValueConstraint(NetTypeName.Integer);
@@ -129,6 +168,6 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(30L).Should().BeTrue("30L failure");
             vc.IsSatisfiedBy(60).Should().BeTrue("60 failure");
             vc.IsSatisfiedBy(60L).Should().BeTrue("60L failure");
-        }
+        } 
     }
 }

@@ -678,8 +678,8 @@ namespace Xbim.InformationSpecifications
                             if (fs.Any())
                             {
                                 ret.SetExpectations(fs);
-                                if (options.Any(x => x != RequirementCardinalityOptions.Expected))
-                                    ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(options);
+                                //if (options.Any(x => x != RequirementCardinalityOptions.Expected))
+                                ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(options);
                             }
                             break;
                         }
@@ -693,7 +693,7 @@ namespace Xbim.InformationSpecifications
 
         private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            MaterialFacet? ret = null;
+            MaterialFacet ret = new MaterialFacet();
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -801,11 +801,11 @@ namespace Xbim.InformationSpecifications
                         break;
                     case "property": // either property or name is redundant
                         ret ??= new IfcPropertyFacet();
-                        ret.PropertyName = sub.Value;
+                        ret.PropertyName = GetConstraint(sub, logger);
                         break;
                     case "name": // either property or name is redundant
                         ret ??= new IfcPropertyFacet();
-                        ret.PropertyName = sub.Value;
+                        ret.PropertyName = GetConstraint(sub, logger);
                         break;
                     case "value":
                         ret ??= new IfcPropertyFacet();
@@ -1142,7 +1142,7 @@ namespace Xbim.InformationSpecifications
                 }
 
                 // managed max values
-                if (Max != "0" && Max != "unbounded" && Max != "")
+                if (Max != "0" && Max != "unbounded" && Max != "" && Max != "1")
                 {
                     LogUnsupportedOccurValue(elem, logger);
                     return RequirementCardinalityOptions.Expected;
@@ -1151,9 +1151,12 @@ namespace Xbim.InformationSpecifications
                 if (Min == "0" && Max == "0")
                     return RequirementCardinalityOptions.Prohibited;
                 if (Min == "1" &&
-                    (Max == "unbounded" || Max == "")
+                    (Max == "unbounded" || Max == "" || Max == "1")
                     )
                     return RequirementCardinalityOptions.Expected;
+
+                if (Min == "0" && Max == "1")
+                    return RequirementCardinalityOptions.Optional;
 
                 LogUnsupportedOccurValue(elem, logger);
                 return RequirementCardinalityOptions.Expected;
@@ -1162,7 +1165,7 @@ namespace Xbim.InformationSpecifications
 
         private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            IfcClassificationFacet? ret = null;
+            IfcClassificationFacet? ret = new IfcClassificationFacet();
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -1269,15 +1272,15 @@ namespace Xbim.InformationSpecifications
                         ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
                         if (string.IsNullOrEmpty(sub.Value))
                         {
-                            ret.IfcType = GetFirstString(sub);  // todo: dealing with uncomprehensible v0.5 values
-                                                                // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
+                            ret.IfcType = GetConstraint(sub, logger);//GetFirstString(sub);  // todo: dealing with uncomprehensible v0.5 values
+                                                                     // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
                         }
                         else
                             ret.IfcType = sub.Value;
                         break;
                     case "predefinedtype":
                         ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                        ret.PredefinedType = sub.Value;
+                        ret.PredefinedType = GetConstraint(sub, logger);
                         break;
                     default:
                         LogUnexpected(sub, elem, logger);
