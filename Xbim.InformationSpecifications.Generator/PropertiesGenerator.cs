@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Generator
         public static string Execute()
         {
             var source = stub;
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Xbim.Properties.Version.IFC4x3 };
 
             foreach (var schema in schemas)
             {
@@ -31,7 +31,7 @@ namespace Xbim.InformationSpecifications.Generator
                         string def = "";
                         if (!string.IsNullOrWhiteSpace(prop.Definition))
                         {
-                            def = $" {{ Definition = \"{FixForCode(prop.Definition)}\"}}";
+                            def = $" {{ Definition = \"{EscapeCharacters(prop.Definition)}\"}}";
                         }
                         if (prop.PropertyType.PropertyValueType is TypePropertySingleValue singleV)
                         {
@@ -106,15 +106,15 @@ namespace Xbim.InformationSpecifications.Generator
             return source;
         }
 
-        private static string FixForCode(string definition)
+        private static string EscapeCharacters(string definition)
         {
-            var tmp = definition;
-            tmp = tmp.Replace("\t", "\\t");
-            tmp = tmp.Replace("\r", "\\r");
-            tmp = tmp.Replace("\n", "\\n");
-            tmp = tmp.Replace("\"", "\\\"");
+            
+            // Provides a more robust means of escaping literals and special characters 
+            var tmp= Microsoft.CodeAnalysis.CSharp.SymbolDisplay.FormatLiteral(definition, false);
+            tmp = tmp.Replace("\"", @"\""");
             return tmp;
         }
+
 
         private static string NewStringArray(IEnumerable<string> values)
         {
@@ -143,6 +143,11 @@ namespace Xbim.InformationSpecifications.Helpers
 		private static IEnumerable<PropertySetInfo> GetPropertiesIFC4()
 		{
 <PlaceHolderIFC4>
+		}
+
+        private static IEnumerable<PropertySetInfo> GetPropertiesIFC4x3()
+		{
+<PlaceHolderIFC4x3>
 		}
 	}
 }
