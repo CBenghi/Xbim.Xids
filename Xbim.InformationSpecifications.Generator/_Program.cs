@@ -16,14 +16,14 @@ namespace Xbim.InformationSpecifications.Generator
 
         public static void Main()
         {
-            Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
-            if (Console.ReadKey().Key == ConsoleKey.T)
-            {
-                // Whenever the schema changes
-                // 1. get the latest files with the batch command
-                // 2. execute the following function
-                BuildingSmartSchema.GenerateFulltestFiles();
-            }
+            //Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
+            //if (Console.ReadKey().Key == ConsoleKey.T)
+            //{
+            //    // Whenever the schema changes
+            //    // 1. get the latest files with the batch command
+            //    // 2. execute the following function
+            //    BuildingSmartSchema.GenerateFulltestFiles();
+            //}
 
             // wip
             var wip = false;
@@ -31,7 +31,8 @@ namespace Xbim.InformationSpecifications.Generator
             {
                 var schemas = new[] {
                     Properties.Version.IFC2x3,
-                    Properties.Version.IFC4
+                    Properties.Version.IFC4, 
+                    Properties.Version.IFC4x3,   
                 };
                 foreach (var schema in schemas)
                     Console.Write(ClassRelationTypes.Report(schema));

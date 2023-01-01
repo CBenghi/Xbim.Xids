@@ -18,20 +18,8 @@ namespace Xbim.InformationSpecifications.Generator
         internal static ClassRelationTypeInfo GetRelationTypes(Properties.Version schema)
         {
             ClassRelationTypeInfo c = new();
-            string mainTypeObjectName;
-            System.Reflection.Module module;
-            if (schema == Properties.Version.IFC2x3)
-            {
-                module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
-                mainTypeObjectName = "IfcTypeObject";
-            }
-            else if (schema == Properties.Version.IFC4)
-            {
-                module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
-                mainTypeObjectName = "IfcTypeObject";
-            }
-            else
-                throw new NotImplementedException();
+            string mainTypeObjectName = nameof(Xbim.Ifc2x3.Kernel.IfcTypeObject);
+            System.Reflection.Module module = SchemaHelper.GetModule(schema);
             var metaD = ExpressMetaData.GetMetadata(module);
 
             // get all types
@@ -68,12 +56,12 @@ namespace Xbim.InformationSpecifications.Generator
 
 
             sb.AppendLine("## REPORT FOR TYPE ========================");
-            foreach (var m in c.TypesToObjectMatch)
+            foreach (var m in c.TypesToObjectMatch.OrderBy(k => k.Key.Name))
             {
                 sb.AppendLine($"{m.Key} : {m.Value}");
             }
             sb.AppendLine("## REPORT FOR Objects ========================");
-            foreach (var m in c.ObjectToTypesMatch)
+            foreach (var m in c.ObjectToTypesMatch.OrderBy(k => k.Key.Name))
             {
                 sb.AppendLine($"{m.Key} : {string.Join(", ", m.Value)}");
             }
@@ -113,7 +101,7 @@ namespace Xbim.InformationSpecifications.Generator
         public static string Execute()
         {
             var source = stub;
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Properties.Version.IFC4x3 };
 
             foreach (var schema in schemas)
             {
@@ -145,6 +133,11 @@ namespace Xbim.InformationSpecifications.Helpers
 		static partial void GetRelationTypesIFC4(SchemaInfo schema)
 		{
 <PlaceHolderIFC4>
+		}
+
+        static partial void GetRelationTypesIFC4x3(SchemaInfo schema)
+		{
+<PlaceHolderIFC4x3>
 		}
 	}
 }

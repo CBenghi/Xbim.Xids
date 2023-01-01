@@ -14,15 +14,11 @@ namespace Xbim.InformationSpecifications.Generator
         static public string Execute()
         {
             var source = stub;
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Properties.Version.IFC4x3 };
 
             foreach (var schema in schemas)
             {
-                System.Reflection.Module module = null;
-                if (schema == Properties.Version.IFC2x3)
-                    module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
-                else if (schema == Properties.Version.IFC4)
-                    module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
+                System.Reflection.Module module = SchemaHelper.GetModule(schema);
                 var metaD = ExpressMetaData.GetMetadata(module);
 
                 var sb = new StringBuilder();
@@ -91,6 +87,11 @@ namespace Xbim.InformationSpecifications.Helpers
 		static partial void GetAttributesIFC4(SchemaInfo destinationSchema)
 		{
 <PlaceHolderIFC4>
+		}
+
+        static partial void GetAttributesIFC4x3(SchemaInfo destinationSchema)
+		{
+<PlaceHolderIFC4x3>
 		}
 	}
 }

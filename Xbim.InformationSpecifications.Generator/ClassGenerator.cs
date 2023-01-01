@@ -14,15 +14,11 @@ namespace Xbim.InformationSpecifications.Generator
         public static string Execute()
         {
             var source = stub;
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Properties.Version.IFC4x3 };
 
             foreach (var schema in schemas)
             {
-                System.Reflection.Module module = null;
-                if (schema == Properties.Version.IFC2x3)
-                    module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
-                else if (schema == Properties.Version.IFC4)
-                    module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
+                System.Reflection.Module module = SchemaHelper.GetModule(schema);
                 var metaD = ExpressMetaData.GetMetadata(module);
 
                 var sb = new StringBuilder();
@@ -92,10 +88,19 @@ namespace Xbim.InformationSpecifications.Helpers
 			};
 			return schema;
 		}
+
 		private static partial SchemaInfo GetClassesIFC4() 
 		{
 			var schema = new SchemaInfo() {
 <PlaceHolderIFC4>
+			};
+			return schema;
+		}
+
+        private static partial SchemaInfo GetClassesIFC4x3() 
+		{
+			var schema = new SchemaInfo() {
+<PlaceHolderIFC4x3>
 			};
 			return schema;
 		}

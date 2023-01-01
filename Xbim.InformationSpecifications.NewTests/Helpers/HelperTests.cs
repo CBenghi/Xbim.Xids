@@ -14,6 +14,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             var schemas = new[] {
                 SchemaInfo.SchemaIfc2x3,
                 SchemaInfo.SchemaIfc4,
+                SchemaInfo.SchemaIfc4x3,
             };
 
             foreach (var i in schemas)

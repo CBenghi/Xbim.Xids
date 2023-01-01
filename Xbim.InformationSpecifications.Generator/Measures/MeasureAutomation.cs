@@ -140,16 +140,12 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             var source = stub;
             var sb = new StringBuilder();
 
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Properties.Version.IFC4x3 };
             var meta = new List<ExpressMetaData>();
 
             foreach (var schema in schemas)
             {
-                System.Reflection.Module module = null;
-                if (schema == Properties.Version.IFC2x3)
-                    module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
-                else if (schema == Properties.Version.IFC4)
-                    module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
+                System.Reflection.Module module = SchemaHelper.GetModule(schema);
                 var metaD = ExpressMetaData.GetMetadata(module);
                 meta.Add(metaD);
             }
@@ -219,8 +215,11 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         {
             var all = Enum.GetValues<Ifc2x3.MeasureResource.IfcDerivedUnitEnum>().Select(x => $"IfcDerivedUnitEnum.{x}");
             all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcDerivedUnitEnum>().Select(x => $"IfcDerivedUnitEnum.{x}"));
+            all = all.Union(Enum.GetValues<Ifc4x3.MeasureResource.IfcDerivedUnitEnum>().Select(x => $"IfcDerivedUnitEnum.{x}"));
             all = all.Union(Enum.GetValues<Ifc2x3.MeasureResource.IfcUnitEnum>().Select(x => $"IfcUnitEnum.{x}"));
             all = all.Union(Enum.GetValues<Ifc4.Interfaces.IfcUnitEnum>().Select(x => $"IfcUnitEnum.{x}"));
+            all = all.Union(Enum.GetValues<Ifc4x3.MeasureResource.IfcUnitEnum>().Select(x => $"IfcUnitEnum.{x}"));
+
             return all.Distinct().OrderBy(x=>x).ToList();
         }
 
@@ -349,7 +348,7 @@ using System.Text;
 namespace Xbim.InformationSpecifications.Helpers
 {
     /// <summary>
-    /// Determins data type constraints and conversion for measures.
+    /// Determines data type constraints and conversion for measures.
     /// </summary>
     public enum IfcValue
     {

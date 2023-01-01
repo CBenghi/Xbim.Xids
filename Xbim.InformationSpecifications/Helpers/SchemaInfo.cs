@@ -103,6 +103,26 @@ namespace Xbim.InformationSpecifications.Helpers
             }
         }
 
+        private static SchemaInfo? schemaIfc4x3;
+        /// <summary>
+        /// Static property for the Ifc4 schema
+        /// </summary>
+        public static SchemaInfo SchemaIfc4x3
+        {
+            get
+            {
+                if (schemaIfc4x3 == null)
+                {
+                    var t = GetClassesIFC4x3();
+                    GetRelationTypesIFC4x3(t);
+                    GetAttributesIFC4x3(t);
+                    SetTypeObject(t, "IfcTypeObject");
+                    schemaIfc4x3 = t;
+                }
+                return schemaIfc4x3;
+            }
+        }
+
         /// <summary>
         /// Get the ifc measure metadata from a string
         /// </summary>
@@ -255,6 +275,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
         static partial void GetRelationTypesIFC2x3(SchemaInfo schema);
         static partial void GetRelationTypesIFC4(SchemaInfo schema);
+        static partial void GetRelationTypesIFC4x3(SchemaInfo schema);
 
         internal void SetRelationType(string objClass, IEnumerable<string> typeClasses)
         {
@@ -271,6 +292,10 @@ namespace Xbim.InformationSpecifications.Helpers
 
         private static partial SchemaInfo GetClassesIFC2x3();
 
+        private static partial SchemaInfo GetClassesIFC4();
+
+        private static partial SchemaInfo GetClassesIFC4x3();
+
         /// <summary>
         /// Returns all attribute names in the schema
         /// </summary>
@@ -279,10 +304,12 @@ namespace Xbim.InformationSpecifications.Helpers
             return AttributesToAllClasses.Keys;
         }
 
-        private static partial SchemaInfo GetClassesIFC4();
+        
 
         static partial void GetAttributesIFC2x3(SchemaInfo destinationSchema);
         static partial void GetAttributesIFC4(SchemaInfo destinationSchema);
+
+        static partial void GetAttributesIFC4x3(SchemaInfo destinationSchema);
 
         private void AddAttribute(string attributeName, string[] topClassNames, string[] allClassNames)
         {

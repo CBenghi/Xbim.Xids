@@ -25,6 +25,7 @@ namespace Xbim.InformationSpecifications.Generator
                     includeTypes = new Dictionary<Properties.Version, List<string>>();
                     IncludeTypes.Add(Properties.Version.IFC2x3, new List<string>() { "IfcObject", "IfcTypeObject" });
                     IncludeTypes.Add(Properties.Version.IFC4, new List<string>() { "IfcObject", "IfcTypeObject" });
+                    IncludeTypes.Add(Properties.Version.IFC4x3, new List<string>() { "IfcObject", "IfcTypeObject" });
                 }
                 return includeTypes;
             }
@@ -36,14 +37,10 @@ namespace Xbim.InformationSpecifications.Generator
         public static string ReportMatchesToProperties()
         {
             var report = new StringBuilder();
-            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4 };
+            var schemas = new[] { Xbim.Properties.Version.IFC2x3, Xbim.Properties.Version.IFC4, Version.IFC4x3 };
             foreach (var schema in schemas)
             {
-                System.Reflection.Module module = null;
-                if (schema == Properties.Version.IFC2x3)
-                    module = (typeof(Ifc2x3.Kernel.IfcProduct)).Module;
-                else if (schema == Properties.Version.IFC4)
-                    module = (typeof(Ifc4.Kernel.IfcProduct)).Module;
+                System.Reflection.Module module = SchemaHelper.GetModule(schema);
                 var metaD = ExpressMetaData.GetMetadata(module);
 
                 report.AppendLine($"===================================================================================== {schema}");
@@ -60,10 +57,10 @@ namespace Xbim.InformationSpecifications.Generator
                     var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();
                     distinctClassesFromPropertySets = distinctClassesFromPropertySets.Concat(classes).ToList();
                 }
-                distinctClassesFromPropertySets = distinctClassesFromPropertySets.Distinct().ToList();
+                distinctClassesFromPropertySets = distinctClassesFromPropertySets.Distinct().OrderBy(k => k).ToList();
 
                 // trying to find a set of classes that matches the property types
-                List<string> HandledTypes = new();
+                List<string> handledTypes = new();
                 if (!IncludeTypes.ContainsKey(schema))
                 {
                     report.AppendLine($"No included types for {schema}.");
@@ -73,24 +70,24 @@ namespace Xbim.InformationSpecifications.Generator
                 {
                     var t = metaD.ExpressType(item.ToUpperInvariant());
                     if (t != null)
-                        HandledTypes.AddRange(TreeOf(t));
+                        handledTypes.AddRange(TreeOf(t));
                     else
                         report.AppendLine($"{item} not found");
                 }
 
-                report.AppendLine($"HandledTypes.Count: {HandledTypes.Count}");
+                report.AppendLine($"HandledTypes.Count: {handledTypes.Count}");
                 report.AppendLine($"distinctClassesFromPropertySets.Count: {distinctClassesFromPropertySets.Count}");
                 foreach (var className in distinctClassesFromPropertySets)
                 {
                     var daType = metaD.ExpressType(className.ToUpperInvariant());
-                    if (HandledTypes.Contains(className))
+                    if (handledTypes.Contains(className))
                         continue;
                     var t = daType.Type;
                     var ft = FullH(daType);
                     report.AppendLine($"Has property but no class: {className}\t{ft}");
                 }
 
-                foreach (var className in HandledTypes)
+                foreach (var className in handledTypes.OrderBy(k => k))
                 {
                     var daType = metaD.ExpressType(className.ToUpperInvariant());
                     if (distinctClassesFromPropertySets.Contains(className))
