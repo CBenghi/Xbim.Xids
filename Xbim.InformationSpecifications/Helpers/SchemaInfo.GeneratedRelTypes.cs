@@ -1,4 +1,4 @@
-// generated code via xbim.xids.generator, any changes made directly here will be lost
+// generated code via xbim.xids.generator using Xbim.Essentials 5.1.341.0 - any changes made directly here will be lost
 
 using System.Collections.Generic;
 

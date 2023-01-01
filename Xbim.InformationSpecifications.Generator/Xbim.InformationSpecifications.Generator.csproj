@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>Exe</OutputType>
@@ -6,19 +6,13 @@
 	<ItemGroup>
 		<PackageReference Include="TextCopy" Version="6.1.0" />
 		<PackageReference Include="Xbim.Essentials" Version="5.1.341" />
-		<PackageReference Include="Xbim.Properties" Version="5.0.1" />
+		<PackageReference Include="Xbim.Properties" Version="6.0.10" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Xbim.InformationSpecifications\Xbim.InformationSpecifications.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Update="Files\ids_09.xsd">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Files\Physical-Quantities-and-Units.md">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Files\Physical_Quantities_and_Units.md">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Files\units.md">

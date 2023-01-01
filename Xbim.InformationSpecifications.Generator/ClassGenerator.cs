@@ -68,6 +68,7 @@ namespace Xbim.InformationSpecifications.Generator
                 }
                 source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
             }
+            source = source.Replace($"<PlaceHolderVersion>", VersionHelper.GetFileVersion(typeof(ExpressMetaData)));
             return source;
         }
 
@@ -76,7 +77,7 @@ namespace Xbim.InformationSpecifications.Generator
             return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
         }
 
-        private const string stub = @"// generated code via xbim.xids.generator, any changes made directly here will be lost
+        private const string stub = @"// generated code via xbim.xids.generator using Xbim.Essentials <PlaceHolderVersion> -, any changes made directly here will be lost
 
 using System.Linq;
 

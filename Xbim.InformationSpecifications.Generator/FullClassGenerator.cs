@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xbim.Common.Metadata;
+using Xbim.Properties;
 
 namespace Xbim.InformationSpecifications.Generator
 {
@@ -68,10 +69,11 @@ namespace Xbim.InformationSpecifications.Generator
             }
             source = source.Replace($"<PlaceHolderClasses>\r\n", sbClasses.ToString());
             source = source.Replace($"<PlaceHolderAtts>\r\n", sbAtts.ToString());
+            source = source.Replace($"<PlaceHolderVersion>", VersionHelper.GetFileVersion(typeof(ExpressMetaData)));
             return source;
         }
 
-        private const string stub = @"// generated code via xbim.xids.generator, any changes made directly here will be lost
+        private const string stub = @"// generated code via xbim.xids.generator using Xbim.Essentials <PlaceHolderVersion> - any changes made directly here will be lost
 
 using System;
 using System.Collections.Generic;

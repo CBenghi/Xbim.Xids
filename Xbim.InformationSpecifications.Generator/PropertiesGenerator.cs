@@ -101,6 +101,8 @@ namespace Xbim.InformationSpecifications.Generator
                 source = source.Replace($"<PlaceHolder{schema}>\r\n", sb.ToString());
             }
             // context.AddSource("generated2.cs", source);
+
+            source = source.Replace($"<PlaceHolderVersion>\r\n", VersionHelper.GetFileVersion(typeof(Definitions<>)));
             return source;
         }
 
@@ -125,7 +127,7 @@ namespace Xbim.InformationSpecifications.Generator
             return @$"new {type}[] {{ {string.Join(", ", values)} }}";
         }
 
-        private const string stub = @"// generated via source generation from xbim.xids.generator
+        private const string stub = @"// generated via source generation from xbim.xids.generator using Xbim.PropertySets <PlaceHolderVersion>
 
 using System.Collections.Generic;
 

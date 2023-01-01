@@ -1,5 +1,4 @@
-// generated via source generation from xbim.xids.generator
-
+// generated via source generation from xbim.xids.generator using Xbim.PropertySets 6.0.10.0
 using System.Collections.Generic;
 
 namespace Xbim.InformationSpecifications.Helpers
