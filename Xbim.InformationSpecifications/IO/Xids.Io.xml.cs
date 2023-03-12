@@ -678,6 +678,8 @@ namespace Xbim.InformationSpecifications
                             if (fs.Any())
                             {
                                 ret.SetExpectations(fs);
+                                // todo: as an alternative, RequirementOptions could be set only if they are different from the 
+                                // default value (i.e. Expected).
                                 //if (options.Any(x => x != RequirementCardinalityOptions.Expected))
                                 ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(options);
                             }
@@ -1129,37 +1131,24 @@ namespace Xbim.InformationSpecifications
                 return false;
             }
 
+            private static RequirementCardinalityOptions DefaultCardinality = RequirementCardinalityOptions.Expected;
+
             internal RequirementCardinalityOptions Evaluate(XElement elem, ILogger? logger)
             {
                 if (Min == "" && Max == "")
-                    return RequirementCardinalityOptions.Expected; // default value
-
-                // managed min values
-                if (Min != "1" && Min != "0")
-                {
-                    LogUnsupportedOccurValue(elem, logger);
-                    return RequirementCardinalityOptions.Expected;
-                }
-
-                // managed max values
-                if (Max != "0" && Max != "unbounded" && Max != "" && Max != "1")
-                {
-                    LogUnsupportedOccurValue(elem, logger);
-                    return RequirementCardinalityOptions.Expected;
-                }
-
+                    return DefaultCardinality; // set default
                 if (Min == "0" && Max == "0")
                     return RequirementCardinalityOptions.Prohibited;
-                if (Min == "1" &&
-                    (Max == "unbounded" || Max == "" || Max == "1")
-                    )
-                    return RequirementCardinalityOptions.Expected;
-
-                if (Min == "0" && Max == "1")
-                    return RequirementCardinalityOptions.Optional;
-
+                if (Max == "unbounded" || Max == "" || Max == "1")
+                {
+                    if (Min == "1")
+                        return RequirementCardinalityOptions.Expected;
+                    if (Min == "0")
+                        return RequirementCardinalityOptions.Optional;
+                }              
+                // throw warning and set default value
                 LogUnsupportedOccurValue(elem, logger);
-                return RequirementCardinalityOptions.Expected;
+                return DefaultCardinality; // set default
             }
         }
 

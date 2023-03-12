@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecificati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.Tests", "Xbim.InformationSpecifications.NewTests\Xbim.InformationSpecifications.Tests.csproj", "{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbim.InformationSpecifications.UI", "Xbim.InformationSpecifications.UI\Xbim.InformationSpecifications.UI.csproj", "{9E8B5E07-66A5-4223-9DED-38E830E895DF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EC76CDC-4E6A-4C84-88BA-3E3E53F0DD22}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E8B5E07-66A5-4223-9DED-38E830E895DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E8B5E07-66A5-4223-9DED-38E830E895DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E8B5E07-66A5-4223-9DED-38E830E895DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E8B5E07-66A5-4223-9DED-38E830E895DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
