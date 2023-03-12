@@ -8,5 +8,6 @@
         public string UnitSymbol { get; set; }
         public string IfcMeasure { get; set; }
         public string DimensionalExponents { get; set; }
+        public string UnitEnum { get; set; }
     }
 }
