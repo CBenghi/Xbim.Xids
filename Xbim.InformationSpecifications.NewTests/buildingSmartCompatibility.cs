@@ -104,6 +104,37 @@ namespace Xbim.InformationSpecifications.Tests
             return logg;
         }
 
+        private const string IdsTestcasesPath = @"..\..\..\..\..\..\BuildingSmart\IDS\Documentation\testcases";
+
+        [Theory]
+        [MemberData(nameof(GetIdsFiles))]    
+        public void CanReadIdsSamples(string idsFile)
+        {
+            var d = new DirectoryInfo(IdsTestcasesPath);
+            var comb = d.FullName + idsFile;
+            FileInfo f = new FileInfo(comb);
+            f.Exists.Should().BeTrue("test file must be found");
+                
+            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
+            var x = LoadBuildingSmartIDS(f.FullName, loggerMock.Object);
+            x.Should().NotBeNull();
+            var loggingIssues = loggerMock.Invocations.Where(
+                w => w.Arguments[0].ToString() == "Error" || w.Arguments[0].ToString() == "Warning"
+                ).Select(s => s.Arguments[2].ToString()).ToArray(); // this creates the array of logging calls
+            loggingIssues.Should().BeEmpty();
+        }
+
+        public static IEnumerable<object[]> GetIdsFiles()
+        {
+            // start from current directory and look in relative position for the bs IDS repository
+            var d = new DirectoryInfo(IdsTestcasesPath);
+            foreach (var f in d.GetFiles("*.ids", SearchOption.AllDirectories))
+            {
+                yield return new object[] { f.FullName.Replace(d.FullName, "") };
+            }
+            
+        }
+
         [Theory]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids")]
         [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids")]

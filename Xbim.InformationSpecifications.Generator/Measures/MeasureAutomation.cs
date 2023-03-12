@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                 if (isParsing)
                 {
                     var parts = oneLine.Split(splitter, StringSplitOptions.TrimEntries);
-                    if (parts.Length != 7) 
+                    if (parts.Length != 8) // set here the amount of fields expected 
                     {
                         // we are leaving the loop, check the expected tally
                         if (tally != 50) // need to review the info from the documentation
@@ -39,6 +39,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         Unit = parts[3],
                         UnitSymbol = parts[4],
                         DimensionalExponents = parts[5],
+                        UnitEnum = parts[6],
                     };
                     tally++;
                     yield return retMeasurement;
