@@ -6,16 +6,13 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
 		<PackageReference Include="TextCopy" Version="6.1.0" />
-		<PackageReference Include="Xbim.Essentials" Version="5.9.375-develop" />
+		<PackageReference Include="Xbim.Essentials" Version="5.9.408-develop" />
 		<PackageReference Include="Xbim.Properties" Version="6.0.10" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Xbim.InformationSpecifications\Xbim.InformationSpecifications.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="Files\ids_09.xsd">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	  <None Update="Files\units.md">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
