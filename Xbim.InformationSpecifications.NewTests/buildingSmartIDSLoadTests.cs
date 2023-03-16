@@ -77,7 +77,7 @@ namespace Xbim.InformationSpecifications.Tests
         {
             IdsLib.CheckOptions c = new()
             {
-                CheckSchema = new[] { "bsFiles\\ids_09.xsd" },
+                CheckSchema = new[] { "bsFiles\\ids.xsd" },
                 InputSource = tmpFile
             };
 

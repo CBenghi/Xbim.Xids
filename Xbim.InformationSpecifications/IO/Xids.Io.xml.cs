@@ -254,7 +254,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();                    
                     break;
                 default:
-                    logger?.LogWarning($"todo: missing case for {item.GetType()}.");
+                    logger?.LogWarning("TODO: ExportBuildingSmartIDS missing case for {0}.", item.GetType());
                     break;
             }
         }
@@ -983,7 +983,7 @@ namespace Xbim.InformationSpecifications
             count += (structure != null) ? 1 : 0;
             if (count != 1)
             {
-                logger?.LogWarning($"Invalid value constraint for {elem.Name.LocalName} full xml '{elem}'.");
+                logger?.LogWarning("Invalid value constraint for {localname} full xml '{elem}'.", elem.Name.LocalName, elem);
                 return null;
             }
             if (enumeration != null)
@@ -1207,7 +1207,7 @@ namespace Xbim.InformationSpecifications
             //if (local == "instructions")
             //    ret.Instructions = sub.Value;
             //else
-            logger?.LogWarning($"Unexpected element {local} reading FacetBase.");
+            logger?.LogWarning("Unexpected element {local} reading FacetBase.", local);
         }
 #pragma warning restore IDE0060 // Remove unused parameter
 
@@ -1242,7 +1242,7 @@ namespace Xbim.InformationSpecifications
                 ret.Instructions = attribute.Value;
             else
             {
-                logger?.LogError("Unrecognised base attribute {0}", attribute.Name);
+                logger?.LogError("Unrecognised base attribute {attributeName}", attribute.Name);
             }
         }
 

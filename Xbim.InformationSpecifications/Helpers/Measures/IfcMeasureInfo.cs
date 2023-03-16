@@ -4,9 +4,9 @@ namespace Xbim.InformationSpecifications.Helpers
 {
     // todo: Extension methods for the conversion of the value given 
     // If 
-    //    Stringa -> No conversion
+    //    String -> No conversion
     //    number -> No conversion
-    // Extension method To/From - con (double value, string unit) (m2/kg)
+    // Extension method To/From - via (double value, string unit) (m2/kg)
 
     /// <summary>
     /// Metadata about measure conversion behaviours.
@@ -24,7 +24,8 @@ namespace Xbim.InformationSpecifications.Helpers
             Description = description;
             Unit = unit;
             UnitSymbol = symbol;
-            Exponents = DimensionalExponents.FromString(exponents);
+            var tmpExponents = DimensionalExponents.FromString(exponents);
+            Exponents = tmpExponents ?? new DimensionalExponents();
             ConcreteClasses = concrete;
             UnitTypeEnum = unitTypeEnum;
         }
@@ -53,7 +54,7 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <summary>
         /// Dimensional exponents useful for conversion to other units.
         /// </summary>
-        public DimensionalExponents? Exponents { get; }
+        public DimensionalExponents Exponents { get; } 
 
         /// <summary>
         /// Concrete implementing classes with namespace
