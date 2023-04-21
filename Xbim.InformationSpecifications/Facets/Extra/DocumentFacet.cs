@@ -61,8 +61,15 @@ namespace Xbim.InformationSpecifications
         /// </summary>
 		public ValueConstraint? DocIntendedUse { get; set; }
 
+
         /// <inheritdoc />
-		public bool Equals(DocumentFacet? other)
+        public string RequirementDescription => Short();
+
+        /// <inheritdoc />
+        public string ApplicabilityDescription => Short();
+
+        /// <inheritdoc />
+        public bool Equals(DocumentFacet? other)
         {
             if (other == null)
                 return false;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -24,6 +25,55 @@ namespace Xbim.InformationSpecifications
         /// Not part of buildingSmart specification
         /// </summary>
         public bool IncludeSubtypes { get; set; } = true;
+
+        /// <inheritdoc/>
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                var predefined = IsNullOrEmpty(PredefinedType) ? Any : PrettifyPredefinedType(PredefinedType.Short());
+                var ifcTypes = IsNullOrEmpty(IfcType) ? Any : PrettifyIfcType(IfcType.Short());
+                return $"of entity {ifcTypes} and of predefined type {predefined}";
+                
+            }
+        }
+
+        /// <inheritdoc />
+        public string RequirementDescription
+        {
+            get
+            {
+                var predefined = IsNullOrEmpty(PredefinedType) ? Any : PrettifyPredefinedType(PredefinedType.Short());
+                var ifcTypes = IsNullOrEmpty(IfcType) ? Any : PrettifyIfcType(IfcType.Short());
+                return $"an entity {ifcTypes} and of predefined type {predefined}";
+            }
+        }
+
+        private static string PrettifyIfcType(string ifcText)
+        {
+            var words = ifcText.Split(' ');
+            var sb = new StringBuilder();
+            foreach(var word in words)
+            {
+                
+                var cleaned = word.Replace("IFC", "");
+                if(cleaned != word)
+                {
+                    sb.Append(cleaned.ToLowerInvariant().FirstCharToUpper());
+                }
+                else
+                {
+                    sb.Append(word);
+                }
+                sb.Append(" ");
+            }
+            return sb.ToString().TrimEnd();
+        }
+
+        private static string PrettifyPredefinedType(string text)
+        {
+            return text.ToLowerInvariant().FirstCharToUpper();
+        }
 
         /// <inheritdoc />
         public string Short()

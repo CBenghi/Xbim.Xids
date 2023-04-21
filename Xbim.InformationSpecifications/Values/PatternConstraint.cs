@@ -188,7 +188,7 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public string Short()
         {
-            return $"matches the pattern: '{Pattern}'";
+            return $"matching '{Pattern}'";
         }
 
         /// <inheritdoc />

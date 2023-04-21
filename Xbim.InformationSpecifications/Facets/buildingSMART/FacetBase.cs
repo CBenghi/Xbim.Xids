@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Xbim.InformationSpecifications
 {
@@ -8,6 +9,10 @@ namespace Xbim.InformationSpecifications
     /// </summary>
 	public abstract class FacetBase : IEquatable<FacetBase>
     {
+        /// <summary>
+        /// Any text label
+        /// </summary>
+        protected const string Any = "<any>";
         internal static bool IsNullOrEmpty([NotNullWhen(false)] ValueConstraint? evaluatingConstraint)
         {
             if (evaluatingConstraint == null)

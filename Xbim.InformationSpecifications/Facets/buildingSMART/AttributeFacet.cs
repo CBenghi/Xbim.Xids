@@ -24,6 +24,26 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public ValueConstraint? AttributeValue { get; set; }
 
+        /// <inheritdoc/>
+        public string RequirementDescription
+        {
+            get
+            {
+                return $"an attribute {AttributeName?.Short() ?? Any} with value {AttributeValue?.Short() ?? Any}";
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                return $"with attribute {AttributeName?.Short() ?? Any} with value {AttributeValue?.Short() ?? Any}";
+            }
+        }
+
+
         /// <inheritdoc />
         public bool Equals(AttributeFacet? other)
         {

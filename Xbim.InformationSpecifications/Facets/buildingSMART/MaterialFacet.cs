@@ -14,7 +14,25 @@ namespace Xbim.InformationSpecifications
         public ValueConstraint? Value { get; set; } = null;
 
         /// <inheritdoc />
-		public string Short()
+        public string RequirementDescription
+        {
+            get
+            {
+                return $"a material {Value?.Short() ?? Any}";
+            }
+        }
+
+        /// <inheritdoc/>
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                return $"of material {Value?.Short() ?? Any}";                
+            }
+        }
+
+        /// <inheritdoc />
+        public string Short()
         {
             if (Value == null)
             {

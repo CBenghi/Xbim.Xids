@@ -282,15 +282,15 @@ namespace Xbim.InformationSpecifications
         {
             var ret = new List<string>();
             if (TotalDigits.HasValue)
-                ret.Add($"has {TotalDigits.Value} digits in total");
+                ret.Add($"{TotalDigits.Value} digits in total");
             if (FractionDigits.HasValue)
-                ret.Add($"has {FractionDigits.Value} decimal digits");
+                ret.Add($"{FractionDigits.Value} decimal digits");
             if (Length.HasValue)
-                ret.Add($"is {Length.Value} characters long");
+                ret.Add($"{Length.Value} characters");
             if (MinLength.HasValue)
-                ret.Add($"is minimum {MinLength.Value} characters long");
+                ret.Add($"minimum {MinLength.Value} characters");
             if (MaxLength.HasValue)
-                ret.Add($"is maximum {MaxLength.Value} characters long");
+                ret.Add($"maximum {MaxLength.Value} characters");
             return string.Join(" and ", ret.ToArray());
         }
 
