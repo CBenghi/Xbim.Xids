@@ -37,10 +37,6 @@ namespace Xbim.InformationSpecifications.Tests
             av1.Should().NotBeNull();
 
             av1.Should().BeOfType<PatternConstraint>();
-
-            
-
-
         }
 
         [Fact]

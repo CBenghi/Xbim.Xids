@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications.Tests
         {
             CheckOptions c = new()
             {
-                CheckSchema = new[] { "bsFiles\\ids_09.xsd" },
+                CheckSchema = new[] { "bsFiles\\ids.xsd" },
                 InputSource = tmpFile
             };
             return c;
@@ -166,7 +166,6 @@ namespace Xbim.InformationSpecifications.Tests
             var fd = inputCount.FirstDifference(outputCount);
             fd.Should().Be("", "we don't expect differences");
             // outputCount.Should().Be(inputCount, "everything should be exported");
-
         }
 
         private static IdsLib.CheckOptions.Status Validate(string fileName)

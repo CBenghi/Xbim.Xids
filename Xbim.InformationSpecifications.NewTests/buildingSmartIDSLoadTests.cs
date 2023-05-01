@@ -23,7 +23,7 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_aachen_example.ids", 1, 2, 0)]
         [InlineData("bsFiles/IDS_Aedes_example.ids", 1, 2, 0)]
         [InlineData("bsFiles/IDS_ArcDox.ids", 5, 21, 0)]
-        [InlineData("bsFiles/IDS_random_example.ids", 2, 7, 2)]
+        [InlineData("bsFiles/IDS_random_example.ids", 2, 7, 0)]
         [InlineData("bsFiles/IDS_SimpleBIM_examples.ids", 3, 9, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids", 2, 16, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.ids", 1, 9, 0)]

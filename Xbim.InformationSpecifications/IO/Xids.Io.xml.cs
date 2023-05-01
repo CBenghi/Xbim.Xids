@@ -250,7 +250,11 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
                     WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
                     xmlWriter.WriteAttributeString("relation", pof.EntityRelation.ToString());
-                    WriteConstraintValue(pof.EntityType, xmlWriter, "entity", logger);
+                    if (pof.EntityType is not null)
+                    {
+                        // todo: review the forRequirement parameter here
+                        ExportBuildingSmartIDS(pof.EntityType, xmlWriter, false, logger, context, null);
+                    }
                     xmlWriter.WriteEndElement();                    
                     break;
                 default:
@@ -743,8 +747,12 @@ namespace Xbim.InformationSpecifications
                 switch (locName)
                 {
                     case "entity":
-                        ret ??= new PartOfFacet();
-                        ret.EntityType = GetConstraint(sub, logger);
+                        var t = GetEntity(sub, logger);
+                        if (t is IfcTypeFacet fct)
+                        {
+                            ret ??= new PartOfFacet();
+                            ret.EntityType = fct;
+                        }
                         break;
                     default:
                         LogUnexpected(sub, elem, logger);
@@ -1141,7 +1149,7 @@ namespace Xbim.InformationSpecifications
                     return RequirementCardinalityOptions.Prohibited;
                 if (Max == "unbounded" || Max == "" || Max == "1")
                 {
-                    if (Min == "1")
+                    if (Min == "1" || Min=="") // default is 1
                         return RequirementCardinalityOptions.Expected;
                     if (Min == "0")
                         return RequirementCardinalityOptions.Optional;

@@ -10,7 +10,7 @@ namespace Xbim.InformationSpecifications.Generator
         internal static XmlDocument GetBuildingSmartSchemaXML()
         {
             var doc = new XmlDocument();
-            doc.LoadXml(File.ReadAllText(@"Files\ids_09.xsd"));
+            doc.LoadXml(File.ReadAllText(@"Files\ids.xsd"));
             return doc;
         }
 

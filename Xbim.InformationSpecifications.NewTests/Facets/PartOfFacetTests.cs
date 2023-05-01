@@ -76,14 +76,16 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 
         public static IEnumerable<PartOfFacet> GetDifferentAttributes()
         {
+            var tp = new IfcTypeFacet() { IfcType = PartOfFacet.Container.IfcElectricalCircuit.ToString() };
+
             yield return new PartOfFacet();
-            yield return new PartOfFacet() { EntityType = PartOfFacet.Container.IfcElectricalCircuit.ToString() };
+            yield return new PartOfFacet() { EntityType = tp };
             yield return new PartOfFacet() { Instructions = "instr", };
             yield return new PartOfFacet() { Uri = "uri", };
             yield return new PartOfFacet() { EntityRelation = PartOfFacet.PartOfRelation.IfcRelNests.ToString() };
             yield return new PartOfFacet()
             {
-                EntityType = PartOfFacet.Container.IfcElectricalCircuit.ToString(),
+                EntityType = tp,
                 Instructions = "instr",
                 Uri = "uri",
                 EntityRelation = PartOfFacet.PartOfRelation.IfcRelNests.ToString()

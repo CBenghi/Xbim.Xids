@@ -153,7 +153,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Filter on the type of the collecting entity.
         /// </summary>
-        public ValueConstraint? EntityType { get; set; }
+        public IfcTypeFacet? EntityType { get; set; }
 
         /// <summary>
         /// Returns the enum value of <see cref="EntityRelation"/>.
@@ -187,7 +187,11 @@ namespace Xbim.InformationSpecifications
             {
                 c.AddAccepted(new ExactConstraint(cont.ToString()));
             }
-            EntityType = c;
+            if (EntityType is null)
+            {
+                EntityType = new IfcTypeFacet();
+            }
+            EntityType.IfcType = c;
 
         }
 
@@ -197,16 +201,15 @@ namespace Xbim.InformationSpecifications
         /// <returns>Any convertible value, empty enumeration is possible if conversions cannot be carried out.</returns>
         public IEnumerable<Container> GetContainers()
         {
-            if (EntityType?.AcceptedValues is null)
+            if (EntityType?.IfcType?.AcceptedValues is null)
                 yield break;
-            foreach (var value in EntityType.AcceptedValues.OfType<ExactConstraint>())
+            foreach (var value in EntityType.IfcType.AcceptedValues.OfType<ExactConstraint>())
             {
                 if (Enum.TryParse<Container>(value.Value, out var loc))
                 {
                     yield return loc;
                 }
             }
-
         }
 
 
@@ -234,7 +237,8 @@ namespace Xbim.InformationSpecifications
         public bool IsValid()
         {
             return GetRelation() != PartOfRelation.Undefined
-                && FacetBase.IsValidOrNull(EntityType);
+                &&
+                (EntityType is null || EntityType.IsValid());
         }
 
         /// <inheritdoc />
