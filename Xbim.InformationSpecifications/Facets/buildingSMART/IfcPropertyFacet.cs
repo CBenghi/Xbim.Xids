@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -9,7 +10,7 @@ namespace Xbim.InformationSpecifications
     /// Constrain model parts on the ground of properties (of type IfcSingleProperty) associated via PropertySets
     /// Either directly or via a type relation.
     /// </summary>
-	public partial class IfcPropertyFacet : FacetBase, IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<IfcPropertyFacet>
     {
 
         /// <summary>

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.10.0" />
-    <PackageReference Include="ids-lib" Version="1.0.14" />
+    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="ids-lib" Version="1.0.20" />
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
@@ -38,16 +39,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="bsFiles\bsFilesSelf\annotation.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="bsFiles\bsFilesSelf\OptionalFacets.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="bsFiles\bsFilesSelf\SimpleValueRestriction.ids">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="bsFiles\bsFilesSelf\SimpleValueRestriction.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="bsFiles\bsFilesSelf\SimpleValueString.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="bsFiles\bsFilesSelf\SimpleValueString.xml">

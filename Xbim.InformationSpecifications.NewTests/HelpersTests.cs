@@ -32,14 +32,14 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         {
             SchemaInfo.SchemaIfc4.Any().Should().BeTrue();
             SchemaInfo.SchemaIfc4.Count().Should().NotBe(2);
-            SchemaInfo.SchemaIfc4["IfcProduct"].Parent.Name.Should().Be("IfcObject");
-            SchemaInfo.SchemaIfc4["IfcFeatureElement"].SubClasses.Count.Should().Be(3);
-            SchemaInfo.SchemaIfc4["IfcFeatureElement"].MatchingConcreteClasses.Count().Should().Be(5);
-            SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWall").Should().BeTrue();
-            SchemaInfo.SchemaIfc4["IfcWallStandardCase"].Is("IfcWall").Should().BeTrue();
-            SchemaInfo.SchemaIfc4["IfcWall"].Is("IfcWallStandardCase").Should().BeFalse();
-            SchemaInfo.SchemaIfc4["IfcWall"].DirectAttributes.Should().NotBeNull();
-            SchemaInfo.SchemaIfc4["IfcWall"].DirectAttributes.Count().Should().Be(9);
+            SchemaInfo.SchemaIfc4["IfcProduct"]!.Parent!.Name.Should().Be("IfcObject");
+            SchemaInfo.SchemaIfc4["IfcFeatureElement"]!.SubClasses.Count.Should().Be(3);
+            SchemaInfo.SchemaIfc4["IfcFeatureElement"]!.MatchingConcreteClasses.Count().Should().Be(5);
+            SchemaInfo.SchemaIfc4["IfcWall"]!.Is("IfcWall").Should().BeTrue();
+            SchemaInfo.SchemaIfc4["IfcWallStandardCase"]!.Is("IfcWall").Should().BeTrue();
+            SchemaInfo.SchemaIfc4["IfcWall"]!.Is("IfcWallStandardCase").Should().BeFalse();
+            SchemaInfo.SchemaIfc4["IfcWall"]!.DirectAttributes.Should().NotBeNull();
+            SchemaInfo.SchemaIfc4["IfcWall"]!.DirectAttributes.Count().Should().Be(9);
         }
 
         [Fact]
@@ -99,15 +99,17 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         {
             var fSpec = @"bsFiles\IDS_wooden-windows.ids";
             // open the specs
-            var t = Xids.LoadBuildingSmartIDS(fSpec);
-            t.Should().NotBeNull("file should be able to load");
+            var tempXids = Xids.LoadBuildingSmartIDS(fSpec);
+            tempXids.Should().NotBeNull("file should be able to load");
+            Assert.NotNull(tempXids);
 
             var tmpFile = Path.GetTempFileName();
-            t.SaveAsJson(tmpFile);
-
+            tempXids.SaveAsJson(tmpFile);
             // can select all elements
-            var all = t.FacetGroups(FacetGroup.FacetUse.Applicability);
+            var all = tempXids.FacetGroups(FacetGroup.FacetUse.Applicability);
             all.Count().Should().BeGreaterThan(0);
+
+            File.Delete(tmpFile);
         }
 
 
@@ -147,8 +149,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         {
             var prop = PropertySetInfo.Get(IfcSchemaVersion.IFC2X3, "Pset_DuctFittingTypeCommon", "SubType");
             prop.Should().NotBeNull();
-
-            var t = prop.IsMeasureProperty(out var measure); 
+            var t = prop!.IsMeasureProperty(out var measure); 
             t.Should().BeTrue("IfcText is a measure");
             measure.Should().Be(IfcValue.IfcText);
 
@@ -166,6 +167,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
             {
                 var schema = PropertySetInfo.GetSchema(item);
                 schema.Should().NotBeNull();
+                Assert.NotNull(schema);
                 foreach (var propSet in schema)
                 {
                     foreach (var prop in propSet.Properties.OfType<SingleValuePropertyType>().Where(x => x.DataType != null))

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
 
 namespace Xbim.InformationSpecifications
 {
     /// <summary>
     /// Constrain model parts on the ground of their belonging to a collection defined by the container enum.
     /// </summary>
-    public class PartOfFacet : FacetBase, IFacet, IEquatable<PartOfFacet>
+    public class PartOfFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<PartOfFacet>
     {
         /// <summary>
         /// The type of relation defining the filtering criteria

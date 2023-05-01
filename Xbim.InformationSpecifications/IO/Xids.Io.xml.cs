@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
 
 namespace Xbim.InformationSpecifications
 {
@@ -152,8 +153,15 @@ namespace Xbim.InformationSpecifications
             if (spec.IfcVersion != null)
                 xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", spec.IfcVersion));
             else
-                xmlWriter.WriteAttributeString("ifcVersion", IfcSchemaVersion.IFC2X3.ToString()); // required for bS schema
-                                                                                                  // if (requirement.Name != null)
+            {
+                var allVersions = new[] {
+                    IfcSchemaVersion.IFC2X3,
+                    IfcSchemaVersion.IFC4,
+                    IfcSchemaVersion.IFC4X3,
+                };
+                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", allVersions)); // required for bS schema
+                                                                                             // if (requirement.Name != null)
+            }
             xmlWriter.WriteAttributeString("name", spec.Name ?? ""); // required
             if (spec.Description != null)
                 xmlWriter.WriteAttributeString("description", spec.Description);
@@ -376,8 +384,7 @@ namespace Xbim.InformationSpecifications
                     option = RequirementCardinalityOptions.Expected; // should be redundant, but makes some be not null
 
                 if (
-                    cf is IfcPropertyFacet ||
-                    cf is AttributeFacet
+                    cf is IBuilsingSmartCardinality 
                 )
                 {
                     // use is required
@@ -388,7 +395,11 @@ namespace Xbim.InformationSpecifications
                             xmlWriter.WriteAttributeString("maxOccurs", "0");
                             break;
                         case RequirementCardinalityOptions.Expected:
-                            xmlWriter.WriteAttributeString("minOccurs", "1");
+                            // xmlWriter.WriteAttributeString("minOccurs", "1"); 1 is the default, anyway
+                            xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
+                            break;
+                        case RequirementCardinalityOptions.Optional:
+                            xmlWriter.WriteAttributeString("minOccurs", "0");
                             xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
                             break;
                         default:
@@ -1267,13 +1278,7 @@ namespace Xbim.InformationSpecifications
                 {
                     case "name":
                         ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };
-                        if (string.IsNullOrEmpty(sub.Value))
-                        {
-                            ret.IfcType = GetConstraint(sub, logger);//GetFirstString(sub);  // todo: dealing with uncomprehensible v0.5 values
-                                                                     // see: https://github.com/buildingSMART/IDS/blob/7903eae20127c10b52cd37abf42a7cd7c2bcf973/Development/0.5/IDS_random_example_04.xml#L12-L18
-                        }
-                        else
-                            ret.IfcType = sub.Value;
+                        ret.IfcType = GetConstraint(sub, logger);
                         break;
                     case "predefinedtype":
                         ret ??= new IfcTypeFacet() { IncludeSubtypes = defaultSubTypeInclusion };

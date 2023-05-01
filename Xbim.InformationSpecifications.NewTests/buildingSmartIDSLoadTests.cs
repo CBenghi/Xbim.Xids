@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using IdsLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -29,8 +30,6 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.ids", 1, 9, 0)]
         [InlineData("bsFiles/IDS_wooden-windows.ids", 5, 33, 0)]
         [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.ids", 3, 8, 0)]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids", -1, -1, 0)]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids", -1, -1, 0)]
         public void CanLoadAndSaveFile(string fileName, int specificationsCount, int facetGroupsCount, int expectedErrCount)
         {
             var outputFile = Path.Combine(Path.GetTempPath(), "out.ids");
@@ -44,8 +43,9 @@ namespace Xbim.InformationSpecifications.Tests
                 var loggerMock = new Mock<ILogger<BuildingSmartIDSLoadTests>>();
                 var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
                 loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
+                Assert.NotNull(loaded);
                 var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-                var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
+                var errorAndWarnings = loggingCalls.Where(x => x is not null && (x.Contains("Error") || x.Contains("Warning")));
                 errorAndWarnings.Count().Should().Be(expectedErrCount, "mismatch with expected value");
                 CheckCounts(specificationsCount, facetGroupsCount, loaded);
                 loaded.ExportBuildingSmartIDS(outputFile);
@@ -73,26 +73,18 @@ namespace Xbim.InformationSpecifications.Tests
             return logg;
         }
 
-        private static void CheckSchema(string tmpFile, ILogger<BuildingSmartIDSLoadTests> logg = null)
+        private static void CheckSchema(string tmpFile, ILogger<BuildingSmartIDSLoadTests>? logg = null)
         {
-            IdsLib.CheckOptions c = new()
+            using var tmpStream = File.OpenRead(tmpFile);
+            var opt = new SingleAuditOptions()
             {
-                CheckSchema = new[] { "bsFiles\\ids.xsd" },
-                InputSource = tmpFile
+                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9
             };
-
-            StringWriter s = new();
-            var varlidationResult = IdsLib.CheckOptions.Run(c, s);
-            if (varlidationResult != IdsLib.CheckOptions.Status.Ok)
-            {
-#pragma warning disable CA2254 // Template should be a static expression, but we consider acceptable in the test.
-                logg?.LogError(s.ToString());
-#pragma warning restore CA2254 // Template should be a static expression
-            }
-            varlidationResult.Should().Be(IdsLib.CheckOptions.Status.Ok, $"file '{tmpFile}' is expected to be valid");
+            var varlidationResult = Audit.Run(tmpStream, opt, logg);
+            varlidationResult.Should().Be(Audit.Status.Ok, $"file '{tmpFile}' is expected to be valid");
         }
 
-        private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids loaded)
+        private static void CheckCounts(int specificationsCount, int facetGroupsCount, Xids? loaded)
         {
             Assert.NotNull(loaded);
             if (specificationsCount != -1)

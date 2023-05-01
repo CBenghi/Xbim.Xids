@@ -86,7 +86,7 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
-            if (context == null)
+            if (context is null)
                 return false;
             if (candiatateValue is not IComparable compe)
             {

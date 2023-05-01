@@ -143,9 +143,11 @@ namespace Xbim.InformationSpecifications.Tests
             s.ExportBuildingSmartIDS(tfn);
 
             var unpers = Xids.LoadBuildingSmartIDS(tfn);
-            var fg = unpers.FacetGroups(FacetGroup.FacetUse.All).FirstOrDefault();
+            unpers.Should().NotBeNull();
+            var fg = unpers!.FacetGroups(FacetGroup.FacetUse.All).First();
             var unpersF = fg.Facets.OfType<MaterialFacet>().First();
-            return unpersF.Value;
+            unpersF.Value.Should().NotBeNull();
+            return unpersF.Value!;
         }
     }
 }

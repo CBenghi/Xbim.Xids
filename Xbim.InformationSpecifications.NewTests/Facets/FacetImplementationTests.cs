@@ -52,6 +52,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 		static private string SmartName(PropertyInfo x)
 		{
+			Assert.NotNull(x.PropertyType.FullName);
 			var t = x.PropertyType.FullName.Replace("System.", "");
 			if (t.StartsWith("Nullable"))
 			{
@@ -155,7 +156,7 @@ namespace Xbim.InformationSpecifications.Tests
 		public void ValueEqualImplementationTest()
 		{
 
-			var pc = new PatternConstraint();
+			var pc = new PatternConstraint("patt.*");
 			TestAddRemove(pc);
 
 			// List<ValueConstraint> vals = new();
@@ -210,7 +211,7 @@ namespace Xbim.InformationSpecifications.Tests
 				var defval = ValueConstraint.GetDefault(tName, null);
 				defval.Should().NotBeNull($"should be possible to have default type: {tName}, {newT}");
 				newT.Should().NotBeNull($"should be possible to create type: {tName}, {newT}");
-				defval.GetType().Should().Be(newT);
+				defval!.GetType().Should().Be(newT);
 			}
 		}
 
@@ -232,6 +233,7 @@ namespace Xbim.InformationSpecifications.Tests
 		internal static void TestAddRemove<T>(T c, bool testForRandom = true)
 		{
 			var lst = new List<T>();
+			Assert.NotNull(c);
 			var s = c.ToString();
 			_ = c.GetHashCode(); // this must not crash
 
@@ -246,7 +248,7 @@ namespace Xbim.InformationSpecifications.Tests
 				shortV.Should().NotBeNull();
 				if (testForRandom)
 				{
-					var any = vc.IsSatisfiedBy("random", null, false);
+					var any = vc.IsSatisfiedBy("random", null!, false);
 					any.Should().BeFalse();
 				}
 			}

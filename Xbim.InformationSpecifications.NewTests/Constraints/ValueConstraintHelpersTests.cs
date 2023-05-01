@@ -16,7 +16,7 @@ namespace Xbim.InformationSpecifications.Tests
             test.Should().BeFalse("starting from a string we set the type to string");
             someVal.Should().BeNull();
 
-            test = constraint.IsSingleExact(out string gattoVal);
+            test = constraint.IsSingleExact(out string? gattoVal);
             test.Should().BeTrue();
             gattoVal.Should().Be(stringValue);
 
@@ -30,7 +30,7 @@ namespace Xbim.InformationSpecifications.Tests
             test.Should().BeTrue();
             tInt.Should().Be(IntValue);
 
-            test = constraint.IsSingleExact(out string strVal);
+            test = constraint.IsSingleExact(out string? strVal);
             test.Should().BeFalse();
             strVal.Should().Be(default);
         }

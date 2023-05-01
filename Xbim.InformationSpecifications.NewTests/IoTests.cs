@@ -16,6 +16,28 @@ namespace Xbim.InformationSpecifications.Tests
     public class IoTests
     {
         [Fact]
+        public void CanIgnoreAnnotationsInRestriction()
+        {
+            var f = new FileInfo(@"bsFiles\bsFilesSelf\annotation.ids");
+            Xids.CanLoad(f).Should().BeTrue();
+            var x = Xids.Load(f);
+            x.Should().NotBeNull();
+            Assert.NotNull(x);
+            var spec = x.AllSpecifications().First();
+            var tpf = spec.Applicability.Facets.OfType<IfcTypeFacet>().First();
+            tpf.Should().NotBeNull();
+            Assert.NotNull(tpf);
+            var tp = tpf.IfcType as ValueConstraint;
+            tp.Should().NotBeNull();
+            Assert.NotNull(tp);
+            var frst = tp.AcceptedValues!.First();
+            frst.Should().BeOfType<PatternConstraint>();
+
+
+
+        }
+
+        [Fact]
         public void CanLoadRestrictionXml()
         {
             var f = new FileInfo(@"bsFiles\Others\pass-name_restrictions_will_match_any_result_1_3.ids");
@@ -59,11 +81,7 @@ namespace Xbim.InformationSpecifications.Tests
 
             var av1 = asAttr.AttributeName.AcceptedValues[0];
             av1.Should().NotBeNull();
-
             av1.Should().BeOfType<PatternConstraint>();
-
-
-            //
 
             spec.Requirement.Facets.Count().Should().Be(4); 
 
@@ -153,8 +171,9 @@ namespace Xbim.InformationSpecifications.Tests
             var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             var f = new FileInfo(@"Files\FutureFormat.json");
             Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().NotBeEmpty("a calls to warning is expected");
+            LoggingTestHelper.SomeIssues(loggerMock);
+
+            
         }
 
 
@@ -170,9 +189,7 @@ namespace Xbim.InformationSpecifications.Tests
             var f = new FileInfo(filename);
             Debug.WriteLine(f.FullName);
             Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to warning is expected");
-
+            LoggingTestHelper.NoIssues(loggerMock);
             File.Delete(filename);
         }
     }

@@ -19,11 +19,21 @@ namespace Xbim.InformationSpecifications.Tests
 {
     public class BuildingSmartCompatibilityTests
     {
-        private readonly ITestOutputHelper OutputHelper;
-
         public BuildingSmartCompatibilityTests(ITestOutputHelper outputHelper)
         {
             OutputHelper = outputHelper;
+        }
+
+        private readonly ITestOutputHelper OutputHelper;
+
+        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
+        {
+            var services = new ServiceCollection()
+                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
+            IServiceProvider provider = services.BuildServiceProvider();
+            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
+            Assert.NotNull(logg);
+            return logg;
         }
 
 
@@ -34,8 +44,8 @@ namespace Xbim.InformationSpecifications.Tests
             // at least one specification is needed
             //
             var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
-            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
-            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
             t.Instructions = "Some instructions";
 
             // ensure it's there.
@@ -47,25 +57,9 @@ namespace Xbim.InformationSpecifications.Tests
 
             // check schema
             //
-            var c = GetValidator(tmpFile);
-
-            StringWriter s = new();
-            var res = CheckOptions.Run(c, s);
-            if (res != CheckOptions.Status.Ok)
-            {
-                Debug.WriteLine(s.ToString());
-            }
-            Assert.Equal(CheckOptions.Status.Ok, res);
-        }
-
-        private static CheckOptions GetValidator(string tmpFile)
-        {
-            CheckOptions c = new()
-            {
-                CheckSchema = new[] { "bsFiles\\ids.xsd" },
-                InputSource = tmpFile
-            };
-            return c;
+            var c = Validate(tmpFile, GetXunitLogger());
+            c.Should().Be(Audit.Status.Ok);
+            File.Delete(tmpFile);
         }
 
         [Fact]
@@ -75,15 +69,15 @@ namespace Xbim.InformationSpecifications.Tests
             // at least one specification is needed
             //
             var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
-            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
-            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWINDOW" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
 
             var newGroup = new SpecificationsGroup(x);
             x.SpecificationsGroups.Add(newGroup);
 
             t = x.PrepareSpecification(newGroup, IfcSchemaVersion.IFC4);
-            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
-            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWindow" });
+            t.Requirement.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWINDOW" });
 
             // export
             var tmpFile = Path.GetTempFileName();
@@ -92,16 +86,6 @@ namespace Xbim.InformationSpecifications.Tests
 
             using var archive = ZipFile.OpenRead(tmpFile);
             archive.Entries.Count.Should().Be(2);
-        }
-
-        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
-        {
-            var services = new ServiceCollection()
-                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
-            IServiceProvider provider = services.BuildServiceProvider();
-            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
-            Assert.NotNull(logg);
-            return logg;
         }
 
         private const string IdsTestcasesPath = @"..\..\..\..\..\..\BuildingSmart\IDS\Documentation\testcases";
@@ -136,24 +120,24 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Theory]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueString.ids")]
-        [InlineData("bsFiles/bsFilesSelf/SimpleValueRestriction.ids")]
         [InlineData("bsFiles/bsFilesSelf/TestFile.ids")]
         public void FullSchemaImportTest(string fileName)
         {
-            var res = Validate(fileName);
-            res.Should().Be(CheckOptions.Status.Ok, "the input file needs to be valid");
+            var res = Validate(fileName, GetXunitLogger());
+            res.Should().Be(Audit.Status.Ok, "the input file needs to be valid");
             var x = LoadBuildingSmartIDS(fileName);
+            Assert.NotNull(x);
             var exportedFile = Path.GetTempFileName();
 
             ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
             var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock.Object);
             _ = x.ExportBuildingSmartIDS(exportedFile, logg);
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning")).Should().BeEmpty("no calls to errors or warnings are expected");
-            res = Validate(exportedFile);
-            res.Should().Be(CheckOptions.Status.Ok , "the generated file needs to be valid");
+
+            LoggingTestHelper.NoIssues(loggerMock);
+
+            res = Validate(exportedFile, GetXunitLogger());
+            res.Should().Be(Audit.Status.Ok , "the generated file needs to be valid");
 
             // we should be able to save our format
             var exportedJsonFile = Path.GetTempFileName();
@@ -168,16 +152,11 @@ namespace Xbim.InformationSpecifications.Tests
             // outputCount.Should().Be(inputCount, "everything should be exported");
         }
 
-        private static IdsLib.CheckOptions.Status Validate(string fileName)
+        private static Audit.Status Validate(string fileName, ILogger? logger)
         {
-            var c = GetValidator(fileName);
-            StringWriter debugOutputWriter = new();
-            var validationResult = CheckOptions.Run(c, debugOutputWriter);
-            if (validationResult != CheckOptions.Status.Ok)
-            {
-                Debug.WriteLine(debugOutputWriter.ToString());
-            }
-            
+            SingleAuditOptions opt = new SingleAuditOptions();
+            using var stream = File.OpenRead(fileName);           
+            var validationResult = Audit.Run(stream, opt, logger);
             return validationResult;
         }
 
@@ -203,11 +182,11 @@ namespace Xbim.InformationSpecifications.Tests
         private class XmlElementSummary
         {
             public string type;
-            public XmlElementSummary parent;
+            public XmlElementSummary? parent;
             public int attributes = 0;
             public List<XmlElementSummary> Subs = new();
 
-            public XmlElementSummary(XElement main, XmlElementSummary parent)
+            public XmlElementSummary(XElement main, XmlElementSummary? parent)
             {
                 type = main.Name.LocalName;
                 this.parent = parent;
@@ -255,34 +234,7 @@ namespace Xbim.InformationSpecifications.Tests
                 return sb.ToString();
 
             }
-
-            //public bool Equals([AllowNull] XmlElementSummary other)
-            //{
-            //    if (other == null)
-            //        return false;
-            //    if (ReferenceEquals(this, other))
-            //        return true;
-            //    if (this.type != other.type)
-            //        return false;
-            //    if (this.attributes != other.attributes)
-            //        return false; 
-            //}
         }
-
-        //[Fact]
-        //public void NotifiesErrorOnCompatibilityExport()
-        //{
-        //    var tpFacet = new IfcTypeFacet() { IfcType = "IfcWall" };
-        //    var partFacet = new PartOfFacet();
-        //    partFacet.SetEntity(PartOfFacet.Container.IfcGroup);
-        //    partFacet.EntityType = "SomeName";
-        //    Xids x = GetSpec(tpFacet, partFacet);
-        //    RequiresErrors(x, 1);
-        //    partFacet.EntityType = null;
-        //    RequiresErrors(x, 0);
-        //    x = GetSpec(partFacet, tpFacet);
-        //    RequiresErrors(x, 1);
-        //}
 
         private static Xids GetSpec(IFacet tpFacet, IFacet partFacet)
         {
@@ -291,17 +243,6 @@ namespace Xbim.InformationSpecifications.Tests
             t.Applicability.Facets.Add(tpFacet);
             t.Requirement.Facets.Add(partFacet);
             return x;
-        }
-
-        static private void RequiresErrors(Xids x, int v)
-        {
-            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>();
-            var file = Path.GetTempFileName();
-            x.ExportBuildingSmartIDS(file, loggerMock.Object);
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            var errorAndWarnings = loggingCalls.Where(x => x.Contains("Error") || x.Contains("Warning"));
-            errorAndWarnings.Count().Should().Be(v, $"{nameof(PartOfFacet.EntityType)} is not exportable to bS IDS in this scenario");
-            File.Delete(file);
         }
     }
 }

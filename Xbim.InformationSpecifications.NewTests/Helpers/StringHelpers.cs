@@ -18,7 +18,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             StringExtensions.FirstCharToUpper("Some").Should().Be("Some");
             StringExtensions.FirstCharToUpper("o").Should().Be("O");
             Assert.Throws<ArgumentException>(() => StringExtensions.FirstCharToUpper(""));
-            Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null));
+            Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null!)); // null bang just to test invalid parameter
         }
     }
 }

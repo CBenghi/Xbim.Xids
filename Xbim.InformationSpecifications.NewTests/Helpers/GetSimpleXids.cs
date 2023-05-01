@@ -6,11 +6,11 @@
         {
             var x = new Xids();
             var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
-            newspec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWall" });
+            newspec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
             newspec.Requirement.Facets.Add(
                 new IfcPropertyFacet()
                 {
-                    PropertySetName = "Pset",
+                    PropertySetName = "Prop_set",
                     PropertyName = "Prop"
                 }
                 );

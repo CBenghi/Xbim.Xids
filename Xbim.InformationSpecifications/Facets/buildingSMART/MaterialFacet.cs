@@ -1,10 +1,12 @@
 using System;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
+
 namespace Xbim.InformationSpecifications
 {
     /// <summary>
     /// Constrain model parts on the ground of a material identified through a relation.
     /// </summary>
-    public partial class MaterialFacet : FacetBase, IFacet, IEquatable<MaterialFacet>
+    public partial class MaterialFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<MaterialFacet>
     {
         /// <summary>
         /// Constraint on the material's name

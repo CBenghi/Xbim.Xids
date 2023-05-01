@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- there should be no problem with annotations -->
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids_09.xsd">
+  <ids:info>
+    <ids:title>SimpleBIM use-case example</ids:title>
+  </ids:info>
+  <ids:specifications>
+    <ids:specification name="External wall requirement" ifcVersion="IFC2X3" description="if the model has exterior walls, each exterior wall must have a u-value" minOccurs="0" maxOccurs="unbounded">
+      <ids:applicability>
+        <ids:entity>
+          <ids:name>
+            <xs:restriction>
+              <xs:annotation>
+                <xs:documentation>This goed for either 'IFCWALL' ór 'IFCWALLSTANDARDCASE'</xs:documentation>
+              </xs:annotation>
+              <xs:pattern value="IFCWALL|IFCWALLSTANDARDCASE"/>
+            </xs:restriction>
+          </ids:name>
+        </ids:entity>
+      </ids:applicability>
+    </ids:specification>
+  </ids:specifications>
+</ids:ids>

@@ -52,7 +52,7 @@ namespace Xbim.InformationSpecifications.Tests
             vc.AddAccepted(new PatternConstraint() { Pattern = "(invalid" });
             vc.IsSatisfiedBy("a", loggerMock.Object).Should().BeFalse();
             var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x.Contains("Error")).Should().NotBeEmpty("we are passing an invalid pattern");
+            loggingCalls.Where(x => x is not null && x.Contains("Error")).Should().NotBeEmpty("we are passing an invalid pattern");
         }
 
 

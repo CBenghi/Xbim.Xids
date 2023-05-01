@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -8,7 +9,7 @@ namespace Xbim.InformationSpecifications
     /// Constrain model parts on the ground of how classifications are applied to them
     /// Either directly or via a type relation.
     /// </summary>
-    public partial class IfcClassificationFacet : FacetBase, IFacet, IEquatable<IfcClassificationFacet>
+    public partial class IfcClassificationFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<IfcClassificationFacet>
     {
         /// <summary>
         /// A string identifying the relevant classification system

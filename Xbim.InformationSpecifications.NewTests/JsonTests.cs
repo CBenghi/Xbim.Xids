@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications.Tests
             Assert.NotNull(readBack);
             x.SaveAsJson(@"temp2.json");
 
-            Xids x2 = null;
+            Xids? x2 = null;
             using (var s = File.OpenRead(@"temp2.json"))
             {
                 x2 = Xids.LoadFromJsonAsync(s).GetAwaiter().GetResult();
@@ -43,9 +43,9 @@ namespace Xbim.InformationSpecifications.Tests
             {
                 var s = Xids.LoadBuildingSmartIDS(file.FullName);
                 var fn = Path.ChangeExtension(file.FullName, ".json");
-                s.SaveAsJson(fn);
+                s!.SaveAsJson(fn);
                 var reloaded = Xids.LoadFromJson(fn);
-                reloaded.AllSpecifications().Count().Should().Be(s.AllSpecifications().Count());
+                reloaded!.AllSpecifications().Count().Should().Be(s.AllSpecifications().Count());
 
                 var fn2 = Path.ChangeExtension(file.FullName, ".2.json");
                 reloaded.SaveAsJson(fn2);
@@ -57,21 +57,21 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var tmpFile = Path.GetTempFileName();
             Xids x = XidsTestHelpers.GetSimpleXids();
-            var OneSpec = x.AllSpecifications().FirstOrDefault();
+            var OneSpec = x.AllSpecifications().First();
 
             // testing simple cardinality
             OneSpec.Cardinality = new SimpleCardinality() { ApplicabilityCardinality = CardinalityEnum.Prohibited };
             x.SaveAsJson(tmpFile);
-            var reload = Xids.LoadFromJson(tmpFile);
-            var simple = reload.AllSpecifications().FirstOrDefault().Cardinality as SimpleCardinality;
-            simple.ApplicabilityCardinality.Should().Be(CardinalityEnum.Prohibited);
+            var reload = Xids.LoadFromJson(tmpFile)!;
+            var simple = reload.AllSpecifications().First().Cardinality as SimpleCardinality;
+            simple!.ApplicabilityCardinality.Should().Be(CardinalityEnum.Prohibited);
 
             // testing minmax
             OneSpec.Cardinality = new MinMaxCardinality() { MinOccurs = 4, MaxOccurs = 5 };
             x.SaveAsJson(tmpFile);
-            reload = Xids.LoadFromJson(tmpFile);
-            var mmax = reload.AllSpecifications().FirstOrDefault().Cardinality as MinMaxCardinality;
-            mmax.MinOccurs.Should().Be(4);
+            reload = Xids.LoadFromJson(tmpFile)!;
+            var mmax = reload.AllSpecifications()!.First().Cardinality as MinMaxCardinality;
+            mmax!.MinOccurs.Should().Be(4);
             mmax.MaxOccurs.Should().Be(5);
         }
 
@@ -100,7 +100,7 @@ namespace Xbim.InformationSpecifications.Tests
             var fname = "CanSerializeExtraFacetsFistPersisted.json";
             var fname2 = "CanSerializeExtraFacetReloadPersisted.json";
             x.SaveAsJson(fname);
-            var reloaded = Xids.LoadFromJson(fname);
+            var reloaded = Xids.LoadFromJson(fname)!;
             reloaded.AllSpecifications().Count().Should().Be(x.AllSpecifications().Count());
             reloaded.SaveAsJson(fname2);
 
@@ -141,16 +141,16 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var x = new Xids();
             var spaces = new FacetGroup(x.FacetRepository);
-            spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IfcSpace" });
+            spaces.Facets.Add(new IfcTypeFacet() { IfcType = "IFCSPACE" });
             spaces.Facets.Add(new MaterialFacet() { Value = "Concrete" });
 
             var tmpFile = Path.GetTempFileName();
             spaces.SaveAsJson(tmpFile);
-            var reloaded = FacetGroupExtensions.LoadFromJson(tmpFile);
+            var reloaded = FacetGroupExtensions.LoadFromJson(tmpFile)!;
 
             reloaded.Facets.Should().HaveCount(2);
-            reloaded.Facets.OfType<IfcTypeFacet>().FirstOrDefault().IfcType = "IfcSpace";
-            reloaded.Facets.OfType<MaterialFacet>().FirstOrDefault().Value = "Concrete";
+            reloaded.Facets.OfType<IfcTypeFacet>().First().IfcType = "IFCSPACE";
+            reloaded.Facets.OfType<MaterialFacet>().First().Value = "Concrete";
 
             File.Delete(tmpFile);
         }
@@ -161,7 +161,6 @@ namespace Xbim.InformationSpecifications.Tests
             var x = new Xids();
             Debug.WriteLine(x.Version);
             x.Version.Should().NotBeEmpty();
-
         }
     }
 }
