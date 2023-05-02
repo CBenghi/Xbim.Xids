@@ -7,6 +7,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
     {
         [InlineData("IFCWALL", "PARTITIONING", "of entity Wall and of predefined type Partitioning")]
         [InlineData("IFCWALL", null, "of entity Wall and of predefined type <any>")]
+        [InlineData("IFCWALL", "", "of entity Wall and of predefined type <any>")]
         [InlineData(null, null, "of entity <any> and of predefined type <any>")]
         [InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "of entity Wall or Wallstandardcase and of predefined type <any>")]
 
@@ -59,7 +60,8 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             }
             if (predefined == null)   // No value
             {
-                facet.PredefinedType.BaseType = NetTypeName.Undefined;
+                facet.PredefinedType = null;
+                //facet.PredefinedType.BaseType = NetTypeName.Undefined;
                 return facet;
             }
             

@@ -17,7 +17,7 @@ namespace Xbim.InformationSpecifications
         {
             if (evaluatingConstraint == null)
                 return true;
-            return evaluatingConstraint.IsEmpty();
+            return evaluatingConstraint.IsEmpty() || (evaluatingConstraint.IsSingleExact(out var res) && string.IsNullOrEmpty(res.ToString()));
         }
 
         /// <summary>

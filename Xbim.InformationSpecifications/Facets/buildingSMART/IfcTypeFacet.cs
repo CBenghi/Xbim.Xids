@@ -72,6 +72,7 @@ namespace Xbim.InformationSpecifications
 
         private static string PrettifyPredefinedType(string text)
         {
+            if (string.IsNullOrWhiteSpace(text)) return "";
             return text.ToLowerInvariant().FirstCharToUpper();
         }
 

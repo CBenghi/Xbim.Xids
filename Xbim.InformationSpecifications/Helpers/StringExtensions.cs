@@ -18,11 +18,11 @@ namespace Xbim.InformationSpecifications.Helpers
 #if NETSTANDARD2_0
                 // range operator is not available in net20
                 null => throw new ArgumentNullException(nameof(input)),
-                "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
+                "" => "",
                 _ => input.First().ToString().ToUpper() + input.Substring(1)
 #else
                 null => throw new ArgumentNullException(nameof(input)),
-                "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
+                "" => "",
                 _ => input.First().ToString().ToUpper() + input[1..]
 #endif
             };

@@ -342,8 +342,7 @@ namespace Xbim.InformationSpecifications
         {
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return $"{BaseType}";
-            var joined = string.Join(",", AcceptedValues.Select(x => x.ToString()).ToArray());
-            return $"{BaseType}:{joined}";
+            return string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray());
         }
 
         /// <summary>

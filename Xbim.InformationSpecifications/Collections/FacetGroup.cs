@@ -217,52 +217,7 @@ namespace Xbim.InformationSpecifications
             return Undefined;
         }
 
-        /// <summary>
-        /// Short textual description of the applicability of this group of Facets
-        /// </summary>
-        /// <returns>The stated group named if supplied, else a generated description of the applicability, if meaningful, otherwise the <see cref="Undefined"/> constant.</returns>
-        public string GetApplicabilityDescription()
-        {
-            if (!string.IsNullOrWhiteSpace(Name))
-                return $"{Name}";
-            if (Facets.Any())
-            {
-                return "All elements " + string.Join(" AND ", Facets.Select((x, i) => HandleCardinality(x.ApplicabilityDescription, i)));
-            }
-            return Undefined;
-        }
-
-        /// <summary>
-        /// Short textual description of the requirement of this group of Facets
-        /// </summary>
-        /// <returns>The stated group named if supplied, else a generated description of the requirement, if meaningful, otherwise the <see cref="Undefined"/> constant.</returns>
-        public string GetRequirementDescription()
-        {
-            if (!string.IsNullOrWhiteSpace(Name))
-                return $"{Name}";
-            if (Facets.Any())
-            {
-                return "should " + string.Join(" AND should ", Facets.Select((x, i) => HandleCardinality(x.RequirementDescription, i, "have ")));
-            }
-            return Undefined;
-        }
-
-        private string HandleCardinality(string requirement, int index, string clause = "")
-        {
-            if(RequirementOptions == null)
-            {
-                return $"{clause}{requirement}"; // default to Expected
-            }
-
-            var cardinality = RequirementOptions[index];
-            return cardinality switch
-            {
-                RequirementCardinalityOptions.Prohibited => $"NOT {clause}{requirement}",
-                RequirementCardinalityOptions.Optional => $"OPTIONALLY {clause}{requirement}",
-                RequirementCardinalityOptions.Expected => $"{clause}{requirement}",
-                _ => throw new NotImplementedException(cardinality.ToString()),
-            };
-        }
+        
 
     }
 }
