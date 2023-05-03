@@ -156,8 +156,7 @@ namespace Xbim.InformationSpecifications
 
             if (string.IsNullOrEmpty(Pattern))
             {
-                errorMessage = "Invalid null pattern constraint";
-                logger?.LogError(errorMessage);
+                logger?.LogError("Invalid null pattern constraint");
                 return false;
             }
 

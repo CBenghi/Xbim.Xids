@@ -90,7 +90,7 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (candiatateValue is not IComparable compe)
             {
-                logger?.LogError("Failed to create a comparable value from {0} '{1}'", candiatateValue.GetType().Name, candiatateValue);
+                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candiatateValue}'", candiatateValue.GetType().Name, candiatateValue);
                 return false;
             }
             var minOk = true;

@@ -67,10 +67,10 @@ namespace Xbim.InformationSpecifications.Helpers
         public string UnitTypeEnum { get; }
 
         /// <summary>
-        /// Retuns the SI preferred unit.
+        /// Returns the SI preferred unit.
         /// </summary>
         /// <returns>empty string for measures that do not have expected measures</returns>
-        public string GetUnit()
+        public readonly string GetUnit()
         {
             if (!string.IsNullOrEmpty(Unit))
                 return Unit;

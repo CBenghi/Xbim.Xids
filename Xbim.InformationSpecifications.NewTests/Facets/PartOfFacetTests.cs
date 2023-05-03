@@ -11,7 +11,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
         [Fact]
         public void HelpersFunctionsWork()
         {
-            PartOfFacet f = new PartOfFacet();
+            var f = new PartOfFacet();
             f.GetContainers().Should().HaveCount(0);
 
             f.SetContainers(new[] { PartOfFacet.Container.IfcSystem, PartOfFacet.Container.IfcDistributionSystem });
@@ -27,12 +27,12 @@ namespace Xbim.InformationSpecifications.Tests.Facets
         public void AttributeEqualMatchImplementation(PartOfFacet t, PartOfFacet tSame)
         {
             FacetImplementationTests.TestAddRemove(t);
-            var aresame = t.Equals(tSame);
-            if (!aresame)
+            var areSame = t.Equals(tSame);
+            if (!areSame)
             {
                 Debug.WriteLine(t);
             }
-            aresame.Should().BeTrue();
+            areSame.Should().BeTrue();
             t.Equals(null).Should().BeFalse();
         }
 

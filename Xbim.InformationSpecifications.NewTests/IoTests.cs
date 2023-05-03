@@ -83,7 +83,7 @@ namespace Xbim.InformationSpecifications.Tests
             av1.Should().NotBeNull();
             av1.Should().BeOfType<PatternConstraint>();
 
-            spec.Requirement.Facets.Count().Should().Be(4); 
+            spec.Requirement.Facets.Should().HaveCount(4); 
 
             var ifcType = spec.Requirement.Facets[1];
             ifcType.Should().BeOfType<IfcTypeFacet>();
@@ -95,8 +95,7 @@ namespace Xbim.InformationSpecifications.Tests
             av1.Should().NotBeNull();
 
             av1.Should().BeOfType<ExactConstraint>();
-
-            asType.IfcType.AcceptedValues.Count().Should().Be(2);
+            asType.IfcType.AcceptedValues.Should().HaveCount(2);
 
 
             // Pset
@@ -105,9 +104,8 @@ namespace Xbim.InformationSpecifications.Tests
             pset.Should().BeOfType<IfcPropertyFacet>();
 
             var psType = pset.As<IfcPropertyFacet>();
-            psType.PropertyName.Should().NotBeNull();
-
-            av1 = psType.PropertyName.AcceptedValues[0];
+            Assert.NotNull(psType.PropertyName);
+            av1 = psType.PropertyName.AcceptedValues.First();
             av1.Should().NotBeNull();
 
             av1.Should().BeOfType<PatternConstraint>();
@@ -128,20 +126,17 @@ namespace Xbim.InformationSpecifications.Tests
             var f = new FileInfo(@"bsFiles\bsFilesSelf\OptionalFacets.ids");
             Xids.CanLoad(f).Should().BeTrue();
 
-            var x = Xids.Load(f);
-            x.Should().NotBeNull();
+            var xids = Xids.Load(f);
+            Assert.NotNull(xids);
 
-            var spec = x.AllSpecifications().FirstOrDefault();
-            spec.Should().NotBeNull();
+            var spec = xids.AllSpecifications().FirstOrDefault();
+            Assert.NotNull(spec);
+            Assert.NotNull(spec.Requirement);
 
-            var attr = spec.Requirement.Facets[0];
+            var attr = spec.Requirement.FirstOrDefault();
             attr.Should().BeOfType<AttributeFacet>();
-
-            var asAttr = attr.As<AttributeFacet>();
-            
             spec.Requirement.RequirementOptions.Should().HaveCount(1);
-            spec.Requirement.RequirementOptions[0].Should().Be(RequirementCardinalityOptions.Optional);
-
+            spec.Requirement.RequirementOptions!.First().Should().Be(RequirementCardinalityOptions.Optional);
         }
 
 

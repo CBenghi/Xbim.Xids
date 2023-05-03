@@ -96,7 +96,7 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var d = new DirectoryInfo(IdsTestcasesPath);
             var comb = d.FullName + idsFile;
-            FileInfo f = new FileInfo(comb);
+            var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
                 
             var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
@@ -154,7 +154,7 @@ namespace Xbim.InformationSpecifications.Tests
 
         private static Audit.Status Validate(string fileName, ILogger? logger)
         {
-            SingleAuditOptions opt = new SingleAuditOptions();
+            var opt = new SingleAuditOptions();
             using var stream = File.OpenRead(fileName);           
             var validationResult = Audit.Run(stream, opt, logger);
             return validationResult;

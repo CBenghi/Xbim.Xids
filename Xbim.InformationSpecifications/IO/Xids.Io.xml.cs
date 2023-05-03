@@ -71,20 +71,18 @@ namespace Xbim.InformationSpecifications
                 return ExportedFormat.XML;
             }
 
-            using (var zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true))
+            using var zipArchive = new ZipArchive(destinationStream, ZipArchiveMode.Create, true);
+            int i = 0;
+            foreach (var specGroup in SpecificationsGroups)
             {
-                int i = 0;
-                foreach (var specGroup in SpecificationsGroups)
-                {
-                    var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
-                        ? $"{++i} - {specGroup.Name}.xml"
-                        : $"{++i}.xml";
-                    var file = zipArchive.CreateEntry(name);
-                    using var str = file.Open();
-                    using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
-                    ExportBuildingSmartIDS(specGroup, writer, logger);
+                var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                    ? $"{++i} - {specGroup.Name}.xml"
+                    : $"{++i}.xml";
+                var file = zipArchive.CreateEntry(name);
+                using var str = file.Open();
+                using XmlWriter writer = XmlWriter.Create(str, WriteSettings);
+                ExportBuildingSmartIDS(specGroup, writer, logger);
 
-                }
             }
             return ExportedFormat.ZIP;
         }
@@ -216,47 +214,47 @@ namespace Xbim.InformationSpecifications
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
-                    WriteFaceteBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger);
                     WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcClassificationFacet cf:
                     xmlWriter.WriteStartElement("classification", IdsNamespace);
-                    WriteFaceteBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
-                    WriteFaceteBaseElements(cf, xmlWriter); // from classifcation
+                    WriteFacetBaseElements(cf, xmlWriter); // from classifcation
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
-                    WriteFaceteBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
                     if (!string.IsNullOrWhiteSpace(pf.Measure))
                         xmlWriter.WriteAttributeString("measure", pf.Measure);
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
                     WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);
                     WriteConstraintValue(pf.PropertyValue, xmlWriter, "value", logger);
-                    WriteFaceteBaseElements(pf, xmlWriter); // from Property
+                    WriteFacetBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
                     break;
                 case MaterialFacet mf:
                     xmlWriter.WriteStartElement("material", IdsNamespace);
-                    WriteFaceteBaseAttributes(mf, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(mf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(mf.Value, xmlWriter, "value", logger);
-                    WriteFaceteBaseElements(mf, xmlWriter); // from material
+                    WriteFacetBaseElements(mf, xmlWriter); // from material
                     xmlWriter.WriteEndElement();
                     break;
                 case AttributeFacet af:
                     xmlWriter.WriteStartElement("attribute", IdsNamespace);
-                    WriteFaceteBaseAttributes(af, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(af, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(af.AttributeName, xmlWriter, "name", logger);
                     WriteConstraintValue(af.AttributeValue, xmlWriter, "value", logger);
                     xmlWriter.WriteEndElement();
                     break;
                 case PartOfFacet pof:
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
-                    WriteFaceteBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
+                    WriteFacetBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
                     xmlWriter.WriteAttributeString("relation", pof.EntityRelation.ToString());
                     if (pof.EntityType is not null)
                     {
@@ -266,7 +264,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();                    
                     break;
                 default:
-                    logger?.LogWarning("TODO: ExportBuildingSmartIDS missing case for {0}.", item.GetType());
+                    logger?.LogWarning("TODO: ExportBuildingSmartIDS missing case for {type}.", item.GetType());
                     break;
             }
         }
@@ -376,7 +374,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private void WriteFaceteBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
+        static private void WriteFacetBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
         {
             if (forRequirement)
             {
@@ -427,7 +425,7 @@ namespace Xbim.InformationSpecifications
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
-        static private void WriteFaceteBaseElements(FacetBase cf, XmlWriter xmlWriter)
+        static private void WriteFacetBaseElements(FacetBase cf, XmlWriter xmlWriter)
         {
             // function is kept in case it's gonna be useful again for structure purposes
         }
@@ -475,7 +473,7 @@ namespace Xbim.InformationSpecifications
             if (!File.Exists(fileName))
             {
                 var d = new DirectoryInfo(".");
-                logger?.LogError($"File '{fileName}' not found from executing directory '{d.FullName}'");
+                logger?.LogError("File '{fileName}' not found from executing directory '{fullDirectoryName}'", fileName, d.FullName);
                 return null;
             }
             var main = XElement.Parse(File.ReadAllText(fileName));
@@ -524,7 +522,7 @@ namespace Xbim.InformationSpecifications
             }
             else
             {
-                logger?.LogError($"Unexpected element in ids: '{main.Name.LocalName}'");
+                logger?.LogError("Unexpected element in ids: '{unexpectedName}'", main.Name.LocalName);
             }
             return null;
         }
@@ -599,7 +597,7 @@ namespace Xbim.InformationSpecifications
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex, $"Invalid value for date: {elem.Value}.");
+                logger?.LogError(ex, "Invalid value for date: {invalidDate}.", elem.Value);
                 return DateTime.MinValue;
             }
         }
@@ -710,7 +708,7 @@ namespace Xbim.InformationSpecifications
 
         private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            MaterialFacet ret = new MaterialFacet();
+            MaterialFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -728,7 +726,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(sub, elem, logger);
                 }
             }
-            var mmax = new BsMinMaxOccur();
+            var minMax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -736,16 +734,16 @@ namespace Xbim.InformationSpecifications
                     ret ??= new MaterialFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {
-                    // nothing to do, IsRelevant takes care of mmax
+                    // nothing to do, IsRelevant takes care of minMax
                 }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger); // from material
+            opt = minMax.Evaluate(elem, logger); // from material
             return ret;
         }
 
@@ -770,7 +768,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var mmax = new BsMinMaxOccur();
+            var minMax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
 
@@ -779,9 +777,9 @@ namespace Xbim.InformationSpecifications
                     ret ??= new PartOfFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {
-                    // nothing to do, IsRelevant takes care of mmax
+                    // nothing to do, IsRelevant takes care of minMax
                 }
                 else
                 {
@@ -798,7 +796,7 @@ namespace Xbim.InformationSpecifications
                     }
                 }
             }
-            opt = mmax.Evaluate(elem, logger); // from partOf
+            opt = minMax.Evaluate(elem, logger); // from partOf
             return ret;
         }
 
@@ -837,7 +835,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var mmax = new BsMinMaxOccur();
+            var minMax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -850,16 +848,16 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     ret.Measure = attribute.Value;
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {
-                    // nothing to do, IsRelevant takes care of mmax
+                    // nothing to do, IsRelevant takes care of minMax
                 }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger); // from property
+            opt = minMax.Evaluate(elem, logger); // from property
             return ret;
         }
 
@@ -1108,25 +1106,25 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var mmax = new BsMinMaxOccur();
+            var minMax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
-                var subname = attribute.Name.LocalName.ToLowerInvariant();
+                var subName = attribute.Name.LocalName.ToLowerInvariant();
                 if (IsBaseAttribute(attribute))
                 {
                     ret ??= new AttributeFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {
-                    // nothing to do, IsRelevant takes care of mmax
+                    // nothing to do, IsRelevant takes care of minMax
                 }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger); // from attribute
+            opt = minMax.Evaluate(elem, logger); // from attribute
             return ret;
         }
 
@@ -1135,22 +1133,22 @@ namespace Xbim.InformationSpecifications
             public string Min { get; set; } = "";
             public string Max { get; set; } = "";
 
-            internal static bool IsRelevant(XAttribute attribute, ref BsMinMaxOccur mmax)
+            internal static bool IsRelevant(XAttribute attribute, ref BsMinMaxOccur minMax)
             {
                 if (attribute.Name == "minOccurs")
                 {
-                    mmax.Min = attribute.Value;
+                    minMax.Min = attribute.Value;
                     return true;
                 }
                 if (attribute.Name == "maxOccurs")
                 {
-                    mmax.Max = attribute.Value;
+                    minMax.Max = attribute.Value;
                     return true;
                 }
                 return false;
             }
 
-            private static RequirementCardinalityOptions DefaultCardinality = RequirementCardinalityOptions.Expected;
+            private static readonly RequirementCardinalityOptions DefaultCardinality = RequirementCardinalityOptions.Expected;
 
             internal RequirementCardinalityOptions Evaluate(XElement elem, ILogger? logger)
             {
@@ -1173,7 +1171,7 @@ namespace Xbim.InformationSpecifications
 
         private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            IfcClassificationFacet? ret = new IfcClassificationFacet();
+            IfcClassificationFacet? ret = null;
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -1197,7 +1195,7 @@ namespace Xbim.InformationSpecifications
                 }
             }
 
-            var mmax = new BsMinMaxOccur();
+            var minMax = new BsMinMaxOccur();
             foreach (var attribute in elem.Attributes())
             {
                 var locAtt = attribute.Name.LocalName;
@@ -1206,16 +1204,16 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref mmax))
+                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {
-                    // nothing to do, IsRelevant takes care of mmax
+                    // nothing to do, IsRelevant takes care of minMax
                 }
                 else
                 {
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = mmax.Evaluate(elem, logger); // from classification
+            opt = minMax.Evaluate(elem, logger); // from classification
             return ret;
         }
 

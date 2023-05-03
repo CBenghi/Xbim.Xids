@@ -52,7 +52,7 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
-        public void bsConstraintValues()
+        public void BuildingSmartConstraintValues()
         {
             // in case where the type is not defined,
             // we cast the value of the string to the type provided to see if they match

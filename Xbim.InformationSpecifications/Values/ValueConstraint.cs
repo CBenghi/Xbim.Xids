@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// The list of accepted values, use <see cref="HasAnyAcceptedValue"/> to check for content
         /// </summary>
-        public List<IValueConstraintComponent>? AcceptedValues { get; set; }
+        public IList<IValueConstraintComponent>? AcceptedValues { get; set; }
 
         /// <summary>
         /// Evaluates a candidate value, against the constraints
@@ -303,13 +303,13 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Returns a default value given a type.
         /// </summary>
-        public static object? GetDefault(NetTypeName tName, ILogger? logger = null)
+        public static object? GetDefault(NetTypeName netTypeName, ILogger? logger = null)
         {
-            if (tName == NetTypeName.String)
+            if (netTypeName == NetTypeName.String)
                 return "";
-            if (tName == NetTypeName.Uri)
+            if (netTypeName == NetTypeName.Uri)
                 return new Uri(".", UriKind.Relative);
-            var newT = GetNetType(tName);
+            var newT = GetNetType(netTypeName);
             if (newT is null)
                 return null;
             if (newT == typeof(string))
@@ -320,7 +320,7 @@ namespace Xbim.InformationSpecifications
             }
             catch
             {
-                logger?.LogWarning("Default value for {0} provided as null for activator failure.", tName);
+                logger?.LogWarning("Default value for {netTypeName} provided as null for activator failure.", netTypeName);
                 return null;
             }
         }

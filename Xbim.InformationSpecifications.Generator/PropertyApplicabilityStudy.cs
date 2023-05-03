@@ -50,8 +50,7 @@ namespace Xbim.InformationSpecifications.Generator
                 // start from the available properties, and get the classes that they apply to
                 var distinctClassesFromPropertySets = new List<string>();
                 var propertyDefinitions = new Definitions<PropertySetDef>(schema);
-                if (propertyDefinitions != null)
-                    propertyDefinitions.LoadAllDefault();
+                propertyDefinitions?.LoadAllDefault();
                 foreach (var set in propertyDefinitions.DefinitionSets)
                 {
                     var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();

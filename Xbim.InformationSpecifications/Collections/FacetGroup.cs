@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Xbim.InformationSpecifications
     /// A group of facets, used to identify parts of models that match specifications, and 
     /// also their requirements.
     /// </summary>
-	public partial class FacetGroup
+	public partial class FacetGroup : IEnumerable<IFacet>
     {
         /// <summary>
         /// Use only for persistence and testing, otherwise prefer other constructors
@@ -33,7 +35,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// An unique identifier is created in the costructor, but can be set with this property.
+        /// An unique identifier is created in the constructor, but it can be set with this property.
         /// </summary>
         public string Guid { get; set; }
         /// <summary>
@@ -147,9 +149,9 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Idetifies the number of usages of the group in a context.
+        /// Identifies the number of usages of the group in a context.
         /// </summary>
-        /// <param name="context">The cotext being investigated</param>
+        /// <param name="context">The context being investigated</param>
         /// <returns>an integer of how many uses, this could be useful to provide warning for editing purposes.</returns>
 		public int UseCount(Xids context)
         {
@@ -184,7 +186,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Ensure that a <see cref="FacetGroup"/>
         /// </summary>
-        /// <param name="facetGroup">The grout to be checed, if null, returns false.</param>
+        /// <param name="facetGroup">The grout to be checked, if null, returns false.</param>
         /// <returns>true if the <paramref name="facetGroup"/> is not null and all its facets are valid.</returns>
         public static bool IsValid([NotNullWhen(true)] FacetGroup? facetGroup)
         {
@@ -199,7 +201,7 @@ namespace Xbim.InformationSpecifications
         public const string Undefined = "<undefined>";
 
         /// <summary>
-        /// Short textual description of the facetgroup, automatically generated.
+        /// Short textual description of the <see cref="FacetGroup"/>, automatically generated.
         /// </summary>
         /// <returns>A generated description string, if information is meaningful, otherwise the <see cref="Undefined"/> constant.</returns>
 		public string Short()
@@ -213,6 +215,18 @@ namespace Xbim.InformationSpecifications
             if (Description is not null && !string.IsNullOrWhiteSpace(Description))
                 return Description;
             return "<undefined>";
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<IFacet> GetEnumerator()
+        {
+            return Facets.GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
