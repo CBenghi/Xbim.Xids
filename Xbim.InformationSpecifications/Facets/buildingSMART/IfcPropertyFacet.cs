@@ -82,7 +82,6 @@ namespace Xbim.InformationSpecifications
                 sb.Append($" containing '{Measure}'");
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
-            sb.Append('.');
             return sb.ToString();
         }
         /// <inheritdoc />
