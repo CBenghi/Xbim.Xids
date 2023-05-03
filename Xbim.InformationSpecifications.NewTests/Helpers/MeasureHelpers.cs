@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Helpers.Measures;
 using Xunit;
@@ -11,6 +12,16 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 {
     public class MeasureHelpers
     {
+        [Fact]
+        public void CharacterDiscovery()
+        {
+            var t = "°";
+            var t2 = "\u00b0";
+            t2.Should().Be(t);
+            var arr = t.ToCharArray();
+            Assert.True(arr.First() == (char)176);
+        }
+
         [Fact]
         public void HasExponents()
         {
@@ -44,6 +55,19 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             unit2.IsValid.Should().BeFalse();
         }
 
+        [Fact]
+        public void Unit()
+        {
+            var sourceString = "°F";
+            Regex r = new Regex("[°'a-zA-Z]+");
+            var t = r.IsMatch(sourceString);
+            t.Should().BeTrue();
+
+            MeasureUnit sourceUnit = new(sourceString);
+
+        }
+
+
         //Foot per second squared to Meter per second squared 1 ft² = 0. 3048 m² - acceleration is not defined
         [Theory]
         [InlineData(1.0, "ft", IfcValue.IfcLengthMeasure, 0.3048)]
@@ -56,8 +80,6 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(1.0, "acre ft / day", IfcValue.IfcVolumetricFlowRateMeasure, 0.014276467263055554)] //Acre foot per day = Cubic meter per second	 		1 Acre foot per day= 0.01428 m^3/s (cubic meters per second) (wolfram)
         [InlineData(1.0, "lbf / ft2", IfcValue.IfcPressureMeasure, 47.880263121637356)]   //Pound per Square Foot to Pascal	 		1 lbf/ft2 = 47.88025 Pascal
         [InlineData(1.0, "lbf / in2", IfcValue.IfcPressureMeasure, 6894.75788951578)]   //Pound per square inch X 6.894 = Kilopascal	KPa
-        [InlineData(1.0, "°F", IfcValue.IfcThermodynamicTemperatureMeasure, 255.9277777777778)]
-        [InlineData(1.0, "°C", IfcValue.IfcThermodynamicTemperatureMeasure, 274.15)]
         [InlineData(1.0, "lbf", IfcValue.IfcForceMeasure, 4.448222)] //Pound force = Newton	 		1 Pound force = 4.448222 Newton
         [InlineData(1.0, "acre", IfcValue.IfcAreaMeasure, 4046.87261)] //Acre to square meter			1 acre = 4046.856 m²
         [InlineData(1.0, "ft3/sec", IfcValue.IfcVolumetricFlowRateMeasure, 0.028316846592000004)]  //Cubic foot per second = Cubic meter per second	 		1 ft³/s = 0.028316847 m³/s
@@ -67,20 +89,29 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(1.0, "cm2", IfcValue.IfcAreaMeasure, 0.0001)]
         [InlineData(1.0, "mol", IfcValue.IfcAmountOfSubstanceMeasure, 1)]
         [InlineData(1.0, "kg", IfcValue.IfcMassMeasure, 1)]
+#if true
+        [InlineData(1.0, "°C", IfcValue.IfcThermodynamicTemperatureMeasure, 274.15)]
+        [InlineData(1.0, "°F", IfcValue.IfcThermodynamicTemperatureMeasure, 255.9277777777778)]
         [InlineData(12.0, "°F/s", IfcValue.IfcTemperatureRateOfChangeMeasure, 6.666666666666667)]
         [InlineData(5.0, "m2 / s2 °F", IfcValue.IfcSpecificHeatCapacityMeasure, 9)]
         [InlineData(5.0, "J / kg °F", IfcValue.IfcSpecificHeatCapacityMeasure, 9)]
-        public void CheckUnit(double originalUnit, string complexUnit, IfcValue measure, double expected)
+#endif
+        public void CheckUnit(double originalUnit, string complexUnitString, IfcValue expectedMeasure, double expected)
         {
-            var sourceUnit = new MeasureUnit(complexUnit);
-            var t = SchemaInfo.IfcMeasures[measure.ToString()];
-            sourceUnit.Exponent.Should().BeEquivalentTo(t.Exponents);
+            MeasureUnit sourceUnit = new (complexUnitString);
+            IfcMeasureInfo t = SchemaInfo.IfcMeasures[expectedMeasure.ToString()];
+            t.Should().NotBeNull("library should be complete.");
+
+            var sourceUnitExponent = sourceUnit.Exponent;
+            var measureExponent = t.Exponents;
+            sourceUnitExponent.Should().Be(measureExponent);
             sourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);
-            convertedToSI.Should().Be(expected, $"source is {complexUnit} (to {t.GetUnit()})");
+            convertedToSI.Should().Be(expected, $"source is {originalUnit} {complexUnitString} (to {t.GetUnit()})");
 
             sourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true);
-            cnvBack.Should().BeApproximately(originalUnit, 1.0E-07);
+            cnvBack.Should().BeApproximately(originalUnit, 1.0E-07, "converting back with tolerance should be possible.");
         }
+
 
         public static IEnumerable<object[]> GetMeasures => Enum.GetValues<IfcValue>().Select(x => new object[] { x }).ToArray();
 

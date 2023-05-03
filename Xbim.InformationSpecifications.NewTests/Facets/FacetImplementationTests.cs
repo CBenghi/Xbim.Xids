@@ -43,6 +43,8 @@ namespace Xbim.InformationSpecifications.Tests
 		[MemberData(nameof(EquatableTypes))]
         public void Check(Type? oneEquatable)
         {
+			if (oneEquatable is null)
+				return;
             var foundInDictionary = guaranteedStructures.TryGetValue(oneEquatable.Name, out var expected);
             foundInDictionary.Should().BeTrue($"'{oneEquatable.Name}' should be a guaranteed equatable");
 			if (expected == "<skip>")

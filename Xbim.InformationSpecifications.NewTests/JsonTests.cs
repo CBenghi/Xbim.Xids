@@ -95,7 +95,7 @@ namespace Xbim.InformationSpecifications.Tests
 
             spec.Applicability.Facets.Add(relFacet);
             spec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcFurnishingElement" });
-            spec.Requirement.Facets.Add(new IfcPropertyFacet() { PropertySetName = "pset", PropertyName = "prop" });
+            spec.Requirement!.Facets.Add(new IfcPropertyFacet() { PropertySetName = "pset", PropertyName = "prop" });
 
             var fname = "CanSerializeExtraFacetsFistPersisted.json";
             var fname2 = "CanSerializeExtraFacetReloadPersisted.json";

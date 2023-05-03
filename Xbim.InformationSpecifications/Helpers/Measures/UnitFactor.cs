@@ -22,7 +22,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// </summary>
         public int Exponent { get; set; } = 1;
 
-        static readonly Regex reUnitAndExponent = new("(['°a-zA-Z]+)(\\d*)"); // letters ' for inches and feet and ° for degrees
+        static readonly Regex reUnitAndExponent = new("([°'a-zA-Z]+)(\\d*)"); // letters ' for inches and feet and ° for degrees \\xB0 is the degree symbol
 
         /// <summary>
         /// Constructor of unit with its exponent, e.g. m2
