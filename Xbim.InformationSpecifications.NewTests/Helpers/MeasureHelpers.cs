@@ -65,6 +65,8 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
             MeasureUnit sourceUnit = new(sourceString);
 
+            IfcMeasureInfo t2 = SchemaInfo.IfcMeasures[IfcValue.IfcThermodynamicTemperatureMeasure.ToString()];
+            t2.Should().NotBeNull("library should be complete.");
         }
 
 

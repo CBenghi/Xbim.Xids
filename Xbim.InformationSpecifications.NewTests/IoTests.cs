@@ -55,7 +55,8 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void CanLoadRestrictionXml()
         {
-            var f = new FileInfo(@"bsFiles/Others/pass-name_restrictions_will_match_any_result_1_3.ids");
+            var f = new FileInfo(@"bsFiles/others/pass-name_restrictions_will_match_any_result_1_3.ids");
+            f.Exists.Should().BeTrue("file is deployed with test suite");
             Xids.CanLoad(f).Should().BeTrue();
 
             var xids = Xids.Load(f);
