@@ -56,7 +56,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// The list of accepted values, use <see cref="HasAnyAcceptedValue"/> to check for content
         /// </summary>
-        public IList<IValueConstraintComponent>? AcceptedValues { get; set; }
+        public List<IValueConstraintComponent>? AcceptedValues { get; set; }
 
         /// <summary>
         /// Evaluates a candidate value, against the constraints

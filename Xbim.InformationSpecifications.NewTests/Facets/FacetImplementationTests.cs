@@ -10,7 +10,7 @@ namespace Xbim.InformationSpecifications.Tests
 {
 	public class FacetImplementationTests
 	{
-		private readonly Dictionary<string, string> guaranteedStructures = new()
+		private static readonly Dictionary<string, string> guaranteedStructures = new()
 		{
 			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Instructions" },
 			{ "FacetBase","String Uri,String Instructions" },
@@ -29,26 +29,30 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
-
-		/// when adding properties to an iequatable we need to make sure that they
-		/// are considered in the equals implementation, this is a test that reminds us of that.
-		[Fact]
-		public void EnsureIEquatableIsOk()
+		
+		public static IEnumerable<object[]> EquatableTypes()
 		{
 			var allEquatables = typeof(Xids).Assembly.GetTypes().Where(t => t.GetInterfaces().Any(interf => interf.Name.Contains("IEquatable")));
-			foreach (var oneEqatable in allEquatables)
-			{
-				var foundInDictionary = guaranteedStructures.TryGetValue(oneEqatable.Name, out var expected);
-				foundInDictionary.Should().BeTrue($"'{oneEqatable.Name}' should be a guaranteed equatable");
-				if (expected == "<skip>")
-					continue;
+			foreach (var oneEquatable in allEquatables)
+            {
+				yield return new[] { oneEquatable };
+            }
+        }
 
-				var verifiedAttributesList = string.Join(",", oneEqatable.GetProperties().Select(x => SmartName(x)).ToArray());
-				verifiedAttributesList.Should().Be(expected, $"{oneEqatable.Name} must not have different properties to the ones guaranteed equatable");
-			}
-		}
+		[Theory]
+		[MemberData(nameof(EquatableTypes))]
+        public void Check(Type? oneEquatable)
+        {
+            var foundInDictionary = guaranteedStructures.TryGetValue(oneEquatable.Name, out var expected);
+            foundInDictionary.Should().BeTrue($"'{oneEquatable.Name}' should be a guaranteed equatable");
+			if (expected == "<skip>")
+				return;
 
-		private readonly static Regex rNullable = new("\\[\\[([^,]*),");
+			var verifiedAttributesList = string.Join(",", oneEquatable.GetProperties().Select(x => SmartName(x)).ToArray());
+            verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
+        }
+
+        private readonly static Regex rNullable = new("\\[\\[([^,]*),");
 
 		static private string SmartName(PropertyInfo x)
 		{
@@ -70,7 +74,15 @@ namespace Xbim.InformationSpecifications.Tests
 					return "List<" + nM.Groups[1].Value + "> " + x.Name;
 				}
 			}
-			if (x.PropertyType.Name.Contains('`'))
+            if (t.Contains("Collections.Generic.IList"))
+            {
+                var nM = rNullable.Match(t);
+                if (nM.Success)
+                {
+                    return "IList<" + nM.Groups[1].Value + "> " + x.Name;
+                }
+            }
+            if (x.PropertyType.Name.Contains('`'))
 			{
 
 			}

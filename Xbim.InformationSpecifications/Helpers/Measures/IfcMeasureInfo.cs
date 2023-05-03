@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// Metadata about measure conversion behaviours.
     /// Use <see cref="Measures.MeasureUnit" /> for the quantitative conversion services.
     /// </summary>
-    public struct IfcMeasureInfo: IValueProvider
+    public readonly struct IfcMeasureInfo: IValueProvider
     {
         /// <summary>
         /// basic constructor

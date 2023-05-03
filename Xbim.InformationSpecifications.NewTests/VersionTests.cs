@@ -14,7 +14,8 @@ namespace Xbim.InformationSpecifications.Tests
         {
             var assembly = typeof(Xids).Assembly;
             FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Xids.AssemblyVersion.Should().Be(fileVersion.FileVersion); // <== fix Xids.AssemblyVersion
+            // <== fix Xids.AssemblyVersion
+            Xids.AssemblyVersion.Should().Be(fileVersion.FileVersion); 
         }
     }
 }

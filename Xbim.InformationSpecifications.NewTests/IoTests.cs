@@ -1,24 +1,39 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests
 {
     public class IoTests
     {
+        public IoTests(ITestOutputHelper outputHelper)
+        {
+            OutputHelper = outputHelper;
+        }
+        private ITestOutputHelper OutputHelper { get; }
+
+        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
+        {
+            var services = new ServiceCollection()
+                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
+            IServiceProvider provider = services.BuildServiceProvider();
+            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
+            Assert.NotNull(logg);
+            return logg;
+        }
+
         [Fact]
         public void CanIgnoreAnnotationsInRestriction()
         {
-            var f = new FileInfo(@"bsFiles\bsFilesSelf\annotation.ids");
+            var f = new FileInfo(@"bsFiles/bsFilesSelf/annotation.ids");
             Xids.CanLoad(f).Should().BeTrue();
             var x = Xids.Load(f);
             x.Should().NotBeNull();
@@ -40,77 +55,64 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void CanLoadRestrictionXml()
         {
-            var f = new FileInfo(@"bsFiles\Others\pass-name_restrictions_will_match_any_result_1_3.ids");
+            var f = new FileInfo(@"bsFiles/Others/pass-name_restrictions_will_match_any_result_1_3.ids");
             Xids.CanLoad(f).Should().BeTrue();
 
-            var x = Xids.Load(f);
-            x.Should().NotBeNull();
-
-            var spec = x.AllSpecifications().FirstOrDefault();
+            var xids = Xids.Load(f);
+            Assert.NotNull(xids);
+            var spec = xids.AllSpecifications().FirstOrDefault();
             spec.Should().NotBeNull();
+            Assert.NotNull(spec);
 
-            var attr = spec.Requirement.Facets[0];
+            var attr = spec.Requirement!.Facets.First();
             attr.Should().BeOfType<AttributeFacet>();
-
             var asAttr = attr.As<AttributeFacet>();
-            asAttr.AttributeName.Should().NotBeNull();
-
-            var av1 = asAttr.AttributeName.AcceptedValues[0];
+            Assert.NotNull(asAttr.AttributeName);
+            var av1 = asAttr.AttributeName.AcceptedValues!.First();
             av1.Should().NotBeNull();
-
             av1.Should().BeOfType<PatternConstraint>();
         }
 
         [Fact]
         public void CanLoadRestrictionXml2()
         {
-            var f = new FileInfo(@"bsFiles\bsFilesSelf\TestFile.ids");
-            Xids.CanLoad(f).Should().BeTrue();
+            var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
+            Xids.CanLoad(file).Should().BeTrue();
 
-            var x = Xids.Load(f);
-            x.Should().NotBeNull();
+            var xids = Xids.Load(file, GetXunitLogger());
+            Assert.NotNull(xids);
+            var spec = xids.AllSpecifications().Single();
 
-            var spec = x.AllSpecifications().FirstOrDefault();
-            spec.Should().NotBeNull();
+            var reqs = spec.Requirement;
+            Assert.NotNull(reqs);
 
-            var attr = spec.Requirement.Facets[0];
-            attr.Should().BeOfType<AttributeFacet>();
-
-            var asAttr = attr.As<AttributeFacet>();
-            asAttr.AttributeName.Should().NotBeNull();
-
-            var av1 = asAttr.AttributeName.AcceptedValues[0];
+            var attr = reqs.Facets.First().As<AttributeFacet>();
+            Assert.NotNull(attr);
+            attr.AttributeName.Should().NotBeNull();
+            var av1 = attr.AttributeName!.AcceptedValues!.First();
             av1.Should().NotBeNull();
             av1.Should().BeOfType<PatternConstraint>();
 
-            spec.Requirement.Facets.Should().HaveCount(4); 
-
-            var ifcType = spec.Requirement.Facets[1];
-            ifcType.Should().BeOfType<IfcTypeFacet>();
-
-            var asType = ifcType.As<IfcTypeFacet>();
-            asType.IfcType.Should().NotBeNull();
-
-            av1 = asType.IfcType.AcceptedValues[0];
+            reqs.Facets.Should().HaveCount(4);
+            
+            var ifcType = reqs.Facets[1].As<IfcTypeFacet>();
+            Assert.NotNull(ifcType);
+            av1 = ifcType.IfcType!.AcceptedValues![0];
             av1.Should().NotBeNull();
-
             av1.Should().BeOfType<ExactConstraint>();
-            asType.IfcType.AcceptedValues.Should().HaveCount(2);
-
+            ifcType.IfcType.AcceptedValues.Should().HaveCount(2);
 
             // Pset
-
-            var pset = spec.Requirement.Facets[2];
+            var pset = spec.Requirement!.Facets[2];
             pset.Should().BeOfType<IfcPropertyFacet>();
 
             var psType = pset.As<IfcPropertyFacet>();
             Assert.NotNull(psType.PropertyName);
-            av1 = psType.PropertyName.AcceptedValues.First();
+            av1 = psType.PropertyName.AcceptedValues!.First();
             av1.Should().NotBeNull();
 
             av1.Should().BeOfType<PatternConstraint>();
-
-            psType.PropertyName.AcceptedValues.Count().Should().Be(1);
+            psType.PropertyName.AcceptedValues.Should().HaveCount(1);
 
             // Material without value
             var mat = spec.Requirement.Facets[3];
@@ -123,7 +125,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void CanLoadOptionalFacet()
         {
-            var f = new FileInfo(@"bsFiles\bsFilesSelf\OptionalFacets.ids");
+            var f = new FileInfo(@"bsFiles/bsFilesSelf/OptionalFacets.ids");
             Xids.CanLoad(f).Should().BeTrue();
 
             var xids = Xids.Load(f);
@@ -133,7 +135,7 @@ namespace Xbim.InformationSpecifications.Tests
             Assert.NotNull(spec);
             Assert.NotNull(spec.Requirement);
 
-            var attr = spec.Requirement.FirstOrDefault();
+            var attr = spec.Requirement.Facets.FirstOrDefault();
             attr.Should().BeOfType<AttributeFacet>();
             spec.Requirement.RequirementOptions.Should().HaveCount(1);
             spec.Requirement.RequirementOptions!.First().Should().Be(RequirementCardinalityOptions.Optional);
@@ -143,7 +145,7 @@ namespace Xbim.InformationSpecifications.Tests
             [Fact]
         public void CanLoadXml()
         {
-            var f = new FileInfo(@"Files\IDS_example-with-restrictions.xml");
+            var f = new FileInfo(@"Files/IDS_example-with-restrictions.xml");
             Xids.CanLoad(f).Should().BeTrue();
 
             var x = Xids.Load(f);
@@ -153,7 +155,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void CanLoadJson()
         {
-            var f = new FileInfo(@"Files\newFormat.json");
+            var f = new FileInfo(@"Files/newFormat.json");
             Xids.CanLoad(f).Should().BeTrue();
 
             var x = Xids.Load(f);
@@ -164,11 +166,9 @@ namespace Xbim.InformationSpecifications.Tests
         public void WarnsJsonVersion()
         {
             var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
-            var f = new FileInfo(@"Files\FutureFormat.json");
+            var f = new FileInfo(@"Files/FutureFormat.json");
             Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
             LoggingTestHelper.SomeIssues(loggerMock);
-
-            
         }
 
 

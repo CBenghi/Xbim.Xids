@@ -252,21 +252,16 @@ namespace Xbim.InformationSpecifications
         /// <returns>a cast object according to the type of <paramref name="castingObjectForType"/></returns>
         public static object? CastObject(string value, object castingObjectForType)
         {
-            switch (castingObjectForType)
+            return castingObjectForType switch
             {
                 // TODO: Decimal
-                case double:
-                    return GetObject(value, NetTypeName.Double);
-                case float:
-                    return GetObject(value, NetTypeName.Floating);
-                case int:
-                    return GetObject(value, NetTypeName.Integer);
-                case DateTime:
-                    return GetObject(value, NetTypeName.DateTime);
-                case TimeSpan:
-                    return GetObject(value, NetTypeName.Duration);
-            }           
-            return value;
+                double => GetObject(value, NetTypeName.Double),
+                float => GetObject(value, NetTypeName.Floating),
+                int => GetObject(value, NetTypeName.Integer),
+                DateTime => GetObject(value, NetTypeName.DateTime),
+                TimeSpan => GetObject(value, NetTypeName.Duration),
+                _ => value,
+            };
         }
 
         /// <summary>

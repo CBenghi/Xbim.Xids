@@ -188,10 +188,7 @@ namespace Xbim.InformationSpecifications
             {
                 c.AddAccepted(new ExactConstraint(cont.ToString()));
             }
-            if (EntityType is null)
-            {
-                EntityType = new IfcTypeFacet();
-            }
+            EntityType ??= new IfcTypeFacet();
             EntityType.IfcType = c;
 
         }

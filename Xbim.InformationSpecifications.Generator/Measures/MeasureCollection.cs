@@ -18,8 +18,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         {
             get
             {
-                if (measureList == null)
-                    measureList = new List<Measure>();
+                measureList ??= new List<Measure>();
                 return measureList;
             }
         }

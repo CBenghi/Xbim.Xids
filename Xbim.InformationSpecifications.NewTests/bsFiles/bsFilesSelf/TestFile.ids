@@ -12,6 +12,7 @@
             <simpleValue>IFCWALL</simpleValue>
           </name>
         </entity>
+        <classification />
       </applicability>
       <requirements>
         <attribute >

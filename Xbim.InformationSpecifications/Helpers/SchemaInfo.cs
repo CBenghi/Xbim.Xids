@@ -140,13 +140,11 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <returns></returns>
         public static IValueProvider GetMeasure(IfcValue measure)
         {
-            switch (measure)
+            return measure switch
             {
-                case IfcValue.IfcText:
-                case IfcValue.IfcIdentifier:
-                    return DirectValue.DirectValues[measure];
-            }
-            return IfcMeasures[measure.ToString()];
+                IfcValue.IfcText or IfcValue.IfcIdentifier => DirectValue.DirectValues[measure],
+                _ => IfcMeasures[measure.ToString()],
+            };
         }
 
         private static void SetTypeObject(SchemaInfo t, string topTypeObjectClass)

@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications
     /// A group of facets, used to identify parts of models that match specifications, and 
     /// also their requirements.
     /// </summary>
-	public partial class FacetGroup : IEnumerable<IFacet>
+	public partial class FacetGroup 
     {
         /// <summary>
         /// Use only for persistence and testing, otherwise prefer other constructors
@@ -215,18 +215,6 @@ namespace Xbim.InformationSpecifications
             if (Description is not null && !string.IsNullOrWhiteSpace(Description))
                 return Description;
             return "<undefined>";
-        }
-
-        /// <inheritdoc />
-        public IEnumerator<IFacet> GetEnumerator()
-        {
-            return Facets.GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

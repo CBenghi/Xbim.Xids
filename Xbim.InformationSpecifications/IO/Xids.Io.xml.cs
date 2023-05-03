@@ -706,9 +706,9 @@ namespace Xbim.InformationSpecifications
             ret.Cardinality = cardinality.Simplify();
         }
 
-        private static IFacet? GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            MaterialFacet? ret = null;
+            MaterialFacet? ret = new(); // material is always initialized, because it's meaningful even if empty
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))
@@ -1169,9 +1169,9 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static IFacet? GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
         {
-            IfcClassificationFacet? ret = null;
+            IfcClassificationFacet? ret = new(); // classification is always initialized, because it's meaningful even if empty
             foreach (var sub in elem.Elements())
             {
                 if (IsFacetBaseEntity(sub))

@@ -97,7 +97,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
         [Fact]
         public void CanEnumerateFacetGroupsByUse()
         {
-            var fSpec = @"bsFiles\IDS_wooden-windows.ids";
+            var fSpec = @"bsFiles/IDS_wooden-windows.ids";
             // open the specs
             var tempXids = Xids.LoadBuildingSmartIDS(fSpec);
             tempXids.Should().NotBeNull("file should be able to load");

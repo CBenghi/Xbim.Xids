@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IdsLib;
+using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -94,6 +95,9 @@ namespace Xbim.InformationSpecifications.Tests
         [MemberData(nameof(GetIdsFiles))]    
         public void CanReadIdsSamples(string idsFile)
         {
+            if (idsFile == string.Empty)
+                return;
+
             var d = new DirectoryInfo(IdsTestcasesPath);
             var comb = d.FullName + idsFile;
             var f = new FileInfo(comb);
@@ -112,6 +116,11 @@ namespace Xbim.InformationSpecifications.Tests
         {
             // start from current directory and look in relative position for the bs IDS repository
             var d = new DirectoryInfo(IdsTestcasesPath);
+            if (!d.Exists)
+            {
+                yield return new[] { string.Empty };
+                yield break;
+            }
             foreach (var f in d.GetFiles("*.ids", SearchOption.AllDirectories))
             {
                 yield return new object[] { f.FullName.Replace(d.FullName, "") };
