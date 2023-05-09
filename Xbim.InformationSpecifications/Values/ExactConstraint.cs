@@ -16,7 +16,7 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value of the constraint, expressed as a string</param>
         public ExactConstraint(string value)
         {
-            Value = value;
+            Value = value.Trim();
         }
 
         /// <summary>
