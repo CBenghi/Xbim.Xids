@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Facets.buildingSMART;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -75,9 +76,10 @@ namespace Xbim.InformationSpecifications
             int i = 0;
             foreach (var specGroup in SpecificationsGroups)
             {
-                var name = (specGroup.Name is not null && !string.IsNullOrEmpty(specGroup.Name) && specGroup.Name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
-                    ? $"{++i} - {specGroup.Name}.xml"
-                    : $"{++i}.xml";
+
+                var name = (string.IsNullOrEmpty(specGroup.Name))
+                    ? $"{++i}.ids"
+                    : $"{++i} - {specGroup.Name!.MakeSafeFileName()}.ids";
                 var file = zipArchive.CreateEntry(name);
                 using var str = file.Open();
                 using XmlWriter writer = XmlWriter.Create(str, WriteSettings);

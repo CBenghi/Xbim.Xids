@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -26,5 +27,16 @@ namespace Xbim.InformationSpecifications.Helpers
                 _ => input.First().ToString().ToUpper() + input[1..]
 #endif
             };
+
+        private static char[] InvalidChars = Path.GetInvalidFileNameChars();
+        /// <summary>
+        /// Makes a filename safe by escaping reserved characters
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns>a Safe filename</returns>
+        public static string MakeSafeFileName(this string filename)
+        {
+            return InvalidChars.Aggregate(filename, (current, c) => current.Replace(c, '_'));
+        }
     }
 }
