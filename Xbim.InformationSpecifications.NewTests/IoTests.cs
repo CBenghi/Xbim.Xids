@@ -5,6 +5,7 @@ using Moq;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
@@ -143,7 +144,7 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
 
-            [Fact]
+        [Fact]
         public void CanLoadXml()
         {
             var f = new FileInfo(@"Files/IDS_example-with-restrictions.xml");
@@ -187,6 +188,87 @@ namespace Xbim.InformationSpecifications.Tests
             Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
             LoggingTestHelper.NoIssues(loggerMock);
             File.Delete(filename);
+        }
+
+        [Fact]
+        public void CanSaveXmlAsZip()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+
+            using var ms = new MemoryStream();
+
+            x.ExportBuildingSmartIDS(ms);
+
+            // Check the stream is a PK Zip stream by looking at 'magic' first 4 bytes
+            Xids.IsZipped(ms).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ZippedIDSSpecsContainsIDS()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+
+            using var ms = new MemoryStream();
+
+            x.ExportBuildingSmartIDS(ms);
+
+            // Check Contains IDS files & content
+            using var archive = new ZipArchive(ms, ZipArchiveMode.Read, false);
+
+            archive.Entries.Should().HaveCount(2);
+
+            archive.Entries.Should().AllSatisfy(e => e.Name.Should().EndWith(".ids", "IDS file extension expected"));
+            archive.Entries.Should().AllSatisfy(e => e.Length.Should().BeGreaterThan(0, "Content expected"));
+        }
+
+        [Fact]
+        public void CanLoadXmlAsZip()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+
+            using var ms = new MemoryStream();
+
+            x.ExportBuildingSmartIDS(ms);
+            ms.Position = 0;
+
+            var newIds = Xids.LoadBuildingSmartIDS(ms);
+
+            newIds.Should().NotBeNull();
+            newIds!.SpecificationsGroups.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void CanLoadXmlFromZipFile()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+            var tempXmlFile = Path.ChangeExtension(Path.GetTempFileName(), "zip");
+            using (var fs = new FileStream(tempXmlFile, FileMode.Create))
+            {
+                x.ExportBuildingSmartIDS(fs);
+            }
+
+            var newIds = Xids.LoadBuildingSmartIDS(tempXmlFile);
+
+            newIds.Should().NotBeNull();
+            newIds!.SpecificationsGroups.Should().HaveCount(2);
+        }
+
+        private static Xids BuildMultiSpecGroupIDS()
+        {
+            var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
+            var x = Xids.Load(file);
+            x.Should().NotBeNull();
+            x!.AllSpecifications().Should().HaveCount(1);
+
+            // Add a 2nd group with a basic spec
+            var specGroup = new SpecificationsGroup(x);
+            x.SpecificationsGroups.Add(specGroup);
+
+            var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.Undefined);
+            newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "Door" });
+
+            x!.AllSpecifications().Should().HaveCount(2);
+            return x;
         }
     }
 }

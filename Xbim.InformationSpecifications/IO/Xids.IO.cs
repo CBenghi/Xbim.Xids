@@ -30,6 +30,36 @@ namespace Xbim.InformationSpecifications
             return false;
         }
 
+        const int ZipMagic = 0x04034b50;      // Zip magic number:  PK/003/004
+
+        /// <summary>
+        /// Determines if the stream is zipped
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        public static bool IsZipped(Stream stream, ILogger? logger = null)
+        {
+            if(!stream.CanSeek) 
+            { 
+                return false;
+            }
+            try
+            {
+                stream.Position = 0;
+                var bytes = new byte[4];
+                stream.Read(bytes, 0, 4);
+                var magic = BitConverter.ToInt32(bytes, 0);
+                stream.Position = 0;
+
+                return magic == ZipMagic;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Loads a xids model from any of the suppoerted files.
         /// </summary>
