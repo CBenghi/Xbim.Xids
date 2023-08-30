@@ -237,6 +237,22 @@ namespace Xbim.InformationSpecifications.Tests
             newIds!.SpecificationsGroups.Should().HaveCount(2);
         }
 
+        [Fact]
+        public void CanLoadXmlFromZipFile()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+            var tempXmlFile = Path.ChangeExtension(Path.GetTempFileName(), "zip");
+            using (var fs = new FileStream(tempXmlFile, FileMode.Create))
+            {
+                x.ExportBuildingSmartIDS(fs);
+            }
+
+            var newIds = Xids.LoadBuildingSmartIDS(tempXmlFile);
+
+            newIds.Should().NotBeNull();
+            newIds!.SpecificationsGroups.Should().HaveCount(2);
+        }
+
         private static Xids BuildMultiSpecGroupIDS()
         {
             var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");

@@ -473,6 +473,10 @@ namespace Xbim.InformationSpecifications
                             logger?.LogError(ex, "Failed to load IDS file from zip stream");
                         }
                     }
+                    if(!xids.AllSpecifications().Any())
+                    {
+                        logger?.LogWarning("No specifications found in this zip file. Ensure the zip contains *.ids files");
+                    }
                     return xids;
                 }
             }
@@ -493,7 +497,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Attempts to unpersist an XIDS from a file, given the file name.
+        /// Attempts to unpersist an XIDS from the provider IDS XML file or zip file containing IDS files.
         /// </summary>
         /// <param name="fileName">File name of the Xids to load</param>
         /// <param name="logger">The logger to send any errors and warnings to.</param>
@@ -506,8 +510,24 @@ namespace Xbim.InformationSpecifications
                 logger?.LogError("File '{fileName}' not found from executing directory '{fullDirectoryName}'", fileName, d.FullName);
                 return null;
             }
-            var main = XElement.Parse(File.ReadAllText(fileName));
-            return LoadBuildingSmartIDS(main, logger);
+            if(fileName.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using var stream  = File.OpenRead(fileName);
+                if(IsZipped(stream))
+                {
+                    return LoadBuildingSmartIDS(stream, logger);
+                }
+                else
+                {
+                    logger?.LogError("Not a valid zip file");
+                    return null;
+                }
+            }
+            else
+            {
+                var main = XElement.Parse(File.ReadAllText(fileName));
+                return LoadBuildingSmartIDS(main, logger);
+            }
         }
 
         /// <summary>
