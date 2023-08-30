@@ -193,32 +193,24 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void CanSaveXmlAsZip()
         {
-            var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
-            var x = Xids.Load(file);
-            x.Should().NotBeNull();
-            x!.AllSpecifications().Should().HaveCount(1);
-            var specGroup = new SpecificationsGroup(x);
-            x.SpecificationsGroups.Add(specGroup);
-
-            var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.Undefined);
-            newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "Door" });
-
-            x!.AllSpecifications().Should().HaveCount(2);
+            Xids? x = BuildMultiSpecGroupIDS();
 
             using var ms = new MemoryStream();
-            
 
             x.ExportBuildingSmartIDS(ms);
 
             // Check the stream is a PK Zip stream by looking at 'magic' first 4 bytes
-            ms.Position = 0;
-            var bytes = new byte[4];
-            ms.Read(bytes, 0, 4);
-            var zipMagic = 0x04034b50;      //  PK/003/004
-            var magic = BitConverter.ToInt32(bytes, 0);
-            magic.Should().Be(zipMagic);
+            Xids.IsZipped(ms).Should().BeTrue();
+        }
 
-            ms.Position = 0;
+        [Fact]
+        public void ZippedIDSSpecsContainsIDS()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+
+            using var ms = new MemoryStream();
+
+            x.ExportBuildingSmartIDS(ms);
 
             // Check Contains IDS files & content
             using var archive = new ZipArchive(ms, ZipArchiveMode.Read, false);
@@ -227,6 +219,40 @@ namespace Xbim.InformationSpecifications.Tests
 
             archive.Entries.Should().AllSatisfy(e => e.Name.Should().EndWith(".ids", "IDS file extension expected"));
             archive.Entries.Should().AllSatisfy(e => e.Length.Should().BeGreaterThan(0, "Content expected"));
+        }
+
+        [Fact]
+        public void CanLoadXmlAsZip()
+        {
+            Xids? x = BuildMultiSpecGroupIDS();
+
+            using var ms = new MemoryStream();
+
+            x.ExportBuildingSmartIDS(ms);
+            ms.Position = 0;
+
+            var newIds = Xids.LoadBuildingSmartIDS(ms);
+
+            newIds.Should().NotBeNull();
+            newIds!.SpecificationsGroups.Should().HaveCount(2);
+        }
+
+        private static Xids BuildMultiSpecGroupIDS()
+        {
+            var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
+            var x = Xids.Load(file);
+            x.Should().NotBeNull();
+            x!.AllSpecifications().Should().HaveCount(1);
+
+            // Add a 2nd group with a basic spec
+            var specGroup = new SpecificationsGroup(x);
+            x.SpecificationsGroups.Add(specGroup);
+
+            var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.Undefined);
+            newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "Door" });
+
+            x!.AllSpecifications().Should().HaveCount(2);
+            return x;
         }
     }
 }

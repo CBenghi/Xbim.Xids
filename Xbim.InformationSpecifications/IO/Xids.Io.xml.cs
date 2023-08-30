@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
@@ -444,15 +443,44 @@ namespace Xbim.InformationSpecifications
     
 
         /// <summary>
-        /// Attempts to unpersist an XIDS from a stream.
+        /// Attempts to load an XIDS from a stream, where the stream is either an XML IDS or a zip file containing multiple IDS XML files
         /// </summary>
-        /// <param name="stream">The XML source stream to parse.</param>
+        /// <param name="stream">The XML or ZIP source stream to parse.</param>
         /// <param name="logger">The logger to send any errors and warnings to.</param>
         /// <returns>an XIDS or null if it could not be read.</returns>
         public static Xids? LoadBuildingSmartIDS(Stream stream, ILogger? logger = null)
         {
-            var t = XElement.Load(stream);
-            return LoadBuildingSmartIDS(t, logger);
+            if (IsZipped(stream))
+            {
+                using(var zip = new ZipArchive(stream, ZipArchiveMode.Read, false))
+                {
+                    var xids = new Xids();
+                    foreach(var entry in zip.Entries)
+                    {
+                        try
+                        { 
+                            if(entry.Name.EndsWith(".ids", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                using(var idsStream = entry.Open())
+                                {
+                                    var element = XElement.Load(idsStream);
+                                    LoadBuildingSmartIDS(element, logger, xids);
+                                }
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            logger?.LogError(ex, "Failed to load IDS file from zip stream");
+                        }
+                    }
+                    return xids;
+                }
+            }
+            else
+            {
+                var t = XElement.Load(stream);
+                return LoadBuildingSmartIDS(t, logger);
+            }
         }
 
         /// <summary>
@@ -483,7 +511,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Should use <see cref="LoadBuildingSmartIDS(XElement, ILogger?)"/> instead.
+        /// Should use <see cref="LoadBuildingSmartIDS(XElement, ILogger?, Xids?)"/> instead.
         /// </summary>
         [Obsolete("Use LoadBuildingSmartIDS instead.")]
         public static Xids? ImportBuildingSmartIDS(XElement main, ILogger? logger = null)
@@ -496,12 +524,13 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="main">the IDS element to load.</param>
         /// <param name="logger">the logging context</param>
+        /// <param name="ids"></param>
         /// <returns>an entire new XIDS of null on errors</returns>
-        public static Xids? LoadBuildingSmartIDS(XElement main, ILogger? logger = null)
+        public static Xids? LoadBuildingSmartIDS(XElement main, ILogger? logger = null, Xids? ids = null)
         {
             if (main.Name.LocalName == "ids")
             {
-                var ret = new Xids();
+                var ret = ids ?? new Xids();
                 var grp = new SpecificationsGroup(ret);
                 ret.SpecificationsGroups.Add(grp);
                 foreach (var sub in main.Elements())
