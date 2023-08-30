@@ -118,12 +118,12 @@ namespace Xbim.InformationSpecifications
             var ret = new List<string>();
             if (!string.IsNullOrEmpty(MinValue))
                 ret.Add(MinInclusive
-                    ? $"is equal or more than '{MinValue}'"
-                    : $"is greater than '{MinValue}'");
+                    ? $">={MinValue}"
+                    : $">{MinValue}");
             if (!string.IsNullOrEmpty(MaxValue))
                 ret.Add(MaxInclusive
-                        ? $"is equal or less than '{MaxValue}'"
-                        : $"is less than '{MaxValue}'");
+                        ? $"<={MaxValue}"
+                        : $"<{MaxValue}");
 
             return string.Join(" and ", ret.ToArray());
         }

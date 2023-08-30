@@ -95,6 +95,12 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
+        public string RequirementDescription => Short();
+
+        /// <inheritdoc />
+        public string ApplicabilityDescription => Short();
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"{SourceId}-{Relation}-{base.ToString()}";

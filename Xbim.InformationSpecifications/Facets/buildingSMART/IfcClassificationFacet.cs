@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xbim.InformationSpecifications.Facets.buildingSMART;
 using Xbim.InformationSpecifications.Helpers;
 
@@ -11,6 +12,7 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public partial class IfcClassificationFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<IfcClassificationFacet>
     {
+
         /// <summary>
         /// A string identifying the relevant classification system
         /// </summary>
@@ -27,8 +29,29 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public bool IncludeSubClasses { get; set; }
 
+        /// <inheritdoc/>
+        public string RequirementDescription
+        {
+            get
+            {
+                return $"a classification {Identification?.Short() ?? Any} from system {ClassificationSystem?.Short() ?? Any}";
+            }
+        }
+
+
+
+
+        /// <inheritdoc/>
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                return $"with classification {Identification?.Short() ?? Any} from system {ClassificationSystem?.Short() ?? Any}";
+            }
+        }
+
         /// <inheritdoc />
-		public string Short()
+        public string Short()
         {
             if (
                 ClassificationSystem == null

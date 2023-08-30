@@ -156,6 +156,24 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public IfcTypeFacet? EntityType { get; set; }
 
+        /// <inheritdoc />
+        public string RequirementDescription
+        {
+            get
+            {
+                return $"a part of a {EntityType?.Short() ?? Any} via {EntityRelation} relationship";
+            }
+        }
+
+        /// <inheritdoc />
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                return $"where a part of a {EntityType?.Short() ?? Any} via {EntityRelation} relationship"; ;
+            }
+        }
+
         /// <summary>
         /// Returns the enum value of <see cref="EntityRelation"/>.
         /// </summary>

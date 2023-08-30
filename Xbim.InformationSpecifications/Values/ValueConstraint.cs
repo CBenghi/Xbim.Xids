@@ -342,8 +342,7 @@ namespace Xbim.InformationSpecifications
         {
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return $"{BaseType}";
-            var joined = string.Join(",", AcceptedValues.Select(x => x.ToString()).ToArray());
-            return $"{BaseType}:{joined}";
+            return string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray());
         }
 
         /// <summary>
@@ -352,6 +351,7 @@ namespace Xbim.InformationSpecifications
         /// <returns>A description string</returns>
         public string Short()
         {
+#if OldShort
             if (IsSingleUndefinedExact(out var exact))
             {
                 return $"of value '{exact}'";
@@ -366,6 +366,16 @@ namespace Xbim.InformationSpecifications
                 ret.Add($"valid if value {string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray())}");
             }
             return string.Join(", ", ret);
+#endif
+            if (AcceptedValues != null && AcceptedValues.Any())
+            {
+                var values = string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray());
+                return $"{values}";
+            }
+            else
+            {
+                return "<any>";
+            }
         }
 
         /// <summary>

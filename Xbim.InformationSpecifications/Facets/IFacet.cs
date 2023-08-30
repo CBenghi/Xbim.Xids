@@ -16,5 +16,15 @@
         /// </summary>
         /// <returns>true if valid, false otherwise</returns>
         bool IsValid();
+
+        /// <summary>
+        /// Text describing the requirements this facet imposes
+        /// </summary>
+        string RequirementDescription { get; }
+
+        /// <summary>
+        /// Text describing how this factet applies to elements
+        /// </summary>
+        string ApplicabilityDescription { get; }
     }
 }

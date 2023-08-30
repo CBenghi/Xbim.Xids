@@ -214,7 +214,10 @@ namespace Xbim.InformationSpecifications
             }
             if (Description is not null && !string.IsNullOrWhiteSpace(Description))
                 return Description;
-            return "<undefined>";
+            return Undefined;
         }
+
+        
+
     }
 }

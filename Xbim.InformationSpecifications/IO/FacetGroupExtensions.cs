@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Xbim.InformationSpecifications
 {
     /// <summary>
-    /// Extension methods for JSON persistence
+    /// Extension methods for FacetGroups persistence and Formatting
     /// </summary>
     public static class FacetGroupExtensions
     {
@@ -76,6 +78,59 @@ namespace Xbim.InformationSpecifications
             JsonSerializerOptions options = Xids.GetJsonSerializerOptions(logger);
             var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(FacetGroup), options) as FacetGroup;
             return t;
+        }
+
+        /// <summary>
+        /// Short textual description of the applicability of this group of Facets
+        /// </summary>
+        /// <returns>The stated group named if supplied, else a generated description of the applicability, if meaningful, otherwise the <see cref="FacetGroup.Undefined"/> constant.</returns>
+        public static string GetApplicabilityDescription(this FacetGroup group)
+        {
+            if (!string.IsNullOrWhiteSpace(group.Name))
+                return $"{group.Name}";
+            if (group.Facets.Any())
+            {
+                return "All elements " + string.Join(" AND ", group.Facets.Select((x, i) => group.HandleCardinality(x.ApplicabilityDescription, i)));
+            }
+            return FacetGroup.Undefined;
+        }
+
+        /// <summary>
+        /// Short textual description of the requirement of this group of Facets
+        /// </summary>
+        /// <returns>The stated group named if supplied, else a generated description of the requirement, if meaningful, otherwise the <see cref="FacetGroup.Undefined"/> constant.</returns>
+        public static string GetRequirementDescription(this FacetGroup group)
+        {
+            if (!string.IsNullOrWhiteSpace(group.Name))
+                return $"{group.Name}";
+            if (group.Facets.Any())
+            {
+                return "should " + string.Join(" AND should ", group.Facets.Select((x, i) => group.HandleCardinality(x.RequirementDescription, i, "have ")));
+            }
+            return FacetGroup.Undefined;
+        }
+
+        private static string HandleCardinality(this FacetGroup group, string requirement, int index, string clause = "")
+        {
+            if (group.RequirementOptions == null)
+            {
+                return $"{clause}{requirement}"; // default to Expected
+            }
+            if (group.RequirementOptions.Count > index)
+            {
+                var cardinality = group.RequirementOptions[index];
+                return cardinality switch
+                {
+                    RequirementCardinalityOptions.Prohibited => $"NOT {clause}{requirement}",
+                    RequirementCardinalityOptions.Optional => $"OPTIONALLY {clause}{requirement}",
+                    RequirementCardinalityOptions.Expected => $"{clause}{requirement}",
+                    _ => throw new NotImplementedException(cardinality.ToString()),
+                };
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Insufficient RequirementOptions for the number of Facets: {index}");
+            }
         }
     }
 }

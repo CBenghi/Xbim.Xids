@@ -34,6 +34,24 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         public ValueConstraint? PropertyValue { get; set; }
 
+        /// <inheritdoc />
+        public string RequirementDescription
+        {
+            get
+            {
+                return $"a property {PropertyName?.Short() ?? Any} in the property set {PropertySetName?.Short() ?? Any} with {MeasureLabel}value {PropertyValue?.Short() ?? Any}";
+            }
+        }
+        
+        /// <inheritdoc />
+        public string ApplicabilityDescription
+        {
+            get
+            {
+                return $"with property {PropertyName?.Short() ?? Any} in the property set {PropertySetName?.Short() ?? Any} with {MeasureLabel}value {PropertyValue?.Short() ?? Any}";
+            }
+        }
+
         /// <summary>
         /// Tries parsing the Measure string and returns success state
         /// </summary>
@@ -64,7 +82,6 @@ namespace Xbim.InformationSpecifications
                 sb.Append($" containing '{Measure}'");
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
-            sb.Append('.');
             return sb.ToString();
         }
         /// <inheritdoc />
@@ -102,5 +119,7 @@ namespace Xbim.InformationSpecifications
                 && FacetBase.IsValidAndNotEmpty(PropertyName)
                 && FacetBase.IsValidOrNull(PropertyValue);
         }
+
+        private string MeasureLabel => !string.IsNullOrWhiteSpace(Measure) ? $"{Measure} " : "";
     }
 }

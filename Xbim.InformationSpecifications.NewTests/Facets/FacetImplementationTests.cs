@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Tests
 			if (expected == "<skip>")
 				return;
 
-			var verifiedAttributesList = string.Join(",", oneEquatable.GetProperties().Select(x => SmartName(x)).ToArray());
+			var verifiedAttributesList = string.Join(",", oneEquatable.GetProperties().Select(x => SmartName(x)).Where(t => t != "").ToArray());
             verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
         }
 
@@ -58,8 +58,11 @@ namespace Xbim.InformationSpecifications.Tests
 
 		static private string SmartName(PropertyInfo x)
 		{
+			if (x.Name == nameof(IFacet.ApplicabilityDescription)) return "";
+            if (x.Name == nameof(IFacet.RequirementDescription)) return "";
 			Assert.NotNull(x.PropertyType.FullName);
-			var t = x.PropertyType.FullName.Replace("System.", "");
+
+            var t = x.PropertyType.FullName.Replace("System.", "");
 			if (t.StartsWith("Nullable"))
 			{
 				var nM = rNullable.Match(t);
