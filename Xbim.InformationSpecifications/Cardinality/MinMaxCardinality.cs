@@ -10,7 +10,7 @@ namespace Xbim.InformationSpecifications.Cardinality
     public class MinMaxCardinality : ICardinality
     {
         /// <summary>
-        /// Default constructor, Min = 0, Max = unbounded
+        /// Default constructor, Min = 1, Max = unbounded (Required)
         /// </summary>
         public MinMaxCardinality()
         {
@@ -27,9 +27,9 @@ namespace Xbim.InformationSpecifications.Cardinality
 
         /// <summary>
         /// The minimum cardinality.
-        /// Defaults to 0 (optional).
+        /// Defaults to 1 (required). This is line with XSD defaults
         /// </summary>
-        public int MinOccurs { get; set; } = 0;
+        public int MinOccurs { get; set; } = 1;
 
         /// <summary>
         /// The maximum expected cardinality.

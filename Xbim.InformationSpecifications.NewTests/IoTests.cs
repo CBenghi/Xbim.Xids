@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -251,6 +252,60 @@ namespace Xbim.InformationSpecifications.Tests
 
             newIds.Should().NotBeNull();
             newIds!.SpecificationsGroups.Should().HaveCount(2);
+        }
+
+        [InlineData(CardinalityEnum.Required)]
+        [InlineData(CardinalityEnum.Optional)]
+        [InlineData(CardinalityEnum.Prohibited)]
+        [Theory]
+        public void CanRoundTripCardinalityInXml(CardinalityEnum cardinality)
+        {
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            try
+            {
+
+
+                Xids x = XidsTestHelpers.GetSimpleXids();
+
+                x.AllSpecifications().First().Cardinality = new SimpleCardinality(cardinality);
+                x.ExportBuildingSmartIDS(filename, GetXunitLogger());
+
+                var newXids = Xids.LoadBuildingSmartIDS(filename);
+                var cardinal = newXids!.AllSpecifications().First().Cardinality;
+                cardinal.Should().BeOfType<SimpleCardinality>();
+                ((SimpleCardinality)cardinal).ApplicabilityCardinality.Should().Be(cardinality);
+            }
+            finally
+            {
+                if(File.Exists(filename)) File.Delete(filename);
+            }
+        }
+
+        [InlineData(CardinalityEnum.Required)]
+        [InlineData(CardinalityEnum.Optional)]
+        [InlineData(CardinalityEnum.Prohibited)]
+        [Theory]
+        public void CanRoundTripCardinalityInJson(CardinalityEnum cardinality)
+        {
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            try
+            {
+
+
+                Xids x = XidsTestHelpers.GetSimpleXids();
+
+                x.AllSpecifications().First().Cardinality = new SimpleCardinality(cardinality);
+                x.SaveAsJson(filename);
+
+                var newXids = Xids.LoadFromJson(filename);
+                var cardinal = newXids!.AllSpecifications().First().Cardinality;
+                cardinal.Should().BeOfType<SimpleCardinality>();
+                ((SimpleCardinality)cardinal).ApplicabilityCardinality.Should().Be(cardinality);
+            }
+            finally
+            {
+                if (File.Exists(filename)) File.Delete(filename);
+            }
         }
 
         private static Xids BuildMultiSpecGroupIDS()

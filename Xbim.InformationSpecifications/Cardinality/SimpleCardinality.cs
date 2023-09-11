@@ -67,7 +67,7 @@ namespace Xbim.InformationSpecifications.Cardinality
             switch (ApplicabilityCardinality)
             {
                 case CardinalityEnum.Required:
-                    // xmlWriter.WriteAttributeString("minOccurs", "1"); // 1 is the default value, we can omit
+                    xmlWriter.WriteAttributeString("minOccurs", "1"); // the default. Set for clarity
                     xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
                     break;
                 case CardinalityEnum.Optional:
