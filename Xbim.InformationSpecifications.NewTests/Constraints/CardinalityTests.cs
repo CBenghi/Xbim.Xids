@@ -50,7 +50,7 @@ namespace Xbim.InformationSpecifications.Tests.Constraints
         [Fact]
         public void MinMaxCardinality_IsSatisfiedBy_Works()
         {
-            var sc = new MinMaxCardinality(); // defaults to optional
+            var sc = new MinMaxCardinality(0); // defaults to required: 0 = optional
             sc.IsSatisfiedBy(0).Should().BeTrue();
             sc.IsSatisfiedBy(1).Should().BeTrue();
             sc.IsSatisfiedBy(10).Should().BeTrue();
@@ -80,7 +80,10 @@ namespace Xbim.InformationSpecifications.Tests.Constraints
         [Fact]
         public void MinMaxCardinality_Conversion_Works()
         {
-            var sc = new MinMaxCardinality(); // defaults to optional
+            var sc = new MinMaxCardinality(); // defaults to required
+            sc.Simplify().Should().BeEquivalentTo(new SimpleCardinality(CardinalityEnum.Required));
+
+            sc = new MinMaxCardinality(0); // minOccurs:0 = optional
             sc.Simplify().Should().BeEquivalentTo(new SimpleCardinality(CardinalityEnum.Optional));
 
             sc = new MinMaxCardinality(1); // minimum one -> required

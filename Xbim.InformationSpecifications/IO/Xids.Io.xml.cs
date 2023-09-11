@@ -21,13 +21,20 @@ namespace Xbim.InformationSpecifications
             {
                 var settings = new XmlWriterSettings();
                 settings.Async = false;
-#if DEBUG
-                settings.Indent = true;
-                settings.IndentChars = "\t";
-#endif
+                if(PrettyOutput)
+                {
+                    settings.Indent = true;
+                    settings.IndentChars = "\t";
+                }
+
                 return settings;
             }
         }
+
+        /// <summary>
+        /// Determines if the XML output should be indented for readability
+        /// </summary>
+        public static bool PrettyOutput { get; set; } = true;
 
         /// <summary>
         /// When exporting to bS IDS, export files can be one of the formats in this enum.
