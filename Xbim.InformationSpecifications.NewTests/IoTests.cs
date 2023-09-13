@@ -148,7 +148,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void ShouldIgnoreWhitespaceInElements()
         {
-            var f = new FileInfo(@"bsFiles\others\SimpleValueString_whitepace.ids");
+            var f = new FileInfo(@"bsFiles/others/SimpleValueString_whitepace.ids");
             Xids.CanLoad(f).Should().BeTrue();
 
             var x = Xids.Load(f);
