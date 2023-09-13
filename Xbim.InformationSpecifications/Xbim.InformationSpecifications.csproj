@@ -19,7 +19,7 @@
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<AssemblyVersion>0.3.33</AssemblyVersion>
+		<AssemblyVersion>0.3.34</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
