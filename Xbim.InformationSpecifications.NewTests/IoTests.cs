@@ -141,7 +141,97 @@ namespace Xbim.InformationSpecifications.Tests
             var attr = spec.Requirement.Facets.FirstOrDefault();
             attr.Should().BeOfType<AttributeFacet>();
             spec.Requirement.RequirementOptions.Should().HaveCount(1);
-            spec.Requirement.RequirementOptions!.First().Should().Be(RequirementCardinalityOptions.Optional);
+            spec.Requirement.RequirementOptions![0].Should().Be(RequirementCardinalityOptions.Optional);
+
+        }
+
+        [Fact]
+        public void ShouldIgnoreWhitespaceInElements()
+        {
+            var f = new FileInfo(@"bsFiles/others/SimpleValueString_whitepace.ids");
+            Xids.CanLoad(f).Should().BeTrue();
+
+            var x = Xids.Load(f);
+            x.Should().NotBeNull();
+
+            var spec = x!.AllSpecifications().FirstOrDefault();
+            spec.Should().NotBeNull();
+
+
+            var facets = spec!.Requirement!.Facets.Union(spec.Applicability.Facets);
+            foreach (var facet in facets)
+            {
+                switch(facet)
+                {
+                    case IfcTypeFacet type:
+                        ValidateConstraint(type.IfcType, "string");
+                        ValidateConstraint(type.PredefinedType, "string");
+                        break
+                            ;
+                    case AttributeFacet attr:
+                        ValidateConstraint(attr.AttributeName, "string");
+                        ValidateConstraint(attr.AttributeValue, "string");
+                        break;
+
+                    case IfcPropertyFacet prop:
+                        ValidateConstraint(prop.PropertySetName, "string");
+                        ValidateConstraint(prop.PropertyName, "string");
+                        ValidateConstraint(prop.PropertyValue, "string");
+                        break;
+
+                    case IfcClassificationFacet cls:
+                        ValidateConstraint(cls.ClassificationSystem, "string");
+                        ValidateConstraint(cls.Identification, "string");
+                        break;
+
+                    case MaterialFacet mat:
+                        ValidateConstraint(mat.Value, "string");
+                        break;
+
+                    case PartOfFacet part:
+                        ValidateConstraint(part.EntityType!.IfcType, "string");
+                        ValidateConstraint(part.EntityType!.PredefinedType, "string");
+                        break;
+
+                    default:
+                        Assert.Fail($"Not implemented {facet.GetType().Name}");
+                        break;
+                }
+            }
+
+
+        }
+
+        private void ValidateConstraint(ValueConstraint? constraint, string expected)
+        {
+            constraint.Should().NotBeNull();
+            if(constraint!.IsSingleExact(out var value))
+            {
+                value.ToString().Should().Be(expected);
+            }
+            else
+            {
+                if(constraint.AcceptedValues!.Count() > 1)
+                {
+                    foreach(var enumValue in constraint.AcceptedValues!)
+                    {
+                        enumValue.IsSatisfiedBy(expected, constraint, false).Should().BeTrue();
+                    }
+                } 
+                else
+                {
+                    var complexConstraint =  constraint.AcceptedValues!.FirstOrDefault();
+                    switch (complexConstraint)
+                    {
+                        case PatternConstraint p:
+                            p.Pattern.Should().Be(expected);
+                            break;
+                        case RangeConstraint r:
+                            r.MinValue.Should().Be(expected);
+                            break;
+                    }
+                }
+            }
         }
 
 

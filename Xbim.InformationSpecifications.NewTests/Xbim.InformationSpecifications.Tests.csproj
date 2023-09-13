@@ -120,6 +120,9 @@
     <None Update="bsFiles\others\pass-name_restrictions_will_match_any_result_1_3.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="bsFiles\others\SimpleValueString_whitepace.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Files\FutureFormat.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
