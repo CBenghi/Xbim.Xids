@@ -22,6 +22,37 @@ namespace Xbim.InformationSpecifications.Tests.Facets
             t.Equals(null).Should().BeFalse();
         }
 
+
+        [Theory]
+        [InlineData("Name", true)]
+        [InlineData("NAME", true)]
+        [InlineData("name", true)]
+        public void StringsCanBeComparedCaseInsensitively(string input, bool expectedResult)
+        {
+
+            var facet = new IfcPropertyFacet()
+            {
+                PropertyName = "Name",
+            };
+            facet.PropertyName.BaseType.Should().Be(NetTypeName.Undefined); // Why isn't this String type?
+
+            facet.PropertyName.IsSatisfiedBy(input, ignoreCase: true).Should().Be(expectedResult, "we're ignoring case");
+        }
+
+        [Fact]
+        public void EqualityWorksWhenBaseTypeSet()
+        {
+            // Equality testing when Basetype string with ExactConstraints was wrong
+            var facet = new IfcPropertyFacet()
+            {
+                PropertyName = "Name",
+            };
+            facet.PropertyName.BaseType = NetTypeName.String;
+            var copy = facet;
+
+            facet.Equals(copy).Should().BeTrue("It's the same object!");
+        }
+
         [Theory]
         [MemberData(nameof(GetDifferentAttributesPairs))]
         public void AttributeEqualNotMatchImplementation(IfcPropertyFacet one, IfcPropertyFacet other)

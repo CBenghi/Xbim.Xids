@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -60,7 +61,7 @@ namespace Xbim.InformationSpecifications
                     && ofTwo is ExactConstraint ecOfTwo
                     )
                 {
-                    if (ecOfOne.Value.ToUpperInvariant().Equals(ecOfTwo.Value.ToUpperInvariant()))
+                    if (!ecOfOne.Value.Equals(ecOfTwo.Value, StringComparison.InvariantCultureIgnoreCase))
                         return false;
                 }
                 else

@@ -27,7 +27,7 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
-            if (context.BaseType == NetTypeName.Undefined)
+            if (context.BaseType == NetTypeName.Undefined && !ignoreCase)
             {
                 // if we are comparing without a type constraint, we match the type of the 
                 // candidate, rather than converting all to string.
