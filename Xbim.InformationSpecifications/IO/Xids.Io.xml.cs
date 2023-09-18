@@ -199,8 +199,8 @@ namespace Xbim.InformationSpecifications
                 for (int i = 0; i < spec.Requirement.Facets.Count; i++)
                 {
                     var option = GetProgressive(opts, i, RequirementCardinalityOptions.Expected);
-                    IFacet? item = spec.Requirement.Facets[i];
-                    Xids.ExportBuildingSmartIDS(item, xmlWriter, true, logger, spec.Requirement, option);
+                    IFacet? facet = spec.Requirement.Facets[i];
+                    Xids.ExportBuildingSmartIDS(facet, xmlWriter, true, logger, spec.Requirement, option);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -216,9 +216,9 @@ namespace Xbim.InformationSpecifications
             return opts[i];
         }
 
-        private static void ExportBuildingSmartIDS(IFacet item, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementCardinalityOptions? requirementOption = null)
+        private static void ExportBuildingSmartIDS(IFacet facet, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementCardinalityOptions? requirementOption = null)
         {
-            switch (item)
+            switch (facet)
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
@@ -238,8 +238,10 @@ namespace Xbim.InformationSpecifications
                 case IfcPropertyFacet pf:
                     xmlWriter.WriteStartElement("property", IdsNamespace);
                     WriteFacetBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
-                    if (!string.IsNullOrWhiteSpace(pf.Measure))
-                        xmlWriter.WriteAttributeString("measure", pf.Measure);
+                    if (!string.IsNullOrWhiteSpace(pf.DataType))
+                        xmlWriter.WriteAttributeString("datatype", pf.DataType.ToUpperInvariant());
+                    else
+                        xmlWriter.WriteAttributeString("datatype", "");
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
                     WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);
                     WriteConstraintValue(pf.PropertyValue, xmlWriter, "value", logger);
@@ -272,7 +274,7 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteEndElement();                    
                     break;
                 default:
-                    logger?.LogWarning("TODO: ExportBuildingSmartIDS missing case for {type}.", item.GetType());
+                    logger?.LogWarning("TODO: ExportBuildingSmartIDS missing case for {type}.", facet.GetType());
                     break;
             }
         }
@@ -876,10 +878,6 @@ namespace Xbim.InformationSpecifications
                         ret ??= new IfcPropertyFacet();
                         ret.PropertySetName = GetConstraint(sub, logger);
                         break;
-                    case "property": // either property or name is redundant
-                        ret ??= new IfcPropertyFacet();
-                        ret.PropertyName = GetConstraint(sub, logger);
-                        break;
                     case "name": // either property or name is redundant
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyName = GetConstraint(sub, logger);
@@ -901,10 +899,10 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (attribute.Name.LocalName == "measure")
+                else if (attribute.Name.LocalName == "datatype")
                 {
                     ret ??= new IfcPropertyFacet();
-                    ret.Measure = attribute.Value;
+                    ret.DataType = attribute.Value;
                 }
                 else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
                 {

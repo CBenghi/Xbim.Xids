@@ -35,10 +35,10 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData("bsFiles/IDS_Aedes_example.ids", 1, 2, 0)]
         [InlineData("bsFiles/IDS_ArcDox.ids", 5, 21, 0)]
         [InlineData("bsFiles/IDS_random_example.ids", 2, 7, 0)]
-        [InlineData("bsFiles/IDS_SimpleBIM_examples.ids", 3, 9, 0)]
+        [InlineData("bsFiles/IDS_SimpleBIM_examples.ids", 2, 7, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids", 2, 16, 0)]
         [InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC4.3.ids", 1, 9, 0)]
-        [InlineData("bsFiles/IDS_wooden-windows.ids", 5, 33, 0)]
+        [InlineData("bsFiles/IDS_wooden-windows.ids", 6, 34, 0)]
         [InlineData("bsFiles/IDS_demo_BIM-basis-ILS.ids", 3, 8, 0)]
         public void CanLoadAndSaveFile(string fileName, int expectedSpecificationCount, int expectedfacetGroupsCount, int expectedErrCount)
         {
@@ -79,7 +79,8 @@ namespace Xbim.InformationSpecifications.Tests
             using var tmpStream = File.OpenRead(tmpFile);
             var opt = new SingleAuditOptions()
             {
-                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9
+                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9,
+                SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9)
             };
             var varlidationResult = Audit.Run(tmpStream, opt, logg);
             varlidationResult.Should().Be(Audit.Status.Ok, $"file '{tmpFile}' is expected to be valid");
@@ -100,7 +101,7 @@ namespace Xbim.InformationSpecifications.Tests
                 {
                     tally += item.Facets.Count;
                 }
-                tally.Should().Be(facetGroupsCount, $"it's the expected count at {stage} stage");   
+                tally.Should().Be(facetGroupsCount, $"it's the expected hardcoded count, performing the {stage} stage");   
             }
         }
 

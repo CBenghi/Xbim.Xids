@@ -24,11 +24,11 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             if (propValue is string strValue)
             {
 
-                facet = BuildFacetFromInputs(propName, strValue,  psetName: pset, measure: measure, nameConstraint: nameConstraint, valueConstraint: valueConstraint);
+                facet = BuildFacetFromInputs(propName, strValue,  psetName: pset, dataType: measure, nameConstraint: nameConstraint, valueConstraint: valueConstraint);
             }
             else
             {
-                facet = BuildFacetFromInputs(propName, objInputs: propValue, psetName: pset, measure: measure, nameConstraint: nameConstraint, valueConstraint: valueConstraint);
+                facet = BuildFacetFromInputs(propName, objInputs: propValue, psetName: pset, dataType: measure, nameConstraint: nameConstraint, valueConstraint: valueConstraint);
             }
 
             facet.RequirementDescription.Should().Be(expected);
@@ -61,7 +61,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         }
 
         private static IfcPropertyFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object objInputs = null, string psetName = "",
-            string measure = null,
+            string dataType = null,
             ConstraintType nameConstraint = ConstraintType.Exact, ConstraintType valueConstraint = ConstraintType.Exact, ConstraintType psetConstraint = ConstraintType.Exact)
         {
             IfcPropertyFacet facet = new()
@@ -69,7 +69,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
                 PropertyName = new ValueConstraint(NetTypeName.String),
                 PropertySetName = new ValueConstraint(NetTypeName.String),
                 PropertyValue = new ValueConstraint(NetTypeName.String),
-                Measure = measure
+                DataType = dataType
             };
 
             var names = nameInputs.Split(',');

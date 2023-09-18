@@ -8,6 +8,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// <summary>
     /// Determines data type constraints and conversion for measures.
     /// </summary>
+    [Obsolete("Should use the IdsLib.IfcSchema.SchemaInfo.IfcMeasureInformation instead.")]
     public enum IfcValue
     {
 		/// Amount of substance, expressed in mole

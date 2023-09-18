@@ -1,3 +1,4 @@
+using IdsLib.IfcSchema;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -25,9 +26,9 @@ namespace Xbim.InformationSpecifications
 
         /// <summary>
         /// Constrained type of the identified property value.
-        /// Use the <see cref="HasMeasure(out IfcValue?)"/> method to test for the enumeration.
+        /// Use the <see cref="HasDataType(out IfcValue?)"/> method to test for the enumeration.
         /// </summary>
-        public string? Measure { get; set; }
+        public string? DataType { get; set; }
 
         /// <summary>
         /// Constraint that is applied to the value of the Property.
@@ -57,9 +58,9 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="measure">value of the parsing of the string into the enum</param>
         /// <returns>true if parsing successful</returns>
-        public bool HasMeasure([NotNullWhen(true)] out IfcValue? measure)
+        public bool HasDataType([NotNullWhen(true)] out IfcMeasureInformation? measure)
         {
-            if (Measure is not null && Enum.TryParse<IfcValue>(Measure, out var found))
+            if (DataType is not null && IdsLib.IfcSchema.SchemaInfo.TryParseIfcMeasure(DataType, out var found, false))
             {
                 measure = found;
                 return true;
@@ -78,8 +79,8 @@ namespace Xbim.InformationSpecifications
                 sb.Append($"Has any property");
             if (!FacetBase.IsNullOrEmpty(PropertySetName))
                 sb.Append($" in property set '{PropertySetName}'");
-            if (Measure != null)
-                sb.Append($" containing '{Measure}'");
+            if (DataType != null)
+                sb.Append($" containing '{DataType}'");
             if (PropertyValue != null)
                 sb.Append($" {PropertyValue.Short()}");
             return sb.ToString();
@@ -90,9 +91,9 @@ namespace Xbim.InformationSpecifications
             return this.Equals(obj as IfcPropertyFacet);
         }
         /// <inheritdoc />
-        public override int GetHashCode() => 23 + 31 * (PropertySetName, PropertyName, PropertyValue, Measure).GetHashCode() + 31 * base.GetHashCode();
+        public override int GetHashCode() => 23 + 31 * (PropertySetName, PropertyName, PropertyValue, DataType).GetHashCode() + 31 * base.GetHashCode();
         /// <inheritdoc />
-        public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString() ?? ""}-{Measure}-{base.ToString()}";
+        public override string ToString() => $"{PropertySetName}-{PropertyName}-{PropertyValue?.ToString() ?? ""}-{DataType}-{base.ToString()}";
         /// <inheritdoc />
 		public bool Equals(IfcPropertyFacet? other)
         {
@@ -104,7 +105,7 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (!IFacetExtensions.NullEquals(PropertyValue, other.PropertyValue))
                 return false;
-            if (!IFacetExtensions.CaseInsensitiveEquals(Measure, other.Measure))
+            if (!IFacetExtensions.CaseInsensitiveEquals(DataType, other.DataType))
                 return false;
             return base.Equals(other);
         }
@@ -120,6 +121,6 @@ namespace Xbim.InformationSpecifications
                 && FacetBase.IsValidOrNull(PropertyValue);
         }
 
-        private string MeasureLabel => !string.IsNullOrWhiteSpace(Measure) ? $"{Measure} " : "";
+        private string MeasureLabel => !string.IsNullOrWhiteSpace(DataType) ? $"{DataType} " : "";
     }
 }

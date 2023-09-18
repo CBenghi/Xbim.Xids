@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Instructions" },
 			{ "FacetBase","String Uri,String Instructions" },
 			{ "IfcClassificationFacet","ValueConstraint ClassificationSystem,ValueConstraint Identification,Boolean IncludeSubClasses,String Uri,String Instructions" },
-			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String Measure,ValueConstraint PropertyValue,String Uri,String Instructions" },
+			{ "IfcPropertyFacet","ValueConstraint PropertySetName,ValueConstraint PropertyName,String DataType,ValueConstraint PropertyValue,String Uri,String Instructions" },
 			{ "IfcTypeFacet","ValueConstraint IfcType,ValueConstraint PredefinedType,Boolean IncludeSubtypes,String Uri,String Instructions" },
 			{ "MaterialFacet","ValueConstraint Value,String Uri,String Instructions" },
 			{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Uri,String Instructions" },

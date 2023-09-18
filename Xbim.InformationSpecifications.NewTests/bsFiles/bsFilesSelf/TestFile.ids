@@ -1,6 +1,6 @@
 ﻿<ids xmlns="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/ids.xsd">
+     xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.6/ids.xsd">
   <info>
     <title>Entities can be specified as an enumeration 1/3</title>
   </info>
@@ -30,7 +30,7 @@
             </xs:restriction>
           </name>
         </entity>
-        <property measure="IfcLabel" minOccurs="1" maxOccurs="unbounded">
+        <property datatype="IFCLABEL" minOccurs="1" maxOccurs="unbounded">
           <propertySet>
             <simpleValue>Foo_Bar</simpleValue>
           </propertySet>
