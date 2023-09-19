@@ -38,9 +38,14 @@ namespace Xbim.InformationSpecifications.Cardinality
         public int? MaxOccurs { get; set; } = null;
 
         /// <summary>
-        /// No requirement needed if maxoccurs is set to 0, See <see cref="ICardinality.ExpectsRequirements"/>.
+        /// Requirement needed if minOccur is set to 0, See <see cref="ICardinality.ExpectsRequirements"/>.
         /// </summary>
-        public bool ExpectsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
+        public bool ExpectsRequirements => MinOccurs == 0;
+
+        /// <summary>
+        /// No requirement allowed if maxoccurs is set to 0, See <see cref="ICardinality.AllowsRequirements"/>.
+        /// </summary>
+        public bool AllowsRequirements => !(MaxOccurs.HasValue && MaxOccurs.Value == 0);
 
         /// <inheritdoc />
         public string Description

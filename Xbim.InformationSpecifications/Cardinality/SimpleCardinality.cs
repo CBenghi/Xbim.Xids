@@ -50,7 +50,10 @@ namespace Xbim.InformationSpecifications.Cardinality
         }
 
         /// <inheritdoc />
-        public bool ExpectsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
+        public bool ExpectsRequirements => ApplicabilityCardinality == CardinalityEnum.Optional;
+
+        /// <inheritdoc />
+        public bool AllowsRequirements => ApplicabilityCardinality != CardinalityEnum.Prohibited;
 
         /// <inheritdoc />
         public string Description => ApplicabilityCardinality.ToString();
@@ -60,6 +63,7 @@ namespace Xbim.InformationSpecifications.Cardinality
 
         /// <inheritdoc />
         public bool NoMatchingEntities => ApplicabilityCardinality == CardinalityEnum.Prohibited;
+
 
         /// <inheritdoc />
         public void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger)

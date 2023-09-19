@@ -17,9 +17,14 @@ namespace Xbim.InformationSpecifications
         void ExportBuildingSmartIDS(XmlWriter xmlWriter, ILogger? logger);
 
         /// <summary>
-        /// Determines if a requirement is expected for the specication, given the values in the ICardinality instance.
+        /// Determines if a requirement must occur for the specication, given the values in the ICardinality instance.
         /// </summary>
         bool ExpectsRequirements { get; }
+
+        /// <summary>
+        /// Determines if a requirement may occur for the specication, given the values in the ICardinality instance.
+        /// </summary>
+        bool AllowsRequirements { get; }
 
         /// <summary>
         /// A string describing the nature of the cardinality.
