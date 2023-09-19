@@ -223,7 +223,7 @@ namespace Xbim.InformationSpecifications
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
                     WriteFacetBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
-                    WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger);
+                    WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger, true);
                     WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType", logger);
                     xmlWriter.WriteEndElement();
                     break;
@@ -290,7 +290,7 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger)
+        static private void WriteConstraintValue(ValueConstraint? value, XmlWriter xmlWriter, string name, ILogger? logger, bool forceUpperCase = false)
         {
             if (value == null)
                 return;
@@ -303,8 +303,13 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteComment("Invalid null constraint found at this position"); // not sure this might even ever happen
                 }
                 else
-                    WriteSimpleValue(xmlWriter, exact);
+                {
+                    if (forceUpperCase)
+                        WriteSimpleValue(xmlWriter, exact.ToUpperInvariant());
+                    else
+                        WriteSimpleValue(xmlWriter, exact);
 
+                }
             }
             else if (value.AcceptedValues != null)
             {
@@ -325,7 +330,10 @@ namespace Xbim.InformationSpecifications
                     else if (item is ExactConstraint ec)
                     {
                         xmlWriter.WriteStartElement("enumeration", @"http://www.w3.org/2001/XMLSchema");
-                        xmlWriter.WriteAttributeString("value", ec.Value.ToString());
+                        if (forceUpperCase)
+                            xmlWriter.WriteAttributeString("value", ec.Value.ToString().ToUpperInvariant());
+                        else
+                            xmlWriter.WriteAttributeString("value", ec.Value.ToString());
                         xmlWriter.WriteEndElement();
                     }
                     else if (item is RangeConstraint rc)

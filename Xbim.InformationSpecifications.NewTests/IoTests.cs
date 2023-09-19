@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
+using IdsLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Diagnostics;
+using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -49,9 +51,6 @@ namespace Xbim.InformationSpecifications.Tests
             Assert.NotNull(tp);
             var frst = tp.AcceptedValues!.First();
             frst.Should().BeOfType<PatternConstraint>();
-
-
-
         }
 
         [Fact]
@@ -298,19 +297,26 @@ namespace Xbim.InformationSpecifications.Tests
         public void ZippedIDSSpecsContainsIDS()
         {
             Xids? x = BuildMultiSpecGroupIDS();
-
             using var ms = new MemoryStream();
-
             x.ExportBuildingSmartIDS(ms);
 
             // Check Contains IDS files & content
             using var archive = new ZipArchive(ms, ZipArchiveMode.Read, false);
-
             archive.Entries.Should().HaveCount(2);
-
             archive.Entries.Should().AllSatisfy(e => e.Name.Should().EndWith(".ids", "IDS file extension expected"));
             archive.Entries.Should().AllSatisfy(e => e.Length.Should().BeGreaterThan(0, "Content expected"));
-        }
+
+            // entries are valid
+            //
+            var xlogger = GetXunitLogger();
+			var opt = new SingleAuditOptions()
+			{
+				IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9,
+				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9)
+			};
+            archive.Entries.Should().AllSatisfy(e => Audit.Run(e.Open(), opt, xlogger).Should().Be(Audit.Status.Ok));
+			
+		}
 
         [Fact]
         public void CanLoadXmlAsZip()
@@ -338,8 +344,9 @@ namespace Xbim.InformationSpecifications.Tests
                 x.ExportBuildingSmartIDS(fs);
             }
 
-            var newIds = Xids.LoadBuildingSmartIDS(tempXmlFile);
 
+
+            var newIds = Xids.LoadBuildingSmartIDS(tempXmlFile);
             newIds.Should().NotBeNull();
             newIds!.SpecificationsGroups.Should().HaveCount(2);
         }
@@ -353,8 +360,6 @@ namespace Xbim.InformationSpecifications.Tests
             var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
             try
             {
-
-
                 Xids x = XidsTestHelpers.GetSimpleXids();
 
                 x.AllSpecifications().First().Cardinality = new SimpleCardinality(cardinality);
@@ -367,7 +372,8 @@ namespace Xbim.InformationSpecifications.Tests
             }
             finally
             {
-                if(File.Exists(filename)) File.Delete(filename);
+                if(File.Exists(filename)) 
+                    File.Delete(filename);
             }
         }
 
@@ -380,8 +386,6 @@ namespace Xbim.InformationSpecifications.Tests
             var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
             try
             {
-
-
                 Xids x = XidsTestHelpers.GetSimpleXids();
 
                 x.AllSpecifications().First().Cardinality = new SimpleCardinality(cardinality);
@@ -409,8 +413,8 @@ namespace Xbim.InformationSpecifications.Tests
             var specGroup = new SpecificationsGroup(x);
             x.SpecificationsGroups.Add(specGroup);
 
-            var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.Undefined);
-            newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "Door" });
+            var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.IFC4);
+            newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcDoor" });
 
             x!.AllSpecifications().Should().HaveCount(2);
             return x;
