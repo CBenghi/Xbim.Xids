@@ -2,7 +2,7 @@
 using IdsLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using System;
 using System.Diagnostics;
 using System.Formats.Tar;
@@ -257,9 +257,9 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void WarnsJsonVersion()
         {
-            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
+            var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             var f = new FileInfo(@"Files/FutureFormat.json");
-            Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
+            Xids.CanLoad(f, loggerMock).Should().BeTrue();
             LoggingTestHelper.SomeIssues(loggerMock);
         }
 
@@ -272,10 +272,10 @@ namespace Xbim.InformationSpecifications.Tests
             x.SaveAsJson(filename);
             Assert.True(File.Exists(filename));
 
-            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
+            var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             var f = new FileInfo(filename);
             Debug.WriteLine(f.FullName);
-            Xids.CanLoad(f, loggerMock.Object).Should().BeTrue();
+            Xids.CanLoad(f, loggerMock).Should().BeTrue();
             LoggingTestHelper.NoIssues(loggerMock);
             File.Delete(filename);
         }

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -47,11 +47,11 @@ namespace Xbim.InformationSpecifications.Tests
         [Fact]
         public void FailLoggerTest()
         {
-            var loggerMock = new Mock<ILogger<PatternConstraintTests>>();
+            var loggerMock = Substitute.For<ILogger<PatternConstraintTests>>();
             var vc = new ValueConstraint(NetTypeName.String);
             vc.AddAccepted(new PatternConstraint() { Pattern = "(invalid" });
-            vc.IsSatisfiedBy("a", loggerMock.Object).Should().BeFalse();
-            var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
+            vc.IsSatisfiedBy("a", loggerMock).Should().BeFalse();
+            var loggingCalls = loggerMock.ReceivedCalls().Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
             loggingCalls.Where(x => x is not null && x.Contains("Error")).Should().NotBeEmpty("we are passing an invalid pattern");
         }
 

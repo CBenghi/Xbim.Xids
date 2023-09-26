@@ -3,7 +3,7 @@ using IdsLib;
 using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -103,12 +103,12 @@ namespace Xbim.InformationSpecifications.Tests
             var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
                 
-            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
-            var x = LoadBuildingSmartIDS(f.FullName, loggerMock.Object);
+            var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
+            var x = LoadBuildingSmartIDS(f.FullName, loggerMock);
             x.Should().NotBeNull();
-            var loggingIssues = loggerMock.Invocations.Where(
-                w => w.Arguments[0].ToString() == "Error" || w.Arguments[0].ToString() == "Warning"
-                ).Select(s => s.Arguments[2].ToString()).ToArray(); // this creates the array of logging calls
+			var loggingIssues = loggerMock.ReceivedCalls().Where(
+                w => w.GetArguments()[0].ToString() == "Error" || w.GetArguments()[0].ToString() == "Warning"
+                ).Select(s => s.GetArguments()[2].ToString()).ToArray(); // this creates the array of logging calls
             loggingIssues.Should().BeEmpty();
         }
 
@@ -139,11 +139,11 @@ namespace Xbim.InformationSpecifications.Tests
             var exportedFile = Path.GetTempFileName();
 
             ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
-            var loggerMock = new Mock<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
-            _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock.Object);
+            var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
+            _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock);
             _ = x.ExportBuildingSmartIDS(exportedFile, logg);
 
-            LoggingTestHelper.NoIssues(loggerMock);
+			LoggingTestHelper.NoIssues(loggerMock);
 
             res = Validate(exportedFile, GetXunitLogger());
             res.Should().Be(Audit.Status.Ok , "the generated file needs to be valid");
@@ -161,7 +161,8 @@ namespace Xbim.InformationSpecifications.Tests
             // outputCount.Should().Be(inputCount, "everything should be exported");
         }
 
-        private static Audit.Status Validate(string fileName, ILogger? logger)
+
+		private static Audit.Status Validate(string fileName, ILogger? logger)
         {
             var opt = new SingleAuditOptions();
             using var stream = File.OpenRead(fileName);           

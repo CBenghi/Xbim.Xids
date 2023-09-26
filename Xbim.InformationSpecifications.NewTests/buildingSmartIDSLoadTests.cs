@@ -2,7 +2,7 @@
 using IdsLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -50,11 +50,11 @@ namespace Xbim.InformationSpecifications.Tests
                 Debug.WriteLine(d.FullName);
                 ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
                 CheckSchema(fileName, logg);
-                var loggerMock = new Mock<ILogger<BuildingSmartIDSLoadTests>>();
+                var loggerMock = Substitute.For<ILogger<BuildingSmartIDSLoadTests>>();
                 var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
-                loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock.Object); // we load again with the moq to check for logging events
+                loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock); // we load again with the moq to check for logging events
                 Assert.NotNull(loaded);
-                var loggingCalls = loggerMock.Invocations.Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
+                var loggingCalls = loggerMock.ReceivedCalls().Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
                 var errorAndWarnings = loggingCalls.Where(x => x is not null && (x.Contains("Error") || x.Contains("Warning")));
                 errorAndWarnings.Count().Should().Be(expectedErrCount, "mismatch with expected value");
                 CheckCounts(loaded, expectedSpecificationCount, expectedfacetGroupsCount, "first check");
