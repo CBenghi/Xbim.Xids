@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Isam.Esent.Interop;
 using NSubstitute;
 using NSubstitute.Core;
 using System;
@@ -10,21 +11,31 @@ using System.Threading.Tasks;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-    internal class LoggingTestHelper
+    internal static class LoggingTestHelper
     {
         internal static void NoIssues<T>(ILogger<T> loggerMock)
 		{
-            var loggingCalls = loggerMock.ReceivedCalls().Select(x => GetFirstArg(x)).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(call => call is not null &&
-                (
-                    call == "Error"
-                    || call == "Warning"
-                    || call == "Critical"
-                )
-                ).Should().BeEmpty("no calls to errors or warnings are expected");
+			loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true))
+                .Should().BeEmpty("no calls to errors or warnings are expected");
         }
 
-		private static string GetFirstArg(ICall x)
+        internal static bool IsErrorType(this ICall x, bool error, bool warning, bool critical)
+        {
+            var str = x.GetFirstArgument();
+            switch (str)
+            {
+                case "Error":
+                    return error;
+				case "Warning":
+					return warning;
+				case "Critical":
+					return critical;
+				default:
+                    return false;
+            }
+        }
+
+		internal static string GetFirstArgument(this ICall x)
 		{
 			var first = x.GetOriginalArguments().FirstOrDefault();
 			if (first != null)
@@ -34,14 +45,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 		internal static void SomeIssues<T>(ILogger<T> loggerMock)
         {
-            var loggingCalls = loggerMock.ReceivedCalls().Select(x => GetFirstArg(x)).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(call => call is not null &&
-                (
-                    call == "Error"
-                    || call == "Warning"
-                    || call == "Critical"
-                )
-                ).Should().NotBeEmpty("some calls to errors or warnings are expected");
+            var loggingCalls = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true)).Should().NotBeEmpty("some calls to errors or warnings are expected");
         }
     }
 }

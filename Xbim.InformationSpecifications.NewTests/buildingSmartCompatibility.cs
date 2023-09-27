@@ -106,10 +106,8 @@ namespace Xbim.InformationSpecifications.Tests
             var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
             var x = LoadBuildingSmartIDS(f.FullName, loggerMock);
             x.Should().NotBeNull();
-			var loggingIssues = loggerMock.ReceivedCalls().Where(
-                w => w.GetArguments()[0].ToString() == "Error" || w.GetArguments()[0].ToString() == "Warning"
-                ).Select(s => s.GetArguments()[2].ToString()).ToArray(); // this creates the array of logging calls
-            loggingIssues.Should().BeEmpty();
+			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true));
+			errorAndWarnings.Should().BeEmpty();
         }
 
         public static IEnumerable<object[]> GetIdsFiles()

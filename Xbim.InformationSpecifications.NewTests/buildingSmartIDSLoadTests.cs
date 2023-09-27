@@ -54,8 +54,7 @@ namespace Xbim.InformationSpecifications.Tests
                 var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
                 loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock); // we load again with the moq to check for logging events
                 Assert.NotNull(loaded);
-                var loggingCalls = loggerMock.ReceivedCalls().Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-                var errorAndWarnings = loggingCalls.Where(x => x is not null && (x.Contains("Error") || x.Contains("Warning")));
+                var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
                 errorAndWarnings.Count().Should().Be(expectedErrCount, "mismatch with expected value");
                 CheckCounts(loaded, expectedSpecificationCount, expectedfacetGroupsCount, "first check");
                 loaded.ExportBuildingSmartIDS(outputFile);

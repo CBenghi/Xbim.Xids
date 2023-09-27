@@ -51,8 +51,8 @@ namespace Xbim.InformationSpecifications.Tests
             var vc = new ValueConstraint(NetTypeName.String);
             vc.AddAccepted(new PatternConstraint() { Pattern = "(invalid" });
             vc.IsSatisfiedBy("a", loggerMock).Should().BeFalse();
-            var loggingCalls = loggerMock.ReceivedCalls().Select(x => x.ToString()).ToArray(); // this creates the array of logging calls
-            loggingCalls.Where(x => x is not null && x.Contains("Error")).Should().NotBeEmpty("we are passing an invalid pattern");
+			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
+			errorAndWarnings.Should().NotBeEmpty("we are passing an invalid pattern");
         }
 
 
