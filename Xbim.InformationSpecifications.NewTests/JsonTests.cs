@@ -2,6 +2,7 @@ using FluentAssertions;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
@@ -11,7 +12,7 @@ namespace Xbim.InformationSpecifications.Tests
     public class JsonTests
     {
         [Fact]
-        public void CanWriteSimpleFormat()
+        public async Task CanWriteSimpleFormat()
         {
             var d = new DirectoryInfo(".");
             Debug.WriteLine(d.FullName);
@@ -28,7 +29,7 @@ namespace Xbim.InformationSpecifications.Tests
             Xids? x2 = null;
             using (var s = File.OpenRead(@"temp2.json"))
             {
-                x2 = Xids.LoadFromJsonAsync(s).GetAwaiter().GetResult();
+                x2 = await Xids.LoadFromJsonAsync(s);
             }
             Assert.NotNull(x2);
         }
