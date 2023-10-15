@@ -30,19 +30,6 @@ namespace Xbim.InformationSpecifications
             new Map('I', "\\P{_xmlI}"),
             new Map('w', "\\p{_xmlW}"),
             new Map('W', "\\P{_xmlW}"),
-
-/* Unmerged change from project 'Xbim.InformationSpecifications (net5.0)'
-Before:
-        };
-
-        
-        internal static string Preprocess(string pattern, bool omitBoundaries = false)
-After:
-        };
-
-
-        internal static string Preprocess(string pattern, bool omitBoundaries = false)
-*/
         };
 
 

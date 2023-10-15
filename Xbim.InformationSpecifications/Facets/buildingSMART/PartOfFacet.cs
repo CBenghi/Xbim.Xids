@@ -34,7 +34,15 @@ namespace Xbim.InformationSpecifications
             /// <summary>
             /// A relation of type IfcRelNests
             /// </summary>
-            IfcRelNests
+            IfcRelNests,
+            /// <summary>
+            /// A relation of type IfcRelVoidsElement
+            /// </summary>
+            IfcRelVoidsElement,
+            /// <summary>
+            /// A relation of type IfcRelFillsElement
+            /// </summary>
+            IfcRelFillsElement
         }
 
         /// <summary>
