@@ -265,11 +265,16 @@ namespace Xbim.InformationSpecifications
                 case PartOfFacet pof:
                     xmlWriter.WriteStartElement("partOf", IdsNamespace);
                     WriteFacetBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
-                    xmlWriter.WriteAttributeString("relation", pof.EntityRelation.ToString());
+                    if (pof.GetRelation() != PartOfFacet.PartOfRelation.Undefined)
+                        xmlWriter.WriteAttributeString("relation", pof.GetRelation().ToString().ToUpperInvariant()); 
                     if (pof.EntityType is not null)
                     {
                         // todo: review the forRequirement parameter here
                         ExportBuildingSmartIDS(pof.EntityType, xmlWriter, false, logger, context, null);
+                    }
+                    else
+                    {
+                        logger?.LogError("Invalid null EntityType in partOf facet for buildingSmart requirements.");
                     }
                     xmlWriter.WriteEndElement();                    
                     break;
@@ -542,8 +547,16 @@ namespace Xbim.InformationSpecifications
             }
             else
             {
-                var main = XElement.Parse(File.ReadAllText(fileName));
-                return LoadBuildingSmartIDS(main, logger);
+                try
+                {
+                    var main = XElement.Parse(File.ReadAllText(fileName));
+                    return LoadBuildingSmartIDS(main, logger);
+                }
+                catch (Exception ex)
+                {
+                    logger?.LogError(ex, $"{ex.Message}");
+                    return null;
+                }
             }
         }
 

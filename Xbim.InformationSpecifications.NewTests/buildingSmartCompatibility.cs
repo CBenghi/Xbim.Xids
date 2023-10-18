@@ -104,8 +104,8 @@ namespace Xbim.InformationSpecifications.Tests
             f.Exists.Should().BeTrue("test file must be found");
                 
             var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
-            var x = LoadBuildingSmartIDS(f.FullName, loggerMock);
-            x.Should().NotBeNull();
+            var loadedIds = LoadBuildingSmartIDS(f.FullName, loggerMock);
+            loadedIds.Should().NotBeNull();
 			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true));
 			errorAndWarnings.Should().BeEmpty();
         }

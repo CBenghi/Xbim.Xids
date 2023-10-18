@@ -200,7 +200,10 @@ namespace Xbim.InformationSpecifications
         /// <param name="value"></param>
         public void SetRelation(PartOfRelation value)
         {
-            EntityRelation = value.ToString();
+            if (value == PartOfRelation.Undefined)
+                EntityRelation = string.Empty;
+            else
+                EntityRelation = value.ToString();
         }
 
         /// <summary>
