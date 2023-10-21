@@ -1382,9 +1382,9 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            if (ret is not null && ret.IfcType is not null && TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out string type, out bool includeSubtypes))
+            if (ret is not null && ret.IfcType is not null && TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out var type, out bool includeSubtypes))
             {
-                ret.IfcType = new ValueConstraint(type);
+                ret.IfcType = type; // directly assigning a string is persisted more concisely
                 ret.IncludeSubtypes = includeSubtypes;
             }
             foreach (var attribute in elem.Attributes())
