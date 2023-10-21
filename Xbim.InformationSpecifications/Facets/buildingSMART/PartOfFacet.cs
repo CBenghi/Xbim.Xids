@@ -257,15 +257,10 @@ namespace Xbim.InformationSpecifications
             return this.Equals(obj as PartOfFacet);
         }
 
-        /// <summary>
-        /// Valid (see <see cref="IFacet.IsValid"/>) if at least <see cref="EntityRelation"/> is meaningful.
-        /// </summary>
-        /// <returns>true if valid</returns>
+        /// <inheritdoc />
         public bool IsValid()
         {
-            return GetRelation() != PartOfRelation.Undefined
-                &&
-                (EntityType is null || EntityType.IsValid());
+            return EntityType is not null && EntityType.IsValid();
         }
 
         /// <inheritdoc />

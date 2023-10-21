@@ -108,8 +108,8 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid()
         {
-            // if we assume that all empty means that it's enough to have any classification
-            // then the facet is always valid.
+            // all empty means that one classifications exists
+            // the facet is always valid.
             return FacetBase.IsValidOrNull(ClassificationSystem)
                    && FacetBase.IsValidOrNull(Identification);
         }

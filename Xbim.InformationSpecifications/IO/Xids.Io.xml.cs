@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using IdsLib.IfcSchema;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -153,21 +155,20 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
+        private static IdsLib.IfcSchema.IfcSchemaVersions defaultSchemaVersions =                     
+                IdsLib.IfcSchema.IfcSchemaVersions.Ifc2x3 |
+                IdsLib.IfcSchema.IfcSchemaVersions.Ifc4 |
+                IdsLib.IfcSchema.IfcSchemaVersions.Ifc4x3;
+
         private static void ExportBuildingSmartIDS(Specification spec, XmlWriter xmlWriter, ILogger? logger)
         {
             xmlWriter.WriteStartElement("specification", IdsNamespace);
-            if (spec.IfcVersion != null)
-                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", spec.IfcVersion));
-            else
-            {
-                var allVersions = new[] {
-                    IfcSchemaVersion.IFC2X3,
-                    IfcSchemaVersion.IFC4,
-                    IfcSchemaVersion.IFC4X3,
-                };
-                xmlWriter.WriteAttributeString("ifcVersion", string.Join(" ", allVersions)); // required for bS schema
-                                                                                             // if (requirement.Name != null)
-            }
+            var thisSpecVersion = defaultSchemaVersions;
+            if (spec.IfcVersion is not null)
+                thisSpecVersion = spec.IfcVersion.ToIds();
+            // todo: add tostrin and fromstring to the idslib
+            xmlWriter.WriteAttributeString("ifcVersion", thisSpecVersion.EncodeAsXmlSchemasAttribute());
+            
             xmlWriter.WriteAttributeString("name", spec.Name ?? ""); // required
             if (spec.Description != null)
                 xmlWriter.WriteAttributeString("description", spec.Description);
@@ -186,7 +187,7 @@ namespace Xbim.InformationSpecifications
             {
                 foreach (var item in spec.Applicability.Facets)
                 {
-                    Xids.ExportBuildingSmartIDS(item, xmlWriter, false, logger, spec.Applicability, null);
+                    ExportBuildingSmartIDS(item, xmlWriter, false, logger, spec.Applicability, thisSpecVersion, null);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -200,7 +201,7 @@ namespace Xbim.InformationSpecifications
                 {
                     var option = GetProgressive(opts, i, RequirementCardinalityOptions.Expected);
                     IFacet? facet = spec.Requirement.Facets[i];
-                    Xids.ExportBuildingSmartIDS(facet, xmlWriter, true, logger, spec.Requirement, option);
+                    ExportBuildingSmartIDS(facet, xmlWriter, true, logger, spec.Requirement, thisSpecVersion, option);
                 }
             }
             xmlWriter.WriteEndElement();
@@ -216,14 +217,27 @@ namespace Xbim.InformationSpecifications
             return opts[i];
         }
 
-        private static void ExportBuildingSmartIDS(IFacet facet, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, RequirementCardinalityOptions? requirementOption = null)
+        private static void ExportBuildingSmartIDS(IFacet facet, XmlWriter xmlWriter, bool forRequirement, ILogger? logger, FacetGroup context, IfcSchemaVersions schemas, RequirementCardinalityOptions? requirementOption = null)
         {
             switch (facet)
             {
                 case IfcTypeFacet tf:
                     xmlWriter.WriteStartElement("entity", IdsNamespace);
                     WriteFacetBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
-                    WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger, true);
+                    if (tf.IncludeSubtypes && tf.IfcType is not null)
+                    {
+                        if (tf.IfcType.IsSingleExact<string>(out var stringValue))
+                        {
+                            ValueConstraint subClasses = new ValueConstraint(
+                                IdsLib.IfcSchema.SchemaInfo.GetConcreteClassesFrom(stringValue, schemas)
+                                );
+                            WriteConstraintValue(subClasses, xmlWriter, "name", logger, true);
+                        }
+                    }
+                    else
+                    {
+                        WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger, true);
+                    }
                     WriteConstraintValue(tf.PredefinedType, xmlWriter, "predefinedType", logger);
                     xmlWriter.WriteEndElement();
                     break;
@@ -232,7 +246,7 @@ namespace Xbim.InformationSpecifications
                     WriteFacetBaseAttributes(cf, xmlWriter, logger, forRequirement, requirementOption);
                     WriteConstraintValue(cf.Identification, xmlWriter, "value", logger);
                     WriteConstraintValue(cf.ClassificationSystem, xmlWriter, "system", logger);
-                    WriteFacetBaseElements(cf, xmlWriter); // from classifcation
+                    WriteFacetBaseElements(cf, xmlWriter); // from classification
                     xmlWriter.WriteEndElement();
                     break;
                 case IfcPropertyFacet pf:
@@ -269,8 +283,8 @@ namespace Xbim.InformationSpecifications
                         xmlWriter.WriteAttributeString("relation", pof.GetRelation().ToString().ToUpperInvariant()); 
                     if (pof.EntityType is not null)
                     {
-                        // todo: review the forRequirement parameter here
-                        ExportBuildingSmartIDS(pof.EntityType, xmlWriter, false, logger, context, null);
+                        // forRequirement is false, because the minMax Occurs does not apply at this level.
+                        ExportBuildingSmartIDS(pof.EntityType, xmlWriter, false, logger, context, schemas, null); 
                     }
                     else
                     {
@@ -705,51 +719,43 @@ namespace Xbim.InformationSpecifications
             var ret = new Specification(destGroup);
             var cardinality = new MinMaxCardinality();
             destGroup.Specifications.Add(ret);
+            var schemaVersions = IdsLib.IfcSchema.IfcSchemaVersions.IfcNoVersion;
 
-            foreach (var att in specificationElement.Attributes())
+
+            foreach (var attribute in specificationElement.Attributes())
             {
-                var attName = att.Name.LocalName.ToLower();
+                var attName = attribute.Name.LocalName.ToLower();
                 switch (attName)
                 {
                     case "name":
-                        ret.Name = att.Value;
+                        ret.Name = attribute.Value;
                         break;
                     case "description":
-                        ret.Description = att.Value;
+                        ret.Description = attribute.Value;
                         break;
-                    case "ifcversion":
-                        var tmp = att.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                        var tmp2 = new List<IfcSchemaVersion>();
-                        foreach (var tmpIter in tmp)
-                        {
-                            if (Enum.TryParse(tmpIter, out IfcSchemaVersion tmpIter2))
-                                tmp2.Add(tmpIter2);
-                            else
-                                LogUnexpectedValue(att, specificationElement, logger);
-                        }
-                        if (!tmp2.Any())
-                            tmp2.Add(IfcSchemaVersion.IFC2X3);
-                        ret.IfcVersion = tmp2;
+                    case "ifcversion":                      
+                        schemaVersions = attribute.Value.ParseXmlSchemasFromAttribute();
+                        ret.IfcVersion = ToXidsVersion(schemaVersions);
                         break;
                     case "minoccurs":
-                        if (int.TryParse(att.Value, out int tmpMin))
+                        if (int.TryParse(attribute.Value, out int tmpMin))
                             cardinality.MinOccurs = tmpMin;
                         else
-                            LogUnexpectedValue(att, specificationElement, logger);
+                            LogUnexpectedValue(attribute, specificationElement, logger);
                         break;
                     case "maxoccurs":
-                        if (att.Value == "unbounded")
+                        if (attribute.Value == "unbounded")
                             cardinality.MaxOccurs = null; // null is considered to mean unbounded
-                        else if (int.TryParse(att.Value, out int tmpMax))
+                        else if (int.TryParse(attribute.Value, out int tmpMax))
                             cardinality.MaxOccurs = tmpMax;
                         else
-                            LogUnexpectedValue(att, specificationElement, logger);
+                            LogUnexpectedValue(attribute, specificationElement, logger);
                         break;
                     case "instructions":
-                        ret.Instructions = att.Value;
+                        ret.Instructions = attribute.Value;
                         break;
                     default:
-                        LogUnexpected(att, specificationElement, logger);
+                        LogUnexpected(attribute, specificationElement, logger);
                         break;
                 }
 
@@ -761,14 +767,14 @@ namespace Xbim.InformationSpecifications
                 {
                     case "applicability":
                         {
-                            var fs = GetFacets(sub, logger, out _);
+                            var fs = GetFacets(sub, logger, schemaVersions, out _);
                             if (fs.Any())
                                 ret.SetFilters(fs);
                             break;
                         }
                     case "requirements":
                         {
-                            var fs = GetFacets(sub, logger, out var options);
+                            var fs = GetFacets(sub, logger, schemaVersions, out var options);
                             if (fs.Any())
                             {
                                 ret.SetExpectations(fs);
@@ -785,6 +791,18 @@ namespace Xbim.InformationSpecifications
                 }
             }
             ret.Cardinality = cardinality.Simplify();
+        }
+
+        private static List<IfcSchemaVersion> ToXidsVersion(IfcSchemaVersions tmp)
+        {
+            var ret = new List<IfcSchemaVersion>();
+            if (tmp.HasFlag(IfcSchemaVersions.Ifc2x3))
+                ret.Add(IfcSchemaVersion.IFC2X3);
+            if (tmp.HasFlag(IfcSchemaVersions.Ifc4))
+                ret.Add(IfcSchemaVersion.IFC4);
+            if (tmp.HasFlag(IfcSchemaVersions.Ifc4x3))
+                ret.Add(IfcSchemaVersion.IFC4X3);
+            return ret;
         }
 
         private static IFacet GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
@@ -828,7 +846,7 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static IFacet? GetPartOf(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet? GetPartOf(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger, out RequirementCardinalityOptions opt)
         {
             PartOfFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -837,7 +855,7 @@ namespace Xbim.InformationSpecifications
                 switch (locName)
                 {
                     case "entity":
-                        var t = GetEntity(sub, logger);
+                        var t = GetEntity(sub, schemaVersions, logger);
                         if (t is IfcTypeFacet fct)
                         {
                             ret ??= new PartOfFacet();
@@ -1119,7 +1137,7 @@ namespace Xbim.InformationSpecifications
             return null;
         }
 
-        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, out IEnumerable<RequirementCardinalityOptions> options)
+        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, IfcSchemaVersions schemaVersions, out IEnumerable<RequirementCardinalityOptions> options)
         {
             var fs = new List<IFacet>();
             var opts = new List<RequirementCardinalityOptions>();
@@ -1131,7 +1149,7 @@ namespace Xbim.InformationSpecifications
                 switch (locName)
                 {
                     case "entity":
-                        t = GetEntity(sub, logger);
+                        t = GetEntity(sub, schemaVersions, logger);
                         break;
                     case "classification":
                         t = GetClassification(sub, logger, out opt);
@@ -1146,7 +1164,7 @@ namespace Xbim.InformationSpecifications
                         t = GetAttribute(sub, logger, out opt);
                         break;
                     case "partof":
-                        t = GetPartOf(sub, logger, out opt);
+                        t = GetPartOf(sub, schemaVersions, logger, out opt);
                         break;
                     default:
                         LogUnexpected(sub, elem, logger);
@@ -1343,7 +1361,7 @@ namespace Xbim.InformationSpecifications
 
         private const bool defaultSubTypeInclusion = false;
 
-        private static IFacet? GetEntity(XElement elem, ILogger? logger)
+        private static IFacet? GetEntity(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger)
         {
             IfcTypeFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -1364,6 +1382,11 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
+            if (ret is not null && ret.IfcType is not null && TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out string type, out bool includeSubtypes))
+            {
+                ret.IfcType = new ValueConstraint(type);
+                ret.IncludeSubtypes = includeSubtypes;
+            }
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -1377,9 +1400,25 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-
-
-       
+        private static bool TryOptimizeTypeConstraint(ValueConstraint ifcType, IfcSchemaVersions schemaVersions, [NotNullWhen(true)] out string? type, out bool includeSubtypes)
+        {
+            if (ifcType.HasAnyAcceptedValue())
+            {
+                var exacts = ifcType.AcceptedValues.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
+                if (exacts.Length > 1 && exacts.Length == ifcType.AcceptedValues.Count)
+                {
+                    if (IdsLib.IfcSchema.SchemaInfo.TrySearchTopClass(exacts, schemaVersions, out var top))
+                    {
+                        type = top;
+                        includeSubtypes = true;
+                        return true;
+                    }
+                }
+            }
+            includeSubtypes = false;
+            type = null;
+            return false;
+        }
 
         private static string GetFirstString(XElement sub)
         {

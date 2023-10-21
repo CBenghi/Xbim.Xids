@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Xbim.Ifc4.Interfaces;
 using Xunit;
 using Xunit.Abstractions;
 using static Xbim.InformationSpecifications.Xids;
@@ -38,7 +39,51 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
 
-        [Fact]
+		[Fact]
+		public void InheritanceTypeIdsIoTest()
+		{
+			var x = new Xids();
+			// at least one specification is needed
+			//
+			var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+			t.Requirement!.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL", IncludeSubtypes = true });
+			t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+			t.Instructions = "Some instructions";
+
+			// ensure it's there.
+			Assert.Single(x.AllSpecifications());
+
+			// export
+			var tmpFile = Path.GetTempFileName();
+			x.ExportBuildingSmartIDS(tmpFile);
+
+            // should have ifcWallStandardCase
+            //
+            var read = File.ReadAllText(tmpFile);
+            read.Should().Contain("IFCWALLSTANDARDCASE");
+
+			// audit schema
+			//
+			var c = Validate(tmpFile, GetXunitLogger());
+			c.Should().Be(Audit.Status.Ok);
+
+            // reload and check inheritance
+            var reloaded = Xids.LoadBuildingSmartIDS(tmpFile);
+            reloaded.Should().NotBeNull();
+
+            var spec = reloaded!.AllSpecifications().Single();
+            spec.Applicability.Should().NotBeNull();
+            var type = spec!.Applicability.Facets.OfType<IfcTypeFacet>().First();
+            type.IncludeSubtypes.Should().Be(true);
+            var single = type.IfcType!.IsSingleExact<string>(out var typename);
+            single.Should().Be(true);
+            typename!.ToUpperInvariant().Should().Be("IFCWALL");
+
+            // cleanup
+			File.Delete(tmpFile);
+		}
+
+		[Fact]
         public void MinimalFileExportTest()
         {
             var x = new Xids();
@@ -102,9 +147,14 @@ namespace Xbim.InformationSpecifications.Tests
             var comb = d.FullName + idsFile;
             var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
-                
+
+            // first we try to load and see if it works with xunit logging
+            var loadedIds = LoadBuildingSmartIDS(f.FullName, GetXunitLogger());
+            loadedIds.Should().NotBeNull();
+
+            // then we load again with mock logger to ensure there are no errors    
             var loggerMock = Substitute.For<ILogger<BuildingSmartCompatibilityTests>>(); // this is to check events
-            var loadedIds = LoadBuildingSmartIDS(f.FullName, loggerMock);
+            loadedIds = LoadBuildingSmartIDS(f.FullName, loggerMock);
             loadedIds.Should().NotBeNull();
 			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true));
 			errorAndWarnings.Should().BeEmpty();

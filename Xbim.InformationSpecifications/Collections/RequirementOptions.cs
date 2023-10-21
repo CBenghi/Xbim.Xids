@@ -14,7 +14,6 @@
         /// Cannot match all the facets in a <see cref="FacetGroup"/> 
         /// </summary>
 		Prohibited,
-
         /// <summary>
         /// Should match if the facet is present regardless of value
         /// </summary>

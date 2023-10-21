@@ -164,6 +164,15 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
+        /// Constructor by string values
+        /// </summary>
+        public ValueConstraint(IEnumerable<string> stringValues)
+        {
+            BaseType = NetTypeName.String;
+            AcceptedValues = new List<IValueConstraintComponent>(stringValues.Select(x => new ExactConstraint(x)));
+        }
+
+        /// <summary>
         /// Constructor by type enumeration and string representation of an acceptable value
         /// </summary>
         /// <param name="valueType">type</param>

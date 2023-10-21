@@ -7,32 +7,6 @@ using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
-    /// <summary>
-    /// Closed list of Schema names
-    /// </summary>
-    public enum IfcSchemaVersion
-    {
-        /// <summary>
-        /// When no information is defined
-        /// </summary>
-        Undefined,
-        /// <summary>
-        /// Ifc2x3 Schema
-        /// </summary>
-        IFC2X3,
-        /// <summary>
-        /// Ifc4 schema
-        /// </summary>
-        IFC4,
-        /// <summary>
-        /// Ifc4x3 schema
-        /// </summary>
-        IFC4X3,
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Specification : ISpecificationMetadata
     {
         private Xids GetIds() => Parent.GetParent();

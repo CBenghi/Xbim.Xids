@@ -26,7 +26,7 @@ namespace Xbim.InformationSpecifications
 
         /// <summary>
         /// Constrained type of the identified property value.
-        /// Use the <see cref="HasDataType(out IfcValue?)"/> method to test for the enumeration.
+        /// Use the <see cref="HasDataType(out IfcMeasureInformation?)"/> method to test for the enumeration.
         /// </summary>
         public string? DataType { get; set; }
 
