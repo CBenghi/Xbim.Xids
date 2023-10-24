@@ -163,33 +163,33 @@ namespace Xbim.InformationSpecifications.Tests
                 switch(facet)
                 {
                     case IfcTypeFacet type:
-                        ValidateConstraint(type.IfcType, "string");
-                        ValidateConstraint(type.PredefinedType, "string");
+						ValidateConstraint(type.IfcType, "string");
+						ValidateConstraint(type.PredefinedType, "string");
                         break
                             ;
                     case AttributeFacet attr:
-                        ValidateConstraint(attr.AttributeName, "string");
-                        ValidateConstraint(attr.AttributeValue, "string");
+						ValidateConstraint(attr.AttributeName, "string");
+						ValidateConstraint(attr.AttributeValue, "string");
                         break;
 
                     case IfcPropertyFacet prop:
-                        ValidateConstraint(prop.PropertySetName, "string");
-                        ValidateConstraint(prop.PropertyName, "string");
-                        ValidateConstraint(prop.PropertyValue, "string");
+						ValidateConstraint(prop.PropertySetName, "string");
+						ValidateConstraint(prop.PropertyName, "string");
+						ValidateConstraint(prop.PropertyValue, "string");
                         break;
 
                     case IfcClassificationFacet cls:
-                        ValidateConstraint(cls.ClassificationSystem, "string");
-                        ValidateConstraint(cls.Identification, "string");
+						ValidateConstraint(cls.ClassificationSystem, "string");
+						ValidateConstraint(cls.Identification, "string");
                         break;
 
                     case MaterialFacet mat:
-                        ValidateConstraint(mat.Value, "string");
+						ValidateConstraint(mat.Value, "string");
                         break;
 
                     case PartOfFacet part:
-                        ValidateConstraint(part.EntityType!.IfcType, "string");
-                        ValidateConstraint(part.EntityType!.PredefinedType, "string");
+						ValidateConstraint(part.EntityType!.IfcType, "string");
+						ValidateConstraint(part.EntityType!.PredefinedType, "string");
                         break;
 
                     default:
@@ -201,7 +201,7 @@ namespace Xbim.InformationSpecifications.Tests
 
         }
 
-        private void ValidateConstraint(ValueConstraint? constraint, string expected)
+        private static void ValidateConstraint(ValueConstraint? constraint, string expected)
         {
             constraint.Should().NotBeNull();
             if(constraint!.IsSingleExact(out var value))
@@ -210,7 +210,7 @@ namespace Xbim.InformationSpecifications.Tests
             }
             else
             {
-                if(constraint.AcceptedValues!.Count() > 1)
+                if(constraint.AcceptedValues!.Count > 1)
                 {
                     foreach(var enumValue in constraint.AcceptedValues!)
                     {
@@ -311,8 +311,8 @@ namespace Xbim.InformationSpecifications.Tests
             var xlogger = GetXunitLogger();
 			var opt = new SingleAuditOptions()
 			{
-				IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9,
-				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9)
+				IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6,
+				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6)
 			};
             archive.Entries.Should().AllSatisfy(e => Audit.Run(e.Open(), opt, xlogger).Should().Be(Audit.Status.Ok));
 			

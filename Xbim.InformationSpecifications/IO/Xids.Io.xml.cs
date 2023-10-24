@@ -21,9 +21,11 @@ namespace Xbim.InformationSpecifications
         {
             get
             {
-                var settings = new XmlWriterSettings();
-                settings.Async = false;
-                if(PrettyOutput)
+                var settings = new XmlWriterSettings
+                {
+                    Async = false
+                };
+                if (PrettyOutput)
                 {
                     settings.Indent = true;
                     settings.IndentChars = "\t";
@@ -155,7 +157,7 @@ namespace Xbim.InformationSpecifications
         private const string IdsNamespace = @"http://standards.buildingsmart.org/IDS";
         private const string IdsPrefix = "";
 
-        private static IdsLib.IfcSchema.IfcSchemaVersions defaultSchemaVersions =                     
+        private static readonly IdsLib.IfcSchema.IfcSchemaVersions defaultSchemaVersions =                     
                 IdsLib.IfcSchema.IfcSchemaVersions.Ifc2x3 |
                 IdsLib.IfcSchema.IfcSchemaVersions.Ifc4 |
                 IdsLib.IfcSchema.IfcSchemaVersions.Ifc4x3;
@@ -228,7 +230,7 @@ namespace Xbim.InformationSpecifications
                     {
                         if (tf.IfcType.IsSingleExact<string>(out var stringValue))
                         {
-                            ValueConstraint subClasses = new ValueConstraint(
+                            var subClasses = new ValueConstraint(
                                 IdsLib.IfcSchema.SchemaInfo.GetConcreteClassesFrom(stringValue, schemas)
                                 );
                             WriteConstraintValue(subClasses, xmlWriter, "name", logger, true);
@@ -488,33 +490,29 @@ namespace Xbim.InformationSpecifications
         {
             if (IsZipped(stream))
             {
-                using(var zip = new ZipArchive(stream, ZipArchiveMode.Read, false))
+                using var zip = new ZipArchive(stream, ZipArchiveMode.Read, false);
+                var xids = new Xids();
+                foreach (var entry in zip.Entries)
                 {
-                    var xids = new Xids();
-                    foreach(var entry in zip.Entries)
+                    try
                     {
-                        try
-                        { 
-                            if(entry.Name.EndsWith(".ids", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                using(var idsStream = entry.Open())
-                                {
-                                    var element = XElement.Load(idsStream);
-                                    LoadBuildingSmartIDS(element, logger, xids);
-                                }
-                            }
-                        }
-                        catch(Exception ex)
+                        if (entry.Name.EndsWith(".ids", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            logger?.LogError(ex, "Failed to load IDS file from zip stream");
+                            using var idsStream = entry.Open();
+                            var element = XElement.Load(idsStream);
+                            LoadBuildingSmartIDS(element, logger, xids);
                         }
                     }
-                    if(!xids.AllSpecifications().Any())
+                    catch (Exception ex)
                     {
-                        logger?.LogWarning("No specifications found in this zip file. Ensure the zip contains *.ids files");
+                        logger?.LogError(ex, "Failed to load IDS file from zip stream");
                     }
-                    return xids;
                 }
+                if (!xids.AllSpecifications().Any())
+                {
+                    logger?.LogWarning("No specifications found in this zip file. Ensure the zip contains *.ids files");
+                }
+                return xids;
             }
             else
             {
@@ -568,7 +566,7 @@ namespace Xbim.InformationSpecifications
                 }
                 catch (Exception ex)
                 {
-                    logger?.LogError(ex, $"{ex.Message}");
+                    logger?.LogError(ex, "{ErrorMessage}", ex.Message);
                     return null;
                 }
             }

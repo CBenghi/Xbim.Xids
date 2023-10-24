@@ -41,7 +41,8 @@ namespace Xbim.InformationSpecifications
         public static bool IsZipped(Stream stream, ILogger? logger = null)
         {
             if(!stream.CanSeek) 
-            { 
+            {
+                logger?.LogError("Sream cannot seek, IsZipped function cannot be completed.");
                 return false;
             }
             try
@@ -54,8 +55,9 @@ namespace Xbim.InformationSpecifications
 
                 return magic == ZipMagic;
             }
-            catch
+            catch (Exception ex) 
             {
+                logger?.LogError(ex, "IsZipped function cannot be completed with error: {errorMessage}", ex.Message);
                 return false;
             }
         }

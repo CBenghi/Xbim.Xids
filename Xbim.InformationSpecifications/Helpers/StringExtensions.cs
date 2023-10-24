@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications.Helpers
 #endif
             };
 
-        private static char[] InvalidChars = Path.GetInvalidFileNameChars();
+        private static readonly char[] InvalidChars = Path.GetInvalidFileNameChars();
         /// <summary>
         /// Makes a filename safe by escaping reserved characters
         /// </summary>

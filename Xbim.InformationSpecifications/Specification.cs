@@ -7,6 +7,9 @@ using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
 {
+    /// <summary>
+    /// Each specification instance determines a subset of the expected information configurations for the model
+    /// </summary>
     public partial class Specification : ISpecificationMetadata
     {
         private Xids GetIds() => Parent.GetParent();

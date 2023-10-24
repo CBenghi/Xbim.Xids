@@ -65,7 +65,7 @@ namespace Xbim.InformationSpecifications
                 {
                     sb.Append(word);
                 }
-                sb.Append(" ");
+                sb.Append(' ');
             }
             return sb.ToString().TrimEnd();
         }

@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.Helpers
 {
-    public class MeasureHelpers
+    public partial class MeasureHelpers
     {
         [Fact]
         public void CharacterDiscovery()
@@ -59,19 +59,22 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         public void Unit()
         {
             var sourceString = "°F";
-            Regex r = new Regex("[°'a-zA-Z]+");
+            Regex r = UnitChars();
             var t = r.IsMatch(sourceString);
             t.Should().BeTrue();
 
-            MeasureUnit sourceUnit = new(sourceString);
+            var _ = new MeasureUnit(sourceString);
 
             IfcMeasureInfo t2 = SchemaInfo.IfcMeasures[IfcValue.IfcThermodynamicTemperatureMeasure.ToString()];
             t2.Should().NotBeNull("library should be complete.");
         }
 
+		[GeneratedRegex("[°'a-zA-Z]+")]
+		private static partial Regex UnitChars();
 
-        //Foot per second squared to Meter per second squared 1 ft² = 0. 3048 m² - acceleration is not defined
-        [Theory]
+
+		//Foot per second squared to Meter per second squared 1 ft² = 0. 3048 m² - acceleration is not defined
+		[Theory]
         [InlineData(1.0, "ft", IfcValue.IfcLengthMeasure, 0.3048)]
         [InlineData(2.0, "ft", IfcValue.IfcLengthMeasure, 0.6096)]
         [InlineData(1.0, "ft2", IfcValue.IfcAreaMeasure, 0.09290304)]//Square foot to Square meter	 		1 ft² = 0.092903 m²
@@ -130,5 +133,5 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             var works = new MeasureUnit(standard);
             works.IsValid.Should().BeTrue($"'{standard}' is expected to be equivalent to '{measUnit.Exponents.ToUnitSymbol()}'");
         }
-    }
+	}
 }

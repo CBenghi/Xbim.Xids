@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-	public class FacetImplementationTests
+	public partial class FacetImplementationTests
 	{
 		private static readonly Dictionary<string, string> guaranteedStructures = new()
 		{
@@ -54,7 +54,10 @@ namespace Xbim.InformationSpecifications.Tests
             verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
         }
 
-        private readonly static Regex rNullable = new("\\[\\[([^,]*),");
+        private readonly static Regex rNullable = MyRegex();
+
+		[GeneratedRegex("\\[\\[([^,]*),")]
+		private static partial Regex MyRegex();
 
 		static private string SmartName(PropertyInfo x)
 		{
@@ -274,5 +277,7 @@ namespace Xbim.InformationSpecifications.Tests
 			lst.Remove(c);
 			lst.Count.Should().Be(0);
 		}
+
+
 	}
 }

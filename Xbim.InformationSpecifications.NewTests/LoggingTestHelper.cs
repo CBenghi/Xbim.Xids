@@ -22,18 +22,14 @@ namespace Xbim.InformationSpecifications.Tests
         internal static bool IsErrorType(this ICall x, bool error, bool warning, bool critical)
         {
             var str = x.GetFirstArgument();
-            switch (str)
-            {
-                case "Error":
-                    return error;
-				case "Warning":
-					return warning;
-				case "Critical":
-					return critical;
-				default:
-                    return false;
-            }
-        }
+			return str switch
+			{
+				"Error" => error,
+				"Warning" => warning,
+				"Critical" => critical,
+				_ => false,
+			};
+		}
 
 		internal static string GetFirstArgument(this ICall x)
 		{

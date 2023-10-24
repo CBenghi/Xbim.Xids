@@ -78,8 +78,8 @@ namespace Xbim.InformationSpecifications.Tests
             using var tmpStream = File.OpenRead(tmpFile);
             var opt = new SingleAuditOptions()
             {
-                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9,
-                SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9)
+                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6,
+                SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6)
             };
             var varlidationResult = Audit.Run(tmpStream, opt, logg);
             varlidationResult.Should().Be(Audit.Status.Ok, $"file '{tmpFile}' is expected to be valid");
