@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -6,6 +7,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// <summary>
     /// Information about standard property sets defined from bS
     /// </summary>
+    [Obsolete("Prefer similar class in the Ids-lib.")]
 	public partial class PropertySetInfo
     {
         /// <summary>

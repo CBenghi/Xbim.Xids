@@ -10,6 +10,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// <summary>
     /// Provides static methods to get the collection of classes in the published schemas.
     /// </summary>
+    [Obsolete("Prefer similar class in the Ids-lib.")]
     public partial class SchemaInfo : IEnumerable<ClassInfo>
     {
         /// <summary>

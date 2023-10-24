@@ -148,8 +148,11 @@ namespace Xbim.InformationSpecifications.Tests
             var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
 
-            // first we try to load and see if it works with xunit logging
-            var loadedIds = LoadBuildingSmartIDS(f.FullName, GetXunitLogger());
+            var logger = GetXunitLogger();
+            logger.LogInformation("Processing `{filename}`", f.FullName);
+
+			// first we try to load and see if it works with xunit logging
+			var loadedIds = LoadBuildingSmartIDS(f.FullName, logger);
             loadedIds.Should().NotBeNull();
 
             // then we load again with mock logger to ensure there are no errors    
