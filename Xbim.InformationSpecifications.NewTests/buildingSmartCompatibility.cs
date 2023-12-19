@@ -83,7 +83,64 @@ namespace Xbim.InformationSpecifications.Tests
 			File.Delete(tmpFile);
 		}
 
-		[Fact]
+
+        [Fact]
+        public void CanSaveExplictInheritance()
+        {
+            var logger = GetXunitLogger();
+            var x = new Xids();
+            // at least one specification is needed
+            // at least one specification is needed
+            //
+            var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+            t.Requirement!.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" /* IncludeSubtypes defaults True */});
+            var typeFacet = new IfcTypeFacet()
+            {
+                IfcType = new ValueConstraint()
+            };
+            // We should be able to add types explicitly, even when IncludeSubTypes = true
+            typeFacet.IfcType.AddAccepted(new ExactConstraint("IFCWALL"));
+            typeFacet.IfcType.AddAccepted(new ExactConstraint("IFCWALLSTANDARDCASE"));
+
+            t.Applicability.Facets.Add(typeFacet);
+            
+            
+            t.Instructions = "Some instructions";
+
+            // ensure it's there.
+            Assert.Single(x.AllSpecifications());
+
+            // export
+            var tmpFile = Path.GetTempFileName();
+            x.ExportBuildingSmartIDS(tmpFile, logger);
+
+            // should have ifcWallStandardCase
+            //
+            var read = File.ReadAllText(tmpFile);
+            read.Should().Contain("IFCWALLSTANDARDCASE");
+
+            // audit schema
+            //
+            var c = Validate(tmpFile, logger);
+            c.Should().Be(Audit.Status.Ok);
+
+            // reload and check inheritance
+            var reloaded = Xids.LoadBuildingSmartIDS(tmpFile);
+            reloaded.Should().NotBeNull();
+
+            var spec = reloaded!.AllSpecifications().Single();
+            spec.Applicability.Should().NotBeNull();
+            var type = spec!.Applicability.Facets.OfType<IfcTypeFacet>().First();
+            type.IncludeSubtypes.Should().Be(true);
+            var single = type.IfcType!.IsSingleExact<string>(out var typename);
+            single.Should().Be(true);
+            typename!.ToUpperInvariant().Should().Be("IFCWALL");
+
+            // cleanup
+            File.Delete(tmpFile);
+        }
+
+        [Fact]
         public void MinimalFileExportTest()
         {
             var x = new Xids();

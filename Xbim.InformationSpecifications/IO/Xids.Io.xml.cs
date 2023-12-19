@@ -228,13 +228,31 @@ namespace Xbim.InformationSpecifications
                     WriteFacetBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
                     if (tf.IncludeSubtypes && tf.IfcType is not null)
                     {
-                        if (tf.IfcType.IsSingleExact<string>(out var stringValue))
+                    
+                        var exactValues = tf.IfcType.AcceptedValues.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
+                        var complexConstraints = tf.IfcType.AcceptedValues.Except(tf.IfcType.AcceptedValues.OfType<ExactConstraint>());
+                        if (exactValues.Any())
                         {
-                            var subClasses = new ValueConstraint(
-                                IdsLib.IfcSchema.SchemaInfo.GetConcreteClassesFrom(stringValue, schemas)
-                                );
+                            var classes = Enumerable.Empty<string>();
+                            foreach(var exact in exactValues)
+                            {
+                                classes = classes.Union(IdsLib.IfcSchema.SchemaInfo.GetConcreteClassesFrom(exact, schemas));
+                            }
+                            var subClasses = new ValueConstraint(classes);
                             WriteConstraintValue(subClasses, xmlWriter, "name", logger, true);
+                            if(complexConstraints.Any())
+                            {
+                                logger?.LogWarning("Invalid EntityType - cannot contain combine exact and complex constraint types : {ifcType}", tf.IfcType);
+                            }
                         }
+                        else
+                        {
+                            // It's a complex constraint types - just serialise without subclassess
+                            // TODO: More advanced expansion case - e.g. expand based on Pattern, Bounds etc.
+                            WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger, true);
+                            logger?.LogWarning("TODO: ExportBuildingSmartIDS does not support SubType Expansion of complex constraints: {ifcType}", tf.IfcType);
+                        }
+                        
                     }
                     else
                     {
