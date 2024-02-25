@@ -46,8 +46,9 @@ namespace Xbim.InformationSpecifications.Generator
             // Initialization
             if (study)
             {
-                Console.Write(IfcClassStudy.ReportMatchesToProperties());  // relevant classes preview
-                                                                           // Console.Write(MeasureAutomation.Execute()); // measures and dimensional exponents
+                // Console.Write(IfcClassStudy.ReportMatchesToProperties());  // relevant classes preview
+                
+                Console.Write(MeasureAutomation.Execute_ImproveDocumentation()); // measures and dimensional exponents
                 return;
             }
 

@@ -28,7 +28,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                     if (parts.Length != 8) // set here the amount of fields expected 
                     {
                         // we are leaving the loop, check the expected tally
-                        if (tally != 50) // need to review the info from the documentation
+                        if (tally != 91) // need to review the info from the documentation
                             throw new Exception("Unexpected number of measures.");
                         yield break; // no more measures to find.
                     }
@@ -68,27 +68,32 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                 tryImprove = false;
                 foreach (var missingExp in m.MeasureList.Where(x => x.DimensionalExponents == ""))
                 {
+                    Debug.WriteLine($"Trying to resolve: {missingExp.IfcMeasure} - {missingExp.UnitSymbol}");
+                    if (string.IsNullOrEmpty(missingExp.UnitSymbol))
+                        continue;
                     var neededSymbols = UnitFactor.SymbolBreakDown(missingExp.UnitSymbol);
                     var allSym = true;
                     foreach (var sym in neededSymbols)
                     {
-                        var found = m.GetByUnit(sym.UnitSymbol);
-                        if (found != null)
+                        var foundSymbol = m.GetByUnit(sym.UnitSymbol);
+                        if (foundSymbol != null)
                         {
-                            if (found.DimensionalExponents != "")
+                            if (foundSymbol.DimensionalExponents != "")
                             {
-                                _ = sym.TryGetDimensionalExponents(out var tde, out _, out _);
-                                Debug.WriteLine($"Found '{found.UnitSymbol}' - {found.DimensionalExponents} - {tde.ToUnitSymbol()}");
+                                var dimExp = sym.TryGetDimensionalExponents(out var tde, out _, out _);
+                                if (!dimExp)
+                                    throw new Exception("This needs to work.");
+                                Debug.WriteLine($"- Found '{foundSymbol.UnitSymbol}' - {foundSymbol.DimensionalExponents} - {tde.ToUnitSymbol()}");
                             }
                             else
                             {
-                                Debug.WriteLine($"Missing dimensional exponents on '{found.UnitSymbol}'");
+                                Debug.WriteLine($" - Missing dimensional exponents on '{foundSymbol.UnitSymbol}'");
                                 allSym = false;
                             }
                         }
                         else
                         {
-                            Debug.WriteLine($"Missing '{sym.UnitSymbol}' - {missingExp.UnitSymbol}");
+                            Debug.WriteLine($"- Missing '{sym.UnitSymbol}' - {missingExp.UnitSymbol}");
                             allSym = false;
                         }
                     }
@@ -99,12 +104,17 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         foreach (var sym in neededSymbols)
                         {
                             var found = m.GetByUnit(sym.UnitSymbol);
+                            DimensionalExponents? thisDE = null;
+                            if (!string.IsNullOrEmpty(found.DimensionalExponents))
+                                thisDE = DimensionalExponents.FromString(found.DimensionalExponents);
+                            else
+                                sym.TryGetDimensionalExponents(out thisDE, out _, out _);
+                            
                             if (d == null)
-                                sym.TryGetDimensionalExponents(out d, out _, out _);
+                                d = thisDE;
                             else
                             {
-                                if (sym.TryGetDimensionalExponents(out var t, out _, out _))
-                                    d = d.Multiply(t);
+                                d = d.Multiply(thisDE);
                             }
                         }
                         if (d != null)
@@ -114,18 +124,18 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                             tryImprove = true;
                         }
                         Debug.WriteLine("");
-
                     }
                     else
                     {
-                        Debug.WriteLine($"Cannot do {missingExp.Description} - {missingExp.UnitSymbol}\r\n");
+                        Debug.WriteLine($"- Cannot do {missingExp.IfcMeasure}, {missingExp.Description} - {missingExp.UnitSymbol}\r\n");
                     }
                 }
             }
             var sb = new StringBuilder();
+            sb.AppendLine("Entire list");
             foreach (var item in m.MeasureList)
             {
-                sb.AppendLine($"{item.Description}\t{item.DimensionalExponents}");
+                sb.AppendLine($"| {item.IfcMeasure} | {item.Description} | {item.Unit} | {item.UnitSymbol} | {item.DimensionalExponents} | {item.UnitEnum} |");
             }
             Debug.WriteLine(sb.ToString());
             return sb.ToString();
