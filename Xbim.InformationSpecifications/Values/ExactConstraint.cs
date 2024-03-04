@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -32,10 +34,14 @@ namespace Xbim.InformationSpecifications
                 // if we are comparing without a type constraint, we match the type of the 
                 // candidate, rather than converting all to string.
                 var toCheck = ValueConstraint.ParseValue(Value, candidateValue);
-                return ValueConstraint.FormalEquals(candidateValue, toCheck);
+                return FormalEquals(candidateValue, toCheck);
             }
             if (ignoreCase)
-                return Value.Equals(candidateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
+                //return Value.Equals(candidateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
+                return string.Compare(Value, candidateValue.ToString(), CultureHelper.SystemCulture,
+                    CompareOptions.IgnoreCase |     // Case Insensitive
+                    CompareOptions.IgnoreNonSpace   // Ignore accents etc
+                    ) == 0;
             return Value.Equals(candidateValue.ToString());
         }
 
@@ -84,6 +90,22 @@ namespace Xbim.InformationSpecifications
             if (v is null && !string.IsNullOrEmpty(Value))
                 return false;
             return true;
+        }
+
+        internal static bool FormalEquals(object toCheck, object? candidateValue)
+        {
+            // special casts for ifcTypes
+            if (toCheck.GetType().Name == "IfcGloballyUniqueId")
+                return toCheck.ToString()!.Equals(candidateValue);
+
+            return toCheck switch
+            {
+                // Use decimal as means to compare equality of integral numbers - boxed int 42 != long 42
+                int => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
+                short => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
+                long => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
+                _ => toCheck.Equals(candidateValue)
+            };
         }
     }
 }

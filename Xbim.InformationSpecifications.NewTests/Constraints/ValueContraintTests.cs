@@ -223,6 +223,21 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(30L).Should().BeTrue("30L failure");
             vc.IsSatisfiedBy(60).Should().BeTrue("60 failure");
             vc.IsSatisfiedBy(60L).Should().BeTrue("60L failure");
-        } 
+        }
+
+        
+        [InlineData("text", "Text")]
+        [InlineData("à rénover", "A RENOVER")]
+        [InlineData("abîmer", "Abimer")]
+        [InlineData("tårn", "Tarn")]
+
+        [Theory]
+        public void CanCompareCaseInsensitivelyIgnoringAccents(string input, string constraint)
+        {
+
+            ValueConstraint vc = constraint;
+            vc.IsSatisfiedBy(input, true).Should().BeTrue();
+            
+        }
     }
 }

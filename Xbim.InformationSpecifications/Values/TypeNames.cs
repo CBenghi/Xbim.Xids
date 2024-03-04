@@ -387,20 +387,5 @@ namespace Xbim.InformationSpecifications
             };
         }
 
-        internal static bool FormalEquals(object toCheck, object? candidateValue)
-        {
-            // special casts for ifcTypes
-            if (toCheck.GetType().Name == "IfcGloballyUniqueId")
-                return toCheck.ToString()!.Equals(candidateValue);
-
-            return toCheck switch
-            {
-                // Use decimal as means to compare equality of integral numbers - boxed int 42 != long 42
-                int => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                short => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                long => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                _ => toCheck.Equals(candidateValue)
-            };
-        }
     }
 }

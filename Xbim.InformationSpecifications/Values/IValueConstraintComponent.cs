@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="candidateValue">the value to check</param>
         /// <param name="context">The parent constraint, not itself implementing <see cref="IValueConstraintComponent"/></param>
-        /// <param name="ignoreCase">In case of evaluation of strings, defines if the letter case should be considered or ignored, true to ignore.</param>
+        /// <param name="ignoreCase">When <c>true</c> any strings will be compared case insensitively ignoring accents; otherwise if <c>false</c> an exact match is required.</param>
         /// <param name="logger">logging context</param>
         /// <returns>true if satisfied by the value</returns>
         bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null);

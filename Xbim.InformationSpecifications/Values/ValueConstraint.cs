@@ -62,7 +62,7 @@ namespace Xbim.InformationSpecifications
         /// Evaluates a candidate value, against the constraints
         /// </summary>
         /// <param name="candidateValue">value to evaluate</param>
-        /// <param name="ignoreCase">used for strings</param>
+        /// <param name="ignoreCase">when <c>true</c> ignore case and accents; otherwise when <c>false</c> tests for exact match</param>
         /// <param name="logger">logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
         public bool IsSatisfiedBy([NotNullWhen(true)] object? candidateValue, bool ignoreCase, ILogger? logger = null)
@@ -74,13 +74,13 @@ namespace Xbim.InformationSpecifications
             // if there are no constraints it's satisfied by default // todo: should this be revised?
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return true;
-            var cand = ConvertObject(candidateValue, BaseType);
-            if (cand is null)
+            var candidateObject = ConvertObject(candidateValue, BaseType);
+            if (candidateObject is null)
                 return false;
 
             foreach (var av in AcceptedValues)
             {
-                if (av.IsSatisfiedBy(cand, this, ignoreCase, logger))
+                if (av.IsSatisfiedBy(candidateObject, this, ignoreCase, logger))
                     return true;
             }
             
@@ -88,7 +88,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Evaluates a candidate value, against the constraints, strings are compared with exact case match
+        /// Evaluates a candidate value, against the constraints, where strings are compared case sensitively
         /// </summary>
         /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
