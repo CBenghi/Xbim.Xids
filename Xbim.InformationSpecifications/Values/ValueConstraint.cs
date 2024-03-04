@@ -61,20 +61,20 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Evaluates a candidate value, against the constraints
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="candidateValue">value to evaluate</param>
         /// <param name="ignoreCase">used for strings</param>
         /// <param name="logger">logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy([NotNullWhen(true)] object? candidateValue, bool ignoreCase, ILogger? logger = null)
         {
-            if (candiatateValue is null)
+            if (candidateValue is null)
                 return false;
-            if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
+            if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candidateValue.GetType()))
                 return false;
             // if there are no constraints it's satisfied by default // todo: should this be revised?
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return true;
-            var cand = GetObject(candiatateValue, BaseType);
+            var cand = ConvertObject(candidateValue, BaseType);
             if (cand is null)
                 return false;
 
@@ -90,23 +90,23 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Evaluates a candidate value, against the constraints, strings are compared with exact case match
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
+        public bool IsSatisfiedBy([NotNullWhen(true)] object? candidateValue, ILogger? logger = null)
         {
-            return IsSatisfiedBy(candiatateValue, false, logger);
+            return IsSatisfiedBy(candidateValue, false, logger);
         }
 
         /// <summary>
         /// Evaluates a candidate value, against the constraints, strings are compared with ignoring case match
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
+        public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candidateValue, ILogger? logger = null)
         {
-            return IsSatisfiedBy(candiatateValue, true, logger);
+            return IsSatisfiedBy(candidateValue, true, logger);
         }
 
         static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
@@ -493,7 +493,7 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (val is null)
                 return false;
-            var vbt = GetObject(val, BaseType);
+            var vbt = ConvertObject(val, BaseType);
             if (vbt is RequiredType exactAs)
             {
                 exact = exactAs;

@@ -25,18 +25,18 @@ namespace Xbim.InformationSpecifications
         public string Value { get; set; }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (context.BaseType == NetTypeName.Undefined && !ignoreCase)
             {
                 // if we are comparing without a type constraint, we match the type of the 
                 // candidate, rather than converting all to string.
-                var toCheck = ValueConstraint.CastObject(Value, candiatateValue);
-                return ValueConstraint.FormalEquals(candiatateValue, toCheck);
+                var toCheck = ValueConstraint.ParseValue(Value, candidateValue);
+                return ValueConstraint.FormalEquals(candidateValue, toCheck);
             }
             if (ignoreCase)
-                return Value.Equals(candiatateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
-            return Value.Equals(candiatateValue.ToString());
+                return Value.Equals(candidateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
+            return Value.Equals(candidateValue.ToString());
         }
 
         /// <inheritdoc />
@@ -79,7 +79,7 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            var v = ValueConstraint.GetObject(Value, context.BaseType);
+            var v = ValueConstraint.ParseValue(Value, context.BaseType);
             // values need to be succesfully converted
             if (v is null && !string.IsNullOrEmpty(Value))
                 return false;

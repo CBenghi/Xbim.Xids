@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
@@ -90,6 +91,60 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(42.3d).Should().BeFalse();
         }
 
+        [Fact]
+        public void LongValueTypeIsInferred()
+        {
+            // from IDS test    property\pass-integer_values_are_checked_using_type_casting_1_4.ifc
+            // and              attribute\pass-integers_follow_the_same_rules_as_numbers.ids
+            ValueConstraint vc = new ValueConstraint(42);
+            vc.BaseType = NetTypeName.Undefined;    // E.g. on Attribute values we won't have a BaseType on a simpleValue constraint
+            vc.IsSatisfiedBy(42L).Should().BeTrue("42==42");
+        }
+
+        [Fact]
+        public void IntValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42).Should().BeTrue("42==42");
+
+        }
+
+        [Fact]
+        public void DecimalValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42m);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42m).Should().BeTrue("42m==42m");
+        }
+
+        [Fact]
+        public void FloatValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42f);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42d).Should().BeTrue("42f==42d");
+
+        }
+
+        [Fact]
+        public void DoubleValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42d);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42f).Should().BeTrue("42d==42f");
+
+        }
+
+        // For Completeness
+        [Fact]
+        public void TimeSpanValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(TimeSpan.FromDays(42).ToString());
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(TimeSpan.FromDays(42)).Should().BeTrue("42==42");
+
+        }
 
         [Fact]
         public void CaseSensitiviyTests()

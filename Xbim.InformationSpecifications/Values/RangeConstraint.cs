@@ -84,27 +84,27 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (context is null)
                 return false;
-            if (candiatateValue is not IComparable compe)
+            if (candidateValue is not IComparable compe)
             {
-                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candiatateValue}'", candiatateValue.GetType().Name, candiatateValue);
+                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candidateValue}'", candidateValue.GetType().Name, candidateValue);
                 return false;
             }
             var minOk = true;
             var maxOk = true;
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
-                var mn = ValueConstraint.GetObject(MinValue, context.BaseType);
+                var mn = ValueConstraint.ParseValue(MinValue, context.BaseType);
                 minOk = MinInclusive
                     ? compe.CompareTo(mn) >= 0
                     : compe.CompareTo(mn) > 0;
             }
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
-                var mx = ValueConstraint.GetObject(MaxValue, context.BaseType);
+                var mx = ValueConstraint.ParseValue(MaxValue, context.BaseType);
                 maxOk = MaxInclusive
                     ? compe.CompareTo(mx) <= 0
                     : compe.CompareTo(mx) < 0;
@@ -132,8 +132,8 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            var min = ValueConstraint.GetObject(MinValue, context.BaseType);
-            var max = ValueConstraint.GetObject(MaxValue, context.BaseType);
+            var min = ValueConstraint.ParseValue(MinValue, context.BaseType);
+            var max = ValueConstraint.ParseValue(MaxValue, context.BaseType);
 
             // values need to be succesfully converted
             if (min is null && !string.IsNullOrEmpty(MinValue))

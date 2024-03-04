@@ -112,7 +112,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (ignoreCase)
             {
@@ -123,7 +123,7 @@ namespace Xbim.InformationSpecifications
                     logger?.LogError("CaseInsensitiveRegex was unexpectedly null for pattern {pattern}.", pattern);
                     return false;
                 }
-                var str = candiatateValue.ToString();
+                var str = candidateValue.ToString();
                 if (str is null)
                     return false;
                 return compiledCaseInsensitiveRegex.IsMatch(str);
@@ -137,7 +137,7 @@ namespace Xbim.InformationSpecifications
                     logger?.LogError("CaseSensitiveRegex was unexpectedly null for pattern {pattern}.", pattern);
                     return false;
                 }
-                var str = candiatateValue.ToString();
+                var str = candidateValue.ToString();
                 if (str is null)
                     return false;
                 return compiledCaseSensitiveRegex.IsMatch(str);
