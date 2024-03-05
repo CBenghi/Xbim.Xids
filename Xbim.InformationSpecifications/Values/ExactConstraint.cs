@@ -29,20 +29,38 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
-            if (context.BaseType == NetTypeName.Undefined && !ignoreCase)
-            {
-                // if we are comparing without a type constraint, we match the type of the 
-                // candidate, rather than converting all to string.
-                var toCheck = ValueConstraint.ParseValue(Value, candidateValue);
-                return FormalEquals(candidateValue, toCheck);
-            }
-            if (ignoreCase)
-                //return Value.Equals(candidateValue.ToString(), comparisonType: StringComparison.OrdinalIgnoreCase);
+
+            if (ignoreCase && (context.BaseType == NetTypeName.Undefined || context.BaseType == NetTypeName.String))
+                // Ignoring case only makes sense for text / undefined
                 return string.Compare(Value, candidateValue.ToString(), CultureHelper.SystemCulture,
                     CompareOptions.IgnoreCase |     // Case Insensitive
                     CompareOptions.IgnoreNonSpace   // Ignore accents etc
                     ) == 0;
-            return Value.Equals(candidateValue.ToString());
+
+
+            return context.BaseType switch
+            {
+                NetTypeName.Undefined => IsUndefinedTypeSatisfied(candidateValue),
+
+                NetTypeName.Floating => IsRealWithinTolerance(candidateValue),
+                NetTypeName.Double => IsRealWithinTolerance(candidateValue),
+                
+                // Everything else uses exact string equality - including Decimal
+                _ => Value.Equals(candidateValue.ToString())
+            };
+
+        }
+
+        private bool IsUndefinedTypeSatisfied(object candidateValue)
+        {
+            // if we are comparing without a type constraint, we match the type of the 
+            // candidate, rather than converting all to string.
+            var expectedValue = ValueConstraint.ParseValue(Value, candidateValue);
+            if (expectedValue is null)
+            {
+                return false;
+            }
+            return FormalEquals(expectedValue, candidateValue);
         }
 
         /// <inheritdoc />
@@ -92,20 +110,45 @@ namespace Xbim.InformationSpecifications
             return true;
         }
 
-        internal static bool FormalEquals(object toCheck, object? candidateValue)
+
+        
+        internal static bool FormalEquals(object expectedValue, object? candidateValue)
         {
             // special casts for ifcTypes
-            if (toCheck.GetType().Name == "IfcGloballyUniqueId")
-                return toCheck.ToString()!.Equals(candidateValue);
+            if (candidateValue?.GetType().Name == "IfcGloballyUniqueId")
+                return expectedValue!.Equals(candidateValue.ToString());
 
-            return toCheck switch
+            return candidateValue switch
             {
+                float => IsEqualWithinTolerance(Convert.ToSingle(expectedValue), Convert.ToSingle(candidateValue)),
+                double => IsEqualWithinTolerance(Convert.ToDouble(expectedValue), Convert.ToDouble(candidateValue)),
                 // Use decimal as means to compare equality of integral numbers - boxed int 42 != long 42
-                int => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                short => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                long => Convert.ToDecimal(toCheck) == Convert.ToDecimal(candidateValue),
-                _ => toCheck.Equals(candidateValue)
+                int => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
+                short => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
+                long => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
+                _ => expectedValue.Equals(candidateValue)
             };
+        }
+
+        private bool IsRealWithinTolerance(object candidateValue)
+        {
+            return candidateValue switch
+            {
+                float => IsEqualWithinTolerance(Convert.ToSingle(Value), Convert.ToSingle(candidateValue)),
+                double => IsEqualWithinTolerance(Convert.ToDouble(Value), Convert.ToDouble(candidateValue)),
+                _ => false
+            };
+        }
+
+
+        const double DefaultPrecision = 1e-6;
+        private static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultPrecision, int decimals = 6)
+        {
+            // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
+            var lowerBound = Math.Round(expectedValue * (1 - tolerance), decimals);
+            var upperBound = Math.Round(expectedValue * (1 + tolerance), decimals);
+
+            return candidate >= lowerBound && candidate <= upperBound;
         }
     }
 }

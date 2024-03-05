@@ -8,19 +8,19 @@ namespace Xbim.InformationSpecifications.Tests
     public class ValueContraintTests
     {
         [Fact]
-        public void IPersistValues()
+        public void xbimIfcElementsHandled()
         {
-            var str = "2O2Fr$t4X7Zf8NOew3FLOH";
-            Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new(str);
-            var vc = new ValueConstraint(str); // this is a string constraint
-            vc.IsSatisfiedBy(i).Should().BeTrue();
+            var id = "2O2Fr$t4X7Zf8NOew3FLOH";
+            Ifc2x3.UtilityResource.IfcGloballyUniqueId ifcGuid = new(id);
+            var vc = new ValueConstraint(id); // this is a string constraint
+            vc.IsSatisfiedBy(ifcGuid).Should().BeTrue("string == IfcGuid");
 
-            var vc3 = ValueConstraint.SingleUndefinedExact(str); // this is an undefined constraint
-            vc3.IsSatisfiedBy(i).Should().BeTrue();
+            var undefinedString = ValueConstraint.SingleUndefinedExact(id);
+            undefinedString.IsSatisfiedBy(ifcGuid).Should().BeTrue("object == IfcGuid");
 
-            var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
-            var vc2 = new ValueConstraint(str2);
-            vc2.IsSatisfiedBy(i).Should().BeFalse();
+            var differentId = "2O2Fr$t4X7Zf8NOew3FLOh";    // different due to lower-case 'h'
+            var anotherString = new ValueConstraint(differentId);
+            anotherString.IsSatisfiedBy(ifcGuid).Should().BeFalse("IfcGuids are different");
         }
 
         [Fact]
@@ -35,7 +35,10 @@ namespace Xbim.InformationSpecifications.Tests
             vc = new ValueConstraint(375.230);
             vc.IsSatisfiedBy(375.23).Should().BeTrue();
             vc.IsSatisfiedBy(375.230000).Should().BeTrue();
-            vc.IsSatisfiedBy(375.230001).Should().BeFalse();
+            vc.IsSatisfiedBy(375.230001).Should().BeTrue();     // within 1e-6 tolerance
+            vc.IsSatisfiedBy(375.229999).Should().BeTrue();     // ""
+            vc.IsSatisfiedBy(375.230500).Should().BeFalse();    // not within 1e-6 tolerance
+            vc.IsSatisfiedBy(375.229500).Should().BeFalse();    // ""
 
             vc = new ValueConstraint(375.230m);
             vc.IsSatisfiedBy(375.230m).Should().BeTrue();
@@ -239,5 +242,23 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(input, true).Should().BeTrue();
             
         }
+
+        [InlineData(true)]
+        [InlineData(false)]
+        [Theory]
+        public void DoubleValueSupports1e6Tolerances(bool setBaseType)
+        {
+            // from IDS test property/pass-floating_point_numbers_are_compared_with_a_1e_6_tolerance_1_*.ifc && attribute equivalents
+            ValueConstraint vc = new ValueConstraint(42d);
+            if (!setBaseType)
+                vc.BaseType = NetTypeName.Undefined;
+            
+            vc.IsSatisfiedBy(42.000042d).Should().BeTrue("Within 1e-6 tolerances - high");
+            vc.IsSatisfiedBy(41.999958d).Should().BeTrue("Within 1e-6 tolerances - low");
+
+            vc.IsSatisfiedBy(42.000084d).Should().BeFalse("Outside 1e-6 tolerances - high");
+            vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
+        }
+
     }
 }
