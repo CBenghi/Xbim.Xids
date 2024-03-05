@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -88,7 +89,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Evaluates a candidate value, against the constraints, where strings are compared case sensitively
+        /// Evaluates a candidate value, against the constraints, where strings are compared case-sensitively
         /// </summary>
         /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
@@ -99,7 +100,7 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Evaluates a candidate value, against the constraints, strings are compared with ignoring case match
+        /// Evaluates a candidate value against the constraints, where strings are compared case-insensitively
         /// </summary>
         /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
@@ -194,7 +195,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Integer;
         }
@@ -207,7 +208,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Decimal;
         }
@@ -220,7 +221,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Double;
         }
@@ -422,7 +423,7 @@ namespace Xbim.InformationSpecifications
                 exact = null;
                 return false;
             }
-            exact = unique.Value.ToString();
+            exact = unique.Value.ToString(CultureHelper.SystemCulture);
             return true;
         }
 

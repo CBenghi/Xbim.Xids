@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System;
+using System.Globalization;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
@@ -7,6 +8,11 @@ namespace Xbim.InformationSpecifications.Tests
 
     public class ValueContraintTests
     {
+        public ValueContraintTests()
+        {
+            //CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
+        }
+
         [Fact]
         public void xbimIfcElementsHandled()
         {
@@ -53,6 +59,10 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(2f).Should().BeTrue();
             vc.IsSatisfiedBy("blue").Should().BeFalse();
             vc.IsSatisfiedBy(2d).Should().BeFalse();
+
+            vc = new ValueConstraint(12345678.910);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(12345678.910).Should().BeTrue();
         }
 
         [Fact]
@@ -311,5 +321,31 @@ namespace Xbim.InformationSpecifications.Tests
             // 41.999958d satisfies being in the range 42-50 inclusive, but also satisfies being < 42 exclusive
         }
 
+        [InlineData(NetTypeName.Decimal)]
+        [InlineData(NetTypeName.Floating)]
+        [InlineData(NetTypeName.Double)]
+        [InlineData(NetTypeName.Integer)]
+        [InlineData(NetTypeName.Undefined)]
+        [Theory]
+        public void CultureShouldNotAffectResults(NetTypeName type)
+        {
+            var constraint = new ValueConstraint(type);
+            //var amnt = 98765.43d;
+            object amnt = type switch { 
+                NetTypeName.Decimal => 98765.432m,
+                NetTypeName.Floating => 98765.432f,
+                NetTypeName.Double => 98765.432d,
+                NetTypeName.Integer => 98765L,
+                _ => 98765.432d
+            };
+
+            var formatable = amnt as IFormattable;
+            var exact = new ExactConstraint(formatable!.ToString(null, CultureInfo.InvariantCulture)!);
+            constraint.AddAccepted(exact);
+
+            // Act
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
+            constraint.IsSatisfiedBy(amnt).Should().BeTrue();
+        }
     }
 }

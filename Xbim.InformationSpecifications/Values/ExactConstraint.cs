@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -46,8 +47,21 @@ namespace Xbim.InformationSpecifications
                 NetTypeName.Double => IsRealWithinTolerance(candidateValue),
                 
                 // Everything else uses exact string equality - including Decimal
-                _ => Value.Equals(candidateValue.ToString())
+                _ => IsEqualTo(candidateValue)
             };
+
+        }
+
+        private bool IsEqualTo(object candidateValue)
+        {
+            if(candidateValue is IFormattable f)
+            {
+                return Value.Equals(f.ToString(null, CultureHelper.SystemCulture));
+            }
+            else 
+            {
+                return Value.Equals(candidateValue.ToString());
+            }
 
         }
 
@@ -120,12 +134,13 @@ namespace Xbim.InformationSpecifications
 
             return candidateValue switch
             {
-                float => ValueConstraint.IsEqualWithinTolerance(Convert.ToSingle(expectedValue), Convert.ToSingle(candidateValue)),
-                double => ValueConstraint.IsEqualWithinTolerance(Convert.ToDouble(expectedValue), Convert.ToDouble(candidateValue)),
+                float => ValueConstraint.IsEqualWithinTolerance(GetSingle(expectedValue), GetSingle(candidateValue)),
+                double => ValueConstraint.IsEqualWithinTolerance(GetDouble(expectedValue), GetDouble(candidateValue)),
                 // Use decimal as means to compare equality of integral numbers - boxed int 42 != long 42
-                int => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
-                short => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
-                long => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
+                decimal => GetDecimal(expectedValue) == GetDecimal(candidateValue),
+                int => GetDecimal(expectedValue) == GetDecimal(candidateValue),
+                short => GetDecimal(expectedValue) == GetDecimal(candidateValue),
+                long => GetDecimal(expectedValue) == GetDecimal(candidateValue),
                 _ => expectedValue.Equals(candidateValue)
             };
         }
@@ -134,13 +149,29 @@ namespace Xbim.InformationSpecifications
         {
             return candidateValue switch
             {
-                float =>  ValueConstraint.IsEqualWithinTolerance(Convert.ToSingle(Value), Convert.ToSingle(candidateValue)),
-                double => ValueConstraint.IsEqualWithinTolerance(Convert.ToDouble(Value), Convert.ToDouble(candidateValue)),
+                float =>  ValueConstraint.IsEqualWithinTolerance(GetSingle(Value), GetSingle(candidateValue)),
+                double => ValueConstraint.IsEqualWithinTolerance(GetDouble(Value), GetDouble(candidateValue)),
                 _ => false
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float GetSingle(object value)
+        {
+            return Convert.ToSingle(value, CultureHelper.SystemCulture);
+        }
 
-        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double GetDouble(object value)
+        {
+            return Convert.ToDouble(value, CultureHelper.SystemCulture);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static decimal GetDecimal(object value)
+        {
+            return Convert.ToDecimal(value, CultureHelper.SystemCulture);
+        }
+
     }
 }

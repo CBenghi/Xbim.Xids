@@ -228,21 +228,21 @@ namespace Xbim.InformationSpecifications
                 case NetTypeName.Undefined:
                     return value;
                 case NetTypeName.Integer:
-                    return Convert.ToInt32(value);
+                    return Convert.ToInt32(value, CultureHelper.SystemCulture);
                 case NetTypeName.Decimal:
-                    return Convert.ToDecimal(value);
+                    return Convert.ToDecimal(value, CultureHelper.SystemCulture);
                 case NetTypeName.Double:
-                    return Convert.ToDouble(value);
+                    return Convert.ToDouble(value, CultureHelper.SystemCulture);
                 case NetTypeName.Floating:
-                    return Convert.ToSingle(value);
+                    return Convert.ToSingle(value, CultureHelper.SystemCulture);
                 case NetTypeName.Date:
                 case NetTypeName.DateTime:
-                    return Convert.ToDateTime(value);
+                    return Convert.ToDateTime(value, CultureHelper.SystemCulture);
                 case NetTypeName.Boolean:
                     return Convert.ToBoolean(value);
                 case NetTypeName.Time:
                     {
-                        var tmp = Convert.ToDateTime(value);
+                        var tmp = Convert.ToDateTime(value, CultureHelper.SystemCulture);
                         return tmp.TimeOfDay;
                     }
 
