@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using System;
+using System.Globalization;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests
@@ -6,20 +8,25 @@ namespace Xbim.InformationSpecifications.Tests
 
     public class ValueContraintTests
     {
-        [Fact]
-        public void IPersistValues()
+        public ValueContraintTests()
         {
-            var str = "2O2Fr$t4X7Zf8NOew3FLOH";
-            Ifc2x3.UtilityResource.IfcGloballyUniqueId i = new(str);
-            var vc = new ValueConstraint(str); // this is a string constraint
-            vc.IsSatisfiedBy(i).Should().BeTrue();
+            //CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
+        }
 
-            var vc3 = ValueConstraint.SingleUndefinedExact(str); // this is an undefined constraint
-            vc3.IsSatisfiedBy(i).Should().BeTrue();
+        [Fact]
+        public void xbimIfcElementsHandled()
+        {
+            var id = "2O2Fr$t4X7Zf8NOew3FLOH";
+            Ifc2x3.UtilityResource.IfcGloballyUniqueId ifcGuid = new(id);
+            var vc = new ValueConstraint(id); // this is a string constraint
+            vc.IsSatisfiedBy(ifcGuid).Should().BeTrue("string == IfcGuid");
 
-            var str2 = "2O2Fr$t4X7Zf8NOew3FLOh";
-            var vc2 = new ValueConstraint(str2);
-            vc2.IsSatisfiedBy(i).Should().BeFalse();
+            var undefinedString = ValueConstraint.SingleUndefinedExact(id);
+            undefinedString.IsSatisfiedBy(ifcGuid).Should().BeTrue("object == IfcGuid");
+
+            var differentId = "2O2Fr$t4X7Zf8NOew3FLOh";    // different due to lower-case 'h'
+            var anotherString = new ValueConstraint(differentId);
+            anotherString.IsSatisfiedBy(ifcGuid).Should().BeFalse("IfcGuids are different");
         }
 
         [Fact]
@@ -34,7 +41,10 @@ namespace Xbim.InformationSpecifications.Tests
             vc = new ValueConstraint(375.230);
             vc.IsSatisfiedBy(375.23).Should().BeTrue();
             vc.IsSatisfiedBy(375.230000).Should().BeTrue();
-            vc.IsSatisfiedBy(375.230001).Should().BeFalse();
+            vc.IsSatisfiedBy(375.230001).Should().BeTrue();     // within 1e-6 tolerance
+            vc.IsSatisfiedBy(375.229999).Should().BeTrue();     // ""
+            vc.IsSatisfiedBy(375.230500).Should().BeFalse();    // not within 1e-6 tolerance
+            vc.IsSatisfiedBy(375.229500).Should().BeFalse();    // ""
 
             vc = new ValueConstraint(375.230m);
             vc.IsSatisfiedBy(375.230m).Should().BeTrue();
@@ -49,6 +59,10 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(2f).Should().BeTrue();
             vc.IsSatisfiedBy("blue").Should().BeFalse();
             vc.IsSatisfiedBy(2d).Should().BeFalse();
+
+            vc = new ValueConstraint(12345678.910);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(12345678.910).Should().BeTrue();
         }
 
         [Fact]
@@ -90,6 +104,60 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(42.3d).Should().BeFalse();
         }
 
+        [Fact]
+        public void LongValueTypeIsInferred()
+        {
+            // from IDS test    property\pass-integer_values_are_checked_using_type_casting_1_4.ifc
+            // and              attribute\pass-integers_follow_the_same_rules_as_numbers.ids
+            ValueConstraint vc = new ValueConstraint(42);
+            vc.BaseType = NetTypeName.Undefined;    // E.g. on Attribute values we won't have a BaseType on a simpleValue constraint
+            vc.IsSatisfiedBy(42L).Should().BeTrue("42==42");
+        }
+
+        [Fact]
+        public void IntValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42).Should().BeTrue("42==42");
+
+        }
+
+        [Fact]
+        public void DecimalValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42m);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42m).Should().BeTrue("42m==42m");
+        }
+
+        [Fact]
+        public void FloatValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42f);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42d).Should().BeTrue("42f==42d");
+
+        }
+
+        [Fact]
+        public void DoubleValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(42d);
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(42f).Should().BeTrue("42d==42f");
+
+        }
+
+        // For Completeness
+        [Fact]
+        public void TimeSpanValueTypeIsInferred()
+        {
+            ValueConstraint vc = new ValueConstraint(TimeSpan.FromDays(42).ToString());
+            vc.BaseType = NetTypeName.Undefined;
+            vc.IsSatisfiedBy(TimeSpan.FromDays(42)).Should().BeTrue("42==42");
+
+        }
 
         [Fact]
         public void CaseSensitiviyTests()
@@ -168,6 +236,134 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(30L).Should().BeTrue("30L failure");
             vc.IsSatisfiedBy(60).Should().BeTrue("60 failure");
             vc.IsSatisfiedBy(60L).Should().BeTrue("60L failure");
-        } 
+        }
+
+        
+        [InlineData("text", "Text")]
+        [InlineData("à rénover", "A RENOVER")]
+        [InlineData("abîmer", "Abimer")]
+        [InlineData("tårn", "Tarn")]
+
+        [Theory]
+        public void CanCompareCaseInsensitivelyIgnoringAccents(string input, string constraint)
+        {
+
+            ValueConstraint vc = constraint;
+            vc.IsSatisfiedBy(input, true).Should().BeTrue();
+            
+        }
+
+        [InlineData(true)]
+        [InlineData(false)]
+        [Theory]
+        public void DoubleValueSupports1e6Tolerances(bool setBaseType)
+        {
+            // from IDS test property/pass-floating_point_numbers_are_compared_with_a_1e_6_tolerance_1_*.ifc && attribute equivalents
+            ValueConstraint vc = new ValueConstraint(42d);
+            if (!setBaseType)
+                vc.BaseType = NetTypeName.Undefined;
+            
+            vc.IsSatisfiedBy(42.000042d).Should().BeTrue("Within 1e-6 tolerances - high");
+            vc.IsSatisfiedBy(41.999958d).Should().BeTrue("Within 1e-6 tolerances - low");
+
+            vc.IsSatisfiedBy(42.000084d).Should().BeFalse("Outside 1e-6 tolerances - high");
+            vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
+        }
+
+        [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
+        [InlineData(50.000042d, true, "within 1e-6 max tolerances - inclusive")]
+        [InlineData(41.999916d, false, "outside 1e-6 min tolerances - inclusive")]
+        [InlineData(50.000084d, false, "outside 1e-6 max tolerances - inclusive")]
+        [Theory]
+        public void DoubleValueInclusiveRangesSupportTolerance(double input, bool expectedToSatisfy, string reason)
+        {
+            // i.e. testing whether we're within the range 42-50 'for all intents and purposes'
+            // e.g. Height must be <= 50m. 50.00000000001 is just an error introduced by FP precision
+
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var t = new RangeConstraint()
+            {
+                MinValue = 42.ToString(),
+                MinInclusive = true,
+                MaxValue = 50.ToString(),
+                MaxInclusive = true,
+            };
+            vc.AddAccepted(t);
+
+            vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy,  $"{input} is {reason}");
+        }
+
+        [InlineData(41.999958d, false, "outside min tolerances for exclusive ranges")]
+        [InlineData(41.999916d, false, "outside min tolerances for exclusive ranges")]
+        [InlineData(50.000042d, false, "outside max tolerances for exclusive ranges")]
+        [InlineData(50.000084d, false, "outside max tolerances for exclusive ranges")]
+        [InlineData(42.000042d, true, "inside min tolerances for exclusive ranges")]
+        [InlineData(49.999999d, true, "inside max tolerances for exclusive ranges")]
+        [Theory]
+        public void DoubleValueExclusiveRangesDoNotSupportTolerance(double input, bool expectedToSatisfy, string reason)
+        {
+            // Tolerences on Exclusive ranges make no sense
+            // E.g. Height must be < 50m. Assuming 50 fails, so must 50.0000000000001
+            // This does mean 49.9999999999998 < 50 succeeds - despite this potentially being an artefact of FP imprecision
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var t = new RangeConstraint()
+            {
+                MinValue = 42.ToString(),
+                MinInclusive = false,
+                MaxValue = 50.ToString(),
+                MaxInclusive = false,
+            };
+            vc.AddAccepted(t);
+
+            vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy, $"{input} is {reason}");
+
+            // TODO: Consider semantic paradox where:
+            // 41.999958d satisfies being in the range 42-50 inclusive, but also satisfies being < 42 exclusive
+        }
+
+        [InlineData(1.2345678919873e-22d)]    // Not Supported as we Round to 6 DP
+        [InlineData(1.2345678919873e-6d)]
+        [InlineData(1.2345678919873e22d)]
+        [InlineData(1234567891.9873d)]
+        [InlineData(0d)]
+        [InlineData(-1d)]
+        [InlineData(-1e-5d)]
+        [InlineData(-1e-6d)]
+        [InlineData(-1.2345678919873e22d)]
+        [Theory]
+        public void ExtremeRealValuesAreHandled(double value)
+        {
+            var vc = new ValueConstraint(value);
+
+            vc.IsSatisfiedBy(value).Should().BeTrue();
+
+        }
+
+        [InlineData(NetTypeName.Decimal)]
+        [InlineData(NetTypeName.Floating)]
+        [InlineData(NetTypeName.Double)]
+        [InlineData(NetTypeName.Integer)]
+        [InlineData(NetTypeName.Undefined)]
+        [Theory]
+        public void CultureShouldNotAffectResults(NetTypeName type)
+        {
+            var constraint = new ValueConstraint(type);
+            //var amnt = 98765.43d;
+            object amnt = type switch { 
+                NetTypeName.Decimal => 98765.432m,
+                NetTypeName.Floating => 98765.432f,
+                NetTypeName.Double => 98765.432d,
+                NetTypeName.Integer => 98765L,
+                _ => 98765.432d
+            };
+
+            var formatable = amnt as IFormattable;
+            var exact = new ExactConstraint(formatable!.ToString(null, CultureInfo.InvariantCulture)!);
+            constraint.AddAccepted(exact);
+
+            // Act
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
+            constraint.IsSatisfiedBy(amnt).Should().BeTrue();
+        }
     }
 }

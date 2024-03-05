@@ -84,32 +84,47 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (context is null)
                 return false;
-            if (candiatateValue is not IComparable compe)
+            if (candidateValue is not IComparable valueToCompare)
             {
-                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candiatateValue}'", candiatateValue.GetType().Name, candiatateValue);
+                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candidateValue}'", candidateValue.GetType().Name, candidateValue);
                 return false;
             }
             var minOk = true;
             var maxOk = true;
+            
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
-                var mn = ValueConstraint.GetObject(MinValue, context.BaseType);
+                var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
+                if (MinInclusive) minimum = ApplyTolerance(minimum, false);
                 minOk = MinInclusive
-                    ? compe.CompareTo(mn) >= 0
-                    : compe.CompareTo(mn) > 0;
+                    ? valueToCompare.CompareTo(minimum) >= 0
+                    : valueToCompare.CompareTo(minimum) > 0;
             }
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
-                var mx = ValueConstraint.GetObject(MaxValue, context.BaseType);
+                var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
+                if (MaxInclusive) maximum = ApplyTolerance(maximum, true);
                 maxOk = MaxInclusive
-                    ? compe.CompareTo(mx) <= 0
-                    : compe.CompareTo(mx) < 0;
+                    ? valueToCompare.CompareTo(maximum) <= 0
+                    : valueToCompare.CompareTo(maximum) < 0;
             }
             return minOk && maxOk;
+        }
+
+        private object? ApplyTolerance(object? value, bool isMax, double tolerance = ValueConstraint.DefaultRealPrecision)
+        {
+            var factor = isMax ? (1 + tolerance) : (1 - tolerance);
+            return value switch
+            {
+                float f => f * factor,
+                double d => d * factor,
+                _ => value
+
+            };
         }
 
         /// <inheritdoc />
@@ -132,8 +147,8 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            var min = ValueConstraint.GetObject(MinValue, context.BaseType);
-            var max = ValueConstraint.GetObject(MaxValue, context.BaseType);
+            var min = ValueConstraint.ParseValue(MinValue, context.BaseType);
+            var max = ValueConstraint.ParseValue(MaxValue, context.BaseType);
 
             // values need to be succesfully converted
             if (min is null && !string.IsNullOrEmpty(MinValue))

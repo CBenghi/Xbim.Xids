@@ -203,6 +203,17 @@ namespace Xbim.InformationSpecifications
 			maxInclusive,
         }
 
+        /// <summary>
+        /// Converts the passed <paramref name="value"/> to the provided <paramref name="typeName"/>
+        /// </summary>
+        /// <param name="value">the value to try to convert</param>
+        /// <param name="typeName">the destination type</param>
+        /// <returns>Null when conversion is not successful</returns>
+        [Obsolete("Prefer ConvertObject()")]
+        public static object? GetObject(object value, NetTypeName typeName)
+        {
+            return ConvertObject(value, typeName);
+        }
 
         /// <summary>
         /// Converts the passed <paramref name="value"/> to the provided <paramref name="typeName"/>
@@ -210,38 +221,48 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">the value to try to convert</param>
         /// <param name="typeName">the destination type</param>
         /// <returns>Null when conversion is not successful</returns>
-		public static object? GetObject(object value, NetTypeName typeName)
+		public static object? ConvertObject(object value, NetTypeName typeName)
         {
-            if (typeName == NetTypeName.Undefined) // if undefined type just return the value, unaltered.
-                return value;
-            if (typeName == NetTypeName.Integer)
-                return Convert.ToInt32(value);
-            if (typeName == NetTypeName.Decimal)
-                return Convert.ToDecimal(value);
-            if (typeName == NetTypeName.Double)
-                return Convert.ToDouble(value);
-            if (typeName == NetTypeName.Floating)
-                return Convert.ToSingle(value);
-            if (typeName == NetTypeName.Date)
-                return Convert.ToDateTime(value);
-            if (typeName == NetTypeName.Boolean)
-                return Convert.ToBoolean(value);
-            if (typeName == NetTypeName.Time)
+            switch (typeName) // if undefined type just return the value, unaltered.
             {
-                var tmp = Convert.ToDateTime(value);
-                return tmp.TimeOfDay;
+                case NetTypeName.Undefined:
+                    return value;
+                case NetTypeName.Integer:
+                    return Convert.ToInt32(value, CultureHelper.SystemCulture);
+                case NetTypeName.Decimal:
+                    return Convert.ToDecimal(value, CultureHelper.SystemCulture);
+                case NetTypeName.Double:
+                    return Convert.ToDouble(value, CultureHelper.SystemCulture);
+                case NetTypeName.Floating:
+                    return Convert.ToSingle(value, CultureHelper.SystemCulture);
+                case NetTypeName.Date:
+                case NetTypeName.DateTime:
+                    return Convert.ToDateTime(value, CultureHelper.SystemCulture);
+                case NetTypeName.Boolean:
+                    return Convert.ToBoolean(value);
+                case NetTypeName.Time:
+                    {
+                        var tmp = Convert.ToDateTime(value, CultureHelper.SystemCulture);
+                        return tmp.TimeOfDay;
+                    }
+
+                case NetTypeName.Uri:
+                    {
+                        if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
+                            return val;
+                        return null;
+                    }
+                case NetTypeName.Duration:
+                    if (TimeSpan.TryParse(value.ToString(), CultureInfo.InvariantCulture, out var duration))
+                        return duration;
+                    return null;
+
+                case NetTypeName.String:
+                    return value.ToString();
+                
+                default:
+                    return value;
             }
-            if (typeName == NetTypeName.Uri)
-            {
-                if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
-                    return val;
-                return null;
-            }
-            if (typeName == NetTypeName.String)
-            {
-                return value.ToString();
-            }
-            return value;
         }
 
         /// <summary>
@@ -250,27 +271,53 @@ namespace Xbim.InformationSpecifications
         /// <param name="value">The value to cast</param>
         /// <param name="castingObjectForType">An object used to determine the casting</param>
         /// <returns>a cast object according to the type of <paramref name="castingObjectForType"/></returns>
+        [Obsolete("Prefer ParseValue()")]
         public static object? CastObject(string value, object castingObjectForType)
         {
-            return castingObjectForType switch
+            return ParseValue(value, castingObjectForType);
+        }
+
+        /// <summary>
+        /// Parse the constraint value into a form suitable for the target type
+        /// </summary>
+        /// <param name="value">The value to cast</param>
+        /// <param name="targetType">An object used to determine the type to parse to</param>
+        /// <returns>a cast object according to the type of <paramref name="targetType"/></returns>
+        public static object? ParseValue(string value, object targetType)
+        {
+            return targetType switch
             {
-                // TODO: Decimal
-                double => GetObject(value, NetTypeName.Double),
-                float => GetObject(value, NetTypeName.Floating),
-                int => GetObject(value, NetTypeName.Integer),
-                DateTime => GetObject(value, NetTypeName.DateTime),
-                TimeSpan => GetObject(value, NetTypeName.Duration),
+                double => ParseValue(value, NetTypeName.Double),
+                float => ParseValue(value, NetTypeName.Floating),
+                decimal => ParseValue(value, NetTypeName.Decimal),
+                short => ParseValue(value, NetTypeName.Integer),
+                int => ParseValue(value, NetTypeName.Integer),
+                long => ParseValue(value, NetTypeName.Integer),
+                DateTime => ParseValue(value, NetTypeName.DateTime),
+                TimeSpan => ParseValue(value, NetTypeName.Duration),
                 _ => value,
             };
         }
 
         /// <summary>
-        /// Converts the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
+        /// Attempt to Parse the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
         /// </summary>
         /// <param name="value">The value to parse</param>
         /// <param name="typeName">The destination type required</param>
         /// <returns>Null if parsing or conversion are not succesful, a nullable string in case of undefined type</returns>
-		public static object? GetObject(string? value, NetTypeName typeName)
+        [Obsolete("Prefer ParseValue()")]
+        public static object? GetObject(string? value, NetTypeName typeName)
+        {
+            return ParseValue(value, typeName);
+        }
+
+        /// <summary>
+        /// Attempt to Parse the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
+        /// </summary>
+        /// <param name="value">The value to parse</param>
+        /// <param name="typeName">The destination type required</param>
+        /// <returns>Null if parsing or conversion are not succesful, a nullable string in case of undefined type</returns>
+		public static object? ParseValue(string? value, NetTypeName typeName)
         {
             var culture = CultureHelper.SystemCulture;
             if (string.IsNullOrEmpty(value))
@@ -286,7 +333,8 @@ namespace Xbim.InformationSpecifications
                 case NetTypeName.String:
                     return value;
                 case NetTypeName.Integer:
-                    if (int.TryParse(value, NumberStyles.Integer, culture, out var ival))
+                    // Use decimal as a unifying type for all integral values
+                    if (decimal.TryParse(value, NumberStyles.Integer, culture, out var ival))
                         return ival;
                     return null;
                 case NetTypeName.Floating:
@@ -339,12 +387,5 @@ namespace Xbim.InformationSpecifications
             };
         }
 
-        internal static bool FormalEquals(object toCheck, object? candiatateValue)
-        {
-            // special casts for ifcTypes
-            if (toCheck.GetType().Name == "IfcGloballyUniqueId")
-                return toCheck.ToString()!.Equals(candiatateValue);   
-            return toCheck.Equals(candiatateValue);
-        }
     }
 }

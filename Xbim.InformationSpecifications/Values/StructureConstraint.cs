@@ -181,25 +181,25 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object? candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object? candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (TotalDigits.HasValue)
             {
-                if (candiatateValue is null)
+                if (candidateValue is null)
                     return false;
                 // first of all, if candidateValue is float or double we convert it to decimal to count the digits.
-                switch (candiatateValue)
+                switch (candidateValue)
                 {
                     case float f:
                         // todo: should there be a warning for conversion here?
-                        candiatateValue = Convert.ToDecimal(f);
+                        candidateValue = Convert.ToDecimal(f);
                         break;
                     case double d:
                         // todo: should there be a warning for conversion here?
-                        candiatateValue = Convert.ToDecimal(d);
+                        candidateValue = Convert.ToDecimal(d);
                         break;
                 }
-                switch (candiatateValue)
+                switch (candidateValue)
                 {
                     case decimal dec:
                         {
@@ -223,25 +223,25 @@ namespace Xbim.InformationSpecifications
                             break;
                         }
                     default:
-                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candidateValue.GetType().Name);
                         return false;
                 }
             }
             if (FractionDigits.HasValue)
             {
-                if (candiatateValue is null)
+                if (candidateValue is null)
                     return false;
                 // first of all, if candidateValue is float or double we convert it to decimal to count the digits.
-                switch (candiatateValue)
+                switch (candidateValue)
                 {
                     case float f:
-                        candiatateValue = Convert.ToDecimal(f);
+                        candidateValue = Convert.ToDecimal(f);
                         break;
                     case double d:
-                        candiatateValue = Convert.ToDecimal(d);
+                        candidateValue = Convert.ToDecimal(d);
                         break;
                 }
-                switch (candiatateValue)
+                switch (candidateValue)
                 {
                     case decimal dec:
                         {
@@ -257,15 +257,15 @@ namespace Xbim.InformationSpecifications
                             return false;
                         break;
                     default:
-                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candiatateValue.GetType().Name);
+                        logger?.LogError("TotalDigits check is not implemented for type '{}'", candidateValue.GetType().Name);
                         return false;
                 }
             }
             if (Length.HasValue || MinLength.HasValue || MaxLength.HasValue)
             {
-                if (candiatateValue is null)
+                if (candidateValue is null)
                     return false;
-                var eval = candiatateValue.ToString() ?? string.Empty;
+                var eval = candidateValue.ToString() ?? string.Empty;
                 var l = eval.Length;
                 if (Length.HasValue && l != Length.Value)
                     return false;
