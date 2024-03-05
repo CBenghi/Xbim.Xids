@@ -321,6 +321,24 @@ namespace Xbim.InformationSpecifications.Tests
             // 41.999958d satisfies being in the range 42-50 inclusive, but also satisfies being < 42 exclusive
         }
 
+        [InlineData(1.2345678919873e-22d)]    // Not Supported as we Round to 6 DP
+        [InlineData(1.2345678919873e-6d)]
+        [InlineData(1.2345678919873e22d)]
+        [InlineData(1234567891.9873d)]
+        [InlineData(0d)]
+        [InlineData(-1d)]
+        [InlineData(-1e-5d)]
+        [InlineData(-1e-6d)]
+        [InlineData(-1.2345678919873e22d)]
+        [Theory]
+        public void ExtremeRealValuesAreHandled(double value)
+        {
+            var vc = new ValueConstraint(value);
+
+            vc.IsSatisfiedBy(value).Should().BeTrue();
+
+        }
+
         [InlineData(NetTypeName.Decimal)]
         [InlineData(NetTypeName.Floating)]
         [InlineData(NetTypeName.Double)]

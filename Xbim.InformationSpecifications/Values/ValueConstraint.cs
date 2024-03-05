@@ -550,16 +550,30 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="expectedValue">The precise double value expected</param>
         /// <param name="candidate">The candidate double value which may have FP imprecisions</param>
-        /// <param name="tolerance">The double tolerance. Defaults to 0.0000001</param>
-        /// <param name="decimals">The number of decimals to round to</param>
+        /// <param name="tolerance">The double tolerance. Defaults to 1e-6</param>
+        /// <param name="decimals">The number of decimals to round to. Defaults to 14 decimal places</param>
         /// <returns></returns>
-        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultRealPrecision, int decimals = 6)
+        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultRealPrecision, int decimals = 14)
         {
             // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
+            // Rounding is primarily to ensure consistency with IDS testcase edgecase where 42.000042 is right on a boundary.
             var lowerBound = Math.Round(expectedValue * (1 - tolerance), decimals);
             var upperBound = Math.Round(expectedValue * (1 + tolerance), decimals);
+            if (lowerBound == upperBound)
+            {
+                // expectedValue is less than the number of DP we round to, creating false positives when testing for very small number e.g. < 1e-14
+                return candidate == expectedValue;
+            }
 
-            return candidate >= lowerBound && candidate <= upperBound;
+            if (expectedValue >=0)
+            {
+                return candidate >= lowerBound && candidate <= upperBound;
+            }
+            else
+            {
+                // invert 'between' comparison when testing for -ve real
+                return candidate >= upperBound && candidate <= lowerBound;
+            }
         }
     }
 }
