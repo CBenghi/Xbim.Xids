@@ -260,5 +260,56 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
         }
 
+        [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
+        [InlineData(50.000042d, true, "within 1e-6 max tolerances - inclusive")]
+        [InlineData(41.999916d, false, "outside 1e-6 min tolerances - inclusive")]
+        [InlineData(50.000084d, false, "outside 1e-6 max tolerances - inclusive")]
+        [Theory]
+        public void DoubleValueInclusiveRangesSupportTolerance(double input, bool expectedToSatisfy, string reason)
+        {
+            // i.e. testing whether we're within the range 42-50 'for all intents and purposes'
+            // e.g. Height must be <= 50m. 50.00000000001 is just an error introduced by FP precision
+
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var t = new RangeConstraint()
+            {
+                MinValue = 42.ToString(),
+                MinInclusive = true,
+                MaxValue = 50.ToString(),
+                MaxInclusive = true,
+            };
+            vc.AddAccepted(t);
+
+            vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy,  $"{input} is {reason}");
+        }
+
+        [InlineData(41.999958d, false, "outside min tolerances for exclusive ranges")]
+        [InlineData(41.999916d, false, "outside min tolerances for exclusive ranges")]
+        [InlineData(50.000042d, false, "outside max tolerances for exclusive ranges")]
+        [InlineData(50.000084d, false, "outside max tolerances for exclusive ranges")]
+        [InlineData(42.000042d, true, "inside min tolerances for exclusive ranges")]
+        [InlineData(49.999999d, true, "inside max tolerances for exclusive ranges")]
+        [Theory]
+        public void DoubleValueExclusiveRangesDoNotSupportTolerance(double input, bool expectedToSatisfy, string reason)
+        {
+            // Tolerences on Exclusive ranges make no sense
+            // E.g. Height must be < 50m. Assuming 50 fails, so must 50.0000000000001
+            // This does mean 49.9999999999998 < 50 succeeds - despite this potentially being an artefact of FP imprecision
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var t = new RangeConstraint()
+            {
+                MinValue = 42.ToString(),
+                MinInclusive = false,
+                MaxValue = 50.ToString(),
+                MaxInclusive = false,
+            };
+            vc.AddAccepted(t);
+
+            vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy, $"{input} is {reason}");
+
+            // TODO: Consider semantic paradox where:
+            // 41.999958d satisfies being in the range 42-50 inclusive, but also satisfies being < 42 exclusive
+        }
+
     }
 }

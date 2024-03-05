@@ -539,5 +539,26 @@ namespace Xbim.InformationSpecifications
             }
             return true;
         }
+
+        /// <summary>
+        /// The Default precision to use for Real equality testing
+        /// </summary>
+        internal const double DefaultRealPrecision = 1e-6;
+        /// <summary>
+        /// Determines if a Real value is equal to the expected value accounting for floating point tolerances
+        /// </summary>
+        /// <param name="expectedValue">The precise double value expected</param>
+        /// <param name="candidate">The candidate double value which may have FP imprecisions</param>
+        /// <param name="tolerance">The double tolerance. Defaults to 0.0000001</param>
+        /// <param name="decimals">The number of decimals to round to</param>
+        /// <returns></returns>
+        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultRealPrecision, int decimals = 6)
+        {
+            // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
+            var lowerBound = Math.Round(expectedValue * (1 - tolerance), decimals);
+            var upperBound = Math.Round(expectedValue * (1 + tolerance), decimals);
+
+            return candidate >= lowerBound && candidate <= upperBound;
+        }
     }
 }

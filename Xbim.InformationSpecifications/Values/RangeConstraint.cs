@@ -88,28 +88,43 @@ namespace Xbim.InformationSpecifications
         {
             if (context is null)
                 return false;
-            if (candidateValue is not IComparable compe)
+            if (candidateValue is not IComparable valueToCompare)
             {
                 logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candidateValue}'", candidateValue.GetType().Name, candidateValue);
                 return false;
             }
             var minOk = true;
             var maxOk = true;
+            
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
-                var mn = ValueConstraint.ParseValue(MinValue, context.BaseType);
+                var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
+                if (MinInclusive) minimum = ApplyTolerance(minimum, false);
                 minOk = MinInclusive
-                    ? compe.CompareTo(mn) >= 0
-                    : compe.CompareTo(mn) > 0;
+                    ? valueToCompare.CompareTo(minimum) >= 0
+                    : valueToCompare.CompareTo(minimum) > 0;
             }
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
-                var mx = ValueConstraint.ParseValue(MaxValue, context.BaseType);
+                var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
+                if (MaxInclusive) maximum = ApplyTolerance(maximum, true);
                 maxOk = MaxInclusive
-                    ? compe.CompareTo(mx) <= 0
-                    : compe.CompareTo(mx) < 0;
+                    ? valueToCompare.CompareTo(maximum) <= 0
+                    : valueToCompare.CompareTo(maximum) < 0;
             }
             return minOk && maxOk;
+        }
+
+        private object? ApplyTolerance(object? value, bool isMax, double tolerance = ValueConstraint.DefaultRealPrecision)
+        {
+            var factor = isMax ? (1 + tolerance) : (1 - tolerance);
+            return value switch
+            {
+                float f => f * factor,
+                double d => d * factor,
+                _ => value
+
+            };
         }
 
         /// <inheritdoc />

@@ -120,8 +120,8 @@ namespace Xbim.InformationSpecifications
 
             return candidateValue switch
             {
-                float => IsEqualWithinTolerance(Convert.ToSingle(expectedValue), Convert.ToSingle(candidateValue)),
-                double => IsEqualWithinTolerance(Convert.ToDouble(expectedValue), Convert.ToDouble(candidateValue)),
+                float => ValueConstraint.IsEqualWithinTolerance(Convert.ToSingle(expectedValue), Convert.ToSingle(candidateValue)),
+                double => ValueConstraint.IsEqualWithinTolerance(Convert.ToDouble(expectedValue), Convert.ToDouble(candidateValue)),
                 // Use decimal as means to compare equality of integral numbers - boxed int 42 != long 42
                 int => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
                 short => Convert.ToDecimal(expectedValue) == Convert.ToDecimal(candidateValue),
@@ -134,21 +134,13 @@ namespace Xbim.InformationSpecifications
         {
             return candidateValue switch
             {
-                float => IsEqualWithinTolerance(Convert.ToSingle(Value), Convert.ToSingle(candidateValue)),
-                double => IsEqualWithinTolerance(Convert.ToDouble(Value), Convert.ToDouble(candidateValue)),
+                float =>  ValueConstraint.IsEqualWithinTolerance(Convert.ToSingle(Value), Convert.ToSingle(candidateValue)),
+                double => ValueConstraint.IsEqualWithinTolerance(Convert.ToDouble(Value), Convert.ToDouble(candidateValue)),
                 _ => false
             };
         }
 
 
-        const double DefaultPrecision = 1e-6;
-        private static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultPrecision, int decimals = 6)
-        {
-            // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
-            var lowerBound = Math.Round(expectedValue * (1 - tolerance), decimals);
-            var upperBound = Math.Round(expectedValue * (1 + tolerance), decimals);
-
-            return candidate >= lowerBound && candidate <= upperBound;
-        }
+        
     }
 }
