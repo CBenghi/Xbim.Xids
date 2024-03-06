@@ -1,15 +1,20 @@
 ﻿using FluentAssertions;
 using System;
 using System.Globalization;
+using Xbim.InformationSpecifications.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests
 {
 
     public class ValueContraintTests
     {
-        public ValueContraintTests()
+        private readonly ITestOutputHelper output;
+
+        public ValueContraintTests(ITestOutputHelper output)
         {
+            this.output = output;
             //CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
         }
 
@@ -398,12 +403,13 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData(1.2345678919873e22d)]
         [InlineData(1234567891.9873d)]
         [InlineData(0d)]
-        [InlineData(-1d)]
+        [InlineData(-1d)] // Edge-case where FP tolerance bounds reduce to zero
+        [InlineData(-1e10d)]
         [InlineData(-1e-5d)]
         [InlineData(-1e-6d)]
         [InlineData(-1.2345678919873e22d)]
         [Theory]
-        public void ExtremeRealValuesAreHandled(double value)
+        public void ExtremeRealValuesCanBeTested(double value)
         {
             var vc = new ValueConstraint(value);
 
@@ -436,6 +442,50 @@ namespace Xbim.InformationSpecifications.Tests
             // Act
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
             constraint.IsSatisfiedBy(amnt).Should().BeTrue();
+        }
+
+        [InlineData(0.001d, 0.000998999d, 0.0010010009999999998d)]
+        [InlineData(0d, -1e-06, 1e-06)]
+        [InlineData(1.0d, 0.9999979999999999d, 1.0000019999999998d)]
+        [InlineData(1000.0d, 999.998999d, 1000.0010009999999d)]
+
+        [InlineData(1e-06, 0d, 2e-06)]
+        [InlineData(-1e-06, -2e-06, 0d)]
+        [InlineData(-1.0d, -1d, -1d)] // An edge case
+        [Theory]
+        public void RealHelperBoundsPrecisionTests(double value, double expectedLower, double expectedUpper)
+        {
+            (var lower, var upper) = RealHelper.GetPrecisionBounds(value);
+
+            lower.Should().BeApproximately(expectedLower, 1e-10);
+            upper.Should().BeApproximately(expectedUpper, 1e-10);
+        }
+
+
+
+        [Fact]
+        public void RealTolerancesAnalysis()
+        {
+            for(int i = 5; i > -8; i--)
+            {
+                var value = Math.Pow(10, i);
+                DoTest(value);
+            }
+            DoTest(0);
+            for (int i = -7; i < 6; i++)
+            {
+                var value = 0 - Math.Pow(10, i);
+                DoTest(value);
+            }
+
+            void DoTest(double value)
+            {
+                (var lower, var upper) = RealHelper.GetPrecisionBounds(value);
+                var spread = upper - lower;
+
+                output.WriteLine($"{value,12} = {lower,24:R} >= x <= {upper,24:R} Δ {spread:R}");
+                //output.WriteLine($"{value,12},{lower,24:R},{upper,24:R},{spread:R}");
+            }
         }
     }
 }

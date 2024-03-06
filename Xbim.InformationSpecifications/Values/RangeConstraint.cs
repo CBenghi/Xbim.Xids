@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -121,8 +122,8 @@ namespace Xbim.InformationSpecifications
         /// <param name="expectedValue"></param>
         /// <param name="isMax">Indicates if the expected value is a maxima, or minima</param>
         /// <param name="tolerance">The floating point tolerance. Defaults to 1e-06</param>
-        /// <returns></returns>
-        private object? ApplyRealTolerances(object? expectedValue, bool isMax, double tolerance = ValueConstraint.DefaultRealPrecision)
+        /// <returns>The value with tolerance applied</returns>
+        private object? ApplyRealTolerances(object? expectedValue, bool isMax, double tolerance = RealHelper.DefaultRealPrecision)
         {
             // To support 1e-6 tolerance on Reals we increase/decrease the magnitude of the appropriate end of the range,
             // depending on whether it's upper (Max) or lower (Min).
@@ -138,8 +139,15 @@ namespace Xbim.InformationSpecifications
             {
                 var increaseFactor = isMax ? (1 + tolerance) : (1 - tolerance);
                 var decreaseFactor = isMax ? (1 - tolerance) : (1 + tolerance);
-
-                return value * ((value >= 0) ? increaseFactor : decreaseFactor);
+                var fixedFactor = (isMax ? +tolerance : -tolerance);
+                if ((value >= 0))
+                {
+                    return (value * increaseFactor) + fixedFactor;
+                }
+                else
+                {
+                    return (value * decreaseFactor) + fixedFactor;
+                }
             };
             return expectedValue switch
             {
