@@ -542,28 +542,21 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// The Default precision to use for Real equality testing
-        /// </summary>
-        internal const double DefaultRealPrecision = 1e-6;
-        /// <summary>
         /// Determines if a Real value is equal to the expected value accounting for floating point tolerances
         /// </summary>
         /// <param name="expectedValue">The precise double value expected</param>
         /// <param name="candidate">The candidate double value which may have FP imprecisions</param>
         /// <param name="tolerance">The double tolerance. Defaults to 1e-6</param>
-        /// <param name="decimals">The number of decimals to round to. Defaults to 14 decimal places</param>
         /// <returns></returns>
-        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = DefaultRealPrecision, int decimals = 14)
+        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = RealHelper.DefaultRealPrecision)
         {
+            // handle the trivial equality case first
+            if (expectedValue == candidate)
+                return true;
+
+            // Account for FP precison issues
             // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
-            // Rounding is primarily to ensure consistency with IDS testcase edgecase where 42.000042 is right on a boundary.
-            var lowerBound = Math.Round(expectedValue * (1 - tolerance), decimals);
-            var upperBound = Math.Round(expectedValue * (1 + tolerance), decimals);
-            if (lowerBound == upperBound)
-            {
-                // expectedValue is less than the number of DP we round to, creating false positives when testing for very small number e.g. < 1e-14
-                return candidate == expectedValue;
-            }
+            (var lowerBound, var upperBound) = RealHelper.GetPrecisionBounds(expectedValue, tolerance);
 
             if (expectedValue >=0)
             {
@@ -575,5 +568,6 @@ namespace Xbim.InformationSpecifications
                 return candidate >= upperBound && candidate <= lowerBound;
             }
         }
+
     }
 }
