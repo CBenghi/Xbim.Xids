@@ -333,8 +333,8 @@ namespace Xbim.InformationSpecifications
                 case NetTypeName.String:
                     return value;
                 case NetTypeName.Integer:
-                    // Use decimal as a unifying type for all integral values
-                    if (decimal.TryParse(value, NumberStyles.Integer, culture, out var ival))
+                    // TODO:Review handling of longs
+                    if (int.TryParse(value, NumberStyles.Integer, culture, out var ival))
                         return ival;
                     return null;
                 case NetTypeName.Floating:

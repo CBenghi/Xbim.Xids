@@ -99,7 +99,7 @@ namespace Xbim.InformationSpecifications
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
                 var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
-                if (MinInclusive) minimum = ApplyTolerance(minimum, false);
+                if (MinInclusive) minimum = ApplyRealTolerances(minimum, false);
                 minOk = MinInclusive
                     ? valueToCompare.CompareTo(minimum) >= 0
                     : valueToCompare.CompareTo(minimum) > 0;
@@ -107,7 +107,7 @@ namespace Xbim.InformationSpecifications
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
                 var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
-                if (MaxInclusive) maximum = ApplyTolerance(maximum, true);
+                if (MaxInclusive) maximum = ApplyRealTolerances(maximum, true);
                 maxOk = MaxInclusive
                     ? valueToCompare.CompareTo(maximum) <= 0
                     : valueToCompare.CompareTo(maximum) < 0;
@@ -115,16 +115,38 @@ namespace Xbim.InformationSpecifications
             return minOk && maxOk;
         }
 
-        private object? ApplyTolerance(object? value, bool isMax, double tolerance = ValueConstraint.DefaultRealPrecision)
+        /// <summary>
+        /// Applies a tolerance factor to Real constraint values to support small floating point imprecisions
+        /// </summary>
+        /// <param name="expectedValue"></param>
+        /// <param name="isMax">Indicates if the expected value is a maxima, or minima</param>
+        /// <param name="tolerance">The floating point tolerance. Defaults to 1e-06</param>
+        /// <returns></returns>
+        private object? ApplyRealTolerances(object? expectedValue, bool isMax, double tolerance = ValueConstraint.DefaultRealPrecision)
         {
-            var factor = isMax ? (1 + tolerance) : (1 - tolerance);
-            return value switch
-            {
-                float f => f * factor,
-                double d => d * factor,
-                _ => value
+            // To support 1e-6 tolerance on Reals we increase/decrease the magnitude of the appropriate end of the range,
+            // depending on whether it's upper (Max) or lower (Min).
+            // This follows the same pattern used in IDS to account for magnitude of the value. https://github.com/buildingSMART/IDS/issues/78#issuecomment-1976197561
+            // But for ranges also need to reverse the logic when the value is -ve
+            //  [123.45   <= ---- => 678.90]    For +ve range values
+            // [ 123.449  <= ---- => 678.901]   Min decreases in magnitude, while Max increases
+            // But for negative we reverse that
+            //  [-678.90  <= ---- => -123.45]  For -ve range values
+            // [ -678.901 <= ---- => -123.449] Min increases in magnitude, while Max decreases
 
+            var applyFactor = (double value) =>
+            {
+                var increaseFactor = isMax ? (1 + tolerance) : (1 - tolerance);
+                var decreaseFactor = isMax ? (1 - tolerance) : (1 + tolerance);
+
+                return value * ((value >= 0) ? increaseFactor : decreaseFactor);
             };
+            return expectedValue switch
+            {
+                float f => Convert.ToSingle(applyFactor(f)),
+                double d => applyFactor(d),
+                _ => expectedValue  // Unchanged
+            }; ;
         }
 
         /// <inheritdoc />

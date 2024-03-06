@@ -204,6 +204,53 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(4.01d).Should().BeFalse();
         }
 
+        [InlineData(NetTypeName.Integer)]
+        //[InlineData(NetTypeName.Undefined)]   // TODO: Notsupported. Range Checks require BaseType, 
+        [Theory]
+        public void RangeConstraintSupportsNegative(NetTypeName type)
+        {
+            var vc = new ValueConstraint(type);
+            var t = new RangeConstraint()
+            {
+                MinValue = (-32).ToString(),
+                MinInclusive = true,
+                MaxValue = (-1).ToString(),
+                MaxInclusive = true,
+            };
+            vc.AddAccepted(t);
+            vc.IsValid().Should().BeTrue();
+
+            vc.IsSatisfiedBy(-32).Should().BeTrue();
+            vc.IsSatisfiedBy(-31).Should().BeTrue();
+            vc.IsSatisfiedBy(-1).Should().BeTrue();
+            // Fails
+            vc.IsSatisfiedBy(0).Should().BeFalse();
+            vc.IsSatisfiedBy(-33).Should().BeFalse();
+        }
+
+
+        [Fact]
+        public void RangeConstraintSupportsNegativeFloats()
+        {
+            var vc = new ValueConstraint(NetTypeName.Floating);
+            var t = new RangeConstraint()
+            {
+                MinValue = (-32).ToString(),
+                MinInclusive = true,
+                MaxValue = (-1).ToString(),
+                MaxInclusive = true,
+            };
+            vc.AddAccepted(t);
+            vc.IsValid().Should().BeTrue();
+
+            vc.IsSatisfiedBy(-32f).Should().BeTrue();
+            vc.IsSatisfiedBy(-31f).Should().BeTrue();
+            vc.IsSatisfiedBy(-1f).Should().BeTrue();
+            // Fails
+            vc.IsSatisfiedBy(0f).Should().BeFalse();
+            vc.IsSatisfiedBy(-33f).Should().BeFalse();
+        }
+
         [Fact]
         public void DecimalRangesAreInclusive()
         {
@@ -291,6 +338,31 @@ namespace Xbim.InformationSpecifications.Tests
             vc.AddAccepted(t);
 
             vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy,  $"{input} is {reason}");
+        }
+
+        [InlineData(-41.999958d, true, "within 1e-6 min tolerances - inclusive")]
+        [InlineData(-45d, true, "well within")]
+        [InlineData(-50.000042d, true, "within 1e-6 max tolerances - inclusive")]
+        [InlineData(-41.999916d, false, "outside 1e-6 min tolerances - inclusive")]
+        [InlineData(-50.000084d, false, "outside 1e-6 max tolerances - inclusive")]
+        [Theory]
+        public void DoubleNegativeValueInclusiveRangesSupportTolerance(double input, bool expectedToSatisfy, string reason)
+        {
+
+
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var t = new RangeConstraint()
+            {
+                MinValue = (-50).ToString(),
+                MinInclusive = true,
+                MaxValue = (-42).ToString(),
+                MaxInclusive = true,
+            };
+
+            vc.AddAccepted(t);
+            vc.IsValid().Should().BeTrue();
+
+            vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy, $"{input} is {reason}");
         }
 
         [InlineData(41.999958d, false, "outside min tolerances for exclusive ranges")]
