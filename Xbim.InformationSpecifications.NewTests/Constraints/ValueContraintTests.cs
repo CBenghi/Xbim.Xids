@@ -270,7 +270,7 @@ namespace Xbim.InformationSpecifications.Tests
             vc.AddAccepted(t);
 
             vc.IsSatisfiedBy(42.1).Should().BeFalse("40.1 failure");
-            vc.IsSatisfiedBy(41.999999f).Should().BeFalse("41.9999 failure");
+            vc.IsSatisfiedBy(41.99999f).Should().BeFalse("41.9999 failure");    // Note 41.99999f rounds to 42.0 so will satisfy
             vc.IsSatisfiedBy(42L).Should().BeTrue("42L failure");
             vc.IsSatisfiedBy(42M).Should().BeTrue("42M failure");
             vc.IsSatisfiedBy(42d).Should().BeTrue("42d failure");
@@ -461,6 +461,59 @@ namespace Xbim.InformationSpecifications.Tests
             upper.Should().BeApproximately(expectedUpper, 1e-10);
         }
 
+        [InlineData("42")]
+        [InlineData("42.0")]
+        [InlineData("42.")]
+        [InlineData("-42", -42)]
+        [InlineData("-42.0", -42)]
+        [InlineData("-42.", -42)]
+        [InlineData("0", 0)]
+        [InlineData("0.", 0)]
+        [InlineData("0.0", 0)]
+        [Theory]
+        public void UndefinedIntegerParsingSupportsRedundantDecimals(string intText, int expected = 42)
+        {
+            // Integer Parsing should permit specification of a zero decimal
+
+            // from attribute/pass-integers_follow_the_same_rules_as_numbers_2_2
+            //      /property/pass-integer_values_are_checked_using_type_casting_3_4.ifc
+            var constraint = new ValueConstraint(NetTypeName.Undefined); 
+            var exact = new ExactConstraint(intText);
+            constraint.AddAccepted(exact);
+
+            constraint.IsSatisfiedBy(expected).Should().BeTrue();
+        }
+
+        [Fact]
+        public void TypedIntegerRangesAreSatisfiedByReals()
+        {
+            // E.g. Integer Range Constraint 0 <= x <= 10 can be satified by 5d
+            // from restriction/pass-a_bound_can_be_inclusive_2_3.ifc etc
+            
+            var constraint = new ValueConstraint(NetTypeName.Integer);
+            var exact = new RangeConstraint("0",true, "10", true);
+            constraint.AddAccepted(exact);
+
+            constraint.IsSatisfiedBy(5d).Should().BeTrue("Double");
+            constraint.IsSatisfiedBy(5f).Should().BeTrue("Float");
+            constraint.IsSatisfiedBy(5.0m).Should().BeTrue("Decimal");
+        }
+
+        [Fact]
+        public void TypedRealRangesAreSatisfiedByIntegers()
+        {
+            // E.g. Real Range Constraint 0d <= x <= 10d can be satified by 5L
+           
+            var constraint = new ValueConstraint(NetTypeName.Floating);
+            var exact = new RangeConstraint("0", true, "10", true);
+            constraint.AddAccepted(exact);
+
+            constraint.IsSatisfiedBy(5L).Should().BeTrue("Long");
+            constraint.IsSatisfiedBy(5).Should().BeTrue("Int");
+            // And other reals
+            constraint.IsSatisfiedBy(5f).Should().BeTrue("Float");
+            constraint.IsSatisfiedBy(5.0m).Should().BeTrue("Decimal");
+        }
 
 
         [Fact]

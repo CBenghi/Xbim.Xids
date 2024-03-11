@@ -334,7 +334,7 @@ namespace Xbim.InformationSpecifications
                     return value;
                 case NetTypeName.Integer:
                     // TODO:Review handling of longs
-                    if (int.TryParse(value, NumberStyles.Integer, culture, out var ival))
+                    if (int.TryParse(value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, culture, out var ival))
                         return ival;
                     return null;
                 case NetTypeName.Floating:

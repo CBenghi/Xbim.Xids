@@ -118,16 +118,45 @@ namespace Xbim.InformationSpecifications
                 destType == typeof(long) // int64
                 )
             {
-                if (typeof(double) == passedType)
-                    return false;
                 if (typeof(int) == passedType)
                     return true;
                 if (typeof(long) == passedType)
+                    return true;
+                // Reals can be compatible (sometimes). e.g. 5.0d == 5l
+                if (typeof(double) == passedType)
+                    return true;
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
                     return true;
             }
             if (destType == typeof(decimal))
             {
                 if (typeof(double) == passedType)
+                    return true;
+                if (typeof(int) == passedType)
+                    return true;
+                if (typeof(long) == passedType)
+                    return true;
+            }
+            if (destType == typeof(double))
+            {
+                if (typeof(double) == passedType)
+                    return true;
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
+                    return true;
+                if (typeof(int) == passedType)
+                    return true;
+                if (typeof(long) == passedType)
+                    return true;
+            }
+            if (destType == typeof(float))
+            {
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
                     return true;
                 if (typeof(int) == passedType)
                     return true;
