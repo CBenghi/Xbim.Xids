@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -61,26 +62,26 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// Evaluates a candidate value, against the constraints
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
-        /// <param name="ignoreCase">used for strings</param>
+        /// <param name="candidateValue">value to evaluate</param>
+        /// <param name="ignoreCase">when <c>true</c> ignore case and accents; otherwise when <c>false</c> tests for exact match</param>
         /// <param name="logger">logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy([NotNullWhen(true)] object? candidateValue, bool ignoreCase, ILogger? logger = null)
         {
-            if (candiatateValue is null)
+            if (candidateValue is null)
                 return false;
-            if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candiatateValue.GetType()))
+            if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candidateValue.GetType()))
                 return false;
             // if there are no constraints it's satisfied by default // todo: should this be revised?
             if (AcceptedValues == null || !AcceptedValues.Any())
                 return true;
-            var cand = GetObject(candiatateValue, BaseType);
-            if (cand is null)
+            var candidateObject = ConvertObject(candidateValue, BaseType);
+            if (candidateObject is null)
                 return false;
 
             foreach (var av in AcceptedValues)
             {
-                if (av.IsSatisfiedBy(cand, this, ignoreCase, logger))
+                if (av.IsSatisfiedBy(candidateObject, this, ignoreCase, logger))
                     return true;
             }
             
@@ -88,25 +89,25 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <summary>
-        /// Evaluates a candidate value, against the constraints, strings are compared with exact case match
+        /// Evaluates a candidate value, against the constraints, where strings are compared case-sensitively
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
+        public bool IsSatisfiedBy([NotNullWhen(true)] object? candidateValue, ILogger? logger = null)
         {
-            return IsSatisfiedBy(candiatateValue, false, logger);
+            return IsSatisfiedBy(candidateValue, false, logger);
         }
 
         /// <summary>
-        /// Evaluates a candidate value, against the constraints, strings are compared with ignoring case match
+        /// Evaluates a candidate value against the constraints, where strings are compared case-insensitively
         /// </summary>
-        /// <param name="candiatateValue">value to evaluate</param>
+        /// <param name="candidateValue">value to evaluate</param>
         /// <param name="logger">the logging context</param>
         /// <returns>true if satisfied, false otherwise</returns>
-        public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candiatateValue, ILogger? logger = null)
+        public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candidateValue, ILogger? logger = null)
         {
-            return IsSatisfiedBy(candiatateValue, true, logger);
+            return IsSatisfiedBy(candidateValue, true, logger);
         }
 
         static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
@@ -117,16 +118,45 @@ namespace Xbim.InformationSpecifications
                 destType == typeof(long) // int64
                 )
             {
-                if (typeof(double) == passedType)
-                    return false;
                 if (typeof(int) == passedType)
                     return true;
                 if (typeof(long) == passedType)
+                    return true;
+                // Reals can be compatible (sometimes). e.g. 5.0d == 5l
+                if (typeof(double) == passedType)
+                    return true;
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
                     return true;
             }
             if (destType == typeof(decimal))
             {
                 if (typeof(double) == passedType)
+                    return true;
+                if (typeof(int) == passedType)
+                    return true;
+                if (typeof(long) == passedType)
+                    return true;
+            }
+            if (destType == typeof(double))
+            {
+                if (typeof(double) == passedType)
+                    return true;
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
+                    return true;
+                if (typeof(int) == passedType)
+                    return true;
+                if (typeof(long) == passedType)
+                    return true;
+            }
+            if (destType == typeof(float))
+            {
+                if (typeof(float) == passedType)
+                    return true;
+                if (typeof(decimal) == passedType)
                     return true;
                 if (typeof(int) == passedType)
                     return true;
@@ -194,7 +224,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Integer;
         }
@@ -207,7 +237,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Decimal;
         }
@@ -220,7 +250,7 @@ namespace Xbim.InformationSpecifications
         {
             AcceptedValues = new List<IValueConstraintComponent>
             {
-                new ExactConstraint(value.ToString())
+                new ExactConstraint(value.ToString(CultureHelper.SystemCulture))
             };
             BaseType = NetTypeName.Double;
         }
@@ -422,7 +452,7 @@ namespace Xbim.InformationSpecifications
                 exact = null;
                 return false;
             }
-            exact = unique.Value.ToString();
+            exact = unique.Value.ToString(CultureHelper.SystemCulture);
             return true;
         }
 
@@ -493,7 +523,7 @@ namespace Xbim.InformationSpecifications
                 return false;
             if (val is null)
                 return false;
-            var vbt = GetObject(val, BaseType);
+            var vbt = ConvertObject(val, BaseType);
             if (vbt is RequiredType exactAs)
             {
                 exact = exactAs;
@@ -539,5 +569,34 @@ namespace Xbim.InformationSpecifications
             }
             return true;
         }
+
+        /// <summary>
+        /// Determines if a Real value is equal to the expected value accounting for floating point tolerances
+        /// </summary>
+        /// <param name="expectedValue">The precise double value expected</param>
+        /// <param name="candidate">The candidate double value which may have FP imprecisions</param>
+        /// <param name="tolerance">The double tolerance. Defaults to 1e-6</param>
+        /// <returns></returns>
+        internal static bool IsEqualWithinTolerance(double expectedValue, double candidate, double tolerance = RealHelper.DefaultRealPrecision)
+        {
+            // handle the trivial equality case first
+            if (expectedValue == candidate)
+                return true;
+
+            // Account for FP precison issues
+            // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
+            (var lowerBound, var upperBound) = RealHelper.GetPrecisionBounds(expectedValue, tolerance);
+
+            if (expectedValue >=0)
+            {
+                return candidate >= lowerBound && candidate <= upperBound;
+            }
+            else
+            {
+                // invert 'between' comparison when testing for -ve real
+                return candidate >= upperBound && candidate <= lowerBound;
+            }
+        }
+
     }
 }

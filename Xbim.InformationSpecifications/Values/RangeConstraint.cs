@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -84,32 +85,76 @@ namespace Xbim.InformationSpecifications
         }
 
         /// <inheritdoc />
-        public bool IsSatisfiedBy(object candiatateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
+        public bool IsSatisfiedBy(object candidateValue, ValueConstraint context, bool ignoreCase, ILogger? logger = null)
         {
             if (context is null)
                 return false;
-            if (candiatateValue is not IComparable compe)
+            if (candidateValue is not IComparable valueToCompare)
             {
-                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candiatateValue}'", candiatateValue.GetType().Name, candiatateValue);
+                logger?.LogError("Failed to create a comparable value from {candidateValueType} '{candidateValue}'", candidateValue.GetType().Name, candidateValue);
                 return false;
             }
             var minOk = true;
             var maxOk = true;
+            
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
-                var mn = ValueConstraint.GetObject(MinValue, context.BaseType);
+                var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
+                if (MinInclusive) minimum = ApplyRealTolerances(minimum, false);
                 minOk = MinInclusive
-                    ? compe.CompareTo(mn) >= 0
-                    : compe.CompareTo(mn) > 0;
+                    ? valueToCompare.CompareTo(minimum) >= 0
+                    : valueToCompare.CompareTo(minimum) > 0;
             }
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
-                var mx = ValueConstraint.GetObject(MaxValue, context.BaseType);
+                var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
+                if (MaxInclusive) maximum = ApplyRealTolerances(maximum, true);
                 maxOk = MaxInclusive
-                    ? compe.CompareTo(mx) <= 0
-                    : compe.CompareTo(mx) < 0;
+                    ? valueToCompare.CompareTo(maximum) <= 0
+                    : valueToCompare.CompareTo(maximum) < 0;
             }
             return minOk && maxOk;
+        }
+
+        /// <summary>
+        /// Applies a tolerance factor to Real constraint values to support small floating point imprecisions
+        /// </summary>
+        /// <param name="expectedValue"></param>
+        /// <param name="isMax">Indicates if the expected value is a maxima, or minima</param>
+        /// <param name="tolerance">The floating point tolerance. Defaults to 1e-06</param>
+        /// <returns>The value with tolerance applied</returns>
+        private object? ApplyRealTolerances(object? expectedValue, bool isMax, double tolerance = RealHelper.DefaultRealPrecision)
+        {
+            // To support 1e-6 tolerance on Reals we increase/decrease the magnitude of the appropriate end of the range,
+            // depending on whether it's upper (Max) or lower (Min).
+            // This follows the same pattern used in IDS to account for magnitude of the value. https://github.com/buildingSMART/IDS/issues/78#issuecomment-1976197561
+            // But for ranges also need to reverse the logic when the value is -ve
+            //  [123.45   <= ---- => 678.90]    For +ve range values
+            // [ 123.449  <= ---- => 678.901]   Min decreases in magnitude, while Max increases
+            // But for negative we reverse that
+            //  [-678.90  <= ---- => -123.45]  For -ve range values
+            // [ -678.901 <= ---- => -123.449] Min increases in magnitude, while Max decreases
+
+            var applyFactor = (double value) =>
+            {
+                var increaseFactor = isMax ? (1 + tolerance) : (1 - tolerance);
+                var decreaseFactor = isMax ? (1 - tolerance) : (1 + tolerance);
+                var fixedFactor = (isMax ? +tolerance : -tolerance);
+                if ((value >= 0))
+                {
+                    return (value * increaseFactor) + fixedFactor;
+                }
+                else
+                {
+                    return (value * decreaseFactor) + fixedFactor;
+                }
+            };
+            return expectedValue switch
+            {
+                float f => Convert.ToSingle(applyFactor(f)),
+                double d => applyFactor(d),
+                _ => expectedValue  // Unchanged
+            }; ;
         }
 
         /// <inheritdoc />
@@ -132,8 +177,8 @@ namespace Xbim.InformationSpecifications
         /// <inheritdoc />
         public bool IsValid(ValueConstraint context)
         {
-            var min = ValueConstraint.GetObject(MinValue, context.BaseType);
-            var max = ValueConstraint.GetObject(MaxValue, context.BaseType);
+            var min = ValueConstraint.ParseValue(MinValue, context.BaseType);
+            var max = ValueConstraint.ParseValue(MaxValue, context.BaseType);
 
             // values need to be succesfully converted
             if (min is null && !string.IsNullOrEmpty(MinValue))
