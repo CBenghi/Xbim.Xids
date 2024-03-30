@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdsLib.IfcSchema;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -80,10 +81,10 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         {
                             if (foundSymbol.DimensionalExponents != "")
                             {
-                                var dimExp = sym.TryGetDimensionalExponents(out var tde, out _, out _);
-                                if (!dimExp)
+                                if (sym.TryGetDimensionalExponents(out var tde, out _, out _))
+                                    Debug.WriteLine($"- Found '{foundSymbol.UnitSymbol}' - {foundSymbol.DimensionalExponents} - {tde.ToUnitSymbol()}");
+                                else
                                     throw new Exception("This needs to work.");
-                                Debug.WriteLine($"- Found '{foundSymbol.UnitSymbol}' - {foundSymbol.DimensionalExponents} - {tde.ToUnitSymbol()}");
                             }
                             else
                             {
@@ -99,16 +100,20 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                     }
                     if (allSym)
                     {
-                        DimensionalExponents d = null;
+                        DimensionalExponents? d = null;
                         Debug.WriteLine($"Can do {missingExp.Description} - {missingExp.UnitSymbol}");
                         foreach (var sym in neededSymbols)
                         {
                             var found = m.GetByUnit(sym.UnitSymbol);
+                            if (found is null)
+                                throw new Exception("unexpected unit");
                             DimensionalExponents? thisDE = null;
                             if (!string.IsNullOrEmpty(found.DimensionalExponents))
                                 thisDE = DimensionalExponents.FromString(found.DimensionalExponents);
                             else
                                 sym.TryGetDimensionalExponents(out thisDE, out _, out _);
+                            if (thisDE is null)
+                                throw new Exception();
                             
                             if (d == null)
                                 d = thisDE;
@@ -209,7 +214,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         var tp = metaD.ExpressType(ifcType.ToUpperInvariant());
                         if (tp != null)
                         {
-                            var cClass = tp.Type.FullName.Replace("Xbim.", "");
+                            var cClass = tp.Type.FullName!.Replace("Xbim.", "");
                             concreteClasses.Add(cClass);
                         }
                     }
@@ -247,19 +252,17 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             var sb = new StringBuilder();
 
             // an enum used to be defined in the schema, now it's a simple text
-            foreach (var measure in SchemaInfo.IfcMeasures.Values)
+            foreach (var measure in IdsLib.IfcSchema.SchemaInfo.AllMeasureInformation)
             {
-                if (SchemaInfo.IfcMeasures.TryGetValue(measure.Id, out var found))
+                if (measure.Exponents != null)
                 {
-                    if (found.Exponents != null)
-                    {
-                        sb.AppendLine($"\t\t/// {found.Description}, expressed in {found.GetUnit()}");
-                    }
-                    else
-                    {
-                        sb.AppendLine($"\t\t/// {measure}, no unit conversion");
-                    }
+                    sb.AppendLine($"\t\t/// {measure.Description}, expressed in {measure.GetUnit()}");
                 }
+                else
+                {
+                    sb.AppendLine($"\t\t/// {measure}, no unit conversion");
+                }
+
                 sb.AppendLine($"\t\t{measure.Id},");
             }
             foreach (var measure in ExtraMeasureTypes)
@@ -287,50 +290,13 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// <returns>False if no warnings</returns>
         public static bool Execute_CheckMeasureMetadata()
         {
-            foreach (var measVal in SchemaInfo.IfcMeasures.Values.OfType<IfcMeasureInfo>())
+            foreach (var measVal in IdsLib.IfcSchema.SchemaInfo.AllMeasureInformation)
             {
                 if (measVal.UnitTypeEnum == "")
                     Program.Message(ConsoleColor.DarkYellow, $"Warning: Measure '{measVal.Id}' lacks UnitType.");
                 // Debug.WriteLine($"{measVal.UnitTypeEnum}");
             }
             return false;
-        }
-
-        /// <summary>
-        /// ensures that the schema and the helpers are compatible.
-        /// </summary>
-        /// <returns>False if not compatible</returns>
-        public static bool Execute_CheckMeasureEnumeration()
-        {
-            var doc = Program.GetBuildingSmartSchemaXML();
-            var measureEnum = GetMeasureRestrictionsFromSchema(doc).ToList();
-            var errors = false;
-            foreach (var item in measureEnum)
-            {
-                if (!SchemaInfo.IfcMeasures.TryGetValue(item, out _))
-                {
-                    Program.Message(ConsoleColor.Red, $"Value not found in helpers for measure '{item}'");
-                    errors = true;
-                }
-            }
-            return errors;
-        }
-
-        /// <summary>
-        /// Taken from the schema, not the documentation
-        /// </summary>
-        private static IEnumerable<string> GetMeasureRestrictionsFromSchema(XmlDocument doc)
-        {
-            // finds the node via xml, then returns the enum
-            XmlNode root = doc.DocumentElement;
-            var prop = root.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Attributes[0].Value == "propertyType");
-            var measure = prop.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Attributes.Count > 0 && n.Attributes[0].Value == "measure");
-            var tp = measure.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Name == "xs:simpleType");
-            var rest = tp.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.Name == "xs:restriction");
-            foreach (var item in rest.ChildNodes.Cast<XmlNode>())
-            {
-                yield return item.Attributes[0].Value;
-            }
         }
 
         private const string stub = @"// SchemaInfo.IfcMeasures.cs is automatically generated by xbim.xids.generator.Execute_GenerateIfcMeasureDictionary() using Xbim.Essentials <PlaceHolderVersion>

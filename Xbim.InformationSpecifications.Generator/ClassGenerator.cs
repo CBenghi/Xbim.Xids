@@ -48,14 +48,14 @@ namespace Xbim.InformationSpecifications.Generator
                         List<string> pdtypes = new();
                         foreach (var val in vals)
                         {
-                            pdtypes.Add(val.ToString());
+                            pdtypes.Add(val.ToString() ?? "");
                         }
                         predType = NewStringArray(pdtypes.ToArray());
                     }
 
                     // other fields
                     var abstractOrNot = daType.Type.IsAbstract ? "ClassType.Abstract" : "ClassType.Concrete";
-                    var ns = daType.Type.Namespace[5..];
+                    var ns = daType.Type.Namespace![5..];
 
                     // Enriching schema with attribute names
                     var attnames = NewStringArray(daType.Properties.Values.Select(x => x.Name).ToArray());

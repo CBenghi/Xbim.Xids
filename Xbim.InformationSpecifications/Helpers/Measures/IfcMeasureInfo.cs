@@ -1,4 +1,7 @@
-﻿using Xbim.InformationSpecifications.Helpers.Measures;
+﻿using CommandLine;
+using IdsLib.IfcSchema;
+using System;
+using Xbim.InformationSpecifications.Helpers.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers
 {
@@ -12,6 +15,7 @@ namespace Xbim.InformationSpecifications.Helpers
     /// Metadata about measure conversion behaviours.
     /// Use <see cref="Measures.MeasureUnit" /> for the quantitative conversion services.
     /// </summary>
+    [Obsolete("Use relevant class in the idslib.")]
     public readonly struct IfcMeasureInfo: IValueProvider
     {
         /// <summary>

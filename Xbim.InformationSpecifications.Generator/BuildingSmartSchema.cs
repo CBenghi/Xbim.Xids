@@ -95,6 +95,8 @@ namespace Xbim.InformationSpecifications.Generator
             Console.WriteLine("Please convert xsd currently in clipboard, then copy the converted to clipboard, finally press any key.");
             _ = Console.ReadKey();
             var inst = ClipboardService.GetText();
+            if (inst is null)
+                return "";
             var idsSignature = @"<ids:ids xmlns:xml=""http://www.w3.org/XML/1998/namespace"" xmlns:xhtml=""http://www.w3.org/1999/xhtml"" xmlns:ids=""http://standards.buildingsmart.org/IDS"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:hfp=""http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"" xmlns=""http://www.w3.org/2001/XMLSchema"" xsi:schemaLocation=""http://standards.buildingsmart.org/IDS schema.xsd"">";
             if (!inst.Contains(idsSignature))
                 Console.WriteLine("ERROR: IDS signature not found");

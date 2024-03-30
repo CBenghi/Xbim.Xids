@@ -62,9 +62,9 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         public void RangeAttributeFacetsWork()
         {
             var facet = BuildFacetFromInputs("Northing", null);
+            if (facet.AttributeValue is null)
+                throw new Exception();
             facet.AttributeValue.AddAccepted(new RangeConstraint("0", true, "360", false));
-
-            
             facet.RequirementDescription.Should().Be("an attribute Northing with value >=0 and <360");
         }
 
@@ -77,14 +77,14 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
                 MaxLength=10,
                 MinLength=4
             };
-            facet.AttributeValue.AddAccepted(constraint);
-
-
+			if (facet.AttributeValue is null)
+				throw new Exception();
+			facet.AttributeValue.AddAccepted(constraint);
             facet.RequirementDescription.Should().Be("an attribute Tag with value minimum 4 characters and maximum 10 characters");
         }
 
 
-        private static AttributeFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object objInputs = null,
+        private static AttributeFacet BuildFacetFromInputs(string nameInputs, string? valueInputs = "", object? objInputs = null,
             ConstraintType nameConstraint = ConstraintType.Exact, ConstraintType valueConstraint = ConstraintType.Exact)
         {
             AttributeFacet facet = new()
@@ -100,13 +100,16 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             }
             if (valueInputs == null && objInputs == null)   // No value
                 return facet;
-            if(objInputs != null)   // Non string
+            if(objInputs is not null)   // Non string
             {
                 facet.AttributeValue.BaseType = NetTypeName.Double;
-                AddConstraint(facet.AttributeValue, valueConstraint, objInputs.ToString());
+                var val = objInputs.ToString();
+                if (val is null)
+                    throw new Exception("Invalid string conversion.");
+				AddConstraint(facet.AttributeValue, valueConstraint, val);
                 return facet;
             }
-            var values = valueInputs.Split(','); // String or strings
+            var values = valueInputs!.Split(','); // String or strings
             foreach (var val in values)
             {
                 AddConstraint(facet.AttributeValue, valueConstraint, val);

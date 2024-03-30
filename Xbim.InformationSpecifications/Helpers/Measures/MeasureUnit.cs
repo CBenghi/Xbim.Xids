@@ -1,4 +1,5 @@
-﻿using Xbim.InformationSpecifications.Generator.Measures;
+﻿using IdsLib.IfcSchema;
+using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
 {

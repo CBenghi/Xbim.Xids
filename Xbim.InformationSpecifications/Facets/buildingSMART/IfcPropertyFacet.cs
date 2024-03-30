@@ -26,7 +26,7 @@ namespace Xbim.InformationSpecifications
 
         /// <summary>
         /// Constrained type of the identified property value.
-        /// Use the <see cref="HasDataType(out IfcMeasureInformation?)"/> method to test for the enumeration.
+        /// Use the <see cref="HasDataType(out IfcDataTypeInformation?)"/> method to test for the relevant information.
         /// </summary>
         public string? DataType { get; set; }
 
@@ -58,9 +58,9 @@ namespace Xbim.InformationSpecifications
         /// </summary>
         /// <param name="measure">value of the parsing of the string into the enum</param>
         /// <returns>true if parsing successful</returns>
-        public bool HasDataType([NotNullWhen(true)] out IfcMeasureInformation? measure)
+        public bool HasDataType([NotNullWhen(true)] out IfcDataTypeInformation? measure)
         {
-            if (DataType is not null && IdsLib.IfcSchema.SchemaInfo.TryParseIfcMeasure(DataType, out var found, false))
+            if (DataType is not null && IdsLib.IfcSchema.SchemaInfo.TryParseIfcDataType(DataType, out var found, false))
             {
                 measure = found;
                 return true;

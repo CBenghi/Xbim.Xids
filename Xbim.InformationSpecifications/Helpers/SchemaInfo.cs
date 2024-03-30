@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Xbim.InformationSpecifications.Helpers.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers
@@ -46,7 +47,7 @@ namespace Xbim.InformationSpecifications.Helpers
         {
             get
             {
-                if (Classes.TryGetValue(className, out var cl))
+                if (Classes.TryGetValue(className.ToUpperInvariant(), out var cl))
                 {
                     return cl;
                 }
@@ -128,25 +129,13 @@ namespace Xbim.InformationSpecifications.Helpers
         /// Get the ifc measure metadata from a string
         /// </summary>
         /// <param name="ifcMeasureId">the string value of the measure</param>
-        /// <returns>Null if the string is not meaningful, for a certain hit, use <see cref="GetMeasure(Helpers.IfcValue)"/></returns>
         public static IValueProvider? GetMeasure(string ifcMeasureId)
         {
+            IdsLib.IfcSchema.SchemaInfo.TryParseIfcMeasure(ifcMeasureId, out var val, false);
+
             return IfcMeasures.Values.FirstOrDefault(x => x.Id == ifcMeasureId);
         }
 
-        /// <summary>
-        /// Get the ifc measure metadata from the enum
-        /// </summary>
-        /// <param name="measure"></param>
-        /// <returns></returns>
-        public static IValueProvider GetMeasure(IfcValue measure)
-        {
-            return measure switch
-            {
-                IfcValue.IfcText or IfcValue.IfcIdentifier => DirectValue.DirectValues[measure],
-                _ => IfcMeasures[measure.ToString()],
-            };
-        }
 
         private static void SetTypeObject(SchemaInfo t, string topTypeObjectClass)
         {
@@ -339,32 +328,8 @@ namespace Xbim.InformationSpecifications.Helpers
             return Classes.Values.GetEnumerator();
         }
 
-        private static Dictionary<string, object>? _dicUnits;
+       
 
-        internal static bool TryGetUnit(string unit, [NotNullWhen(true)] out object? found)
-        {
-            if (_dicUnits == null)
-            {
-                _dicUnits = new Dictionary<string, object>();
-                foreach (var item in IfcMeasures.Values.OfType<IfcMeasureInfo>())
-                {
-                    if (!string.IsNullOrWhiteSpace(item.UnitSymbol) && !_dicUnits.ContainsKey(item.UnitSymbol))
-                    {
-                        _dicUnits.Add(item.UnitSymbol, item);
-                    }
-                    if (!string.IsNullOrWhiteSpace(item.Unit) && !_dicUnits.ContainsKey(item.Unit))
-                    {
-                        _dicUnits.Add(item.Unit, item);
-                    }
-                }
-            }
-            if (_dicUnits.ContainsKey(unit))
-            {
-                found = _dicUnits[unit];
-                return true;
-            }
-            found = null;
-            return false;
-        }
+       
     }
 }

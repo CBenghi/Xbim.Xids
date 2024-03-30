@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdsLib.IfcSchema;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

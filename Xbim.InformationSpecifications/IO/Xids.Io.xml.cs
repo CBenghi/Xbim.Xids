@@ -107,7 +107,7 @@ namespace Xbim.InformationSpecifications
             // writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
             xmlWriter.WriteAttributeString("xmlns", "xs", null, "http://www.w3.org/2001/XMLSchema");
             xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-            xmlWriter.WriteAttributeString("xsi", "schemaLocation", null, "http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.6/ids.xsd");
+            xmlWriter.WriteAttributeString("xsi", "schemaLocation", null, "http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd");
 
             // info goes first
             WriteInfo(specGroup, xmlWriter);
@@ -228,9 +228,14 @@ namespace Xbim.InformationSpecifications
                     WriteFacetBaseAttributes(tf, xmlWriter, logger, forRequirement, requirementOption);
                     if (tf.IncludeSubtypes && tf.IfcType is not null)
                     {
-                    
-                        var exactValues = tf.IfcType.AcceptedValues.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
-                        var complexConstraints = tf.IfcType.AcceptedValues.Except(tf.IfcType.AcceptedValues.OfType<ExactConstraint>());
+                        var values = tf.IfcType.AcceptedValues;
+                        string[] exactValues = [];
+                        IEnumerable<IValueConstraintComponent> complexConstraints = new List<IValueConstraintComponent>();
+                        if (values != null)
+                        {
+                            exactValues = values.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
+                            complexConstraints = values.Except(values.OfType<ExactConstraint>());
+                        }
                         if (exactValues.Any())
                         {
                             var classes = Enumerable.Empty<string>();
@@ -252,7 +257,6 @@ namespace Xbim.InformationSpecifications
                             WriteConstraintValue(tf.IfcType, xmlWriter, "name", logger, true);
                             logger?.LogWarning("TODO: ExportBuildingSmartIDS does not support SubType Expansion of complex constraints: {ifcType}", tf.IfcType);
                         }
-                        
                     }
                     else
                     {

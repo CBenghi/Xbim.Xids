@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IdsLib;
+using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -311,8 +312,8 @@ namespace Xbim.InformationSpecifications.Tests
             var xlogger = GetXunitLogger();
 			var opt = new SingleAuditOptions()
 			{
-				IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6,
-				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6)
+				IdsVersion = IdsFacts.DefaultIdsVersion,
+				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsFacts.DefaultIdsVersion)
 			};
             archive.Entries.Should().AllSatisfy(e => Audit.Run(e.Open(), opt, xlogger).Should().Be(Audit.Status.Ok));
 			

@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System.Linq;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.DescriptionTests
@@ -60,8 +61,8 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             facet.ApplicabilityDescription.Should().Be(expected);
         }
 
-        private static IfcPropertyFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object objInputs = null, string psetName = "",
-            string dataType = null,
+        private static IfcPropertyFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object? objInputs = null, string psetName = "",
+            string? dataType = null,
             ConstraintType nameConstraint = ConstraintType.Exact, ConstraintType valueConstraint = ConstraintType.Exact, ConstraintType psetConstraint = ConstraintType.Exact)
         {
             IfcPropertyFacet facet = new()
@@ -80,17 +81,20 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             if (valueInputs == null && objInputs == null && psetName == null)   // No value
                 return facet;
 
-
-
-            if (objInputs != null)   // Non string
+            if (objInputs is not null)   // Non string
             {
                 facet.PropertyValue.BaseType = NetTypeName.Double;
-                AddConstraint(facet.PropertyValue, valueConstraint, objInputs.ToString());
-                
+                var val = objInputs.ToString();
+                if (val is not null)
+                {
+                    AddConstraint(facet.PropertyValue, valueConstraint, val);
+                }
             }
-            else 
-            { 
-                var values = valueInputs.Split(','); // String or strings
+            else
+            {
+                var values = valueInputs is not null
+                    ? valueInputs.Split(',')
+                    : Enumerable.Empty<string>();
                 foreach (var val in values)
                 {
                     AddConstraint(facet.PropertyValue, valueConstraint, val);

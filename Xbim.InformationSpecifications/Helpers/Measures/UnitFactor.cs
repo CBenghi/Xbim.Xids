@@ -1,9 +1,11 @@
-﻿using System;
+﻿using IdsLib.IfcSchema;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Xbim.InformationSpecifications.Helpers;
+using Xbim.InformationSpecifications.Helpers.Measures;
 
 namespace Xbim.InformationSpecifications.Generator.Measures
 {
@@ -63,15 +65,15 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             var smb = UnitSymbol;
             ratio = 1.0d;
             offset = 0;
-            while (SchemaInfo.TryGetConversion(smb, out var cnv))
+            while (Conversion.TryGetConversion(smb, out var cnv))
             {
                 smb = cnv.Equivalent;
                 offset = cnv.Offset;
                 ratio *= Math.Pow(cnv.MultiplierToEquivalent, Exponent);
             }
-            if (SchemaInfo.TryGetUnit(smb, out var oFnd))
+            if (Conversion.TryGetUnit(smb, out var oFnd))
             {
-                if (oFnd is IfcMeasureInfo mi && mi.Exponents is not null)
+                if (oFnd is IfcMeasureInformation mi && mi.Exponents is not null)
                 {
                     exp = DimensionalExponents.Elevated(mi.Exponents, Exponent);
                     return true;

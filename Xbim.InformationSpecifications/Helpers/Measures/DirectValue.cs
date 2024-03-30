@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdsLib.IfcSchema;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -35,10 +36,6 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
             return "";
         }
 
-        internal static Dictionary<IfcValue, DirectValue> DirectValues { get; } = new()
-        {
-            { IfcValue.IfcText, new DirectValue("IfcText", "") },
-            { IfcValue.IfcIdentifier, new DirectValue("IfcIdentifier", "") },
-        };
+       
     }
 }

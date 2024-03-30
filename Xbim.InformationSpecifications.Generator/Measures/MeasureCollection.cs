@@ -13,7 +13,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             }
         }
 
-        List<Measure> measureList;
+        List<Measure>? measureList;
         public List<Measure> MeasureList
         {
             get
@@ -30,7 +30,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             MeasureList.Add(meas);
         }
 
-        public Measure GetByUnit(string unit)
+        public Measure? GetByUnit(string unit)
         {
             // prioritise by units with dimensional exponent
             var t = MeasureList.FirstOrDefault(m => m.UnitSymbol == unit && m.DimensionalExponents != "");

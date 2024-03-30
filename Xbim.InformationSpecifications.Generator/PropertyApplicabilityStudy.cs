@@ -11,7 +11,7 @@ namespace Xbim.InformationSpecifications.Generator
     /// </summary>
     public class IfcClassStudy
     {
-        private static Dictionary<Properties.Version, List<string>> includeTypes;
+        private static Dictionary<Properties.Version, List<string>>? includeTypes;
 
         /// <summary>
         /// This determines the classes for each schema, methods below help visualise them.
@@ -51,6 +51,8 @@ namespace Xbim.InformationSpecifications.Generator
                 var distinctClassesFromPropertySets = new List<string>();
                 var propertyDefinitions = new Definitions<PropertySetDef>(schema);
                 propertyDefinitions?.LoadAllDefault();
+                if (propertyDefinitions is null)
+                    throw new System.Exception("Unexpected");
                 foreach (var set in propertyDefinitions.DefinitionSets)
                 {
                     var classes = set.ApplicableClasses.Select(x => x.ClassName).ToArray();

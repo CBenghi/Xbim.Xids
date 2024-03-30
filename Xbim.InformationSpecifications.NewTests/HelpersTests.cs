@@ -13,70 +13,7 @@ namespace Xbim.InformationSpecifications.Test.Helpers
 
     public class HelpersTests
     {
-        [Fact]
-        public void HasPropV4()
-        {
-            PropertySetInfo.SchemaIfc4.Any().Should().BeTrue();
-            PropertySetInfo.SchemaIfc4.Count.Should().NotBe(1);
-        }
-
-        [Fact]
-        public void HasPropV2x3()
-        {
-            PropertySetInfo.SchemaIfc2x3.Any().Should().BeTrue();
-            PropertySetInfo.SchemaIfc2x3.Count.Should().NotBe(1);
-        }
-
-        [Fact]
-        public void HasClassV4()
-        {
-            SchemaInfo.SchemaIfc4.Any().Should().BeTrue();
-            SchemaInfo.SchemaIfc4.Count().Should().NotBe(2);
-            SchemaInfo.SchemaIfc4["IfcProduct"]!.Parent!.Name.Should().Be("IfcObject");
-            SchemaInfo.SchemaIfc4["IfcFeatureElement"]!.SubClasses.Count.Should().Be(3);
-            SchemaInfo.SchemaIfc4["IfcFeatureElement"]!.MatchingConcreteClasses.Count().Should().Be(5);
-            SchemaInfo.SchemaIfc4["IfcWall"]!.Is("IfcWall").Should().BeTrue();
-            SchemaInfo.SchemaIfc4["IfcWallStandardCase"]!.Is("IfcWall").Should().BeTrue();
-            SchemaInfo.SchemaIfc4["IfcWall"]!.Is("IfcWallStandardCase").Should().BeFalse();
-            SchemaInfo.SchemaIfc4["IfcWall"]!.DirectAttributes.Should().NotBeNull();
-            SchemaInfo.SchemaIfc4["IfcWall"]!.DirectAttributes.Count().Should().Be(9);
-        }
-
-        [Fact]
-        public void HasClassV2x3()
-        {
-            SchemaInfo.SchemaIfc2x3.Any().Should().BeTrue();
-            SchemaInfo.SchemaIfc2x3.Count().Should().NotBe(2);
-        }
-
-        [Fact]
-        public void HasAttributesV2x3()
-        {
-            var attribs = SchemaInfo.SchemaIfc2x3.GetAttributeClasses("NotExisting");
-            attribs.Should().BeEmpty();
-
-            attribs = SchemaInfo.SchemaIfc2x3.GetAttributeClasses("ID");
-            attribs.Length.Should().Be(2);
-
-
-            var attribNames = SchemaInfo.SchemaIfc2x3.GetAttributeNames();
-            attribNames.Count().Should().Be(179);
-        }
-
-        [Fact]
-        public void HasAttributesV4()
-        {
-            var attribs = SchemaInfo.SchemaIfc4.GetAttributeClasses("NotExisting");
-            attribs.Should().BeEmpty();
-
-            attribs = SchemaInfo.SchemaIfc4.GetAttributeClasses("UserDefinedOperationType");
-            attribs.Length.Should().Be(3);
-
-            var attribNames = SchemaInfo.SchemaIfc4.GetAttributeNames();
-            attribNames.Count().Should().Be(128);
-        }
-
-
+      
         [Fact]
         public void FacetGroupUse()
         {
@@ -143,53 +80,5 @@ namespace Xbim.InformationSpecifications.Test.Helpers
                 cnt.Should().Be(expected, $"there's an error on {schemaName}");
             }
         }
-
-        [Fact]
-        public void PropMeasureTest()
-        {
-            var prop = PropertySetInfo.Get(IfcSchemaVersion.IFC2X3, "Pset_DuctFittingTypeCommon", "SubType");
-            prop.Should().NotBeNull();
-            var t = prop!.IsMeasureProperty(out var measure); 
-            t.Should().BeTrue("IfcText is a measure");
-            measure.Should().Be(IfcValue.IfcText);
-
-            foreach (var item in FindMeasureTypes())
-            {
-                item.IsMeasureProperty(out _);
-            }
-
-        }
-
-        static private IEnumerable<IPropertyTypeInfo> FindMeasureTypes()
-        {
-            var done = new HashSet<string>();
-            foreach (var item in new[] { IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4 })
-            {
-                var schema = PropertySetInfo.GetSchema(item);
-                schema.Should().NotBeNull();
-                Assert.NotNull(schema);
-                foreach (var propSet in schema)
-                {
-                    foreach (var prop in propSet.Properties.OfType<SingleValuePropertyType>().Where(x => x.DataType != null))
-                    {
-                        if (done.Contains(prop.DataType))
-                            continue;
-                        done.Add(prop.DataType);
-                        yield return prop;
-                    }
-                }
-            }
-        }
-
-        [Fact]
-        public void MeasureInfoNeverNull()
-        {
-            foreach (var m in Enum.GetValues<IfcValue>())
-            {
-                SchemaInfo.GetMeasure(m).Should().NotBeNull($"{m} is needed.");
-            }
-        }
-
-
     }
 }
