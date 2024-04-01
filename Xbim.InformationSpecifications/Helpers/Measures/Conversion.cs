@@ -24,9 +24,9 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                     {
                         _dicUnits.Add(item.UnitSymbol, item);
                     }
-                    if (!string.IsNullOrWhiteSpace(item.Unit) && !_dicUnits.ContainsKey(item.Unit))
+                    if (!string.IsNullOrWhiteSpace(item.DefaultDisplay) && !_dicUnits.ContainsKey(item.DefaultDisplay))
                     {
-                        _dicUnits.Add(item.Unit, item);
+                        _dicUnits.Add(item.DefaultDisplay, item);
                     }
                 }
             }
@@ -89,8 +89,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                 "pound"),
             new(1, "lbf", 4.448222, "N",
                 "pound-force"),
-            new(1, "°C", 1, "K", 273.15),
-            new(9, "°F", 5, "K", 459.67),
+            new(1, "°C", 1, "°K", 273.15),
+            new(9, "°F", 5, "°K", 459.67),
             new(1, "min", 60, "s"),
             new(1, "sec", 1, "s"),
             new(1, "gal", 0.00378542, "m3",

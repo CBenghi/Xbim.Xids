@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IdsLib;
+using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -78,10 +79,11 @@ namespace Xbim.InformationSpecifications.Tests
             using var tmpStream = File.OpenRead(tmpFile);
             var opt = new SingleAuditOptions()
             {
-                IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6,
-                SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids0_9_6)
+                IdsVersion = IdsFacts.DefaultIdsVersion,
+                SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsFacts.DefaultIdsVersion)
             };
             var varlidationResult = Audit.Run(tmpStream, opt, logg);
+            logg?.LogInformation($"=== `{tmpFile}`");
             varlidationResult.Should().Be(Audit.Status.Ok, $"file '{tmpFile}' is expected to be valid");
         }
 

@@ -1,4 +1,6 @@
-﻿<ids xmlns="http://standards.buildingsmart.org/IDS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS/ids_05.xsd">
+﻿<ids xmlns="http://standards.buildingsmart.org/IDS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd"
+     >
     <info>
         <title>An optional facet always passes regardless of outcome 1/2</title>
     </info>
@@ -12,7 +14,7 @@
                 </entity>
             </applicability>
             <requirements>
-                <attribute minOccurs="0" maxOccurs="1">
+                <attribute cardinality="optional">
                     <name>
                         <simpleValue>Name</simpleValue>
                     </name>

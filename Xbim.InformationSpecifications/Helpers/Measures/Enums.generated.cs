@@ -6,111 +6,177 @@ using System.Text;
 namespace Xbim.InformationSpecifications.Helpers
 {
     /// <summary>
-    /// Will be removed
+    /// Determines data type constraints and conversion for measures.
     /// </summary>
     [Obsolete("Should use the IdsLib.IfcSchema.SchemaInfo.IfcMeasureInformation instead.")]
     public enum IfcValue
     {
+		/// Absorbed radioactivity dose, expressed in gray
+		IFCABSORBEDDOSEMEASURE,
+		/// Acceleration, expressed in m / s2
+		IFCACCELERATIONMEASURE,
 		/// Amount of substance, expressed in mole
-		IfcAmountOfSubstanceMeasure,
+		IFCAMOUNTOFSUBSTANCEMEASURE,
+		/// Angular velocity, expressed in 1 / s
+		IFCANGULARVELOCITYMEASURE,
 		/// Area density, expressed in kg / m2
-		IfcAreaDensityMeasure,
+		IFCAREADENSITYMEASURE,
 		/// Area, expressed in square meter
-		IfcAreaMeasure,
+		IFCAREAMEASURE,
+		/// Curvature, expressed in 1 / m
+		IFCCURVATUREMEASURE,
+		/// Dose equivalent, expressed in sievert
+		IFCDOSEEQUIVALENTMEASURE,
 		/// Dynamic viscosity, expressed in kg / m s
-		IfcDynamicViscosityMeasure,
+		IFCDYNAMICVISCOSITYMEASURE,
 		/// Electric capacitance, expressed in farad
-		IfcElectricCapacitanceMeasure,
+		IFCELECTRICCAPACITANCEMEASURE,
 		/// Electric charge, expressed in coulomb
-		IfcElectricChargeMeasure,
+		IFCELECTRICCHARGEMEASURE,
 		/// Electric conductance, expressed in siemens
-		IfcElectricConductanceMeasure,
+		IFCELECTRICCONDUCTANCEMEASURE,
 		/// Electric current, expressed in ampere
-		IfcElectricCurrentMeasure,
+		IFCELECTRICCURRENTMEASURE,
 		/// Electric resistance, expressed in ohm
-		IfcElectricResistanceMeasure,
+		IFCELECTRICRESISTANCEMEASURE,
 		/// Electric voltage, expressed in volt
-		IfcElectricVoltageMeasure,
+		IFCELECTRICVOLTAGEMEASURE,
 		/// Energy, expressed in joule
-		IfcEnergyMeasure,
+		IFCENERGYMEASURE,
 		/// Force, expressed in newton
-		IfcForceMeasure,
+		IFCFORCEMEASURE,
 		/// Frequency, expressed in hertz
-		IfcFrequencyMeasure,
+		IFCFREQUENCYMEASURE,
 		/// Heat flux density, expressed in kg / s3
-		IfcHeatFluxDensityMeasure,
+		IFCHEATFLUXDENSITYMEASURE,
 		/// Heating, expressed in m2 kg / s2 K
-		IfcHeatingValueMeasure,
+		IFCHEATINGVALUEMEASURE,
 		/// Illuminance, expressed in lux
-		IfcIlluminanceMeasure,
+		IFCILLUMINANCEMEASURE,
+		/// Inductance, expressed in henry
+		IFCINDUCTANCEMEASURE,
+		/// Count rate, expressed in 1 / s
+		IFCINTEGERCOUNTRATEMEASURE,
 		/// Ion concentration measure, expressed in kg / m3
-		IfcIonConcentrationMeasure,
+		IFCIONCONCENTRATIONMEASURE,
 		/// Iso thermal moisture capacity, expressed in m3 / kg
-		IfcIsothermalMoistureCapacityMeasure,
+		IFCISOTHERMALMOISTURECAPACITYMEASURE,
+		/// Kinematic viscosity, expressed in m2 / s
+		IFCKINEMATICVISCOSITYMEASURE,
 		/// Length, expressed in meter
-		IfcLengthMeasure,
+		IFCLENGTHMEASURE,
+		/// Linear force, expressed in kg / s2
+		IFCLINEARFORCEMEASURE,
+		/// Linear moment, expressed in m kg / s2
+		IFCLINEARMOMENTMEASURE,
+		/// Linear stiffness, expressed in kg / s2
+		IFCLINEARSTIFFNESSMEASURE,
 		/// Speed, expressed in m / s
-		IfcLinearVelocityMeasure,
-		/// Luminous flux, expressed in Lumen
-		IfcLuminousFluxMeasure,
+		IFCLINEARVELOCITYMEASURE,
+		/// Luminous flux, expressed in lumen
+		IFCLUMINOUSFLUXMEASURE,
+		/// Luminous intensity distribution, expressed in 1
+		IFCLUMINOUSINTENSITYDISTRIBUTIONMEASURE,
 		/// Luminous intensity, expressed in candela
-		IfcLuminousIntensityMeasure,
+		IFCLUMINOUSINTENSITYMEASURE,
+		/// Magnetic flux density, expressed in tesla
+		IFCMAGNETICFLUXDENSITYMEASURE,
+		/// Magnetic flux, expressed in weber
+		IFCMAGNETICFLUXMEASURE,
 		/// Mass density, expressed in kg / m3
-		IfcMassDensityMeasure,
+		IFCMASSDENSITYMEASURE,
 		/// Mass flow rate, expressed in kg / s
-		IfcMassFlowRateMeasure,
+		IFCMASSFLOWRATEMEASURE,
 		/// Mass, expressed in kilogram
-		IfcMassMeasure,
+		IFCMASSMEASURE,
 		/// Mass per length, expressed in kg / m
-		IfcMassPerLengthMeasure,
+		IFCMASSPERLENGTHMEASURE,
 		/// Modulus of elasticity, expressed in kg / m s2
-		IfcModulusOfElasticityMeasure,
+		IFCMODULUSOFELASTICITYMEASURE,
+		/// Modulus of linear subgrade reaction, expressed in kg / m s2
+		IFCMODULUSOFLINEARSUBGRADEREACTIONMEASURE,
+		/// Modulus of rotational subgrade reaction, expressed in m kg / s2
+		IFCMODULUSOFROTATIONALSUBGRADEREACTIONMEASURE,
+		/// Modulus of subgrade reaction, expressed in kg / m2 s2
+		IFCMODULUSOFSUBGRADEREACTIONMEASURE,
 		/// Moisture diffusivity, expressed in m3 / s
-		IfcMoistureDiffusivityMeasure,
+		IFCMOISTUREDIFFUSIVITYMEASURE,
 		/// Molecular weight, expressed in kg / mol
-		IfcMolecularWeightMeasure,
+		IFCMOLECULARWEIGHTMEASURE,
 		/// Moment of inertia, expressed in m4
-		IfcMomentOfInertiaMeasure,
-		/// PH, expressed in 1
-		IfcPHMeasure,
-		/// Planar force, expressed in kg / m s2
-		IfcPlanarForceMeasure,
+		IFCMOMENTOFINERTIAMEASURE,
+		/// Non negative length, expressed in meter
+		IFCNONNEGATIVELENGTHMEASURE,
+		/// pH, expressed in 1
+		IFCPHMEASURE,
+		/// Planar force, expressed in pascal
+		IFCPLANARFORCEMEASURE,
 		/// Angle, expressed in radian
-		IfcPlaneAngleMeasure,
+		IFCPLANEANGLEMEASURE,
+		/// Positive length, expressed in meter
+		IFCPOSITIVELENGTHMEASURE,
+		/// Positive plane angle, expressed in radian
+		IFCPOSITIVEPLANEANGLEMEASURE,
 		/// Power, expressed in watt
-		IfcPowerMeasure,
+		IFCPOWERMEASURE,
 		/// Pressure, expressed in pascal
-		IfcPressureMeasure,
-		/// Radio activity, expressed in Becqurel
-		IfcRadioActivityMeasure,
-		/// Ratio, expressed in Percent
-		IfcRatioMeasure,
+		IFCPRESSUREMEASURE,
+		/// Radio activity, expressed in becqurel
+		IFCRADIOACTIVITYMEASURE,
 		/// Rotational frequency, expressed in hertz
-		IfcRotationalFrequencyMeasure,
+		IFCROTATIONALFREQUENCYMEASURE,
+		/// Rotational mass, expressed in m2 kg
+		IFCROTATIONALMASSMEASURE,
+		/// Rotational stiffness, expressed in m2 kg / s2
+		IFCROTATIONALSTIFFNESSMEASURE,
+		/// Sectional area integral, expressed in m5
+		IFCSECTIONALAREAINTEGRALMEASURE,
 		/// Section modulus, expressed in m3
-		IfcSectionModulusMeasure,
+		IFCSECTIONMODULUSMEASURE,
+		/// Shear modulus, expressed in kg / m s2
+		IFCSHEARMODULUSMEASURE,
+		/// Solid angle, expressed in steradin
+		IFCSOLIDANGLEMEASURE,
+		/// Sound power level, expressed in decibel
+		IFCSOUNDPOWERLEVELMEASURE,
 		/// Sound power, expressed in decibel
-		IfcSoundPowerMeasure,
+		IFCSOUNDPOWERMEASURE,
+		/// Sound pressure level, expressed in decibel
+		IFCSOUNDPRESSURELEVELMEASURE,
 		/// Sound pressure, expressed in decibel
-		IfcSoundPressureMeasure,
+		IFCSOUNDPRESSUREMEASURE,
 		/// Specific heat capacity, expressed in m2 / s2 K
-		IfcSpecificHeatCapacityMeasure,
+		IFCSPECIFICHEATCAPACITYMEASURE,
+		/// Temperature gradient, expressed in K / m
+		IFCTEMPERATUREGRADIENTMEASURE,
 		/// Temperature rate of change, expressed in K / s
-		IfcTemperatureRateOfChangeMeasure,
+		IFCTEMPERATURERATEOFCHANGEMEASURE,
+		/// Thermal admittance, expressed in kg / s3 K
+		IFCTHERMALADMITTANCEMEASURE,
 		/// Thermal conductivity, expressed in m kg / s3 K
-		IfcThermalConductivityMeasure,
+		IFCTHERMALCONDUCTIVITYMEASURE,
+		/// Thermal expansion coefficient, expressed in 1 / K
+		IFCTHERMALEXPANSIONCOEFFICIENTMEASURE,
+		/// Thermal resistance, expressed in s3 K / kg
+		IFCTHERMALRESISTANCEMEASURE,
+		/// Thermal transmittance, expressed in kg / s3 K
+		IFCTHERMALTRANSMITTANCEMEASURE,
 		/// Temperature, expressed in kelvin
-		IfcThermodynamicTemperatureMeasure,
+		IFCTHERMODYNAMICTEMPERATUREMEASURE,
 		/// Time, expressed in second
-		IfcTimeMeasure,
+		IFCTIMEMEASURE,
 		/// Torque, expressed in m2 kg / s2
-		IfcTorqueMeasure,
+		IFCTORQUEMEASURE,
 		/// Vapor permeability, expressed in s
-		IfcVaporPermeabilityMeasure,
+		IFCVAPORPERMEABILITYMEASURE,
 		/// Volume, expressed in cubic meter
-		IfcVolumeMeasure,
+		IFCVOLUMEMEASURE,
 		/// Volumetric flow rate, expressed in m3 / s
-		IfcVolumetricFlowRateMeasure,
+		IFCVOLUMETRICFLOWRATEMEASURE,
+		/// Warping constant, expressed in m6
+		IFCWARPINGCONSTANTMEASURE,
+		/// Warping moment, expressed in m3 kg / s2
+		IFCWARPINGMOMENTMEASURE,
 		/// A string,
 		IfcText,
 		/// An identifier expressed as string,

@@ -12,13 +12,10 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "of entity Wall or Wallstandardcase and of predefined type <any>")]
 
         [Theory]
-        public void IfcTypeFacetsApplicabilityDescribed(string ifcType, string predefined, string expected,
+        public void IfcTypeFacetsApplicabilityDescribed(string? ifcType, string? predefined, string expected,
             ConstraintType typeConstraint = ConstraintType.Exact)
         {
             var facet = BuildFacetFromInputs(ifcType, predefined, typeConstraint: typeConstraint);
-            
-           
-
             facet.ApplicabilityDescription.Should().Be(expected);
         }
 
@@ -28,7 +25,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "an entity Wall or Wallstandardcase and of predefined type <any>")]
 
         [Theory]
-        public void IfcTypeFacetsRequirementDescribed(string ifcType, string predefined, string expected,
+        public void IfcTypeFacetsRequirementDescribed(string? ifcType, string? predefined, string expected,
             ConstraintType typeConstraint = ConstraintType.Exact)
         {
             var facet = BuildFacetFromInputs(ifcType, predefined, typeConstraint: typeConstraint);
@@ -38,7 +35,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             facet.RequirementDescription.Should().Be(expected);
         }
 
-        private static IfcTypeFacet BuildFacetFromInputs(string ifcTypeInputs, string predefined = "", 
+        private static IfcTypeFacet BuildFacetFromInputs(string? ifcTypeInputs, string? predefined = "", 
             ConstraintType typeConstraint = ConstraintType.Exact, ConstraintType predefinedConstraint = ConstraintType.Exact)
         {
             IfcTypeFacet facet = new()

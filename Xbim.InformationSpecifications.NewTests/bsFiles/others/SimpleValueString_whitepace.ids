@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
-<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS  ids_09.xsd">
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd"
+         >
   <ids:info>
     <ids:title>string</ids:title>
     <ids:copyright>string</ids:copyright>
@@ -12,8 +14,8 @@
     <ids:milestone>string</ids:milestone>
   </ids:info>
   <ids:specifications>
-    <ids:specification name="string" ifcVersion="IFC4 IFC2X3 IFC4X3 IFC2X3 IFC4 IFC2X3" description="string" instructions="string" minOccurs="1" maxOccurs="unbounded">
-      <ids:applicability>
+    <ids:specification name="string" ifcVersion="IFC4 IFC2X3 IFC4X3" description="string" instructions="string">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
         <ids:entity>
           <ids:name>
             <ids:simpleValue>
@@ -58,11 +60,11 @@
               string
             </ids:simpleValue>
           </ids:propertySet>
-          <ids:name>
+          <ids:baseName>
             <xs:restriction base="xs:string">
               <xs:pattern value="string" />
             </xs:restriction>
-          </ids:name>
+          </ids:baseName>
           <ids:value>
             <ids:simpleValue>
               string
@@ -76,7 +78,7 @@
             </ids:simpleValue>
           </ids:value>
         </ids:material>
-        <ids:partOf relation="IfcRelAssignsToGroup">
+        <ids:partOf relation="IFCRELASSIGNSTOGROUP">
           <ids:entity>
             <ids:name>
               <ids:simpleValue>
@@ -104,7 +106,7 @@
             </ids:simpleValue>
           </ids:predefinedType>
         </ids:entity>
-        <ids:partOf instructions="string" relation="IfcRelAggregates" minOccurs="1" maxOccurs="unbounded">
+        <ids:partOf instructions="string" relation="IFCRELAGGREGATES" minOccurs="1" maxOccurs="unbounded">
           <ids:entity>
             <ids:name>
               <ids:simpleValue>
@@ -148,11 +150,11 @@
               string
             </ids:simpleValue>
           </ids:propertySet>
-          <ids:name>
+          <ids:baseName>
             <ids:simpleValue>
               string
             </ids:simpleValue>
-          </ids:name>
+          </ids:baseName>
           <ids:value>
             <ids:simpleValue>
               string

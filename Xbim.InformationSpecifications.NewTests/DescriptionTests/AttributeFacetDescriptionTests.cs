@@ -15,7 +15,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("Name,Description", "P.*", "an attribute Name or Description with value matching 'P.*'", ConstraintType.Pattern)]
         [InlineData("Name,Description", "Foo", "an attribute Name or Description with value Foo")]
         [Theory]
-        public void AttributeFacetsRequirementsDescribed(string attributeName, object attributeValue, string expected,
+        public void AttributeFacetsRequirementsDescribed(string attributeName, object? attributeValue, string expected,
             ConstraintType valueConstraint = ConstraintType.Exact)
         {
             AttributeFacet facet;
@@ -41,7 +41,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("Name,Description", "P.*", "with attribute Name or Description with value matching 'P.*'", ConstraintType.Pattern)]
         [InlineData("Name,Description", "Foo", "with attribute Name or Description with value Foo")]
         [Theory]
-        public void AttributeFacetsApplicabilityDescribed(string attributeName, object attributeValue, string expected,
+        public void AttributeFacetsApplicabilityDescribed(string attributeName, object? attributeValue, string expected,
             ConstraintType valueConstraint = ConstraintType.Exact)
         {
             AttributeFacet facet;

@@ -118,12 +118,12 @@ namespace Xbim.InformationSpecifications
             }
             if (group.RequirementOptions.Count > index)
             {
-                var cardinality = group.RequirementOptions[index];
+                var cardinality = group.RequirementOptions[index].RelatedFacetCardinality;
                 return cardinality switch
                 {
-                    RequirementCardinalityOptions.Prohibited => $"NOT {clause}{requirement}",
-                    RequirementCardinalityOptions.Optional => $"OPTIONALLY {clause}{requirement}",
-                    RequirementCardinalityOptions.Expected => $"{clause}{requirement}",
+                    RequirementCardinalityOptions.Cardinality.Prohibited => $"NOT {clause}{requirement}",
+                    RequirementCardinalityOptions.Cardinality.Optional => $"OPTIONALLY {clause}{requirement}",
+                    RequirementCardinalityOptions.Cardinality.Expected => $"{clause}{requirement}",
                     _ => throw new NotImplementedException(cardinality.ToString()),
                 };
             }

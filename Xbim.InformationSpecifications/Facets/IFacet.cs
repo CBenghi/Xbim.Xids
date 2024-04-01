@@ -23,7 +23,7 @@
         string RequirementDescription { get; }
 
         /// <summary>
-        /// Text describing how this factet applies to elements
+        /// Text describing how this facet applies to elements
         /// </summary>
         string ApplicabilityDescription { get; }
     }

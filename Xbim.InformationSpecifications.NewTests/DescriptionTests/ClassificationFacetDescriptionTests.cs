@@ -15,13 +15,13 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("EF_25,EF_26", "Uniclass 2015", "a classification EF_25 or EF_26 from system Uniclass 2015")]
         [InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "a classification EF_25 or EF_26 from system Uniclass 2015 or UniClass")]
         [Theory]
-        public void ClassificationFacetsRequirementsDescribed(string identifiers, string systems, string expected,
+        public void ClassificationFacetsRequirementsDescribed(string identifiers, string? systems, string expected,
             ConstraintType identifierConstraint = ConstraintType.Exact, ConstraintType systemConstraint = ConstraintType.Exact)
         {
             IfcClassificationFacet facet;
       
 
-            facet = BuildFacetFromInputs(identifiers, systems, identifierConstraint, systemConstraint);
+            facet = BuildFacetFromInputs(identifiers, systems ?? "", identifierConstraint, systemConstraint);
            
 
             facet.RequirementDescription.Should().Be(expected);
@@ -36,13 +36,13 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         [InlineData("EF_25,EF_26", "Uniclass 2015", "with classification EF_25 or EF_26 from system Uniclass 2015")]
         [InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "with classification EF_25 or EF_26 from system Uniclass 2015 or UniClass")]
         [Theory]
-        public void ClassificationFacetsApplicabilityDescribed(string identifiers, string systems, string expected,
+        public void ClassificationFacetsApplicabilityDescribed(string identifiers, string? systems, string expected,
             ConstraintType identifierConstraint = ConstraintType.Exact, ConstraintType systemConstraint = ConstraintType.Exact)
         {
             IfcClassificationFacet facet;
 
 
-            facet = BuildFacetFromInputs(identifiers, systems, identifierConstraint, systemConstraint);
+            facet = BuildFacetFromInputs(identifiers, systems ?? "", identifierConstraint, systemConstraint);
 
 
             facet.ApplicabilityDescription.Should().Be(expected);

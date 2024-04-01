@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Xbim.InformationSpecifications.Cardinality
 {
@@ -118,6 +120,32 @@ namespace Xbim.InformationSpecifications.Cardinality
                 count >= MinOccurs
                 &&
                 count <= MaxOccurs.Value;
+        }
+
+        internal void ReadAttributes(XElement sub, ILogger? logger)
+        {
+
+            foreach (var attribute in sub.Attributes())
+            {
+                switch (attribute.Name.LocalName.ToLowerInvariant())
+                {
+                    case "minoccurs":
+                        if (int.TryParse(attribute.Value, out int tmpMin))
+                            MinOccurs = tmpMin;
+                        else
+                            Xids.LogUnexpectedValue(attribute, sub, logger);
+                        break;
+                    case "maxoccurs":
+                        if (attribute.Value == "unbounded")
+                            MaxOccurs = null; // null is considered to mean unbounded
+                        else if (int.TryParse(attribute.Value, out int tmpMax))
+                            MaxOccurs = tmpMax;
+                        else
+                            Xids.LogUnexpectedValue(attribute, sub, logger);
+                        break;
+                }
+            }
+
         }
 
         /// <inheritdoc />

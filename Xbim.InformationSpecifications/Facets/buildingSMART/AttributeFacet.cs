@@ -83,7 +83,7 @@ namespace Xbim.InformationSpecifications
         {
             return FacetBase.IsValid(AttributeName)
                 && FacetBase.IsValidOrNull(AttributeValue)
-                && IdsLib.IfcSchema.SchemaInfo.AllAttributes.Any(x => AttributeName.IsSatisfiedBy(x));
+                && IdsLib.IfcSchema.SchemaInfo.AllAttributes.Any(x => AttributeName.IsSatisfiedBy(x.IfcAttributeName));
         }
     }
 }

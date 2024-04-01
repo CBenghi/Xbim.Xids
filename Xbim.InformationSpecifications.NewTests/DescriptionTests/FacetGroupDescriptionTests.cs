@@ -8,15 +8,15 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
     {
         [InlineData(null,
             "All elements of entity IfcDoor and of predefined type Door AND with attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Expected, RequirementCardinalityOptions.Expected },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Expected },
             "All elements of entity IfcDoor and of predefined type Door AND with attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Expected, RequirementCardinalityOptions.Prohibited },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Prohibited },
             "All elements of entity IfcDoor and of predefined type Door AND NOT with attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Prohibited, RequirementCardinalityOptions.Optional },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Optional },
             "All elements NOT of entity IfcDoor and of predefined type Door AND OPTIONALLY with attribute Name with value D001")]
         [Theory]
         [Obsolete("Because we use an constructor method mark as obsolete for testing, we prevent the warning by marking the test obsolete too.")]
-        public void FacetGroupApplicabilityDescribed(RequirementCardinalityOptions[] reqs, string expected)
+        public void FacetGroupApplicabilityDescribed(RequirementCardinalityOptions.Cardinality[]? reqs, string expected)
         {
 
             var type = new IfcTypeFacet
@@ -34,23 +34,32 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             facetGroup.Facets.Add(type);
             facetGroup.Facets.Add(attr);
 
-            if(reqs != null)
-                facetGroup.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(reqs);
+			var options = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>();
+			for (int i = 0; i < facetGroup.Facets.Count; i++)
+            {
+				IFacet? facet = facetGroup.Facets[i];
+                var t = reqs?[i] ?? RequirementCardinalityOptions.Cardinality.Expected;
+				var thisOpt = new RequirementCardinalityOptions(facet, t);
+                options.Add(thisOpt);
+			}
+            if (reqs != null)
+                facetGroup.RequirementOptions = options;
 
-            facetGroup.GetApplicabilityDescription().Should().Be(expected);
+
+			facetGroup.GetApplicabilityDescription().Should().Be(expected);
         }
 
         [InlineData(null,
             "should have an entity IfcDoor and of predefined type Door AND should have an attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Expected, RequirementCardinalityOptions.Expected },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Expected },
             "should have an entity IfcDoor and of predefined type Door AND should have an attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Expected, RequirementCardinalityOptions.Prohibited },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Prohibited },
             "should have an entity IfcDoor and of predefined type Door AND should NOT have an attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Prohibited, RequirementCardinalityOptions.Optional },
+        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Optional },
             "should NOT have an entity IfcDoor and of predefined type Door AND should OPTIONALLY have an attribute Name with value D001")]
         [Theory]
         [Obsolete("Because we use an constructor method mark as obsolete for testing, we prevent the warning by marking the test obsolete too.")]
-        public void FacetGroupRequirementDescribed(RequirementCardinalityOptions[] reqs, string expected)
+        public void FacetGroupRequirementDescribed(RequirementCardinalityOptions.Cardinality[]? reqs, string expected)
         {
 
             var type = new IfcTypeFacet
@@ -68,10 +77,18 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             facetGroup.Facets.Add(type);
             facetGroup.Facets.Add(attr);
 
-            if (reqs != null)
-                facetGroup.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(reqs);
+			var options = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>();
+			for (int i = 0; i < facetGroup.Facets.Count; i++)
+			{
+				IFacet? facet = facetGroup.Facets[i];
+				var t = reqs?[i] ?? RequirementCardinalityOptions.Cardinality.Expected;
+				var thisOpt = new RequirementCardinalityOptions(facet, t);
+				options.Add(thisOpt);
+			}
+			if (reqs != null)
+				facetGroup.RequirementOptions = options;
 
-            facetGroup.GetRequirementDescription().Should().Be(expected);
+			facetGroup.GetRequirementDescription().Should().Be(expected);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Xbim.InformationSpecifications.Generator
 
         public static void Main()
         {
+            // this does not work anymore
+            //
             //Console.WriteLine("Press `t` to generate full testfiles, any other key to continue with next steps of generation.");
             //if (Console.ReadKey().Key == ConsoleKey.T)
             //{
@@ -40,6 +42,11 @@ namespace Xbim.InformationSpecifications.Generator
             }
 
             Console.WriteLine("Running code generation...");
+            if (IdsRepo_Updater.UpdateRequiresRestart())
+            {
+                Message(ConsoleColor.Yellow, "Local code updated, need to restart the generation.");
+                return;
+            }
 
             var study = false;
             var destPath = new DirectoryInfo(@"..\..\..\..\");
@@ -98,15 +105,6 @@ namespace Xbim.InformationSpecifications.Generator
 
             // QA analysis 
             MeasureAutomation.Execute_CheckMeasureMetadata();
-
-            //if (false) // enums removed from schema
-            //{
-            //    if (MeasureAutomation.Execute_CheckMeasureEnumeration())
-            //    {
-            //        Message(ConsoleColor.Red, "Errors in measure helpers, try running again once, it might get fixed by code generation.");
-            //    }
-            //}
-
             Message(ConsoleColor.DarkGreen, "Completed");
         }
 

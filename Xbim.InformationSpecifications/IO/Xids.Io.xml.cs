@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
@@ -178,13 +179,17 @@ namespace Xbim.InformationSpecifications
             if (spec.Instructions != null)
                 xmlWriter.WriteAttributeString("instructions", spec.Instructions);
 
+            
+
+            // applicability
+            xmlWriter.WriteStartElement("applicability", IdsNamespace);
+
+            // applicability includes the cardinality
             if (spec.Cardinality is null)
                 logger?.LogError("Cardinality is required for specification '{specname}' ({guid}).", spec.Name, spec.Guid);
             else
                 spec.Cardinality.ExportBuildingSmartIDS(xmlWriter, logger);
 
-            // applicability
-            xmlWriter.WriteStartElement("applicability", IdsNamespace);
             if (spec.Applicability is not null)
             {
                 foreach (var item in spec.Applicability.Facets)
@@ -201,21 +206,22 @@ namespace Xbim.InformationSpecifications
                 var opts = spec.Requirement.RequirementOptions;
                 for (int i = 0; i < spec.Requirement.Facets.Count; i++)
                 {
-                    var option = GetProgressive(opts, i, RequirementCardinalityOptions.Expected);
                     IFacet? facet = spec.Requirement.Facets[i];
+                    var option = GetProgressive(opts, i, facet, RequirementCardinalityOptions.Cardinality.Expected);
                     ExportBuildingSmartIDS(facet, xmlWriter, true, logger, spec.Requirement, thisSpecVersion, option);
                 }
             }
             xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
         }
 
-        static private RequirementCardinalityOptions GetProgressive(ObservableCollection<RequirementCardinalityOptions>? opts, int i, RequirementCardinalityOptions defaultValue)
+        static private RequirementCardinalityOptions GetProgressive(ObservableCollection<RequirementCardinalityOptions>? opts, int i, IFacet facet, RequirementCardinalityOptions.Cardinality defaultValue)
         {
             if (opts is null)
-                return defaultValue;
+                return new RequirementCardinalityOptions(facet, defaultValue);
             if (i >= opts.Count)
-                return defaultValue;
+                return new RequirementCardinalityOptions(facet, defaultValue);
             return opts[i];
         }
 
@@ -277,11 +283,9 @@ namespace Xbim.InformationSpecifications
                     xmlWriter.WriteStartElement("property", IdsNamespace);
                     WriteFacetBaseAttributes(pf, xmlWriter, logger, forRequirement, requirementOption);
                     if (!string.IsNullOrWhiteSpace(pf.DataType))
-                        xmlWriter.WriteAttributeString("datatype", pf.DataType.ToUpperInvariant());
-                    else
-                        xmlWriter.WriteAttributeString("datatype", "");
+                        xmlWriter.WriteAttributeString("dataType", pf.DataType.ToUpperInvariant());
                     WriteConstraintValue(pf.PropertySetName, xmlWriter, "propertySet", logger);
-                    WriteConstraintValue(pf.PropertyName, xmlWriter, "name", logger);
+                    WriteConstraintValue(pf.PropertyName, xmlWriter, "baseName", logger);
                     WriteConstraintValue(pf.PropertyValue, xmlWriter, "value", logger);
                     WriteFacetBaseElements(pf, xmlWriter); // from Property
                     xmlWriter.WriteEndElement();
@@ -435,40 +439,38 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private void WriteFacetBaseAttributes(FacetBase cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
+        static private string RequirementCardinalityAttributeName = "cardinality";
+
+        static private void WriteFacetBaseAttributes(IFacet cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
         {
             if (forRequirement)
             {
-                if (!option.HasValue)
-                    option = RequirementCardinalityOptions.Expected; // should be redundant, but makes some be not null
+                if (option is null)
+                    option = new RequirementCardinalityOptions(cf,RequirementCardinalityOptions.Cardinality.Expected); // should be redundant, but makes some be not null
 
-                if (
-                    cf is IBuilsingSmartCardinality 
-                )
+                if (cf is IBuilsingSmartCardinality)
                 {
                     // use is required
-                    switch (option.Value)
+                    switch (option.RelatedFacetCardinality.Value)
                     {
-                        case RequirementCardinalityOptions.Prohibited:
-                            xmlWriter.WriteAttributeString("minOccurs", "0");
-                            xmlWriter.WriteAttributeString("maxOccurs", "0");
+                        case RequirementCardinalityOptions.Cardinality.Prohibited:
+                            xmlWriter.WriteAttributeString(RequirementCardinalityAttributeName, "prohibited");
                             break;
-                        case RequirementCardinalityOptions.Expected:
-                            // xmlWriter.WriteAttributeString("minOccurs", "1"); 1 is the default, anyway
-                            xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
+                        case RequirementCardinalityOptions.Cardinality.Expected:
+                            xmlWriter.WriteAttributeString(RequirementCardinalityAttributeName, "required");
                             break;
-                        case RequirementCardinalityOptions.Optional:
-                            xmlWriter.WriteAttributeString("minOccurs", "0");
-                            xmlWriter.WriteAttributeString("maxOccurs", "unbounded");
+                        case RequirementCardinalityOptions.Cardinality.Optional:
+                            xmlWriter.WriteAttributeString(RequirementCardinalityAttributeName, "optional");
                             break;
                         default:
                             logger?.LogError("Invalid RequirementOption persistence for '{option}'", option);
                             break;
                     }
                 }
+                if (cf is FacetBase asFb)
                 // instruction is optional
-                if (!string.IsNullOrWhiteSpace(cf.Instructions))
-                    xmlWriter.WriteAttributeString("instructions", cf.Instructions);
+                if (!string.IsNullOrWhiteSpace(asFb.Instructions))
+                    xmlWriter.WriteAttributeString("instructions", asFb.Instructions);
                 
             }
 
@@ -478,8 +480,8 @@ namespace Xbim.InformationSpecifications
                 cf is MaterialFacet
                 )
             {
-                if (!string.IsNullOrWhiteSpace(cf.Uri))
-                    xmlWriter.WriteAttributeString("uri", cf.Uri);
+                if (cf is FacetBase cfb && !string.IsNullOrWhiteSpace(cfb.Uri))
+                    xmlWriter.WriteAttributeString("uri", cfb.Uri);
             }
 
 
@@ -683,17 +685,17 @@ namespace Xbim.InformationSpecifications
             }
         }
 
-        private static void LogUnexpected(XElement unepected, XElement parent, ILogger? logger)
+        internal static void LogUnexpected(XElement unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected element '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
         }
 
-        private static void LogUnexpected(XAttribute unepected, XElement parent, ILogger? logger)
+        internal static void LogUnexpected(XAttribute unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected attribute '{unexpected}' in '{parentName}'.", unepected.Name.LocalName, parent.Name.LocalName);
         }
 
-        private static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger? logger)
+        internal static void LogUnexpectedValue(XAttribute unepected, XElement parent, ILogger? logger)
         {
             logger?.LogWarning("Unexpected value '{unexpValue}' for attribute '{unexpected}' in '{parentName}'.", unepected.Value, unepected.Name.LocalName, parent.Name.LocalName);
         }
@@ -757,20 +759,6 @@ namespace Xbim.InformationSpecifications
                         schemaVersions = attribute.Value.ParseXmlSchemasFromAttribute();
                         ret.IfcVersion = ToXidsVersion(schemaVersions);
                         break;
-                    case "minoccurs":
-                        if (int.TryParse(attribute.Value, out int tmpMin))
-                            cardinality.MinOccurs = tmpMin;
-                        else
-                            LogUnexpectedValue(attribute, specificationElement, logger);
-                        break;
-                    case "maxoccurs":
-                        if (attribute.Value == "unbounded")
-                            cardinality.MaxOccurs = null; // null is considered to mean unbounded
-                        else if (int.TryParse(attribute.Value, out int tmpMax))
-                            cardinality.MaxOccurs = tmpMax;
-                        else
-                            LogUnexpectedValue(attribute, specificationElement, logger);
-                        break;
                     case "instructions":
                         ret.Instructions = attribute.Value;
                         break;
@@ -787,6 +775,7 @@ namespace Xbim.InformationSpecifications
                 {
                     case "applicability":
                         {
+                            cardinality.ReadAttributes(sub, logger);
                             var fs = GetFacets(sub, logger, schemaVersions, out _);
                             if (fs.Any())
                                 ret.SetFilters(fs);
@@ -845,7 +834,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(sub, elem, logger);
                 }
             }
-            var minMax = new BsMinMaxOccur();
+            var minMax = new BsRequirementCardinality();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -853,7 +842,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new MaterialFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
+                else if (BsRequirementCardinality.IsRelevant(attribute, ref minMax))
                 {
                     // nothing to do, IsRelevant takes care of minMax
                 }
@@ -862,7 +851,10 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = minMax.Evaluate(elem, logger); // from material
+            opt = new RequirementCardinalityOptions(
+                ret,
+                minMax.Evaluate(elem, logger)
+                ); // from material
             return ret;
         }
 
@@ -887,7 +879,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var minMax = new BsMinMaxOccur();
+            var minMax = new BsRequirementCardinality();
             foreach (var attribute in elem.Attributes())
             {
 
@@ -896,7 +888,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new PartOfFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
+                else if (BsRequirementCardinality.IsRelevant(attribute, ref minMax))
                 {
                     // nothing to do, IsRelevant takes care of minMax
                 }
@@ -915,7 +907,7 @@ namespace Xbim.InformationSpecifications
                     }
                 }
             }
-            opt = minMax.Evaluate(elem, logger); // from partOf
+            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from partOf
             return ret;
         }
 
@@ -937,7 +929,7 @@ namespace Xbim.InformationSpecifications
                         ret ??= new IfcPropertyFacet();
                         ret.PropertySetName = GetConstraint(sub, logger);
                         break;
-                    case "name": // either property or name is redundant
+                    case "basename": // either property or name is redundant
                         ret ??= new IfcPropertyFacet();
                         ret.PropertyName = GetConstraint(sub, logger);
                         break;
@@ -950,7 +942,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var minMax = new BsMinMaxOccur();
+            var minMax = new BsRequirementCardinality();
             foreach (var attribute in elem.Attributes())
             {
                 if (IsBaseAttribute(attribute))
@@ -958,12 +950,12 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcPropertyFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (attribute.Name.LocalName == "datatype")
+                else if (attribute.Name.LocalName == "dataType")
                 {
                     ret ??= new IfcPropertyFacet();
                     ret.DataType = attribute.Value;
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
+                else if (BsRequirementCardinality.IsRelevant(attribute, ref minMax))
                 {
                     // nothing to do, IsRelevant takes care of minMax
                 }
@@ -972,7 +964,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = minMax.Evaluate(elem, logger); // from property
+            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from property
             return ret;
         }
 
@@ -1164,7 +1156,7 @@ namespace Xbim.InformationSpecifications
             foreach (var sub in elem.Elements())
             {
                 IFacet? t = null;
-                RequirementCardinalityOptions opt = RequirementCardinalityOptions.Expected;
+                RequirementCardinalityOptions? opt = null;
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
                 {
@@ -1221,7 +1213,7 @@ namespace Xbim.InformationSpecifications
                         break;
                 }
             }
-            var minMax = new BsMinMaxOccur();
+            var minMax = new BsRequirementCardinality();
             foreach (var attribute in elem.Attributes())
             {
                 var subName = attribute.Name.LocalName.ToLowerInvariant();
@@ -1230,7 +1222,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new AttributeFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
+                else if (BsRequirementCardinality.IsRelevant(attribute, ref minMax))
                 {
                     // nothing to do, IsRelevant takes care of minMax
                 }
@@ -1239,45 +1231,36 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = minMax.Evaluate(elem, logger); // from attribute
+            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from attribute
             return ret;
         }
 
-        private class BsMinMaxOccur
+        private class BsRequirementCardinality
         {
-            public string Min { get; set; } = "";
-            public string Max { get; set; } = "";
-
-            internal static bool IsRelevant(XAttribute attribute, ref BsMinMaxOccur minMax)
+            public string Card { get; set; } = "";
+            
+            internal static bool IsRelevant(XAttribute attribute, ref BsRequirementCardinality minMax)
             {
-                if (attribute.Name == "minOccurs")
+                if (attribute.Name == RequirementCardinalityAttributeName)
                 {
-                    minMax.Min = attribute.Value;
-                    return true;
-                }
-                if (attribute.Name == "maxOccurs")
-                {
-                    minMax.Max = attribute.Value;
+                    minMax.Card = attribute.Value;
                     return true;
                 }
                 return false;
             }
 
-            private static readonly RequirementCardinalityOptions DefaultCardinality = RequirementCardinalityOptions.Expected;
+            private static readonly RequirementCardinalityOptions.Cardinality DefaultCardinality = RequirementCardinalityOptions.Cardinality.Expected;
 
-            internal RequirementCardinalityOptions Evaluate(XElement elem, ILogger? logger)
+            internal RequirementCardinalityOptions.Cardinality Evaluate(XElement elem, ILogger? logger)
             {
-                if (Min == "" && Max == "")
+                if (Card == "")
                     return DefaultCardinality; // set default
-                if (Min == "0" && Max == "0")
-                    return RequirementCardinalityOptions.Prohibited;
-                if (Max == "unbounded" || Max == "" || Max == "1")
-                {
-                    if (Min == "1" || Min=="") // default is 1
-                        return RequirementCardinalityOptions.Expected;
-                    if (Min == "0")
-                        return RequirementCardinalityOptions.Optional;
-                }              
+                else if (Card == "prohibited")
+                    return RequirementCardinalityOptions.Cardinality.Prohibited;
+                else if (Card == "optional")
+                    return RequirementCardinalityOptions.Cardinality.Optional;
+                else if (Card == "required")
+                    return RequirementCardinalityOptions.Cardinality.Expected;
                 // throw warning and set default value
                 LogUnsupportedOccurValue(elem, logger);
                 return DefaultCardinality; // set default
@@ -1310,7 +1293,7 @@ namespace Xbim.InformationSpecifications
                 }
             }
 
-            var minMax = new BsMinMaxOccur();
+            var minMax = new BsRequirementCardinality();
             foreach (var attribute in elem.Attributes())
             {
                 var locAtt = attribute.Name.LocalName;
@@ -1319,7 +1302,7 @@ namespace Xbim.InformationSpecifications
                     ret ??= new IfcClassificationFacet();
                     GetBaseAttribute(attribute, ret, logger);
                 }
-                else if (BsMinMaxOccur.IsRelevant(attribute, ref minMax))
+                else if (BsRequirementCardinality.IsRelevant(attribute, ref minMax))
                 {
                     // nothing to do, IsRelevant takes care of minMax
                 }
@@ -1328,7 +1311,7 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = minMax.Evaluate(elem, logger); // from classification
+            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from classification
             return ret;
         }
 

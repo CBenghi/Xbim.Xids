@@ -10,19 +10,19 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="title" type="xs:string"/>
-							<xs:element name="copyright" type="xs:string" minOccurs="0"/>
-							<xs:element name="version" type="xs:string" minOccurs="0"/>
-							<xs:element name="description" type="xs:string" minOccurs="0"/>
-							<xs:element name="author" minOccurs="0">
+							<xs:element name="copyright" type="xs:string" minOccurs/>
+							<xs:element name="version" type="xs:string" minOccurs/>
+							<xs:element name="description" type="xs:string" minOccurs/>
+							<xs:element name="author" minOccurs>
 								<xs:simpleType>
 									<xs:restriction base="xs:string">
 										<xs:pattern value="[^@]+@[^\.]+\..+"/>
 									</xs:restriction>
 								</xs:simpleType>
 							</xs:element>
-							<xs:element name="date" type="xs:date" minOccurs="0"/>
-							<xs:element name="purpose" type="xs:string" minOccurs="0"/>
-							<xs:element name="milestone" type="xs:string" minOccurs="0"/>
+							<xs:element name="date" type="xs:date" minOccurs/>
+							<xs:element name="purpose" type="xs:string" minOccurs/>
+							<xs:element name="milestone" type="xs:string" minOccurs/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
@@ -33,36 +33,36 @@
 	<xs:complexType name="entityType">
 		<xs:sequence>
 			<xs:element name="name" type="ids:idsValue"/>
-			<xs:element name="predefinedType" type="ids:idsValue" minOccurs="0"/>
+			<xs:element name="predefinedType" type="ids:idsValue" minOccurs/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="idsValue">
-		<xs:choice minOccurs="1">
+		<xs:choice minOccurs>
 			<!-- place for potential additional rules for idsValue -->
-			<xs:element name="simpleValue" type="xs:string" minOccurs="1" maxOccurs="1"/>
-			<xs:element ref="xs:restriction" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="simpleValue" type="xs:string" minOccurs maxOccurs/>
+			<xs:element ref="xs:restriction" minOccurs maxOccurs/>
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="classificationType">
 		<xs:sequence>
-			<xs:element name="value" type="ids:idsValue" minOccurs="0"/>
-			<xs:element name="system" type="ids:idsValue" minOccurs="1"/>
+			<xs:element name="value" type="ids:idsValue" minOccurs/>
+			<xs:element name="system" type="ids:idsValue" minOccurs/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="partOfType">
 		<xs:sequence>
-			<xs:element name="entity" type="ids:entityType" minOccurs="1"/>
+			<xs:element name="entity" type="ids:entityType" minOccurs/>
 		</xs:sequence>
-		<xs:attribute name="relation" type="ids:relations" use="optional" />
+		<xs:attribute name="relation" type="ids:relations" use="required" />
 	</xs:complexType>
 	<xs:complexType name="applicabilityType">
 		<xs:sequence>
-			<xs:element name="entity" type="ids:entityType" minOccurs="0"/>
-			<xs:element name="partOf" type="ids:partOfType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="classification" type="ids:classificationType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="attribute" type="ids:attributeType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="property" type="ids:propertyType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="material" type="ids:materialType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="entity" type="ids:entityType" minOccurs/>
+			<xs:element name="partOf" type="ids:partOfType" minOccurs maxOccurs="unbounded"/>
+			<xs:element name="classification" type="ids:classificationType" minOccurs="1"="unbounded"/>
+			<xs:element name="attribute" type="ids:attributeType" minOccurs="1"="unbounded"/>
+			<xs:element name="property" type="ids:propertyType" minOccurs="1"="unbounded"/>
+			<xs:element name="material" type="ids:materialType" minOccurs="1"="unbounded"/>
 		</xs:sequence>
 		<!-- Please note there is an implementation agreement on the use of minOccurs and maxOccurs.
 			Valid values are: 
@@ -83,7 +83,7 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="value" type="ids:idsValue" minOccurs="0">
+			<xs:element name="value" type="ids:idsValue" minOccurs>
 				<xs:annotation>
 					<xs:documentation>
 						Depending on the dataType attribute, values are expressed in the default unit documented at 
@@ -92,7 +92,7 @@
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="dataType" type="ids:upperCaseName" use="optional">
+		<xs:attribute name="dataType" type="ids:upperCaseName" use="required">
 			<xs:annotation>
 				<xs:documentation>This is the name of an IFC Defined Type, all uppercase.</xs:documentation>
 			</xs:annotation>
@@ -101,7 +101,7 @@
 	<xs:complexType name="attributeType">
 		<xs:sequence>
 			<xs:element name="name" type="ids:idsValue"/>
-			<xs:element name="value" type="ids:idsValue" minOccurs="0">
+			<xs:element name="value" type="ids:idsValue" minOccurs>
 				<xs:annotation>
 					<xs:documentation>
 						Depending on the IFC type of the attribute, values are expressed in the default unit documented at 
@@ -113,12 +113,12 @@
 	</xs:complexType>
 	<xs:complexType name="materialType">
 		<xs:sequence>
-			<xs:element name="value" type="ids:idsValue" minOccurs="0"/>
+			<xs:element name="value" type="ids:idsValue" minOccurs/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="requirementsType">
 		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="entity" minOccurs="0">
+			<xs:element name="entity" minOccurs>
 				<xs:annotation>
 					<xs:documentation>Make sure 'Name' value of requirements entity is the same as the 'applicability' node, or a wildcard (inclusive pattern).</xs:documentation>
 				</xs:annotation>
@@ -132,7 +132,7 @@
 								This is possible because the list of options is finite and mandated by the IFC schema, so prohibited constraints are superfluous.
 								This choice allows for improved user experience in the editors.
 							-->
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -141,12 +141,12 @@
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="partOf" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="partOf" minOccurs maxOccurs="unbounded">
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:partOfType">
-							<xs:attribute name="cardinality" type="ids:simpleCardinality" use="optional" default="required"/>
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="cardinality" type="ids:simpleCardinality" use="required" default="required"/>
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -155,13 +155,13 @@
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="classification" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="classification" minOccurs="0" maxOccurs="0"="unbounded">
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:classificationType">
-							<xs:attribute name="uri" type="xs:anyURI" use="optional"/>
-							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="optional" default="required"/>
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="required" default="required"/>
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -170,12 +170,12 @@
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="attribute" minOccurs="0" maxOccurs="0"="unbounded">
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:attributeType">
-							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="optional" default="required"/>
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="required" default="required"/>
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -184,13 +184,13 @@
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="property" minOccurs="0" maxOccurs="0"="unbounded">
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:propertyType">
-							<xs:attribute name="uri" type="xs:anyURI" use="optional"/>
-							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="optional" default="required"/>
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="required" default="required"/>
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -199,13 +199,13 @@
 					</xs:complexContent>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="material" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="material" minOccurs="0" maxOccurs="0"="unbounded">
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:materialType">
-							<xs:attribute name="uri" type="xs:anyURI" use="optional"/>
-							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="optional" default="required"/>
-							<xs:attribute name="instructions" type="xs:string" use="optional">
+							<xs:attribute name="uri" type="xs:anyURI" use="required"/>
+							<xs:attribute name="cardinality" type="ids:conditionalCardinality" use="required" default="required"/>
+							<xs:attribute name="instructions" type="xs:string" use="required">
 								<xs:annotation>
 									<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 								</xs:annotation>
@@ -219,11 +219,11 @@
 	<xs:complexType name="specificationType">
 		<xs:sequence>
 			<xs:element name="applicability" type="ids:applicabilityType"/>
-			<xs:element name="requirements" minOccurs="0">
+			<xs:element name="requirements" minOccurs>
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base="ids:requirementsType">
-							<xs:attribute name="description" type="xs:string" use="optional"/>
+							<xs:attribute name="description" type="xs:string" use="required"/>
 						</xs:extension>
 					</xs:complexContent>
 				</xs:complexType>
@@ -244,13 +244,13 @@
 				</xs:list>
 			</xs:simpleType>
 		</xs:attribute>
-		<xs:attribute name="identifier" type="xs:string" use="optional">
+		<xs:attribute name="identifier" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>Author of the IDS can provide an identifier to the specification. This is intended to be a machine readable identifier. Beware: because of the possibility to combine different 'specification' elements from several ids files this cannot be enforced/assumed as (global) unique.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="description" type="xs:string" use="optional"/>
-		<xs:attribute name="instructions" type="xs:string" use="optional">
+		<xs:attribute name="description" type="xs:string" use="required"/>
+		<xs:attribute name="instructions" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>Author of the IDS can leave instructions for the authors of the IFC. This text could/should be displayed in the BIM/IFC authoring tool.</xs:documentation>
 			</xs:annotation>
@@ -258,7 +258,7 @@
 	</xs:complexType>
 	<xs:complexType name="specificationsType">
 		<xs:sequence>
-			<xs:element name="specification" type="ids:specificationType" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="specification" type="ids:specificationType" minOccurs="0"="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:simpleType name="relations">

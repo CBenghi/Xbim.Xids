@@ -101,27 +101,26 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
         [InlineData(12.0, "°F/s", "IfcTemperatureRateOfChangeMeasure", 6.666666666666667)]
         [InlineData(5.0, "m2 / s2 °F", "IfcSpecificHeatCapacityMeasure", 9)]
         [InlineData(5.0, "J / kg °F", "IfcSpecificHeatCapacityMeasure", 9)]
-
         public void CheckUnit(double originalUnit, string complexUnitString, string expectedMeasure, double expected)
         {
-            MeasureUnit sourceUnit = new (complexUnitString);
+            MeasureUnit computedSourceUnit = new (complexUnitString);
 
-            var t = GetMeasureInfo(expectedMeasure.ToString());
-            t.Should().NotBeNull("library should be complete.");
+            var systemMeasureInfo = GetMeasureInfo(expectedMeasure.ToString());
+            systemMeasureInfo.Should().NotBeNull("library should be complete.");
 
-            var sourceUnitExponent = sourceUnit.Exponent;
-            var measureExponent = t.Exponents;
-            sourceUnitExponent.Should().Be(measureExponent);
-            sourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);
-            convertedToSI.Should().Be(expected, $"source is {originalUnit} {complexUnitString} (to {t.GetUnit()})");
+            var computedSourceUnitExponent = computedSourceUnit.Exponent;
+            var systemMeasureExponent = systemMeasureInfo.Exponents;
+            computedSourceUnitExponent.Should().Be(systemMeasureExponent);
+            computedSourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);
+            convertedToSI.Should().Be(expected, $"source is {originalUnit} {complexUnitString} (to {systemMeasureInfo.GetUnit()})");
 
-            sourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true);
+            computedSourceUnit.TryConvertFromSI(convertedToSI, out var cnvBack).Should().Be(true);
             cnvBack.Should().BeApproximately(originalUnit, 1.0E-07, "converting back with tolerance should be possible.");
         }
 
 		private IfcMeasureInformation GetMeasureInfo(string expectedMeasure)
 		{
-			return SchemaInfo.AllMeasureInformation.FirstOrDefault(x=> x.IfcMeasure == expectedMeasure);
+			return SchemaInfo.AllMeasureInformation.FirstOrDefault(x=> x.IfcMeasure.Equals(expectedMeasure, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 }

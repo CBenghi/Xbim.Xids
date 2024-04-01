@@ -7,7 +7,7 @@ namespace Xbim.InformationSpecifications
     /// <summary>
     /// Base class of all facets.
     /// </summary>
-	public abstract class FacetBase : IEquatable<FacetBase>
+	public abstract class FacetBase : IEquatable<FacetBase> // , IFacet
     {
         /// <summary>
         /// Any text label

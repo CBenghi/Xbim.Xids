@@ -141,7 +141,7 @@ namespace Xbim.InformationSpecifications.Tests
             var attr = spec.Requirement.Facets.FirstOrDefault();
             attr.Should().BeOfType<AttributeFacet>();
             spec.Requirement.RequirementOptions.Should().HaveCount(1);
-            spec.Requirement.RequirementOptions![0].Should().Be(RequirementCardinalityOptions.Optional);
+            spec.Requirement.RequirementOptions![0].RelatedFacetCardinality.Should().Be(RequirementCardinalityOptions.Cardinality.Optional);
 
         }
 

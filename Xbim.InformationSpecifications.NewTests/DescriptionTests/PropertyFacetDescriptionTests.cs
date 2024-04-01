@@ -18,13 +18,12 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
         //[InlineData("Name,Description", "P.*", "The Name or Description Attribute shall matching 'P.*'", ConstraintType.Pattern)]
         //[InlineData("Name,Description", "Foo", "The Name or Description Attribute shall be Foo")]
         [Theory]
-        public void PropertyFacetsRequirementsDescribed(string propName, object propValue, string pset, string expected, string measure = "",
+        public void PropertyFacetsRequirementsDescribed(string propName, object? propValue, string? pset, string expected, string measure = "",
             ConstraintType nameConstraint = ConstraintType.Exact, ConstraintType valueConstraint = ConstraintType.Exact)
         {
             IfcPropertyFacet facet;
             if (propValue is string strValue)
             {
-
                 facet = BuildFacetFromInputs(propName, strValue,  psetName: pset, dataType: measure, nameConstraint: nameConstraint, valueConstraint: valueConstraint);
             }
             else
@@ -61,7 +60,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             facet.ApplicabilityDescription.Should().Be(expected);
         }
 
-        private static IfcPropertyFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object? objInputs = null, string psetName = "",
+        private static IfcPropertyFacet BuildFacetFromInputs(string nameInputs, string valueInputs = "", object? objInputs = null, string? psetName = "",
             string? dataType = null,
             ConstraintType nameConstraint = ConstraintType.Exact, ConstraintType valueConstraint = ConstraintType.Exact, ConstraintType psetConstraint = ConstraintType.Exact)
         {
