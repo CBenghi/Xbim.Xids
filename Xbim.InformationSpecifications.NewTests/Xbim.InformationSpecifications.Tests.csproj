@@ -117,6 +117,9 @@
     <None Update="bsFiles\IDS_wooden-windows.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="bsFiles\others\pass-a_matching_entity_should_pass.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="bsFiles\others\pass-name_restrictions_will_match_any_result_1_3.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

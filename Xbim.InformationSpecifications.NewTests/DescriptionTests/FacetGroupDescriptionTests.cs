@@ -10,10 +10,10 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             "All elements of entity IfcDoor and of predefined type Door AND with attribute Name with value D001")]
         [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Expected },
             "All elements of entity IfcDoor and of predefined type Door AND with attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Prohibited },
-            "All elements of entity IfcDoor and of predefined type Door AND NOT with attribute Name with value D001")]
-        [InlineData(new[] { RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Optional },
-            "All elements NOT of entity IfcDoor and of predefined type Door AND OPTIONALLY with attribute Name with value D001")]
+        //[InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Prohibited },
+        //    "All elements of entity IfcDoor and of predefined type Door AND NOT with attribute Name with value D001")]
+        //[InlineData(new[] { RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Optional },
+        //    "All elements NOT of entity IfcDoor and of predefined type Door AND OPTIONALLY with attribute Name with value D001")]
         [Theory]
         [Obsolete("Because we use an constructor method mark as obsolete for testing, we prevent the warning by marking the test obsolete too.")]
         public void FacetGroupApplicabilityDescribed(RequirementCardinalityOptions.Cardinality[]? reqs, string expected)

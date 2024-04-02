@@ -1,4 +1,7 @@
 ﻿using FluentAssertions;
+using System.IO;
+using System.Linq;
+using Xbim.InformationSpecifications.Cardinality;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.DescriptionTests
@@ -33,6 +36,25 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 
 
             facet.RequirementDescription.Should().Be(expected);
+        }
+
+
+        [Fact]
+        public void CanDescribeIfcTypeWithImplicitCardinality()
+        {
+            //pass-a_matching_entity_should_pass
+
+            var file = new FileInfo(@"bsFiles/others/pass-a_matching_entity_should_pass.ids");
+            
+            Xids.CanLoad(file).Should().BeTrue("Should be able to load");
+            var x = Xids.Load(file);
+            x.Should().NotBeNull();
+
+            var firstSpec = x!.AllSpecifications().First();
+            firstSpec.Cardinality.Should().BeEquivalentTo(new SimpleCardinality(CardinalityEnum.Required));
+
+
+            firstSpec.Applicability.GetApplicabilityDescription().Should().Be("All elements of entity Wall and of predefined type <any>");
         }
 
         private static IfcTypeFacet BuildFacetFromInputs(string? ifcTypeInputs, string? predefined = "", 

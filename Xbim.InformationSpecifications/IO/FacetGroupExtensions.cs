@@ -90,7 +90,7 @@ namespace Xbim.InformationSpecifications
                 return $"{group.Name}";
             if (group.Facets.Any())
             {
-                return "All elements " + string.Join(" AND ", group.Facets.Select((x, i) => group.HandleCardinality(x.ApplicabilityDescription, i)));
+                return "All elements " + string.Join(" AND ", group.Facets.Select((x, i) => x.ApplicabilityDescription));
             }
             return FacetGroup.Undefined;
         }
@@ -118,12 +118,13 @@ namespace Xbim.InformationSpecifications
             }
             if (group.RequirementOptions.Count > index)
             {
-                var cardinality = group.RequirementOptions[index].RelatedFacetCardinality;
+                var cardinality = group.RequirementOptions[index]?.RelatedFacetCardinality;
                 return cardinality switch
                 {
                     RequirementCardinalityOptions.Cardinality.Prohibited => $"NOT {clause}{requirement}",
                     RequirementCardinalityOptions.Cardinality.Optional => $"OPTIONALLY {clause}{requirement}",
                     RequirementCardinalityOptions.Cardinality.Expected => $"{clause}{requirement}",
+                    null => $"{clause}{requirement}",
                     _ => throw new NotImplementedException(cardinality.ToString()),
                 };
             }
