@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,6 +21,19 @@ namespace Xbim.InformationSpecifications.Tests.Facets
             f.SetContainers(new[] { PartOfFacet.Container.IfcSystem });
             f.GetContainers().Should().HaveCount(1);
 
+        }
+
+
+        [Theory]
+        [MemberData(nameof(GetRelations))]
+        public void CanParseRelationship(PartOfFacet.PartOfRelation relation)
+        {
+            var f = new PartOfFacet()
+            {
+                EntityRelation = relation.ToString().ToUpperInvariant()
+            };
+
+            f.GetRelation().Should().Be(relation);
         }
 
         [Theory]
@@ -70,6 +84,16 @@ namespace Xbim.InformationSpecifications.Tests.Facets
                 {
                     set1[i],
                     set2[i],
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> GetRelations()
+        {
+            foreach(var rel in Enum.GetValues<PartOfFacet.PartOfRelation>())
+            {
+                yield return new object[] {
+                    rel
                 };
             }
         }

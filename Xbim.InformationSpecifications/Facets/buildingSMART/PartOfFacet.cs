@@ -188,7 +188,7 @@ namespace Xbim.InformationSpecifications
         /// <returns></returns>
         public PartOfRelation GetRelation()
         {
-            if (Enum.TryParse<PartOfRelation>(EntityRelation, out var loc))
+            if (Enum.TryParse<PartOfRelation>(EntityRelation, true, out var loc))
             {
                 return loc;
             }
