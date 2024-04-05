@@ -6,27 +6,42 @@
     /// </summary>
     public class RequirementCardinalityOptions
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="facet"></param>
+        /// <param name="defaultValue"></param>
         public RequirementCardinalityOptions(IFacet facet, Cardinality defaultValue)
         {
             RelatedFacet = facet;
             RelatedFacetCardinality = defaultValue;
         }
 
+        /// <summary>
+        /// The Facet the Cardinality belongs to
+        /// </summary>
         public IFacet? RelatedFacet { get; set; }
+
+        /// <summary>
+        /// The Cardinality of the Facet
+        /// </summary>
         public Cardinality? RelatedFacetCardinality { get; set; }
 
+        /// <summary>
+        /// The cardinality of a Facet
+        /// </summary>
         public enum Cardinality
         {
             /// <summary>
-            /// Should match all the facets in a <see cref="FacetGroup"/> 
+            /// The <see cref="IFacet"/> requirement must be met
             /// </summary>
             Expected,
             /// <summary>
-            /// Cannot match all the facets in a <see cref="FacetGroup"/> 
+            /// The <see cref="IFacet"/> requirement is prohibited
             /// </summary>
             Prohibited,
             /// <summary>
-            /// Should match if the facet is present regardless of value
+            /// If the element is present the <see cref="IFacet"/> requirement must be met
             /// </summary>
             Optional
         }
