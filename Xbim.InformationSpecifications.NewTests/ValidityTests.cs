@@ -13,7 +13,11 @@ namespace Xbim.InformationSpecifications.Tests
         {
             FacetGroup g = new();
             g.IsValid().Should().BeFalse();
-            new IfcClassificationFacet() { }.IsValid().Should().BeTrue();
+            var cl = new IfcClassificationFacet();
+            cl.IsValid().Should().BeFalse("Classification invalid by default");
+
+            cl.ClassificationSystem = "SomeSystem";
+            cl.IsValid().Should().BeTrue("ClassificationSystem populated");
 
             var prop = new IfcPropertyFacet();
             g.Facets.Add(prop);
