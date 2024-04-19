@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable IDE0017, IDE0090
+using FluentAssertions;
 using System;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
@@ -19,7 +20,7 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
-        public void xbimIfcElementsHandled()
+        public void XbimIfcElementsHandled()
         {
             var id = "2O2Fr$t4X7Zf8NOew3FLOH";
             Ifc2x3.UtilityResource.IfcGloballyUniqueId ifcGuid = new(id);

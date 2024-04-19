@@ -19,7 +19,7 @@
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<AssemblyVersion>0.97.2</AssemblyVersion>
+		<AssemblyVersion>0.97.3</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
@@ -29,7 +29,8 @@
 		<PackageProjectUrl>https://github.com/CBenghi/Xbim.Xids</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>
 		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NoWarn>8629;8602</NoWarn>
   </PropertyGroup>
@@ -46,7 +47,8 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<None Include="C:\Data\Dev\XbimPrivate\Xbim.Xids\Xbim.InformationSpecifications\.editorconfig" />
+		<None Include=".editorconfig" />
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 	<ItemGroup>
     <PackageReference Include="ids-lib" Version="1.0.68" />

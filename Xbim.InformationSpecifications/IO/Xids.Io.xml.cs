@@ -1,4 +1,5 @@
-﻿using IdsLib.IfcSchema;
+﻿#pragma warning disable IDE0028
+using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -439,19 +440,17 @@ namespace Xbim.InformationSpecifications
             xmlWriter.WriteEndElement();
         }
 
-        static private string RequirementCardinalityAttributeName = "cardinality";
+        private static readonly string RequirementCardinalityAttributeName = "cardinality";
 
         static private void WriteFacetBaseAttributes(IFacet cf, XmlWriter xmlWriter, ILogger? logger, bool forRequirement, RequirementCardinalityOptions? option)
         {
             if (forRequirement)
             {
-                if (option is null)
-                    option = new RequirementCardinalityOptions(cf,RequirementCardinalityOptions.Cardinality.Expected); // should be redundant, but makes some be not null
-
+                option ??= new RequirementCardinalityOptions(cf,RequirementCardinalityOptions.Cardinality.Expected); 
                 if (cf is IBuilsingSmartCardinality)
                 {
                     // use is required
-                    switch (option.RelatedFacetCardinality.Value)
+                    switch (option.RelatedFacetCardinality)
                     {
                         case RequirementCardinalityOptions.Cardinality.Prohibited:
                             xmlWriter.WriteAttributeString(RequirementCardinalityAttributeName, "prohibited");
@@ -786,11 +785,26 @@ namespace Xbim.InformationSpecifications
                             var fs = GetFacets(sub, logger, schemaVersions, out var options);
                             if (fs.Any())
                             {
+                                // we should ensure that options are populated.
+                                var tmp = new ObservableCollection<RequirementCardinalityOptions>();
+                                for (int i = 0; i < fs.Count;)
+                                {
+                                    IFacet? facet = fs[i];
+                                    if (facet != null)
+                                    {
+                                        var r = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.Cardinality.Expected);
+                                        if (i < options.Count && options[i] is not null)
+                                        {
+                                            r = options[i]!;
+                                        }
+                                        tmp.Add(r);
+                                        i++;
+                                    }
+                                    else
+                                        fs.RemoveAt(i);
+                                }
                                 ret.SetExpectations(fs);
-                                // todo: as an alternative, RequirementOptions could be set only if they are different from the 
-                                // default value (i.e. Expected).
-                                //if (options.Any(x => x != RequirementCardinalityOptions.Expected))
-                                ret.Requirement!.RequirementOptions = new System.Collections.ObjectModel.ObservableCollection<RequirementCardinalityOptions>(options);
+                                ret.Requirement!.RequirementOptions = tmp;
                             }
                             break;
                         }
@@ -858,7 +872,7 @@ namespace Xbim.InformationSpecifications
             return ret;
         }
 
-        private static IFacet? GetPartOf(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet? GetPartOf(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger, out RequirementCardinalityOptions? opt)
         {
             PartOfFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -907,11 +921,14 @@ namespace Xbim.InformationSpecifications
                     }
                 }
             }
-            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from partOf
+            if (ret is not null)
+                opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from partOf            
+            else
+                opt = null;
             return ret;
         }
 
-        private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
         {
             IfcPropertyFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -964,7 +981,11 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from property
+            if (ret is not null)
+                opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from property
+            else
+                opt = null;
+           
             return ret;
         }
 
@@ -1149,50 +1170,50 @@ namespace Xbim.InformationSpecifications
             return null;
         }
 
-        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, IfcSchemaVersions schemaVersions, out IEnumerable<RequirementCardinalityOptions> options)
+        private static List<IFacet> GetFacets(XElement elem, ILogger? logger, IfcSchemaVersions schemaVersions, out IList<RequirementCardinalityOptions?> options)
         {
             var fs = new List<IFacet>();
-            var opts = new List<RequirementCardinalityOptions>();
+            var opts = new List<RequirementCardinalityOptions?>();
             foreach (var sub in elem.Elements())
             {
-                IFacet? t = null;
-                RequirementCardinalityOptions? opt = null;
+                IFacet? tempFacet = null;
+                RequirementCardinalityOptions? tempOption = null;
                 var locName = sub.Name.LocalName.ToLowerInvariant();
                 switch (locName)
                 {
                     case "entity":
-                        t = GetEntity(sub, schemaVersions, logger);
+                        tempFacet = GetEntity(sub, schemaVersions, logger);
                         break;
                     case "classification":
-                        t = GetClassification(sub, logger, out opt);
+                        tempFacet = GetClassification(sub, logger, out tempOption);
                         break;
                     case "property":
-                        t = GetProperty(sub, logger, out opt);
+                        tempFacet = GetProperty(sub, logger, out tempOption);
                         break;
                     case "material":
-                        t = GetMaterial(sub, logger, out opt);
+                        tempFacet = GetMaterial(sub, logger, out tempOption);
                         break;
                     case "attribute":
-                        t = GetAttribute(sub, logger, out opt);
+                        tempFacet = GetAttribute(sub, logger, out tempOption);
                         break;
                     case "partof":
-                        t = GetPartOf(sub, schemaVersions, logger, out opt);
+                        tempFacet = GetPartOf(sub, schemaVersions, logger, out tempOption);
                         break;
                     default:
                         LogUnexpected(sub, elem, logger);
                         break;
                 }
-                if (t != null)
+                if (tempFacet != null)
                 {
-                    fs.Add(t);
-                    opts.Add(opt);
+                    fs.Add(tempFacet);
+                    opts.Add(tempOption);
                 }
             }
             options = opts;
             return fs;
         }
 
-        private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+        private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
         {
             AttributeFacet? ret = null;
             foreach (var sub in elem.Elements())
@@ -1231,7 +1252,11 @@ namespace Xbim.InformationSpecifications
                     LogUnexpected(attribute, elem, logger);
                 }
             }
-            opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from attribute
+            if (ret is not null)
+                opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from attribute
+            else
+                opt = null;
+
             return ret;
         }
 

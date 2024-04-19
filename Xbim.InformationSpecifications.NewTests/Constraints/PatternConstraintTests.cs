@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable xUnit1042
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Collections.Generic;

@@ -83,7 +83,7 @@ namespace Xbim.InformationSpecifications.Tests
                 SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsFacts.DefaultIdsVersion)
             };
             var varlidationResult = Audit.Run(tmpStream, opt, logg);
-            logg?.LogInformation($"=== `{tmpFile}`");
+            logg?.LogInformation("=== Starting {TempFile}", tmpFile);
             varlidationResult.Should().Be(Audit.Status.Ok, $"file '{tmpFile}' is expected to be valid");
         }
 

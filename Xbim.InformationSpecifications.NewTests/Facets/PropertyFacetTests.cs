@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable xUnit1042
+using FluentAssertions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

@@ -103,9 +103,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
             if(objInputs is not null)   // Non string
             {
                 facet.AttributeValue.BaseType = NetTypeName.Double;
-                var val = objInputs.ToString();
-                if (val is null)
-                    throw new Exception("Invalid string conversion.");
+                var val = objInputs.ToString() ?? throw new Exception("Invalid string conversion.");
 				AddConstraint(facet.AttributeValue, valueConstraint, val);
                 return facet;
             }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable xUnit1042
+using FluentAssertions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
     public class AttributeFacetTests
     {
         [Theory]
-        [MemberData(nameof(GetSingleAttributes))]
+		[MemberData(nameof(GetSingleAttributes))]
         public void AttributeEqualMatchImplementation(AttributeFacet t, AttributeFacet tSame)
         {
             FacetImplementationTests.TestAddRemove(t);

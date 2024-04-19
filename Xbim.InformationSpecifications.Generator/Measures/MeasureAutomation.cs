@@ -104,9 +104,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
                         Debug.WriteLine($"Can do {missingExp.Description} - {missingExp.UnitSymbol}");
                         foreach (var sym in neededSymbols)
                         {
-                            var found = m.GetByUnit(sym.UnitSymbol);
-                            if (found is null)
-                                throw new Exception("unexpected unit");
+                            var found = m.GetByUnit(sym.UnitSymbol) ?? throw new Exception("unexpected unit");
                             DimensionalExponents? thisDE = null;
                             if (!string.IsNullOrEmpty(found.DimensionalExponents))
                                 thisDE = DimensionalExponents.FromString(found.DimensionalExponents);

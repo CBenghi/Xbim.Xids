@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿#pragma warning disable xUnit1042
+using FluentAssertions;
 using IdsLib;
 using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
@@ -251,7 +252,7 @@ namespace Xbim.InformationSpecifications.Tests
             _ = x.ExportBuildingSmartIDS(exportedFile, loggerMock);
             _ = x.ExportBuildingSmartIDS(exportedFile, logg);
 
-            GetXunitLogger().LogInformation($"===== Logging exported file: {exportedFile}");
+            GetXunitLogger().LogInformation("===== Logging exported file: {exportedFile}", exportedFile);
 			LoggingTestHelper.NoIssues(loggerMock);
             res = Validate(exportedFile, GetXunitLogger());
             res.Should().Be(Audit.Status.Ok , "the generated file needs to be valid");

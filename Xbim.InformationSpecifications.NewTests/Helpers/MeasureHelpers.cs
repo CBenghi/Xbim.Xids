@@ -118,7 +118,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             cnvBack.Should().BeApproximately(originalUnit, 1.0E-07, "converting back with tolerance should be possible.");
         }
 
-		private IfcMeasureInformation GetMeasureInfo(string expectedMeasure)
+		private static IfcMeasureInformation GetMeasureInfo(string expectedMeasure)
 		{
 			return SchemaInfo.AllMeasureInformation.FirstOrDefault(x=> x.IfcMeasure.Equals(expectedMeasure, StringComparison.OrdinalIgnoreCase));
 		}
