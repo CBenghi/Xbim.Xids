@@ -1,4 +1,7 @@
-﻿namespace Xbim.InformationSpecifications
+﻿using System.Collections.Generic;
+using Xbim.InformationSpecifications.Cardinality;
+
+namespace Xbim.InformationSpecifications
 {
     /// <summary>
     /// A requirement facet can either be expected, prohibited or optional.
@@ -16,6 +19,24 @@
         {
             RelatedFacet = facet;
             RelatedFacetCardinality = defaultValue;
+        }
+
+        private static IList<Cardinality> AllOptions = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited, Cardinality.Optional };
+        private static IList<Cardinality> NoOptional = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited };
+        private static IList<Cardinality> ExpectedOnly = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited };
+
+        /// <summary>
+        /// Depending on the Type of <see cref="RelatedFacet"/>, the valid options for cardinaly might be affected
+        /// </summary>
+        /// <returns>The list of valid options</returns>
+        public IList<Cardinality> GetAllowedCardinality()
+        {
+            return RelatedFacet switch
+            {
+                IfcTypeFacet _ => ExpectedOnly,
+                PartOfFacet _ => NoOptional,
+                _ => AllOptions
+            };
         }
 
         /// <summary>
