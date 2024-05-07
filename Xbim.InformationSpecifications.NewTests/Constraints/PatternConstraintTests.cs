@@ -68,5 +68,19 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy("Z").Should().BeFalse();
         }
 
+
+        [Fact]
+        public void MultiplePatternConstraintsSupported()
+        {
+            var vc = new ValueConstraint(NetTypeName.String);
+            vc.AddAccepted(new PatternConstraint() { Pattern = "[a-d]" });
+            vc.AddAccepted(new PatternConstraint() { Pattern = "[d-f]" });
+            vc.IsSatisfiedBy("a").Should().BeTrue();
+            vc.IsSatisfiedBy("d").Should().BeTrue();
+            vc.IsSatisfiedBy("e").Should().BeTrue();
+            vc.IsSatisfiedBy("g").Should().BeFalse();
+            vc.IsSatisfiedBy("Z").Should().BeFalse();
+        }
+
     }
 }

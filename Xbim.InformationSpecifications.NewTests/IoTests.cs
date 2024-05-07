@@ -6,10 +6,10 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System;
 using System.Diagnostics;
-using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
@@ -74,6 +74,45 @@ namespace Xbim.InformationSpecifications.Tests
             var av1 = asAttr.AttributeName.AcceptedValues!.First();
             av1.Should().NotBeNull();
             av1.Should().BeOfType<PatternConstraint>();
+        }
+
+        [Fact]
+        public void CanSaveAndOpenMultipleRegexPatterns()
+        {
+            // See https://github.com/buildingSMART/IDS/issues/285
+
+            // Arrange
+            Xids xids = XidsTestHelpers.GetSimpleXids();
+            IfcPropertyFacet propFacet = GetFirstPropertyFacet(xids);
+
+            propFacet.PropertyValue = new ValueConstraint(NetTypeName.String);
+
+            propFacet.PropertyValue!.AcceptedValues!.Add(new PatternConstraint("One"));
+            propFacet.PropertyValue!.AcceptedValues!.Add(new PatternConstraint("Two"));
+
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            // Act
+            xids.ExportBuildingSmartIDS(filename);
+
+            // Assert
+            var file = File.ReadAllText(filename);
+            var occurrences = new Regex("<xs:pattern").Matches(file);
+
+            occurrences.Should().HaveCount(2, "Expected saved file to have TWO patterns");
+
+            xids = Xids.LoadBuildingSmartIDS(filename)!;
+
+            propFacet = GetFirstPropertyFacet(xids);
+            propFacet.PropertyValue!.AcceptedValues.Should().HaveCount(2, "Expected to load TWO patterns");
+        }
+
+        private static IfcPropertyFacet GetFirstPropertyFacet(Xids xids)
+        {
+            var spec = xids.AllSpecifications().FirstOrDefault();
+            var facet = spec!.Requirement!.Facets.First();
+            facet.Should().BeOfType<IfcPropertyFacet>();
+            var propFacet = facet.As<IfcPropertyFacet>();
+            return propFacet;
         }
 
         [Fact]
