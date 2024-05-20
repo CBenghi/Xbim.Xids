@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -416,6 +419,47 @@ namespace Xbim.InformationSpecifications.Tests
                     File.Delete(filename);
             }
         }
+
+        [Theory]
+        [MemberData(nameof(TestFacets))]
+        public void CanRoundTripFacetRequirementCardinality(IFacet facet, RequirementCardinalityOptions.Cardinality cardinality)
+        {
+            var x = new Xids();
+            var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+            newspec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+            newspec.Requirement!.Facets.Add(facet);
+            newspec.Requirement!.RequirementOptions = new ObservableCollection<RequirementCardinalityOptions> { new(facet, cardinality) };
+
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            x.ExportBuildingSmartIDS(filename, GetXunitLogger());
+
+            var newXids = Xids.LoadBuildingSmartIDS(filename);
+            var newRequirement = newXids!.SpecificationsGroups.First().Specifications.First().Requirement;
+            var newCardinality = newRequirement?.RequirementOptions?.FirstOrDefault()?.RelatedFacetCardinality;
+            newCardinality.Should().Be(cardinality);
+        }
+
+        [Fact]
+        public void EvaluatesAllFacetTypes()
+        {
+            var expectedTypes = typeof(AttributeFacet).Assembly.GetTypes()
+            .Where(t => !t.IsInterface && !t.IsAbstract && t.IsAssignableTo(typeof(IFacet)) && !t.IsAssignableTo(typeof(IfcTypeFacet)));
+            var testTypes = TestFacets.Select(f => f.FirstOrDefault() as IFacet).Select(f => f!.GetType());
+            expectedTypes.Should().Contain(testTypes);
+        }
+
+        // combination of all types of facets and cardinalities
+        private static readonly RequirementCardinalityOptions.Cardinality[] cardinalities = new RequirementCardinalityOptions.Cardinality[] {
+            RequirementCardinalityOptions.Cardinality.Optional, RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Expected};
+        public static IEnumerable<object[]> TestFacets => new IFacet[] { 
+            // new IfcTypeFacet { IfcType = "IfcWall" },
+            new AttributeFacet{ AttributeName = "Name"},
+            new IfcClassificationFacet { ClassificationSystem = "NRM"},
+            new IfcPropertyFacet { PropertyName = "Name" },
+            new MaterialFacet { Value = "Concrete" },
+            new PartOfFacet { EntityRelation =  PartOfFacet.PartOfRelation.IfcRelNests.ToString(), EntityType = new IfcTypeFacet { IfcType = "IfcBuildingElementPart"} }
+        }
+            .SelectMany(f => cardinalities.Select(c => new object[] { f!, c }));
 
         [InlineData(CardinalityEnum.Required)]
         [InlineData(CardinalityEnum.Optional)]

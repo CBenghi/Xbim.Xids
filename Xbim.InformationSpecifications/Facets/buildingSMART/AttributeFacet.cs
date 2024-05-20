@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Xbim.InformationSpecifications.Helpers;
+using Xbim.InformationSpecifications.Facets.buildingSMART;
 
 namespace Xbim.InformationSpecifications
 {
@@ -9,7 +9,7 @@ namespace Xbim.InformationSpecifications
     /// <summary>
     /// Constrain model parts on the ground of class attributes.
     /// </summary>
-    public partial class AttributeFacet : FacetBase, IEquatable<AttributeFacet>, IFacet
+    public partial class AttributeFacet : FacetBase, IEquatable<AttributeFacet>, IFacet, IBuilsingSmartCardinality
     {
         /// <summary>
         /// Constraint that is applied to the value of the attribute (required).
