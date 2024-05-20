@@ -105,16 +105,16 @@ namespace Xbim.InformationSpecifications.Tests
             reloaded.AllSpecifications().Count().Should().Be(x.AllSpecifications().Count());
             reloaded.SaveAsJson(fname2);
 
-            var h1 = FileHashing.GetFileHash(fname);
-            var h2 = FileHashing.GetFileHash(fname2);
-            if (h1 != h2)
+            var hash1 = FileHashing.GetFileHash(fname);
+            var hash2 = FileHashing.GetFileHash(fname2);
+            if (hash1 != hash2)
             {
                 Debug.Write(@"""C:\Program Files (x86)\WinMerge\WinMergeU.exe"" ");
                 Debug.Write($"\"{new FileInfo(fname).FullName}\" ");
                 Debug.Write($"\"{new FileInfo(fname2).FullName}\" ");
                 Debug.WriteLine("");
             }
-            h1.Should().Be(h2);
+            hash1.Should().Be(hash2);
 
             relFacet.UsedGroups().Count().Should().Be(1);
 

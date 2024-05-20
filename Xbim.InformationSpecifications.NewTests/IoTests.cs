@@ -89,27 +89,28 @@ namespace Xbim.InformationSpecifications.Tests
             IfcPropertyFacet propFacet = GetFirstPropertyFacet(xids);
 
             propFacet.PropertyValue = new ValueConstraint(NetTypeName.String);
-
             propFacet.PropertyValue!.AcceptedValues!.Add(new PatternConstraint("One"));
             propFacet.PropertyValue!.AcceptedValues!.Add(new PatternConstraint("Two"));
 
-            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
-            // Act
+			// test buildingsmart IDS export
+			var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
             xids.ExportBuildingSmartIDS(filename);
-
-            // Assert
             var file = File.ReadAllText(filename);
-            var occurrences = new Regex("<xs:pattern").Matches(file);
-
+            var occurrences = new Regex("<xs:pattern").Matches(file); // the file has it
             occurrences.Should().HaveCount(2, "Expected saved file to have TWO patterns");
-
             xids = Xids.LoadBuildingSmartIDS(filename)!;
-
             propFacet = GetFirstPropertyFacet(xids);
             propFacet.PropertyValue!.AcceptedValues.Should().HaveCount(2, "Expected to load TWO patterns");
-        }
 
-        private static IfcPropertyFacet GetFirstPropertyFacet(Xids xids)
+			// test json export
+			filename = Path.ChangeExtension(Path.GetTempFileName(), "json");
+			xids.SaveAsJson(filename);
+			xids = Xids.Load(new FileInfo(filename))!;
+			propFacet = GetFirstPropertyFacet(xids);
+			propFacet.PropertyValue!.AcceptedValues.Should().HaveCount(2, "Expected to load TWO patterns");
+		}
+
+		private static IfcPropertyFacet GetFirstPropertyFacet(Xids xids)
         {
             var spec = xids.AllSpecifications().FirstOrDefault();
             var facet = spec!.Requirement!.Facets.First();

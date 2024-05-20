@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Xbim.InformationSpecifications.Cardinality;
 
 namespace Xbim.InformationSpecifications
@@ -8,17 +9,30 @@ namespace Xbim.InformationSpecifications
     /// </summary>
     public class RequirementCardinalityOptions
     {
+
+        /// <summary>
+        /// The default valud of the cardinality if not speciried.
+        /// </summary>
+        public static Cardinality DefaultCardinality => Cardinality.Expected;
+
+        /// <summary>
+        /// Serialization constructor
+        /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public RequirementCardinalityOptions()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        {
+            RelatedFacetCardinality = DefaultCardinality;
+        }
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="facet"></param>
-        /// <param name="defaultValue"></param>
-#pragma warning disable IDE0290 // Use primary constructor
-        public RequirementCardinalityOptions(IFacet facet, Cardinality defaultValue)
-#pragma warning restore IDE0290 // Use primary constructor
+        /// <param name="facet">The related facet</param>
+        /// <param name="requiredValue">the relevant cardinality</param>
+        public RequirementCardinalityOptions(IFacet facet, Cardinality requiredValue)
         {
             RelatedFacet = facet;
-            RelatedFacetCardinality = defaultValue;
+            RelatedFacetCardinality = requiredValue;
         }
 
         private static IList<Cardinality> AllOptions = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited, Cardinality.Optional };
@@ -42,6 +56,7 @@ namespace Xbim.InformationSpecifications
         /// <summary>
         /// The Facet the Cardinality belongs to
         /// </summary>
+        [JsonIgnore]
         public IFacet RelatedFacet { get; set; }
 
         /// <summary>

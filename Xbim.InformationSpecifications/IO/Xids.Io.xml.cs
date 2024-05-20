@@ -208,7 +208,7 @@ namespace Xbim.InformationSpecifications
                 for (int i = 0; i < spec.Requirement.Facets.Count; i++)
                 {
                     IFacet? facet = spec.Requirement.Facets[i];
-                    var option = GetProgressive(opts, i, facet, RequirementCardinalityOptions.Cardinality.Expected);
+                    var option = GetProgressive(opts, i, facet, RequirementCardinalityOptions.DefaultCardinality);
                     ExportBuildingSmartIDS(facet, xmlWriter, true, logger, spec.Requirement, thisSpecVersion, option);
                 }
             }
@@ -446,7 +446,7 @@ namespace Xbim.InformationSpecifications
         {
             if (forRequirement)
             {
-                option ??= new RequirementCardinalityOptions(cf,RequirementCardinalityOptions.Cardinality.Expected); 
+                option ??= new RequirementCardinalityOptions(cf,RequirementCardinalityOptions.DefaultCardinality); 
                 if (cf is IBuilsingSmartCardinality)
                 {
                     // use is required
@@ -792,7 +792,7 @@ namespace Xbim.InformationSpecifications
                                     IFacet? facet = fs[i];
                                     if (facet != null)
                                     {
-                                        var r = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.Cardinality.Expected);
+                                        var r = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality);
                                         if (i < options.Count && options[i] is not null)
                                         {
                                             r = options[i]!;
@@ -1012,8 +1012,8 @@ namespace Xbim.InformationSpecifications
             // xml encountered is solid.
             //
             List<string>? enumeration = null;
+            List<PatternConstraint>? patternc = null;
             RangeConstraint? range = null;
-            PatternConstraint? patternc = null;
             StructureConstraint? structure = null;
 
             foreach (var sub in restriction.Elements())
@@ -1060,7 +1060,8 @@ namespace Xbim.InformationSpecifications
                     var val = sub.Attribute("value");
                     if (val != null)
                     {
-                        patternc = new PatternConstraint() { Pattern = val.Value };
+                        patternc ??= new List<PatternConstraint>();
+                        patternc.Add(new PatternConstraint() { Pattern = val.Value });
                     }
                 }
                 else if (sub.Name.LocalName == "minLength")
@@ -1126,48 +1127,34 @@ namespace Xbim.InformationSpecifications
             count += (range != null) ? 1 : 0;
             count += (patternc != null) ? 1 : 0;
             count += (structure != null) ? 1 : 0;
-            if (count != 1)
+            if (count == 0)
             {
                 logger?.LogWarning("Invalid value constraint for {localname} full xml '{elem}'.", elem.Name.LocalName, elem);
                 return null;
             }
+            // initialize return value
+            var ret = new ValueConstraint(t)
+            {
+                AcceptedValues = new List<IValueConstraintComponent>()
+            };
+            // populate the constraints
             if (enumeration != null)
             {
-                var ret = new ValueConstraint(t)
-                {
-                    AcceptedValues = new List<IValueConstraintComponent>()
-                };
-                foreach (var val in enumeration)
-                {
-                    ret.AcceptedValues.Add(new ExactConstraint(val));
-                }
-                return ret;
+                ret.AcceptedValues.AddRange(enumeration.Select(x => new ExactConstraint(x)));
             }
             if (range != null)
             {
-                var ret = new ValueConstraint(t)
-                {
-                    AcceptedValues = new List<IValueConstraintComponent>() { range }
-                };
-                return ret;
+                ret.AcceptedValues.Add(range);
             }
             if (patternc != null)
             {
-                var ret = new ValueConstraint(t)
-                {
-                    AcceptedValues = new List<IValueConstraintComponent>() { patternc }
-                };
-                return ret;
+                ret.AcceptedValues.AddRange(patternc);
             }
             if (structure != null)
             {
-                var ret = new ValueConstraint(t)
-                {
-                    AcceptedValues = new List<IValueConstraintComponent>() { structure }
-                };
-                return ret;
+                ret.AcceptedValues.Add(structure);
             }
-            return null;
+            return ret;
         }
 
         private static List<IFacet> GetFacets(XElement elem, ILogger? logger, IfcSchemaVersions schemaVersions, out IList<RequirementCardinalityOptions?> options)

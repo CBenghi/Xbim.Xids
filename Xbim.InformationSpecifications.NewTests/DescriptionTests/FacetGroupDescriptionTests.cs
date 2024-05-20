@@ -38,7 +38,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 			for (int i = 0; i < facetGroup.Facets.Count; i++)
             {
 				IFacet? facet = facetGroup.Facets[i];
-                var t = reqs?[i] ?? RequirementCardinalityOptions.Cardinality.Expected;
+                var t = reqs?[i] ?? RequirementCardinalityOptions.DefaultCardinality;
 				var thisOpt = new RequirementCardinalityOptions(facet, t);
                 options.Add(thisOpt);
 			}
