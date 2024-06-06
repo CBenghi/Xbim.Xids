@@ -100,7 +100,8 @@ namespace Xbim.InformationSpecifications
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
                 var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
-                if (MinInclusive) minimum = ApplyRealTolerances(minimum, false);
+                var rangeType = MinInclusive ? RangeType.Inclusive : RangeType.Exclusive;
+                minimum = ApplyRealTolerances(minimum, rangeType, false);
                 minOk = MinInclusive
                     ? valueToCompare.CompareTo(minimum) >= 0
                     : valueToCompare.CompareTo(minimum) > 0;
@@ -108,7 +109,8 @@ namespace Xbim.InformationSpecifications
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
                 var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
-                if (MaxInclusive) maximum = ApplyRealTolerances(maximum, true);
+                var rangeType = MinInclusive ? RangeType.Inclusive : RangeType.Exclusive;
+                maximum = ApplyRealTolerances(maximum, rangeType, true);
                 maxOk = MaxInclusive
                     ? valueToCompare.CompareTo(maximum) <= 0
                     : valueToCompare.CompareTo(maximum) < 0;
@@ -120,34 +122,38 @@ namespace Xbim.InformationSpecifications
         /// Applies a tolerance factor to Real constraint values to support small floating point imprecisions
         /// </summary>
         /// <param name="expectedValue"></param>
+        /// <param name="rangeType">The type of range</param>
         /// <param name="isMax">Indicates if the expected value is a maxima, or minima</param>
         /// <param name="tolerance">The floating point tolerance. Defaults to 1e-06</param>
         /// <returns>The value with tolerance applied</returns>
-        private object? ApplyRealTolerances(object? expectedValue, bool isMax, double tolerance = RealHelper.DefaultRealPrecision)
+        private object? ApplyRealTolerances(object? expectedValue, RangeType rangeType, bool isMax, double tolerance = RealHelper.DefaultRealPrecision)
         {
             // To support 1e-6 tolerance on Reals we increase/decrease the magnitude of the appropriate end of the range,
-            // depending on whether it's upper (Max) or lower (Min).
+            // depending on the end of the range and whether it's an inclusive or exclusive range.
+            // For inclusive ranges we expand the overall range slightly, while for exclusive ranges we shrink the raange
+
             // This follows the same pattern used in IDS to account for magnitude of the value. https://github.com/buildingSMART/IDS/issues/78#issuecomment-1976197561
-            // But for ranges also need to reverse the logic when the value is -ve
-            //  [123.45   <= ---- => 678.90]    For +ve range values
-            // [ 123.449  <= ---- => 678.901]   Min decreases in magnitude, while Max increases
-            // But for negative we reverse that
-            //  [-678.90  <= ---- => -123.45]  For -ve range values
-            // [ -678.901 <= ---- => -123.449] Min increases in magnitude, while Max decreases
+            // Inclusive ranges:
+
+            // For Inclusive ranges we expand the range at each end
+            //         [0   <= ---- => 100]
+            // [ -0.000001  <= ---- => 100.0000101]
+            // While for Exclusive ranges we shrink the ends
+            //  [        0 <= ---- => 273        ] 
+            //   [0.000001 <= ---- => 273.000019] 
 
             var applyFactor = (double value) =>
             {
-                var increaseFactor = isMax ? (1 + tolerance) : (1 - tolerance);
-                var decreaseFactor = isMax ? (1 - tolerance) : (1 + tolerance);
-                var fixedFactor = (isMax ? +tolerance : -tolerance);
-                if ((value >= 0))
+                // The high/low bounds for the given value and tolerance. e.g. 49.999 < 50 < 50.001
+                // This already accounts for -ve values
+                var (low, high) = RealHelper.GetPrecisionBounds(value, tolerance);
+                // based on the range type and 'end' we adjust to the appropriate value
+                return rangeType switch
                 {
-                    return (value * increaseFactor) + fixedFactor;
-                }
-                else
-                {
-                    return (value * decreaseFactor) + fixedFactor;
-                }
+                    RangeType.Inclusive => isMax ? high : low,  // Expand range for Inclusive. i.e. 41.99999 is Between 42 and 100 (inclusive) while 41.995 is not
+                    RangeType.Exclusive => isMax ? low : high,  // Shrink range for Exclusive i.e 0.1 is between 0 and 100 (exclusive) while 0.000001 is not 
+                    _ => isMax ? low : high,
+                };
             };
             return expectedValue switch
             {
@@ -204,5 +210,11 @@ namespace Xbim.InformationSpecifications
 
             return true;
         }
+        private enum RangeType
+        {
+            Inclusive,
+            Exclusive
+        }
     }
+
 }
