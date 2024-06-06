@@ -7,6 +7,6 @@
         /// This is useful for environments that do not allow to load information from the DLL dynamically
         /// (e.g. Blazor).
         /// </summary>
-        public static string AssemblyVersion => "0.97.8";
+        public static string AssemblyVersion => "0.97.9";
     }
 }

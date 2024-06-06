@@ -357,6 +357,29 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
         }
 
+        [InlineData(true)] 
+        [InlineData(false)]   
+        [Theory]
+        public void NegativeDoubleValueSupports1e6Tolerances(bool setBaseType)
+        {
+            // from IDS test property/pass-floating_point_numbers_are_compared_with_a_1e_6_tolerance_1_*.ifc && attribute equivalents
+            ValueConstraint vc = new ValueConstraint(-1);
+            if (setBaseType)
+            {
+                vc.BaseType = NetTypeName.Double; // Set explicitly since BaseType defaults implicitly to Integer
+            }
+            else
+            {
+                vc.BaseType = NetTypeName.Undefined;
+            }
+
+            vc.IsSatisfiedBy(-1.000002d).Should().BeTrue("Within 1e-6 tolerances - low");
+            vc.IsSatisfiedBy(-0.999998d).Should().BeTrue("Within 1e-6 tolerances - high");
+
+            vc.IsSatisfiedBy(-1.000003d).Should().BeFalse("Outside 1e-6 tolerances - low");
+            vc.IsSatisfiedBy(-0.999997d).Should().BeFalse("Outside 1e-6 tolerances - high");
+        }
+
 
 
         [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
