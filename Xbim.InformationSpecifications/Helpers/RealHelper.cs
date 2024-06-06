@@ -22,8 +22,8 @@ namespace Xbim.InformationSpecifications.Helpers
         /// <returns>a tuple containing the lowerbound and the highbound values</returns>
         public static (double, double) GetPrecisionBounds(double value, double tolerance = DefaultRealPrecision)
         {
-            var lowerBound = value * (1 - tolerance) - tolerance;
-            var upperBound = value * (1 + tolerance) + tolerance;
+            var lowerBound = Math.Round(value - (Math.Abs(value) * tolerance) - tolerance,15);
+            var upperBound = Math.Round(value + (Math.Abs(value) * tolerance) + tolerance, 15);
             return new (lowerBound, upperBound);
         }
     }

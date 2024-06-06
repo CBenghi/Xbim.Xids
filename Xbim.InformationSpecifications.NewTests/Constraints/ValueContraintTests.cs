@@ -240,7 +240,7 @@ namespace Xbim.InformationSpecifications.Tests
         [Theory]
         public void ExactContraintSupportsRealTolerances(string constraint, double value, bool expectSatisfied = true)
         {
-            var vc = new ValueConstraint(NetTypeName.Floating, constraint);
+            var vc = new ValueConstraint(NetTypeName.Double, constraint);
 
             vc.IsSatisfiedBy(value).Should().Be(expectSatisfied);
         }
@@ -457,14 +457,27 @@ namespace Xbim.InformationSpecifications.Tests
             constraint.IsSatisfiedBy(amnt).Should().BeTrue();
         }
 
-        [InlineData(0.001d, 0.000998999d, 0.0010010009999999998d)]
-        [InlineData(0d, -1e-06, 1e-06)]
-        [InlineData(1.0d, 0.9999979999999999d, 1.0000019999999998d)]
-        [InlineData(1000.0d, 999.998999d, 1000.0010009999999d)]
-
+        [InlineData(100000d, 99999.899999d, 100000.100001d)]
+        [InlineData(10000d, 9999.989999d, 10000.010001d)]
+        [InlineData(1000d, 999.998999d, 1000.001001d)]
+        [InlineData(100d, 99.999899d, 100.000101d)]
+        [InlineData(10d, 9.999989d, 10.000011d)]
+        [InlineData(1d, 0.999998d, 1.000002d)]
+        [InlineData(0.1d, 0.0999989d, 0.1000011d)]
+        [InlineData(0.01d, 0.00999899d, 0.01000101d)]
+        [InlineData(0.001d, 0.000998999d, 0.001001001d)]
         [InlineData(1e-06, 0d, 2e-06)]
+        [InlineData(0.0000001d, -0.0000009000001d, 0.0000011000001d)]
+
+        [InlineData(0d, -1e-06, 1e-06)]
+
+        [InlineData(-0.0000001, -0.0000011000001, 0.0000009000001)]
         [InlineData(-1e-06, -2e-06, 0d)]
-        [InlineData(-1.0d, -1d, -1d)] // An edge case
+        [InlineData(-0.1d, -0.1000011000d, -0.0999989d)]
+        [InlineData(-1d, -1.000002d, -0.999998d)]
+        [InlineData(-10d, -10.0000110000d, -9.999989d)]
+        [InlineData(-100d, -100.0001010000d, -99.999899d)]
+        [InlineData(-1000000d, -1000001.0000010000d, -999998.999999d)]
         [Theory]
         public void RealHelperBoundsPrecisionTests(double value, double expectedLower, double expectedUpper)
         {
