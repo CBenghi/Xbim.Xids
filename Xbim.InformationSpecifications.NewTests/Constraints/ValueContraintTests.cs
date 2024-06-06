@@ -268,6 +268,30 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void ExclusiveRangeConstraintShrinkTolerance()
+        {
+            var vc = new ValueConstraint(NetTypeName.Floating);
+            var t = new RangeConstraint()
+            {
+                MinValue = (0).ToString(),
+                MinInclusive = false,
+                MaxValue = (100).ToString(),
+                MaxInclusive = false,
+            };
+            vc.AddAccepted(t);
+            vc.IsValid().Should().BeTrue();
+
+            vc.IsSatisfiedBy(100d).Should().BeFalse();
+            vc.IsSatisfiedBy(0d).Should().BeFalse();
+
+            vc.IsSatisfiedBy(99.999999d).Should().BeFalse();
+            vc.IsSatisfiedBy(-1e-6d).Should().BeFalse();
+            // True
+            vc.IsSatisfiedBy(1e-6d).Should().BeTrue();
+            vc.IsSatisfiedBy(99.999991d).Should().BeTrue();
+        }
+
+        [Fact]
         public void DecimalRangesAreInclusive()
         {
             var vc = new ValueConstraint(NetTypeName.Decimal);
