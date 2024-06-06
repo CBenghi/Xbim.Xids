@@ -286,9 +286,10 @@ namespace Xbim.InformationSpecifications.Tests
 
             vc.IsSatisfiedBy(99.999999d).Should().BeFalse();
             vc.IsSatisfiedBy(-1e-6d).Should().BeFalse();
+            vc.IsSatisfiedBy(1e-6d).Should().BeFalse();
             // True
-            vc.IsSatisfiedBy(1e-6d).Should().BeTrue();
-            vc.IsSatisfiedBy(99.999991d).Should().BeTrue();
+            vc.IsSatisfiedBy(2e-6d).Should().BeTrue();
+            vc.IsSatisfiedBy(99.999d).Should().BeTrue();
         }
 
         [Fact]
@@ -434,8 +435,11 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData(41.999916d, false, "outside min tolerances for exclusive ranges")]
         [InlineData(50.000042d, false, "outside max tolerances for exclusive ranges")]
         [InlineData(50.000084d, false, "outside max tolerances for exclusive ranges")]
-        [InlineData(42.000042d, true, "inside min tolerances for exclusive ranges")]
-        [InlineData(49.999999d, true, "inside max tolerances for exclusive ranges")]
+        [InlineData(42.000044d, true, "inside min tolerances for exclusive ranges")]
+        [InlineData(49.999948, true, "inside max tolerances for exclusive ranges")]
+
+        [InlineData(42.000001d, false, "Inside but outside min tolerances for exclusive ranges")]
+        [InlineData(49.999999d, false, "Inside but outside max tolerances for exclusive ranges")]
         [Theory]
         public void DoubleValueExclusiveRangesDoNotSupportTolerance(double input, bool expectedToSatisfy, string reason)
         {
@@ -456,6 +460,39 @@ namespace Xbim.InformationSpecifications.Tests
 
             // TODO: Consider semantic paradox where:
             // 41.999958d satisfies being in the range 42-50 inclusive, but also satisfies being < 42 exclusive
+        }
+
+        [Fact]
+        public void ExclusiveRangeSupportToleranceMax()
+        {
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var exclusive = new RangeConstraint()
+            {
+                MaxValue = 0.ToString(),
+                MaxInclusive = false,
+
+            };
+            vc.AddAccepted(exclusive);
+
+            vc.IsSatisfiedBy(-0.0000009d).Should().BeFalse();
+
+
+        }
+
+        [Fact]
+        public void ExclusiveRangeSupportToleranceMin()
+        {
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var exclusive = new RangeConstraint()
+            {
+                MinValue = 0.ToString(),
+                MinInclusive = false,
+
+            };
+            vc.AddAccepted(exclusive);
+
+            vc.IsSatisfiedBy(0.0000009d).Should().BeFalse();
+
         }
 
         [InlineData(1.2345678919873e-22d)]    // Not Supported as we Round to 6 DP
