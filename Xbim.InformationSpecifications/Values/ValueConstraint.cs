@@ -589,15 +589,9 @@ namespace Xbim.InformationSpecifications
             // Based on https://github.com/buildingSMART/IDS/issues/36#issuecomment-1014473533
             (var lowerBound, var upperBound) = RealHelper.GetPrecisionBounds(expectedValue, tolerance);
 
-            if (expectedValue >=0)
-            {
-                return candidate >= lowerBound && candidate <= upperBound;
-            }
-            else
-            {
-                // invert 'between' comparison when testing for -ve real
-                return candidate >= upperBound && candidate <= lowerBound;
-            }
+           
+            return candidate >= lowerBound && candidate <= upperBound;
+         
         }
 
     }
