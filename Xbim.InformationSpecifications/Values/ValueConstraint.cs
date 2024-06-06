@@ -156,6 +156,8 @@ namespace Xbim.InformationSpecifications
             {
                 if (typeof(float) == passedType)
                     return true;
+                if (typeof(double) == passedType)
+                    return true;
                 if (typeof(decimal) == passedType)
                     return true;
                 if (typeof(int) == passedType)

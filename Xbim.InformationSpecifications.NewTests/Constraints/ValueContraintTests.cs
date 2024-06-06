@@ -64,7 +64,7 @@ namespace Xbim.InformationSpecifications.Tests
             vc = new ValueConstraint(NetTypeName.Floating);
             vc.IsSatisfiedBy(2f).Should().BeTrue();
             vc.IsSatisfiedBy("blue").Should().BeFalse();
-            vc.IsSatisfiedBy(2d).Should().BeFalse();
+            vc.IsSatisfiedBy(2d).Should().BeTrue();
 
             vc = new ValueConstraint(12345678.910);
             vc.BaseType = NetTypeName.Undefined;
@@ -234,6 +234,16 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(-33).Should().BeFalse();
         }
 
+        [InlineData("42",42)]
+        [InlineData("1", 1.000002d)]
+        [InlineData("1", 0.999998d)]
+        [Theory]
+        public void ExactContraintSupportsRealTolerances(string constraint, double value, bool expectSatisfied = true)
+        {
+            var vc = new ValueConstraint(NetTypeName.Floating, constraint);
+
+            vc.IsSatisfiedBy(value).Should().Be(expectSatisfied);
+        }
 
         [Fact]
         public void RangeConstraintSupportsNegativeFloats()
@@ -322,6 +332,8 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(42.000084d).Should().BeFalse("Outside 1e-6 tolerances - high");
             vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
         }
+
+
 
         [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
         [InlineData(50.000042d, true, "within 1e-6 max tolerances - inclusive")]
