@@ -109,7 +109,7 @@ namespace Xbim.InformationSpecifications
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
                 var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
-                var rangeType = MinInclusive ? RangeType.Inclusive : RangeType.Exclusive;
+                var rangeType = MaxInclusive ? RangeType.Inclusive : RangeType.Exclusive;
                 maximum = ApplyRealTolerances(maximum, rangeType, true);
                 maxOk = MaxInclusive
                     ? valueToCompare.CompareTo(maximum) <= 0

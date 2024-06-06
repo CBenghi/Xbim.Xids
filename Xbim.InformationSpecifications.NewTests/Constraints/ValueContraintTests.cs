@@ -495,6 +495,22 @@ namespace Xbim.InformationSpecifications.Tests
 
         }
 
+        [Fact]
+        public void InclusiveRangeSupportToleranceMax()
+        {
+            var vc = new ValueConstraint(NetTypeName.Double);
+            var exclusive = new RangeConstraint()
+            {
+                MaxValue = 0.ToString(),
+                MaxInclusive = true,
+
+            };
+            vc.AddAccepted(exclusive);
+
+            vc.IsSatisfiedBy(1e-6).Should().BeTrue();
+
+        }
+
         [InlineData(1.2345678919873e-22d)]    // Not Supported as we Round to 6 DP
         [InlineData(1.2345678919873e-6d)]
         [InlineData(1.2345678919873e22d)]
