@@ -64,7 +64,7 @@ namespace Xbim.InformationSpecifications.Tests
             vc = new ValueConstraint(NetTypeName.Floating);
             vc.IsSatisfiedBy(2f).Should().BeTrue();
             vc.IsSatisfiedBy("blue").Should().BeFalse();
-            vc.IsSatisfiedBy(2d).Should().BeFalse();
+            vc.IsSatisfiedBy(2d).Should().BeTrue();
 
             vc = new ValueConstraint(12345678.910);
             vc.BaseType = NetTypeName.Undefined;
@@ -234,6 +234,16 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(-33).Should().BeFalse();
         }
 
+        [InlineData("42",42)]
+        [InlineData("1", 1.000002d)]
+        [InlineData("1", 0.999998d)]
+        [Theory]
+        public void ExactContraintSupportsRealTolerances(string constraint, double value, bool expectSatisfied = true)
+        {
+            var vc = new ValueConstraint(NetTypeName.Double, constraint);
+
+            vc.IsSatisfiedBy(value).Should().Be(expectSatisfied);
+        }
 
         [Fact]
         public void RangeConstraintSupportsNegativeFloats()
@@ -255,6 +265,30 @@ namespace Xbim.InformationSpecifications.Tests
             // Fails
             vc.IsSatisfiedBy(0f).Should().BeFalse();
             vc.IsSatisfiedBy(-33f).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ExclusiveRangeConstraintShrinkTolerance()
+        {
+            var vc = new ValueConstraint(NetTypeName.Floating);
+            var t = new RangeConstraint()
+            {
+                MinValue = (0).ToString(),
+                MinInclusive = false,
+                MaxValue = (100).ToString(),
+                MaxInclusive = false,
+            };
+            vc.AddAccepted(t);
+            vc.IsValid().Should().BeTrue();
+
+            vc.IsSatisfiedBy(100d).Should().BeFalse();
+            vc.IsSatisfiedBy(0d).Should().BeFalse();
+
+            vc.IsSatisfiedBy(99.999999d).Should().BeFalse();
+            vc.IsSatisfiedBy(-1e-6d).Should().BeFalse();
+            // True
+            vc.IsSatisfiedBy(1e-6d).Should().BeTrue();
+            vc.IsSatisfiedBy(99.999991d).Should().BeTrue();
         }
 
         [Fact]
@@ -322,6 +356,8 @@ namespace Xbim.InformationSpecifications.Tests
             vc.IsSatisfiedBy(42.000084d).Should().BeFalse("Outside 1e-6 tolerances - high");
             vc.IsSatisfiedBy(41.999916d).Should().BeFalse("Outside 1e-6 tolerances - low");
         }
+
+
 
         [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
         [InlineData(50.000042d, true, "within 1e-6 max tolerances - inclusive")]
@@ -445,14 +481,27 @@ namespace Xbim.InformationSpecifications.Tests
             constraint.IsSatisfiedBy(amnt).Should().BeTrue();
         }
 
-        [InlineData(0.001d, 0.000998999d, 0.0010010009999999998d)]
-        [InlineData(0d, -1e-06, 1e-06)]
-        [InlineData(1.0d, 0.9999979999999999d, 1.0000019999999998d)]
-        [InlineData(1000.0d, 999.998999d, 1000.0010009999999d)]
-
+        [InlineData(100000d, 99999.899999d, 100000.100001d)]
+        [InlineData(10000d, 9999.989999d, 10000.010001d)]
+        [InlineData(1000d, 999.998999d, 1000.001001d)]
+        [InlineData(100d, 99.999899d, 100.000101d)]
+        [InlineData(10d, 9.999989d, 10.000011d)]
+        [InlineData(1d, 0.999998d, 1.000002d)]
+        [InlineData(0.1d, 0.0999989d, 0.1000011d)]
+        [InlineData(0.01d, 0.00999899d, 0.01000101d)]
+        [InlineData(0.001d, 0.000998999d, 0.001001001d)]
         [InlineData(1e-06, 0d, 2e-06)]
+        [InlineData(0.0000001d, -0.0000009000001d, 0.0000011000001d)]
+
+        [InlineData(0d, -1e-06, 1e-06)]
+
+        [InlineData(-0.0000001, -0.0000011000001, 0.0000009000001)]
         [InlineData(-1e-06, -2e-06, 0d)]
-        [InlineData(-1.0d, -1d, -1d)] // An edge case
+        [InlineData(-0.1d, -0.1000011000d, -0.0999989d)]
+        [InlineData(-1d, -1.000002d, -0.999998d)]
+        [InlineData(-10d, -10.0000110000d, -9.999989d)]
+        [InlineData(-100d, -100.0001010000d, -99.999899d)]
+        [InlineData(-1000000d, -1000001.0000010000d, -999998.999999d)]
         [Theory]
         public void RealHelperBoundsPrecisionTests(double value, double expectedLower, double expectedUpper)
         {
