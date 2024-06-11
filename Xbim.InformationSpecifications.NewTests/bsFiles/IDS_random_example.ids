@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd">
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd">
 	<ids:info>
 		<ids:title>random example to show technical capabilities and usage</ids:title>
 		<ids:copyright>buildingSMART International Ltd</ids:copyright>
@@ -25,7 +25,7 @@
 			<ids:requirements>
 				<ids:property dataType="IFCLABEL">
 					<ids:propertySet>
-						<xs:restriction>
+						<xs:restriction base="xs:string">
 							<xs:annotation>
 								<xs:documentation>String should start with 'anas' but can have anything behind it (including nothing). For example 'anas example', 'anasabc', 'anas', 'anas demo', etc.</xs:documentation>
 							</xs:annotation>
@@ -51,7 +51,7 @@
 				</ids:material>
 			</ids:requirements>
 		</ids:specification>
-		<ids:specification ifcVersion="IFC2X3 IFC4X3" name="ramen">
+		<ids:specification ifcVersion="IFC2X3 IFC4X3_ADD2" name="ramen">
 			<ids:applicability minOccurs="0" maxOccurs="unbounded">
 				<ids:entity>
 					<ids:name>

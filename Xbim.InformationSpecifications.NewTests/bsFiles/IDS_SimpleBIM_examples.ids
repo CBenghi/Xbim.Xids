@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd">
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd">
 	<ids:info>
 		<ids:title>SimpleBIM use-case example</ids:title>
 	</ids:info>
@@ -57,7 +57,7 @@
 			<ids:applicability minOccurs="0" maxOccurs="unbounded">
 				<ids:entity>
 					<ids:name>
-						<xs:restriction>
+						<xs:restriction base="xs:string">
 							<xs:annotation>
 								<xs:documentation>This goed for either 'IFCWALL' ór 'IFCWALLSTANDARDCASE'</xs:documentation>
 							</xs:annotation>
@@ -73,7 +73,7 @@
 						<ids:simpleValue>IsExternal</ids:simpleValue>
 					</ids:baseName>
 					<ids:value>
-						<ids:simpleValue>TRUE</ids:simpleValue>
+						<ids:simpleValue>true</ids:simpleValue>
 					</ids:value>
 				</ids:property>
 			</ids:applicability>
