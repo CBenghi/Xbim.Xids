@@ -189,6 +189,14 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void CannotLoadInvalidXml()
+        {
+            var f = new FileInfo(@"Files/IDS_with_invalid_entities.xml");
+            Xids.CanLoad(f, GetXunitLogger()).Should().BeFalse();
+        }
+
+
+        [Fact]
         public void ShouldIgnoreWhitespaceInElements()
         {
             var f = new FileInfo(@"bsFiles/others/SimpleValueString_whitepace.ids");

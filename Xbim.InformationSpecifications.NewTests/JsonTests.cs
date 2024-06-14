@@ -43,6 +43,8 @@ namespace Xbim.InformationSpecifications.Tests
             foreach (var file in d.GetFiles("*.xml"))
             {
                 var s = Xids.LoadBuildingSmartIDS(file.FullName);
+                if (s == null)
+                    continue;
                 var fn = Path.ChangeExtension(file.FullName, ".json");
                 s!.SaveAsJson(fn);
                 var reloaded = Xids.LoadFromJson(fn);

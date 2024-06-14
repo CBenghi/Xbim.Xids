@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using Xbim.InformationSpecifications.IO;
 
 namespace Xbim.InformationSpecifications
@@ -25,7 +22,7 @@ namespace Xbim.InformationSpecifications
             // test if string is json
             if (IsXidsJson(sourceFile, logger))
                 return true;
-            if (IsBsXml(sourceFile))
+            if (IsBsXml(sourceFile, logger))
                 return true;
             return false;
         }
@@ -72,12 +69,12 @@ namespace Xbim.InformationSpecifications
                 return null;
             if (IsXidsJson(sourceFile, logger))
                 return Xids.LoadFromJson(sourceFile.FullName, logger);
-            if (IsBsXml(sourceFile))
+            if (IsBsXml(sourceFile, logger))
                 return Xids.LoadBuildingSmartIDS(sourceFile.FullName, logger);
             return null;
         }
 
-        private static bool IsBsXml(FileInfo sourceFile)
+        private static bool IsBsXml(FileInfo sourceFile, ILogger? logger = null)
         {
             try
             {
@@ -88,14 +85,16 @@ namespace Xbim.InformationSpecifications
                 };
                 using var str = sourceFile.OpenRead();
                 using var rdr = XmlReader.Create(str, settings);
-                while (rdr.Read())
+
+                var doc = XDocument.Load(rdr);
+                if(doc?.Root != null && doc.Root.Name.LocalName == "ids")
                 {
-                    if (rdr.NodeType == XmlNodeType.Element)
-                        return rdr.LocalName == "ids";
+                    return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger?.LogError(ex, $"Cannot load IDS file '{sourceFile.Name}' : {ex.Message}");
                 return false;
             }
             return false;

@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <None Remove="Files\IDS_example-with-restrictions.xml" />
+    <None Remove="Files\IDS_with_invalid_entities.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Files\IDS_with_invalid_entities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\IDS_example-with-restrictions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

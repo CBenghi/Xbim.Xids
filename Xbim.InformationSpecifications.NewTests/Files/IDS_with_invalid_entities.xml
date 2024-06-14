@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ids:ids xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd"
+    xmlns:ids="http://standards.buildingsmart.org/IDS">
+  <ids:info>
+    <ids:title>Invalid entities in xml</ids:title>
+  </ids:info>
+  <ids:specifications>
+    <ids:specification ifcVersion="IFC2X3 IFC4" name="All walls should have a property">
+      <ids:applicability>
+        <ids:entity>
+          <ids:name>
+            <ids:simpleValue>IFCWALL</ids:simpleValue>
+          </ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property cardinality="required">
+          <ids:propertySet>
+            <ids:simpleValue>Some_Pset</ids:simpleValue>
+          </ids:propertySet>
+          <ids:baseName>
+            <ids:simpleValue>Some_Prop</ids:simpleValue>
+          </ids:baseName>
+          <ids:value>
+              <!-- Should be &amp; -->
+            <ids:simpleValue>A & B</ids:simpleValue>
+          </ids:value>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+  </ids:specifications>
+</ids:ids>
