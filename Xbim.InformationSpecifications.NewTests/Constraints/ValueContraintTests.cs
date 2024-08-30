@@ -271,6 +271,8 @@ namespace Xbim.InformationSpecifications.Tests
         public void ExclusiveRangeConstraintShrinkTolerance()
         {
             var vc = new ValueConstraint(NetTypeName.Floating);
+
+            // 0 < x < 100
             var t = new RangeConstraint()
             {
                 MinValue = (0).ToString(),
@@ -286,7 +288,9 @@ namespace Xbim.InformationSpecifications.Tests
 
             vc.IsSatisfiedBy(99.999999d).Should().BeFalse();
             vc.IsSatisfiedBy(-1e-6d).Should().BeFalse();
-            vc.IsSatisfiedBy(1e-6d).Should().BeFalse();
+
+
+            vc.IsSatisfiedBy(1e-6d).Should().BeTrue(); // Was False in Initial IDS1.0 now True
             // True
             vc.IsSatisfiedBy(2e-6d).Should().BeTrue();
             vc.IsSatisfiedBy(99.999d).Should().BeTrue();
@@ -343,7 +347,7 @@ namespace Xbim.InformationSpecifications.Tests
 
         [InlineData(true)]
         [InlineData(false)]
-        [Theory]
+        [Theory(Skip = "Not supported after IDS 1.0 Spec Change (IDS#318)")]
         public void DoubleValueSupports1e6Tolerances(bool setBaseType)
         {
             // from IDS test property/pass-floating_point_numbers_are_compared_with_a_1e_6_tolerance_1_*.ifc && attribute equivalents
@@ -359,8 +363,8 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [InlineData(true)] 
-        [InlineData(false)]   
-        [Theory]
+        [InlineData(false)]
+        [Theory(Skip = "Not supported after IDS 1.0 Spec Change (IDS#318)")]
         public void NegativeDoubleValueSupports1e6Tolerances(bool setBaseType)
         {
             // from IDS test property/pass-floating_point_numbers_are_compared_with_a_1e_6_tolerance_1_*.ifc && attribute equivalents
@@ -382,9 +386,10 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
 
+        // Previously considered in range (true)
+        [InlineData(41.999958d, false, "originally within 1e-6 min tolerances - inclusive")]
+        [InlineData(50.000042d, false, "originally within 1e-6 max tolerances - inclusive")]
 
-        [InlineData(41.999958d, true, "within 1e-6 min tolerances - inclusive")]
-        [InlineData(50.000042d, true, "within 1e-6 max tolerances - inclusive")]
         [InlineData(41.999916d, false, "outside 1e-6 min tolerances - inclusive")]
         [InlineData(50.000084d, false, "outside 1e-6 max tolerances - inclusive")]
         [Theory]
@@ -405,10 +410,12 @@ namespace Xbim.InformationSpecifications.Tests
 
             vc.IsSatisfiedBy(input).Should().Be(expectedToSatisfy,  $"{input} is {reason}");
         }
+        
+        // Previously considered in range 
+        [InlineData(-41.999958d, false, "within 1e-6 min tolerances - inclusive")]
+        [InlineData(-50.000042d, false, "within 1e-6 max tolerances - inclusive")]
 
-        [InlineData(-41.999958d, true, "within 1e-6 min tolerances - inclusive")]
         [InlineData(-45d, true, "well within")]
-        [InlineData(-50.000042d, true, "within 1e-6 max tolerances - inclusive")]
         [InlineData(-41.999916d, false, "outside 1e-6 min tolerances - inclusive")]
         [InlineData(-50.000084d, false, "outside 1e-6 max tolerances - inclusive")]
         [Theory]
@@ -438,8 +445,9 @@ namespace Xbim.InformationSpecifications.Tests
         [InlineData(42.000044d, true, "inside min tolerances for exclusive ranges")]
         [InlineData(49.999948, true, "inside max tolerances for exclusive ranges")]
 
-        [InlineData(42.000001d, false, "Inside but outside min tolerances for exclusive ranges")]
-        [InlineData(49.999999d, false, "Inside but outside max tolerances for exclusive ranges")]
+        // Following were false in IDS1.0 but now inside
+        [InlineData(42.000001d, true, "Inside but outside min tolerances for exclusive ranges")]
+        [InlineData(49.999999d, true, "Inside but outside max tolerances for exclusive ranges")]    
         [Theory]
         public void DoubleValueExclusiveRangesDoNotSupportTolerance(double input, bool expectedToSatisfy, string reason)
         {
@@ -447,6 +455,8 @@ namespace Xbim.InformationSpecifications.Tests
             // E.g. Height must be < 50m. Assuming 50 fails, so must 50.0000000000001
             // This does mean 49.9999999999998 < 50 succeeds - despite this potentially being an artefact of FP imprecision
             var vc = new ValueConstraint(NetTypeName.Double);
+
+            // 42 < x < 50
             var t = new RangeConstraint()
             {
                 MinValue = 42.ToString(),
@@ -463,9 +473,11 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
-        public void ExclusiveRangeSupportToleranceMax()
+        public void ExclusiveRangeDoNotSupportToleranceMax()
         {
             var vc = new ValueConstraint(NetTypeName.Double);
+
+            // x < 0
             var exclusive = new RangeConstraint()
             {
                 MaxValue = 0.ToString(),
@@ -474,15 +486,17 @@ namespace Xbim.InformationSpecifications.Tests
             };
             vc.AddAccepted(exclusive);
 
-            vc.IsSatisfiedBy(-0.0000009d).Should().BeFalse();
+            vc.IsSatisfiedBy(-0.0000009d).Should().BeTrue();
 
 
         }
 
         [Fact]
-        public void ExclusiveRangeSupportToleranceMin()
+        public void ExclusiveRangeDoNotSupportToleranceMin()
         {
             var vc = new ValueConstraint(NetTypeName.Double);
+
+            // x > 0
             var exclusive = new RangeConstraint()
             {
                 MinValue = 0.ToString(),
@@ -491,12 +505,12 @@ namespace Xbim.InformationSpecifications.Tests
             };
             vc.AddAccepted(exclusive);
 
-            vc.IsSatisfiedBy(0.0000009d).Should().BeFalse();
+            vc.IsSatisfiedBy(0.0000009d).Should().BeTrue();
 
         }
 
         [Fact]
-        public void InclusiveRangeSupportToleranceMax()
+        public void InclusiveRangeDoNotSupportToleranceMax()
         {
             var vc = new ValueConstraint(NetTypeName.Double);
             var exclusive = new RangeConstraint()
@@ -507,7 +521,7 @@ namespace Xbim.InformationSpecifications.Tests
             };
             vc.AddAccepted(exclusive);
 
-            vc.IsSatisfiedBy(1e-6).Should().BeTrue();
+            vc.IsSatisfiedBy(1e-6).Should().BeFalse();  // Was True in initial 1.0 IDS but late change removed support
 
         }
 

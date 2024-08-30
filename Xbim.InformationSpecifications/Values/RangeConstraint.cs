@@ -100,8 +100,10 @@ namespace Xbim.InformationSpecifications
             if (MinValue is not null && !string.IsNullOrEmpty(MinValue))
             {
                 var minimum = ValueConstraint.ParseValue(MinValue, context.BaseType);
-                var rangeType = MinInclusive ? RangeType.Inclusive : RangeType.Exclusive;
-                minimum = ApplyRealTolerances(minimum, rangeType, false);
+                // Range tolerances removed as part of https://github.com/buildingSMART/IDS/pull/318
+
+                //var rangeType = MinInclusive ? RangeType.Inclusive : RangeType.Exclusive;
+                //minimum = ApplyRealTolerances(minimum, rangeType, false);
                 minOk = MinInclusive
                     ? valueToCompare.CompareTo(minimum) >= 0
                     : valueToCompare.CompareTo(minimum) > 0;
@@ -109,8 +111,8 @@ namespace Xbim.InformationSpecifications
             if (MaxValue is not null && !string.IsNullOrEmpty(MaxValue))
             {
                 var maximum = ValueConstraint.ParseValue(MaxValue, context.BaseType);
-                var rangeType = MaxInclusive ? RangeType.Inclusive : RangeType.Exclusive;
-                maximum = ApplyRealTolerances(maximum, rangeType, true);
+                //var rangeType = MaxInclusive ? RangeType.Inclusive : RangeType.Exclusive;
+                //maximum = ApplyRealTolerances(maximum, rangeType, true);
                 maxOk = MaxInclusive
                     ? valueToCompare.CompareTo(maximum) <= 0
                     : valueToCompare.CompareTo(maximum) < 0;
