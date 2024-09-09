@@ -64,7 +64,6 @@ namespace Xbim.InformationSpecifications
         /// <returns>An enum determining if XML or ZIP files were written</returns>
         public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger? logger = null)
         {
-            //using FileStream fs = new FileStream(destinationFileName, FileMode.Create, FileAccess.Write);
             if (File.Exists(destinationFileName))
             {
                 var f = new FileInfo(destinationFileName);
