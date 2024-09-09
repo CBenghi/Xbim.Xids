@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.Cardinality;
@@ -65,7 +64,14 @@ namespace Xbim.InformationSpecifications
         /// <returns>An enum determining if XML or ZIP files were written</returns>
         public ExportedFormat ExportBuildingSmartIDS(string destinationFileName, ILogger? logger = null)
         {
-            using FileStream fs = File.OpenWrite(destinationFileName);
+            //using FileStream fs = new FileStream(destinationFileName, FileMode.Create, FileAccess.Write);
+            if (File.Exists(destinationFileName))
+            {
+                var f = new FileInfo(destinationFileName);
+                logger?.LogWarning("File is being overwritten: {file}", f.FullName);
+                File.Delete(destinationFileName);
+            }
+            using FileStream fs = File.Create(destinationFileName);
             return ExportBuildingSmartIDS(fs, logger);
         }
 
@@ -79,8 +85,10 @@ namespace Xbim.InformationSpecifications
         {
             if (SpecificationsGroups.Count == 1)
             {
+                
                 using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
                 ExportBuildingSmartIDS(SpecificationsGroups.First(), writer, logger);
+                writer.Close();
                 return ExportedFormat.XML;
             }
 
