@@ -67,7 +67,7 @@ namespace Xbim.InformationSpecifications
             if (File.Exists(destinationFileName))
             {
                 var f = new FileInfo(destinationFileName);
-                logger?.LogWarning("File is being overwritten: {file}", f.FullName);
+                logger?.LogInformation("File is being overwritten: {file}", f.FullName);
                 File.Delete(destinationFileName);
             }
             using FileStream fs = File.Create(destinationFileName);
