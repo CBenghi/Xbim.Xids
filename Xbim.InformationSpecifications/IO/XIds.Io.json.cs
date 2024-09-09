@@ -26,7 +26,7 @@ namespace Xbim.InformationSpecifications
                 logger?.LogWarning("File is being overwritten: {file}", f.FullName);
                 File.Delete(destinationFile);
             }
-            using var s = File.OpenWrite(destinationFile);
+            using var s = File.Create(destinationFile);
             SaveAsJson(s, logger);
         }
 

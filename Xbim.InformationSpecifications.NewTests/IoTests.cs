@@ -495,6 +495,76 @@ namespace Xbim.InformationSpecifications.Tests
             }
         }
 
+        [Fact]
+        public void ResavingXmlShouldTruncateFileWhenShorter()
+        {
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            var logger = GetXunitLogger();
+            try
+            {
+                // Arrange
+                Xids x = XidsTestHelpers.GetSimpleXids();
+
+                var spec = x.AllSpecifications().First();
+                spec.Description = "Some longish descripion, just to pad the file out a bit...";
+
+                x.ExportBuildingSmartIDS(filename, logger);
+                
+                var initialLength = new FileInfo(filename).Length;
+
+                // Act
+                spec.Description = "Shorter now";
+                x.ExportBuildingSmartIDS(filename, logger); // resave over original, which _should_ truncate
+
+                // Assert
+                var latest = new FileInfo(filename);
+                Xids.CanLoad(latest, logger).Should().BeTrue("file should not be corrupt");
+
+                var latestLength = new FileInfo(filename).Length;
+                latestLength.Should().BeLessThan(initialLength, "file expected to have shrunk");
+
+            }
+            finally
+            {
+                if (File.Exists(filename)) File.Delete(filename);
+            }
+        }
+
+        [Fact]
+        public void ResavingJsonShouldTruncateFileWhenShorter()
+        {
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+            var logger = GetXunitLogger();
+            try
+            {
+                // Arrange
+                Xids x = XidsTestHelpers.GetSimpleXids();
+
+                var spec = x.AllSpecifications().First();
+                spec.Description = "Some longish descripion, just to pad the file out a bit...";
+
+                x.SaveAsJson(filename);
+
+                var initialLength = new FileInfo(filename).Length;
+
+                // Act
+                spec.Description = "Shorter now";
+                x.SaveAsJson(filename); // resave over original, which _should_ truncate
+
+                // Assert
+                var latest = new FileInfo(filename);
+                Xids.CanLoad(latest, logger).Should().BeTrue("file should not be corrupt");
+
+                var latestLength = new FileInfo(filename).Length;
+                latestLength.Should().BeLessThan(initialLength, "file expected to have shrunk");
+
+            }
+            finally
+            {
+                if (File.Exists(filename)) File.Delete(filename);
+            }
+        }
+
         private static Xids BuildMultiSpecGroupIDS()
         {
             var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
