@@ -186,8 +186,11 @@ namespace Xbim.InformationSpecifications
             // instructions
             if (spec.Instructions != null)
                 xmlWriter.WriteAttributeString("instructions", spec.Instructions);
+            // identifier
+            if (spec.Guid != null)
+                xmlWriter.WriteAttributeString("identifier", spec.Guid);
 
-            
+
 
             // applicability
             xmlWriter.WriteStartElement("applicability", IdsNamespace);
@@ -767,6 +770,9 @@ namespace Xbim.InformationSpecifications
                         break;
                     case "instructions":
                         ret.Instructions = attribute.Value;
+                        break;
+                    case "identifier":
+                        ret.Guid = attribute.Value;
                         break;
                     default:
                         LogUnexpected(attribute, specificationElement, logger);

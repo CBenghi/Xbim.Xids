@@ -167,6 +167,35 @@ namespace Xbim.InformationSpecifications.Tests
         }
 
         [Fact]
+        public void CanRoundtripSpecificationIdentifier()
+        {
+            var id = Guid.NewGuid().ToString();
+            var x = new Xids();
+            // at least one specification is needed
+            //
+            var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+            t.Requirement!.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+            t.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" });
+            t.Instructions = "Some instructions";
+            t.Guid = id;
+
+            // export
+            var tmpFile = Path.GetTempFileName();
+            x.ExportBuildingSmartIDS(tmpFile);
+
+            // check schema is valid with the identifier persisted
+            var c = Validate(tmpFile, GetXunitLogger());
+            c.Should().Be(Audit.Status.Ok);
+
+            var round = LoadBuildingSmartIDS(tmpFile);
+            var roundSpec = round?.SpecificationsGroups.FirstOrDefault()?.Specifications?.FirstOrDefault();
+            roundSpec.Should().NotBeNull();
+            roundSpec!.Guid.Should().Be(id);
+
+            File.Delete(tmpFile);
+        }
+
+        [Fact]
         public void DoubleFileExportTest()
         {
             Xids x = new();
