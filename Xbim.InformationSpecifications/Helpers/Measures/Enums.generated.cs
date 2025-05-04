@@ -121,7 +121,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		IFCPOWERMEASURE,
 		/// Pressure, expressed in pascal
 		IFCPRESSUREMEASURE,
-		/// Radio activity, expressed in becqurel
+		/// Radio activity, expressed in becquerel
 		IFCRADIOACTIVITYMEASURE,
 		/// Rotational frequency, expressed in hertz
 		IFCROTATIONALFREQUENCYMEASURE,
@@ -135,7 +135,7 @@ namespace Xbim.InformationSpecifications.Helpers
 		IFCSECTIONMODULUSMEASURE,
 		/// Shear modulus, expressed in kg / m s2
 		IFCSHEARMODULUSMEASURE,
-		/// Solid angle, expressed in steradin
+		/// Solid angle, expressed in steradian
 		IFCSOLIDANGLEMEASURE,
 		/// Sound power level, expressed in decibel
 		IFCSOUNDPOWERLEVELMEASURE,

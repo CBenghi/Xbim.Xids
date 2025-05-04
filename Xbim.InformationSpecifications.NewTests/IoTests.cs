@@ -27,17 +27,7 @@ namespace Xbim.InformationSpecifications.Tests
             OutputHelper = outputHelper;
         }
         private ITestOutputHelper OutputHelper { get; }
-
-        internal ILogger<BuildingSmartIDSLoadTests> GetXunitLogger()
-        {
-            var services = new ServiceCollection()
-                        .AddLogging((builder) => builder.AddXUnit(OutputHelper));
-            IServiceProvider provider = services.BuildServiceProvider();
-            var logg = provider.GetRequiredService<ILogger<BuildingSmartIDSLoadTests>>();
-            Assert.NotNull(logg);
-            return logg;
-        }
-
+		
         [Fact]
         public void CanIgnoreAnnotationsInRestriction()
         {
@@ -125,7 +115,7 @@ namespace Xbim.InformationSpecifications.Tests
             var file = new FileInfo(@"bsFiles/bsFilesSelf/TestFile.ids");
             Xids.CanLoad(file).Should().BeTrue();
 
-            var xids = Xids.Load(file, GetXunitLogger());
+            var xids = Xids.Load(file, LoggingTestHelper.GetXunitLogger<IoTests>(OutputHelper));
             Assert.NotNull(xids);
             var spec = xids.AllSpecifications().Single();
 
@@ -192,7 +182,7 @@ namespace Xbim.InformationSpecifications.Tests
         public void CannotLoadInvalidXml()
         {
             var f = new FileInfo(@"Files/IDS_with_invalid_entities.xml");
-            Xids.CanLoad(f, GetXunitLogger()).Should().BeFalse();
+            Xids.CanLoad(f, LoggingTestHelper.GetXunitLogger<IoTests>(OutputHelper)).Should().BeFalse();
         }
 
 
@@ -358,9 +348,9 @@ namespace Xbim.InformationSpecifications.Tests
             archive.Entries.Should().AllSatisfy(e => e.Name.Should().EndWith(".ids", "IDS file extension expected"));
             archive.Entries.Should().AllSatisfy(e => e.Length.Should().BeGreaterThan(0, "Content expected"));
 
-            // entries are valid
-            //
-            var xlogger = GetXunitLogger();
+			// entries are valid
+			//
+			var xlogger = LoggingTestHelper.GetXunitLogger<IoTests>(OutputHelper);
 			var opt = new SingleAuditOptions()
 			{
 				IdsVersion = IdsFacts.DefaultIdsVersion,
@@ -415,7 +405,7 @@ namespace Xbim.InformationSpecifications.Tests
                 Xids x = XidsTestHelpers.GetSimpleXids();
 
                 x.AllSpecifications().First().Cardinality = new SimpleCardinality(cardinality);
-                x.ExportBuildingSmartIDS(filename, GetXunitLogger());
+                x.ExportBuildingSmartIDS(filename, LoggingTestHelper.GetXunitLogger<IoTests>(OutputHelper));
 
                 var newXids = Xids.LoadBuildingSmartIDS(filename);
                 var cardinal = newXids!.AllSpecifications().First().Cardinality;
@@ -448,7 +438,12 @@ namespace Xbim.InformationSpecifications.Tests
             newCardinality.Should().Be(cardinality);
         }
 
-        [Fact]
+		private ILogger? GetXunitLogger()
+		{
+			return LoggingTestHelper.GetXunitLogger<IoTests>(OutputHelper);
+		}
+
+		[Fact]
         public void EvaluatesAllFacetTypes()
         {
             var expectedTypes = typeof(AttributeFacet).Assembly.GetTypes()

@@ -5,6 +5,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
     /// <summary>
     /// Class supporting the conversion from different units of measure
     /// </summary>
+    [Obsolete("This class is obsolete. Use ids-lib instead.")]
     public class UnitConversion
     {
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using IdsLib.IfcSchema;
+using Microsoft.Extensions.Logging;
 using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
@@ -33,7 +34,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
         /// Constructor requiring a valid unit string.
         /// </summary>
         /// <param name="unitString">the unit to evaluate conversion for, e.g. "lb/m2"</param>
-        public MeasureUnit(string unitString)
+        /// <param name="logger">Optional logging provider</param>
+        public MeasureUnit(string unitString, ILogger? logger = null)
         {
             Exponent = new DimensionalExponents();
             if (unitString == "1")
@@ -48,6 +50,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
                 }
                 else
                 {
+                    logger?.LogWarning("Unit {symbol} not found in conversion table", item.UnitSymbol);
                     IsValid = false;
                 }
             }

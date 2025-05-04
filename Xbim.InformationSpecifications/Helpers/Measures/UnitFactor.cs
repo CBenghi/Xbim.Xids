@@ -24,20 +24,18 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// </summary>
         public int Exponent { get; set; } = 1;
 
-        static readonly Regex reUnitAndExponent = new("([°'a-zA-Z]+)(\\d*)"); // letters ' for inches and feet and ° for degrees \\xB0 is the degree symbol
-
         /// <summary>
         /// Constructor of unit with its exponent, e.g. m2
         /// </summary>
         /// <param name="unitAndExponent">e.g. ft3 for cubic feet or N for newton</param>
         public UnitFactor(string unitAndExponent)
         {
-            var m = reUnitAndExponent.Match(unitAndExponent);
+            var m = IfcMeasureInformation.BroadUnitComponentMatcher.Match(unitAndExponent);
             if (m.Success)
             {
-                UnitSymbol = m.Groups[1].Value;
+                UnitSymbol = m.Groups["chars"].Value;
                 if (m.Groups[2].Value != "")
-                    Exponent = int.Parse(m.Groups[2].Value);
+                    Exponent = int.Parse(m.Groups["pow"].Value);
             }
             else
                 UnitSymbol = unitAndExponent;
@@ -67,9 +65,9 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             offset = 0;
             while (Conversion.TryGetConversion(smb, out var cnv))
             {
-                smb = cnv.Equivalent;
-                offset = cnv.Offset;
-                ratio *= Math.Pow(cnv.MultiplierToEquivalent, Exponent);
+                smb = cnv.BaseUnit;
+                offset = cnv.ConversionOffset ?? 0;
+                ratio *= Math.Pow(cnv.ConversionValue, Exponent);
             }
             if (Conversion.TryGetUnit(smb, out var oFnd))
             {
@@ -86,12 +84,14 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// <summary>
         /// Regex based replacements allow the conversion of some forms of expressing units e.g. Square m to -> m2
         /// </summary>
-        public static List<(Regex rex, string replace)> Replacements { get; } = new()
-        {
+        public static (Regex rex, string replace)[] Replacements { get; } =
+        [
             (new Regex("square (\\w+)\\b"), "$1 2"), // $1 is the group, 2 is the square, the space will be removed later $12 does not work
             (new Regex("cubic (\\w+)\\b"), "$1 3"), // $1 is the group, 3 is the cube, the space will be removed later
-        };
+        ];
 
+        private static char[] multiplicationSplitters = [' ', '\t', '·', '*', '×', '⋅', '⁎', '∗'];
+        private static char[] divisionSplitters = ['/', ':'];
 
         /// <summary>
         /// tries to break down a complex string of multiple unitFactors
@@ -108,16 +108,16 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             t = Regex.Replace(t, " +(\\d+)", "$1");
             unitSymbol = t;
 
-            var fraction = unitSymbol.Split('/');
-            var num = fraction[0];
-            var den = fraction.Length == 2 ? fraction[1] : "";
+            var fraction = unitSymbol.Split(divisionSplitters, StringSplitOptions.RemoveEmptyEntries);
+            var num = fraction[0].Trim();
+            var den = fraction.Length == 2 ? fraction[1].Trim() : "";
+            
+            var numUnits = num.Split(multiplicationSplitters, StringSplitOptions.RemoveEmptyEntries);
+            var denUnits = den.Split(multiplicationSplitters, StringSplitOptions.RemoveEmptyEntries);
 
-            var numUnits = num.Split(' ');
-            var denUnits = den.Split(' ');
-
-            foreach (var item in numUnits.Where(x => x != ""))
+            foreach (var item in numUnits)
                 yield return new UnitFactor(item);
-            foreach (var item in denUnits.Where(x => x != ""))
+            foreach (var item in denUnits)
                 yield return new UnitFactor(item).Invert();
         }
     }

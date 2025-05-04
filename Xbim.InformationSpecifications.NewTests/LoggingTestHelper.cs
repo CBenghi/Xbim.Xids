@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Isam.Esent.Interop;
 using NSubstitute;
@@ -8,12 +9,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests
 {
     internal static class LoggingTestHelper
     {
-        internal static void NoIssues<T>(ILogger<T> loggerMock)
+		internal static ILogger<T> GetXunitLogger<T>(ITestOutputHelper OutputHelper)
+		{
+			var services = new ServiceCollection()
+						.AddLogging((builder) => builder.AddXUnit(OutputHelper));
+			IServiceProvider provider = services.BuildServiceProvider();
+			var logg = provider.GetRequiredService<ILogger<T>>();
+			Assert.NotNull(logg);
+			return logg;
+		}
+
+		internal static void NoIssues<T>(ILogger<T> loggerMock)
 		{
 			loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true))
                 .Should().BeEmpty("no calls to errors or warnings are expected");
