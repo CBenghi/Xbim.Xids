@@ -1,11 +1,13 @@
 ﻿using FluentAssertions;
 using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
+using NSubstitute.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Xbim.InformationSpecifications.Generator.Measures;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Helpers.Measures;
 using Xunit;
@@ -66,6 +68,26 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
             var unit2 = new MeasureUnit("lb/pizza2");
             unit2.IsValid.Should().BeFalse();
         }
+
+		[Theory]
+		[InlineData("kg2", "kg2")]
+		[InlineData("ft", "")]
+		[InlineData("ft2", "")]
+		[InlineData("ft2 ", "ft2")]
+		[InlineData("ft²", "ft2")]
+		[InlineData("ft1", "ft")]
+		[InlineData("ft-1", "ft-1")]
+		public void CorrectlyFormatUnitFactor(string startingString, string expectedRebuilt)
+		{
+			if (expectedRebuilt == "")
+				expectedRebuilt = startingString;
+			foreach (var factor in UnitFactor.SymbolBreakDown(startingString))
+			{
+				var rebuilt = factor.ToString();
+				rebuilt.Should().BeEquivalentTo(expectedRebuilt);
+			}
+		}
+
 
         [Fact]
         public void Unit()
