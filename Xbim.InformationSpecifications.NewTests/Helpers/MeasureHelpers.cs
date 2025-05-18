@@ -133,6 +133,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 		[InlineData("IfcPressureMeasure", "kip / in2", 1.0, 6894757.293168361)]  //Kip per square inch X 6.89 = MegapascalMPa
 		[InlineData("IfcPressureMeasure", "lbf / ft2", 1.0, 47.88025898033584)]   //Pound per Square Foot to Pascal 1 lbf/ft2 = 47.88025 Pascal
 		[InlineData("IfcPressureMeasure", "lbf / in2", 1.0, 6894.757293168362)]   //Pound per square inch X 6.894 = KilopascalKPa
+		[InlineData("IfcPressureMeasure", "lbf / in²", 1.0, 6894.757293168362)]   //Pound per square inch X 6.894 = KilopascalKPa
 		[InlineData("IfcPressureMeasure", "Pa", 1.0, 1.0)] // Pascal to Pascal: 1 Pa = 1 Pa
 		[InlineData("IfcSpecificHeatCapacityMeasure", "J / kg °F", 5.0, 9)]
 		[InlineData("IfcSpecificHeatCapacityMeasure", "m2 / s2 °F", 5.0, 9)]
@@ -149,6 +150,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 		[InlineData("IfcVolumeMeasure", "in3", 1.0, 1.6387064E-5)] // Cubic inch to cubic meter: 1 in³ = 1.6387064E-5 m³
 		[InlineData("IfcVolumetricFlowRateMeasure", "acre ft / day", 1.0, 0.014276410156800002)] //Acre foot per day = Cubic meter per second 1 Acre foot per day= 0.01428 m^3/s (cubic meters per second) (wolfram)
 		[InlineData("IfcVolumetricFlowRateMeasure", "ft3/sec", 1.0, 0.028316846592000004)]  //Cubic foot per second = Cubic meter per second 1 ft³/s = 0.028316847 m³/s
+		[InlineData("IfcVolumetricFlowRateMeasure", "ft³/sec", 1.0, 0.028316846592000004)]  //Cubic foot per second = Cubic meter per second 1 ft³/s = 0.028316847 m³/s
 		[InlineData("IfcVolumetricFlowRateMeasure", "gal / min", 1.0, 6.30901964E-05)] //Gallon per minute X to m3 / s
 		[InlineData("IfcVolumetricFlowRateMeasure", "L/min", 1.0, 1.6666666666666667E-5)] // Liter per minute to cubic meter per second: 1 L/min = 1.6666666666666667E-5 m³/s
 		[InlineData("IfcVolumetricFlowRateMeasure", "m3/h", 1.0, 0.0002777777777777778)] // Cubic meter per hour to cubic meter per second: 1 m³/h = 0.0002777777777777778 m³/s
@@ -159,9 +161,10 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
 			var systemMeasureInfo = GetMeasureInfo(expectedMeasure.ToString());
 			systemMeasureInfo.Should().NotBeNull("library should be complete.");
+			
 
 			var computedSourceUnitExponent = computedSourceUnit.Exponent;
-			var systemMeasureExponent = systemMeasureInfo.Exponents;
+			var systemMeasureExponent = systemMeasureInfo!.Exponents;
 			computedSourceUnitExponent.Should().Be(systemMeasureExponent);
 			computedSourceUnit.TryConvertToSI(originalUnit, out var convertedToSI).Should().Be(true);
 			convertedToSI.Should().Be(expected, $"source is {originalUnit} {complexUnitString} (to {systemMeasureInfo.GetUnit()})");

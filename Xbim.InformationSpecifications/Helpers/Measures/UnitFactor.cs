@@ -34,25 +34,10 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             if (m.Success)
             {
                 UnitSymbol = m.Groups["chars"].Value;
-                Exponent = GetExponent(m.Groups["pow"].Value);
+                Exponent = IfcMeasureInformation.GetExponent(m.Groups["pow"].Value);
             }
             else
                 UnitSymbol = unitAndExponent;
-        }
-
-        /// <summary>
-        /// Cleans a string representing an exponent and returns it as an int
-        /// </summary>
-        [Obsolete("Use GetExponent(string) in ids-lib once available (from 1.0.92)")]
-        private static int GetExponent(string exponentString)
-        {
-            if (string.IsNullOrWhiteSpace(exponentString))
-                return 1;
-            exponentString = exponentString.Replace("²", "2");
-            exponentString = exponentString.Replace("³", "3");
-            if (int.TryParse(exponentString, out var pow))
-                return pow;
-            return 0;
         }
 
         /// <summary>
@@ -68,6 +53,8 @@ namespace Xbim.InformationSpecifications.Generator.Measures
         /// <inheritdoc/>
         public override string ToString()
         {
+            if (Exponent == 0)
+                return $"1";
             if (Exponent != 1)
                 return $"{UnitSymbol}{Exponent}";
             return $"{UnitSymbol}";
