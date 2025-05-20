@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using IdsLib.IfcSchema;
+﻿using IdsLib.IfcSchema;
 using System;
 using Xbim.InformationSpecifications.Helpers.Measures;
 
