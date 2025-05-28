@@ -16,8 +16,8 @@ using SchemaInfo = IdsLib.IfcSchema.SchemaInfo;
 
 namespace Xbim.InformationSpecifications.Tests.Helpers
 {
-    public partial class MeasureHelpers
-    {
+	public partial class MeasureHelpers
+	{
 		public MeasureHelpers(ITestOutputHelper outputHelper)
 		{
 			OutputHelper = outputHelper;
@@ -27,47 +27,47 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 		ILogger<MeasureHelpers> log;
 
 		[Fact]
-        public void CharacterDiscovery()
-        {
-            var t = "°";
-            var t2 = "\u00b0";
-            t2.Should().Be(t);
-            var arr = t.ToCharArray();
-            Assert.True(arr.First() == (char)176);
-        }
+		public void CharacterDiscovery()
+		{
+			var t = "°";
+			var t2 = "\u00b0";
+			t2.Should().Be(t);
+			var arr = t.ToCharArray();
+			Assert.True(arr.First() == (char)176);
+		}
 
-        [Fact]
-        public void HasExponents()
-        {
-            foreach (var item in Enum.GetValues<DimensionType>())
-            {
-                Debug.WriteLine($"=== {item}");
-                var t = SchemaInfo.AllMeasureInformation.Where(x => x.Exponents is not null && x.Exponents.GetExponent(item) != 0).ToList();
-                t.Should().NotBeEmpty();
-            }
+		[Fact]
+		public void HasExponents()
+		{
+			foreach (var item in Enum.GetValues<DimensionType>())
+			{
+				Debug.WriteLine($"=== {item}");
+				var t = SchemaInfo.AllMeasureInformation.Where(x => x.Exponents is not null && x.Exponents.GetExponent(item) != 0).ToList();
+				t.Should().NotBeEmpty();
+			}
 
-            foreach (var item in Enum.GetValues<DimensionType>())
-            {
-                Debug.WriteLine($"=== {item}");
-                var t = SchemaInfo.AllMeasureInformation.Where(x => x.Exponents is not null && x.Exponents.Equals(DimensionalExponents.GetUnit(item))).ToList();
-                // t.Count().Should().Be(1, $"{item} is expected");
+			foreach (var item in Enum.GetValues<DimensionType>())
+			{
+				Debug.WriteLine($"=== {item}");
+				var t = SchemaInfo.AllMeasureInformation.Where(x => x.Exponents is not null && x.Exponents.Equals(DimensionalExponents.GetUnit(item))).ToList();
+				// t.Count().Should().Be(1, $"{item} is expected");
 
-                foreach (var meas in t)
-                {
-                    Debug.WriteLine($"{meas.Id} {meas.Exponents} - {meas.Exponents!.ToUnitSymbol()}");
-                }
-            }
-        }
+				foreach (var meas in t)
+				{
+					Debug.WriteLine($"{meas.Id} {meas.Exponents} - {meas.Exponents!.ToUnitSymbol()}");
+				}
+			}
+		}
 
-        [Fact]
-        public void Can_discriminate_valid_and_invalid_units()
-        {
-            var unit1 = new MeasureUnit("lb/m2");
-            unit1.IsValid.Should().BeTrue();
+		[Fact]
+		public void Can_discriminate_valid_and_invalid_units()
+		{
+			var unit1 = new MeasureUnit("lb/m2");
+			unit1.IsValid.Should().BeTrue();
 
-            var unit2 = new MeasureUnit("lb/pizza2");
-            unit2.IsValid.Should().BeFalse();
-        }
+			var unit2 = new MeasureUnit("lb/pizza2");
+			unit2.IsValid.Should().BeFalse();
+		}
 
 		[Theory]
 		[InlineData("kg2", "kg2")]
@@ -89,19 +89,19 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 		}
 
 
-        [Fact]
-        public void Unit()
-        {
-            var sourceString = "°F";
-            Regex r = UnitChars();
-            var t = r.IsMatch(sourceString);
-            t.Should().BeTrue();
+		[Fact]
+		public void Unit()
+		{
+			var sourceString = "°F";
+			Regex r = UnitChars();
+			var t = r.IsMatch(sourceString);
+			t.Should().BeTrue();
 
-            var _ = new MeasureUnit(sourceString);
+			var _ = new MeasureUnit(sourceString);
 
-            var t2 = SchemaInfo.AllMeasureInformation.Where(x=>x.IfcMeasure == "IfcThermodynamicTemperatureMeasure".ToUpperInvariant());
-            t2.Should().NotBeNull("library should be complete.");
-        }
+			var t2 = SchemaInfo.AllMeasureInformation.Where(x => x.IfcMeasure == "IfcThermodynamicTemperatureMeasure".ToUpperInvariant());
+			t2.Should().NotBeNull("library should be complete.");
+		}
 
 		[GeneratedRegex("[°'a-zA-Z]+")]
 		private static partial Regex UnitChars();
@@ -161,7 +161,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
 			var systemMeasureInfo = GetMeasureInfo(expectedMeasure.ToString());
 			systemMeasureInfo.Should().NotBeNull("library should be complete.");
-			
+
 
 			var computedSourceUnitExponent = computedSourceUnit.Exponent;
 			var systemMeasureExponent = systemMeasureInfo!.Exponents;
@@ -175,7 +175,7 @@ namespace Xbim.InformationSpecifications.Tests.Helpers
 
 		private static IfcMeasureInformation? GetMeasureInfo(string expectedMeasure)
 		{
-			return SchemaInfo.AllMeasureInformation.FirstOrDefault(x=> x.IfcMeasure.Equals(expectedMeasure, StringComparison.OrdinalIgnoreCase));
+			return SchemaInfo.AllMeasureInformation.FirstOrDefault(x => x.IfcMeasure.Equals(expectedMeasure, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 }

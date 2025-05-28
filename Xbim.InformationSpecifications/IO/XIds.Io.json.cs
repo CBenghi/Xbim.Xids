@@ -11,147 +11,147 @@ using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
-    public partial class Xids
-    {
-        /// <summary>
-        /// Persists the instance to a file by file name. See the <see cref="LoadFromJson(string, ILogger?)"/> to unpersist.
-        /// </summary>
-        /// <param name="destinationFile">The file name to write to. WARNING: If the file exists it's overwritten without throwing an error.</param>
-        /// <param name="logger">The logging context to be notified.</param>
+	public partial class Xids
+	{
+		/// <summary>
+		/// Persists the instance to a file by file name. See the <see cref="LoadFromJson(string, ILogger?)"/> to unpersist.
+		/// </summary>
+		/// <param name="destinationFile">The file name to write to. WARNING: If the file exists it's overwritten without throwing an error.</param>
+		/// <param name="logger">The logging context to be notified.</param>
 		public void SaveAsJson(string destinationFile, ILogger? logger = null)
-        {
-            if (File.Exists(destinationFile))
-            {
-                var f = new FileInfo(destinationFile);
-                logger?.LogWarning("File is being overwritten: {file}", f.FullName);
-                File.Delete(destinationFile);
-            }
-            using var s = File.Create(destinationFile);
-            SaveAsJson(s, logger);
-        }
+		{
+			if (File.Exists(destinationFile))
+			{
+				var f = new FileInfo(destinationFile);
+				logger?.LogWarning("File is being overwritten: {file}", f.FullName);
+				File.Delete(destinationFile);
+			}
+			using var s = File.Create(destinationFile);
+			SaveAsJson(s, logger);
+		}
 
-        /// <summary>
-        /// Persists the instance to a stream.
-        /// </summary>
-        /// <param name="sw">Any writeable stream</param>
-        /// <param name="logger">The logging context to be notified.</param>
+		/// <summary>
+		/// Persists the instance to a stream.
+		/// </summary>
+		/// <param name="sw">Any writeable stream</param>
+		/// <param name="logger">The logging context to be notified.</param>
 		public void SaveAsJson(Stream sw, ILogger? logger = null)
-        {
-            JsonSerializerOptions options = GetJsonSerializerOptions(logger);
+		{
+			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
 #if DEBUG
-            var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
+			var t = new Utf8JsonWriter(sw, new JsonWriterOptions() { Indented = true });
 #else
 			var t = new Utf8JsonWriter(sw);
 #endif
-            JsonSerializer.Serialize(t, this, options);
+			JsonSerializer.Serialize(t, this, options);
 
-        }
+		}
 
-        internal static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
-        {
-            var options = new JsonSerializerOptions()
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            };
-            var facetConverter = new HeterogenousListConverter<IFacet, ObservableCollection<IFacet>>(
-                (nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
-                (nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
-                (nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
-                (nameof(DocumentFacet), typeof(DocumentFacet)),
-                (nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
-                (nameof(MaterialFacet), typeof(MaterialFacet)),
-                (nameof(PartOfFacet), typeof(PartOfFacet)),
-                (nameof(AttributeFacet), typeof(AttributeFacet))
-            );
-            options.Converters.Add(facetConverter);
-            options.Converters.Add(new ValueConstraintConverter(logger));
-            options.Converters.Add(new CardinalityConverter(logger));
-            options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-            return options;
-        }
+		internal static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
+		{
+			var options = new JsonSerializerOptions()
+			{
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+			};
+			var facetConverter = new HeterogenousListConverter<IFacet, ObservableCollection<IFacet>>(
+				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
+				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
+				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
+				(nameof(DocumentFacet), typeof(DocumentFacet)),
+				(nameof(IfcRelationFacet), typeof(IfcRelationFacet)),
+				(nameof(MaterialFacet), typeof(MaterialFacet)),
+				(nameof(PartOfFacet), typeof(PartOfFacet)),
+				(nameof(AttributeFacet), typeof(AttributeFacet))
+			);
+			options.Converters.Add(facetConverter);
+			options.Converters.Add(new ValueConstraintConverter(logger));
+			options.Converters.Add(new CardinalityConverter(logger));
+			options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+			return options;
+		}
 
-        /// <summary>
-        /// Unpersists a XIDS instance from a file by file name. See the <see cref="SaveAsJson(string, ILogger?)"/> to persist.
-        /// </summary>
-        /// <param name="sourceFile">File name to load the information from</param>
-        /// <param name="logger">The logging context to be notified.</param>
-        /// <returns>null if any critical error occurs</returns>
-        public static Xids? LoadFromJson(string sourceFile, ILogger? logger = null)
-        {
-            // todo: 2021: json perhaps not efficient for large files.
-            if (!File.Exists(sourceFile))
-            {
-                logger?.LogError("Json file not found: '{sourceFile}'", sourceFile);
-                return null;
-            }
-            var allfile = File.ReadAllText(sourceFile);
-            var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions(logger));
-            return Finalize(t);
-        }
+		/// <summary>
+		/// Unpersists a XIDS instance from a file by file name. See the <see cref="SaveAsJson(string, ILogger?)"/> to persist.
+		/// </summary>
+		/// <param name="sourceFile">File name to load the information from</param>
+		/// <param name="logger">The logging context to be notified.</param>
+		/// <returns>null if any critical error occurs</returns>
+		public static Xids? LoadFromJson(string sourceFile, ILogger? logger = null)
+		{
+			// todo: 2021: json perhaps not efficient for large files.
+			if (!File.Exists(sourceFile))
+			{
+				logger?.LogError("Json file not found: '{sourceFile}'", sourceFile);
+				return null;
+			}
+			var allfile = File.ReadAllText(sourceFile);
+			var t = JsonSerializer.Deserialize<Xids>(allfile, GetJsonSerializerOptions(logger));
+			return Finalize(t);
+		}
 
-        private static Xids? Finalize(Xids? unpersisted)
-        {
-            if (unpersisted == null)
-                return null;
-            foreach (var specG in unpersisted.SpecificationsGroups)
-            {
-                specG.SetParent(unpersisted);
-            }
-            foreach (var facetGroup in unpersisted.FacetRepository.Collection)
-            {
-                foreach (var facet in facetGroup.Facets)
-                {
-                    if (facet is IRepositoryRef repref)
-                    {
-                        repref.SetContextIds(unpersisted);
-                    }
-                }
-            }
-            foreach (var spec in unpersisted.AllSpecifications())
-            {
-                if (spec.Requirement is null)
-                    continue;
+		private static Xids? Finalize(Xids? unpersisted)
+		{
+			if (unpersisted == null)
+				return null;
+			foreach (var specG in unpersisted.SpecificationsGroups)
+			{
+				specG.SetParent(unpersisted);
+			}
+			foreach (var facetGroup in unpersisted.FacetRepository.Collection)
+			{
+				foreach (var facet in facetGroup.Facets)
+				{
+					if (facet is IRepositoryRef repref)
+					{
+						repref.SetContextIds(unpersisted);
+					}
+				}
+			}
+			foreach (var spec in unpersisted.AllSpecifications())
+			{
+				if (spec.Requirement is null)
+					continue;
 
-                if (spec.Requirement.RequirementOptions is null)
-                    spec.Requirement.RequirementOptions = new ObservableCollection<RequirementCardinalityOptions>();
-                for (int i = 0; i < spec.Requirement.Facets.Count; i++)
-                {
-                    IFacet? facet = spec.Requirement.Facets[i];
-                    if (facet == null)
-                        continue;
-                    if (spec.Requirement.RequirementOptions.Count <= i)
-                    {
-                        spec.Requirement.RequirementOptions.Add(new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality));
-                        continue;
-                    }
-                    if (spec.Requirement.RequirementOptions[i] is null)
-                    {
-                        spec.Requirement.RequirementOptions[i] = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality);
-                        continue;
-                    }
-                    spec.Requirement.RequirementOptions[i].RelatedFacet = facet;
-                }
-                // if requirementOptions are all default then remove them
-                if (spec.Requirement.RequirementOptions.All(x => x.RelatedFacetCardinality == RequirementCardinalityOptions.DefaultCardinality))
-                    spec.Requirement.RequirementOptions = null;
-                
-            }
-            return unpersisted;
-        }
+				if (spec.Requirement.RequirementOptions is null)
+					spec.Requirement.RequirementOptions = new ObservableCollection<RequirementCardinalityOptions>();
+				for (int i = 0; i < spec.Requirement.Facets.Count; i++)
+				{
+					IFacet? facet = spec.Requirement.Facets[i];
+					if (facet == null)
+						continue;
+					if (spec.Requirement.RequirementOptions.Count <= i)
+					{
+						spec.Requirement.RequirementOptions.Add(new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality));
+						continue;
+					}
+					if (spec.Requirement.RequirementOptions[i] is null)
+					{
+						spec.Requirement.RequirementOptions[i] = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality);
+						continue;
+					}
+					spec.Requirement.RequirementOptions[i].RelatedFacet = facet;
+				}
+				// if requirementOptions are all default then remove them
+				if (spec.Requirement.RequirementOptions.All(x => x.RelatedFacetCardinality == RequirementCardinalityOptions.DefaultCardinality))
+					spec.Requirement.RequirementOptions = null;
 
-        /// <summary>
-        /// Unpersists an instance from a stream in json format. 
-        /// </summary>
-        /// <param name="sourceStream">a readable json stream.</param>
-        /// <param name="logger">The logging context to be notified.</param>
-        /// <returns>null if any critical error occurs</returns>
-        public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
-        {
-            JsonSerializerOptions options = GetJsonSerializerOptions(logger);
-            var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;
-            return Finalize(t);
-        }
+			}
+			return unpersisted;
+		}
+
+		/// <summary>
+		/// Unpersists an instance from a stream in json format. 
+		/// </summary>
+		/// <param name="sourceStream">a readable json stream.</param>
+		/// <param name="logger">The logging context to be notified.</param>
+		/// <returns>null if any critical error occurs</returns>
+		public static async Task<Xids?> LoadFromJsonAsync(Stream sourceStream, ILogger? logger = null)
+		{
+			JsonSerializerOptions options = GetJsonSerializerOptions(logger);
+			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;
+			return Finalize(t);
+		}
 
 
-    }
+	}
 }

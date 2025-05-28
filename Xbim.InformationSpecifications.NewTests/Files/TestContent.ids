@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ids:ids xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd" xmlns:ids="http://standards.buildingsmart.org/IDS">
+  <ids:info>
+    <ids:title />
+  </ids:info>
+  <ids:specifications>
+    <ids:specification ifcVersion="IFC4" name="Spec Name" instructions="Some instructions might help" identifier="8d097014-6bdb-42b8-acfc-8569f1b48aaa">
+      <ids:applicability minOccurs="0" maxOccurs="unbounded">
+        <ids:property dataType="IFCTHERMALTRANSMITTANCEMEASURE">
+          <ids:propertySet>
+            <ids:simpleValue>Pset_WindowCommon</ids:simpleValue>
+          </ids:propertySet>
+          <ids:baseName>
+            <ids:simpleValue>ThermalTransmittance</ids:simpleValue>
+          </ids:baseName>
+          <ids:value>
+            <xs:restriction base="xs:double">
+              <xs:enumeration value="13" />
+            </xs:restriction>
+          </ids:value>
+        </ids:property>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:classification cardinality="required">
+          <ids:value>
+            <ids:simpleValue>Ads</ids:simpleValue>
+          </ids:value>
+          <ids:system>
+            <ids:simpleValue>Ad</ids:simpleValue>
+          </ids:system>
+        </ids:classification>
+        <ids:material cardinality="required">
+          <ids:value>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="Stone" />
+              <xs:enumeration value="Rock" />
+            </xs:restriction>
+          </ids:value>
+        </ids:material>
+        <ids:attribute cardinality="required">
+          <ids:name>
+            <ids:simpleValue>OverallHeight</ids:simpleValue>
+          </ids:name>
+          <ids:value>
+            <ids:simpleValue>12</ids:simpleValue>
+          </ids:value>
+        </ids:attribute>
+        <ids:entity>
+          <ids:name>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="IFCWINDOW" />
+              <xs:enumeration value="IFCWINDOWSTANDARDCASE" />
+            </xs:restriction>
+          </ids:name>
+          <ids:predefinedType>
+            <ids:simpleValue></ids:simpleValue>
+          </ids:predefinedType>
+        </ids:entity>
+        <ids:partOf cardinality="required" relation="IFCRELASSIGNSTOGROUP">
+          <ids:entity>
+            <ids:name>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="IFCINVENTORY" />
+              </xs:restriction>
+            </ids:name>
+          </ids:entity>
+        </ids:partOf>
+      </ids:requirements>
+    </ids:specification>
+  </ids:specifications>
+</ids:ids>

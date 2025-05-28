@@ -30,32 +30,32 @@ namespace Xbim.InformationSpecifications.Tests
 			{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 			// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 		};
-		
+
 		public static IEnumerable<object[]> EquatableTypes()
 		{
 			var allEquatables = typeof(Xids).Assembly.GetTypes().Where(t => t.GetInterfaces().Any(interf => interf.Name.Contains("IEquatable")));
 			foreach (var oneEquatable in allEquatables)
-            {
+			{
 				yield return new[] { oneEquatable };
-            }
-        }
+			}
+		}
 
 		[Theory]
 		[MemberData(nameof(EquatableTypes))]
-        public void Check(Type? oneEquatable)
-        {
+		public void Check(Type? oneEquatable)
+		{
 			if (oneEquatable is null)
 				return;
-            var foundInDictionary = guaranteedStructures.TryGetValue(oneEquatable.Name, out var expected);
-            foundInDictionary.Should().BeTrue($"'{oneEquatable.Name}' should be a guaranteed equatable");
+			var foundInDictionary = guaranteedStructures.TryGetValue(oneEquatable.Name, out var expected);
+			foundInDictionary.Should().BeTrue($"'{oneEquatable.Name}' should be a guaranteed equatable");
 			if (expected == "<skip>")
 				return;
 
 			var verifiedAttributesList = string.Join(",", oneEquatable.GetProperties().Select(x => SmartName(x)).Where(t => t != "").ToArray());
-            verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
-        }
+			verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
+		}
 
-        private readonly static Regex rNullable = MyRegex();
+		private readonly static Regex rNullable = MyRegex();
 
 		[GeneratedRegex("\\[\\[([^,]*),")]
 		private static partial Regex MyRegex();
@@ -63,10 +63,10 @@ namespace Xbim.InformationSpecifications.Tests
 		static private string SmartName(PropertyInfo x)
 		{
 			if (x.Name == nameof(IFacet.ApplicabilityDescription)) return "";
-            if (x.Name == nameof(IFacet.RequirementDescription)) return "";
+			if (x.Name == nameof(IFacet.RequirementDescription)) return "";
 			Assert.NotNull(x.PropertyType.FullName);
 
-            var t = x.PropertyType.FullName.Replace("System.", "");
+			var t = x.PropertyType.FullName.Replace("System.", "");
 			if (t.StartsWith("Nullable"))
 			{
 				var nM = rNullable.Match(t);
@@ -83,15 +83,15 @@ namespace Xbim.InformationSpecifications.Tests
 					return "List<" + nM.Groups[1].Value + "> " + x.Name;
 				}
 			}
-            if (t.Contains("Collections.Generic.IList"))
-            {
-                var nM = rNullable.Match(t);
-                if (nM.Success)
-                {
-                    return "IList<" + nM.Groups[1].Value + "> " + x.Name;
-                }
-            }
-            if (x.PropertyType.Name.Contains('`'))
+			if (t.Contains("Collections.Generic.IList"))
+			{
+				var nM = rNullable.Match(t);
+				if (nM.Success)
+				{
+					return "IList<" + nM.Groups[1].Value + "> " + x.Name;
+				}
+			}
+			if (x.PropertyType.Name.Contains('`'))
 			{
 
 			}
@@ -136,14 +136,14 @@ namespace Xbim.InformationSpecifications.Tests
 
 
 			yield return new[] { new IfcPropertyFacet() };
-				yield return new[] { new IfcPropertyFacet()
+			yield return new[] { new IfcPropertyFacet()
 				{
 					PropertyName = "2",
 					PropertySetName = "3",
 				}};
 
 			yield return new[] { new IfcTypeFacet() };
-				yield return new[] { new IfcTypeFacet()
+			yield return new[] { new IfcTypeFacet()
 				{
 					IfcType = "1",
 					IncludeSubtypes = false,
@@ -153,9 +153,9 @@ namespace Xbim.InformationSpecifications.Tests
 			yield return new[] { new MaterialFacet() };
 			yield return new[] { new IfcRelationFacet() };
 
-            var x = new Xids();
-            var g = x.FacetRepository.CreateNew();
-            yield return new[] { new IfcRelationFacet()
+			var x = new Xids();
+			var g = x.FacetRepository.CreateNew();
+			yield return new[] { new IfcRelationFacet()
 				{
 					Source = g,
 					Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()

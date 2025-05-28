@@ -3,74 +3,74 @@ using Xbim.InformationSpecifications.Facets.buildingSMART;
 
 namespace Xbim.InformationSpecifications
 {
-    /// <summary>
-    /// Constrain model parts on the ground of a material identified through a relation.
-    /// </summary>
-    public partial class MaterialFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<MaterialFacet>
-    {
-        /// <summary>
-        /// Constraint on the material's name
-        /// </summary>
-        public ValueConstraint? Value { get; set; } = null;
+	/// <summary>
+	/// Constrain model parts on the ground of a material identified through a relation.
+	/// </summary>
+	public partial class MaterialFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<MaterialFacet>
+	{
+		/// <summary>
+		/// Constraint on the material's name
+		/// </summary>
+		public ValueConstraint? Value { get; set; } = null;
 
-        /// <inheritdoc />
-        public string RequirementDescription
-        {
-            get
-            {
-                return $"a material {Value?.Short() ?? Any}";
-            }
-        }
+		/// <inheritdoc />
+		public string RequirementDescription
+		{
+			get
+			{
+				return $"a material {Value?.Short() ?? Any}";
+			}
+		}
 
-        /// <inheritdoc/>
-        public string ApplicabilityDescription
-        {
-            get
-            {
-                return $"of material {Value?.Short() ?? Any}";                
-            }
-        }
+		/// <inheritdoc/>
+		public string ApplicabilityDescription
+		{
+			get
+			{
+				return $"of material {Value?.Short() ?? Any}";
+			}
+		}
 
-        /// <inheritdoc />
-        public string Short()
-        {
-            if (Value == null)
-            {
-                return "Specifies any valid material.";
-            }
-            return $"Has a material's name {Value.Short()}";
-        }
+		/// <inheritdoc />
+		public string Short()
+		{
+			if (Value == null)
+			{
+				return "Specifies any valid material.";
+			}
+			return $"Has a material's name {Value.Short()}";
+		}
 
-        /// <inheritdoc />
+		/// <inheritdoc />
 		public override string ToString()
-        {
-            return $"{Value}-{base.ToString()}";
-        }
+		{
+			return $"{Value}-{base.ToString()}";
+		}
 
-        /// <inheritdoc />
+		/// <inheritdoc />
 		public bool Equals(MaterialFacet? other)
-        {
-            if (other == null)
-                return false;
-            if (!IFacetExtensions.NullEquals(Value, other.Value))
-                return false;
-            return base.Equals(other);
-        }
+		{
+			if (other == null)
+				return false;
+			if (!IFacetExtensions.NullEquals(Value, other.Value))
+				return false;
+			return base.Equals(other);
+		}
 
-        /// <inheritdoc />
+		/// <inheritdoc />
 		public override bool Equals(object? obj)
-        {
-            return this.Equals(obj as MaterialFacet);
-        }
+		{
+			return this.Equals(obj as MaterialFacet);
+		}
 
-        /// <inheritdoc />
+		/// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 * (Value, true).GetHashCode() + 31 * base.GetHashCode();
 
 
-        /// always valid (see <see cref="IFacet.IsValid"/>).
+		/// always valid (see <see cref="IFacet.IsValid"/>).
 		public bool IsValid()
-        {
-            return FacetBase.IsValidOrNull(Value);
-        }
-    }
+		{
+			return FacetBase.IsValidOrNull(Value);
+		}
+	}
 }

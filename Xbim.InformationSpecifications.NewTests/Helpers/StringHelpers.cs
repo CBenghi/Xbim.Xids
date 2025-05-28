@@ -9,16 +9,16 @@ using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.Helpers
 {
-    public class StringHelpersTests
-    {
-        [Fact]
-        public void CapitalisationHelpersWorkAsExpected()
-        {
-            StringExtensions.FirstCharToUpper("some").Should().Be("Some");
-            StringExtensions.FirstCharToUpper("Some").Should().Be("Some");
-            StringExtensions.FirstCharToUpper("o").Should().Be("O");
-            StringExtensions.FirstCharToUpper("").Should().Be("");
-            Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null));
-        }
-    }
+	public class StringHelpersTests
+	{
+		[Fact]
+		public void CapitalisationHelpersWorkAsExpected()
+		{
+			StringExtensions.FirstCharToUpper("some").Should().Be("Some");
+			StringExtensions.FirstCharToUpper("Some").Should().Be("Some");
+			StringExtensions.FirstCharToUpper("o").Should().Be("O");
+			StringExtensions.FirstCharToUpper("").Should().Be("");
+			Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null));
+		}
+	}
 }

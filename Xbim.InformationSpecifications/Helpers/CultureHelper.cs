@@ -2,8 +2,8 @@
 
 namespace Xbim.InformationSpecifications.Helpers
 {
-    internal static class CultureHelper
-    {
-        public static CultureInfo SystemCulture => CultureInfo.InvariantCulture;
-    }
+	internal static class CultureHelper
+	{
+		public static CultureInfo SystemCulture => CultureInfo.InvariantCulture;
+	}
 }

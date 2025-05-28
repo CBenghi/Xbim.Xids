@@ -1,5 +1,5 @@
-﻿<ids xmlns="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+﻿<ids xmlns="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/0.9.7/ids.xsd">
   <info>
     <title>Entities can be specified as an enumeration 1/3</title>
@@ -21,7 +21,7 @@
         </classification>
       </applicability>
       <requirements>
-        <attribute >
+        <attribute>
           <name>
             <xs:restriction base="xs:string">
               <xs:pattern value=".*Name.*" />

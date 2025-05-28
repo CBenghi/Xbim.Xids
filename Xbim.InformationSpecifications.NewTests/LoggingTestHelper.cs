@@ -14,8 +14,8 @@ using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests
 {
-    internal static class LoggingTestHelper
-    {
+	internal static class LoggingTestHelper
+	{
 		internal static ILogger<T> GetXunitLogger<T>(ITestOutputHelper OutputHelper)
 		{
 			var services = new ServiceCollection()
@@ -29,12 +29,12 @@ namespace Xbim.InformationSpecifications.Tests
 		internal static void NoIssues<T>(ILogger<T> loggerMock)
 		{
 			loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true))
-                .Should().BeEmpty("no calls to errors or warnings are expected");
-        }
+				.Should().BeEmpty("no calls to errors or warnings are expected");
+		}
 
-        internal static bool IsErrorType(this ICall x, bool error, bool warning, bool critical)
-        {
-            var str = x.GetFirstArgument();
+		internal static bool IsErrorType(this ICall x, bool error, bool warning, bool critical)
+		{
+			var str = x.GetFirstArgument();
 			return str switch
 			{
 				"Error" => error,
@@ -53,8 +53,8 @@ namespace Xbim.InformationSpecifications.Tests
 		}
 
 		internal static void SomeIssues<T>(ILogger<T> loggerMock)
-        {
-            var loggingCalls = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true)).Should().NotBeEmpty("some calls to errors or warnings are expected");
-        }
-    }
+		{
+			var loggingCalls = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, true)).Should().NotBeEmpty("some calls to errors or warnings are expected");
+		}
+	}
 }
