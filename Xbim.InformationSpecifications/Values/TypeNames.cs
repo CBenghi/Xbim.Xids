@@ -328,9 +328,14 @@ namespace Xbim.InformationSpecifications
 				case NetTypeName.Undefined:
 					return value;
 				case NetTypeName.Boolean:
-					if (bool.TryParse(value, out var boolval))
-						return boolval;
-					return null;
+					return value switch
+					{
+						"true" => true,
+						"1" => true,
+						"false" => false,
+						"0" => false,
+						_ => null
+					};
 				case NetTypeName.String:
 					return value;
 				case NetTypeName.Integer:

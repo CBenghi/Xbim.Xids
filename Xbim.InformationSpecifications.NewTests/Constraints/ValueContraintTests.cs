@@ -128,12 +128,18 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy(42).Should().BeTrue("42==42");
 		}
 
-		[Fact(DisplayName = nameof(UnSpeficiedBoolValue))]
-		public void UnSpeficiedBoolValue()
+		[Theory(DisplayName = nameof(UnSpeficiedBoolValue))]
+		[InlineData("false", false, true)]
+		[InlineData("FALSE", false, false)]
+		[InlineData("0", false, true)]
+		[InlineData("true", true, true)]
+		[InlineData("TRUE", true, false)]
+		[InlineData("1", true, true)]
+		public void UnSpeficiedBoolValue(string value, bool comparison, bool satisfied)
 		{
-			var vc = ValueConstraint.SingleUndefinedExact("false");
+			var vc = ValueConstraint.SingleUndefinedExact(value);
 			vc.BaseType.Should().Be(NetTypeName.Undefined, "BaseType should be Undefined for unspecified bool value");
-			vc.IsSatisfiedBy(false).Should().BeTrue("Unspecified bool value should match false");
+			vc.IsSatisfiedBy(comparison).Should().Be(satisfied);
 		}
 
 		[Fact]
