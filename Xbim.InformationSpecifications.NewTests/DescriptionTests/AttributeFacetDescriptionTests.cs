@@ -10,10 +10,10 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 		[InlineData("FieldName", "123.*", "an attribute FieldName with value matching '123.*'", ConstraintType.Pattern)]
 		[InlineData("Easting", 56.78, "an attribute Easting with value 56.78")]
 		[InlineData("Name", null, "an attribute Name with value <any>")]
-		[InlineData("Status", "NOTSTARTED,STARTED,COMPLETED", "an attribute Status with value NOTSTARTED or STARTED or COMPLETED")]
-		[InlineData("Name,Description", null, "an attribute Name or Description with value <any>")]
-		[InlineData("Name,Description", "P.*", "an attribute Name or Description with value matching 'P.*'", ConstraintType.Pattern)]
-		[InlineData("Name,Description", "Foo", "an attribute Name or Description with value Foo")]
+		[InlineData("Status", "NOTSTARTED,STARTED,COMPLETED", "an attribute Status with value 'NOTSTARTED' or 'STARTED' or 'COMPLETED'")]
+		[InlineData("Name,Description", null, "an attribute 'Name' or 'Description' with value <any>")]
+		[InlineData("Name,Description", "P.*", "an attribute 'Name' or 'Description' with value matching 'P.*'", ConstraintType.Pattern)]
+		[InlineData("Name,Description", "Foo", "an attribute 'Name' or 'Description' with value Foo")]
 		[Theory]
 		public void AttributeFacetsRequirementsDescribed(string attributeName, object? attributeValue, string expected,
 			ConstraintType valueConstraint = ConstraintType.Exact)
@@ -36,10 +36,10 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 		[InlineData("FieldName", "123.*", "with attribute FieldName with value matching '123.*'", ConstraintType.Pattern)]
 		[InlineData("Easting", 56.78, "with attribute Easting with value 56.78")]
 		[InlineData("Name", null, "with attribute Name with value <any>")]
-		[InlineData("Status", "NOTSTARTED,STARTED,COMPLETED", "with attribute Status with value NOTSTARTED or STARTED or COMPLETED")]
-		[InlineData("Name,Description", null, "with attribute Name or Description with value <any>")]
-		[InlineData("Name,Description", "P.*", "with attribute Name or Description with value matching 'P.*'", ConstraintType.Pattern)]
-		[InlineData("Name,Description", "Foo", "with attribute Name or Description with value Foo")]
+		[InlineData("Status", "NOTSTARTED,STARTED,COMPLETED", "with attribute Status with value 'NOTSTARTED' or 'STARTED' or 'COMPLETED'")]
+		[InlineData("Name,Description", null, "with attribute 'Name' or 'Description' with value <any>")]
+		[InlineData("Name,Description", "P.*", "with attribute 'Name' or 'Description' with value matching 'P.*'", ConstraintType.Pattern)]
+		[InlineData("Name,Description", "Foo", "with attribute 'Name' or 'Description' with value Foo")]
 		[Theory]
 		public void AttributeFacetsApplicabilityDescribed(string attributeName, object? attributeValue, string expected,
 			ConstraintType valueConstraint = ConstraintType.Exact)

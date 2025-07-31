@@ -26,7 +26,7 @@ namespace Xbim.InformationSpecifications
 				{
 					Async = false
 				};
-				if (PrettyOutput)
+				if (Settings.PrettyOutput)
 				{
 					settings.Indent = true;
 					settings.IndentChars = "\t";
@@ -37,9 +37,19 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// System level settings for Xids controlling some system-wide behaviours.
+		/// </summary>
+		public static XidsSettings Settings { get; } = new XidsSettings();
+
+		/// <summary>
 		/// Determines if the XML output should be indented for readability
 		/// </summary>
-		public static bool PrettyOutput { get; set; } = true;
+		[Obsolete("Use Xids.Settings.PrettyPrint instead")]
+		public static bool PrettyOutput
+		{
+			get => Settings.PrettyOutput;
+			set => Settings.PrettyOutput = value;
+		}
 
 		/// <summary>
 		/// When exporting to bS IDS, export files can be one of the formats in this enum.
