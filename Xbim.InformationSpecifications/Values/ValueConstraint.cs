@@ -17,6 +17,9 @@ namespace Xbim.InformationSpecifications
 	/// </summary>
 	public partial class ValueConstraint : IEquatable<ValueConstraint>
 	{
+		private static readonly int MaximumValuesToDisplay =
+			Xids.Settings.MaximumConstraintEnumsToDescribe > 0 ? Xids.Settings.MaximumConstraintEnumsToDescribe : 1000;
+
 		/// <summary>
 		/// Empty constructor
 		/// </summary>
@@ -410,8 +413,29 @@ namespace Xbim.InformationSpecifications
 #endif
 			if (AcceptedValues != null && AcceptedValues.Any())
 			{
-				var values = string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray());
-				return $"{values}";
+				var listLen = AcceptedValues.Count;
+				if (listLen > MaximumValuesToDisplay) // truncate very long lists
+				{
+					var shortList = string.Join("' or '", AcceptedValues.Take(MaximumValuesToDisplay).Select(x => x.Short()).ToArray());
+
+					return $"'{shortList}' or {listLen - MaximumValuesToDisplay} others";
+				}
+				else if (listLen > 1)   // short list
+				{
+					if (AcceptedValues.All(v => v is ExactConstraint))
+					{
+						return "'" + string.Join("' or '", AcceptedValues.Select(x => x.Short()).ToArray()) + "'";
+					}
+					else
+					{
+						// Complex Constraint - pattern, range etc.
+						return string.Join(" or ", AcceptedValues.Select(x => x.Short()).ToArray());
+					}
+				}
+				else // Single item
+				{
+					return AcceptedValues.Single().Short();
+				}
 			}
 			else
 			{

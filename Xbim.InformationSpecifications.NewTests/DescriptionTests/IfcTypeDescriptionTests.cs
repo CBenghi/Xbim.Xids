@@ -12,7 +12,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 		[InlineData("IFCWALL", null, "of entity Wall and of predefined type <any>")]
 		[InlineData("IFCWALL", "", "of entity Wall and of predefined type <any>")]
 		[InlineData(null, null, "of entity <any> and of predefined type <any>")]
-		[InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "of entity Wall or Wallstandardcase and of predefined type <any>")]
+		[InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "of entity 'wall' or 'wallstandardcase' and of predefined type <any>")]
 
 		[Theory]
 		public void IfcTypeFacetsApplicabilityDescribed(string? ifcType, string? predefined, string expected,
@@ -25,7 +25,7 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests
 		[InlineData("IFCWALL", "PARTITIONING", "an entity Wall and of predefined type Partitioning")]
 		[InlineData("IFCWALL", null, "an entity Wall and of predefined type <any>")]
 		[InlineData(null, null, "an entity <any> and of predefined type <any>")]
-		[InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "an entity Wall or Wallstandardcase and of predefined type <any>")]
+		[InlineData("IFCWALL,IFCWALLSTANDARDCASE", null, "an entity 'wall' or 'wallstandardcase' and of predefined type <any>")]
 
 		[Theory]
 		public void IfcTypeFacetsRequirementDescribed(string? ifcType, string? predefined, string expected,
