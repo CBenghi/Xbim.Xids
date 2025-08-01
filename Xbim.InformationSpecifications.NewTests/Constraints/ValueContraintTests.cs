@@ -46,6 +46,7 @@ namespace Xbim.InformationSpecifications.Tests
 
 			vc = new ValueConstraint(375.230);
 			vc.IsSatisfiedBy(375.23).Should().BeTrue();
+			vc.IsSatisfiedBy("375.230").Should().BeTrue("String literals are cast");
 			vc.IsSatisfiedBy(375.230000).Should().BeTrue();
 			vc.IsSatisfiedBy(375.230001).Should().BeTrue();     // within 1e-6 tolerance
 			vc.IsSatisfiedBy(375.229999).Should().BeTrue();     // ""
@@ -55,6 +56,7 @@ namespace Xbim.InformationSpecifications.Tests
 			vc = new ValueConstraint(375.230m);
 			vc.IsSatisfiedBy(375.230m).Should().BeTrue();
 			vc.IsSatisfiedBy(375.23m).Should().BeFalse();
+			vc.IsSatisfiedBy("375.230").Should().BeTrue("String literals are cast");
 
 
 			vc = new ValueConstraint("red");
@@ -65,10 +67,13 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy(2f).Should().BeTrue();
 			vc.IsSatisfiedBy("blue").Should().BeFalse();
 			vc.IsSatisfiedBy(2d).Should().BeTrue();
+			vc.IsSatisfiedBy("2.0").Should().BeTrue();
 
 			vc = new ValueConstraint(12345678.910);
 			vc.BaseType = NetTypeName.Undefined;
 			vc.IsSatisfiedBy(12345678.910).Should().BeTrue();
+			vc.IsSatisfiedBy("12345678.91").Should().BeTrue("String equivalent when decimal normalised");
+			vc.IsSatisfiedBy("12345678.910").Should().BeFalse("Extra zero on decimal");
 		}
 
 		[Fact]
@@ -667,6 +672,30 @@ namespace Xbim.InformationSpecifications.Tests
 			// And other reals
 			constraint.IsSatisfiedBy(5f).Should().BeTrue("Float");
 			constraint.IsSatisfiedBy(5.0m).Should().BeTrue("Decimal");
+		}
+
+		[InlineData("0.0")]
+		[InlineData("0.1")]
+		[InlineData("0")]
+		[InlineData("100")]
+		[InlineData("1,000")]
+		[InlineData("1e3")]
+		[InlineData("-1", false)]
+		[InlineData("-1e3", false)]
+		[InlineData("", false)]
+		[InlineData("invalid", false)]
+		[InlineData("0.0.1", false)]
+		[InlineData("£1000.00", false)]
+		[Theory]
+		public void StringFormatedNumericsCanSatisfyNumericRangeConstraints(string value, bool expected = true)
+		{
+			// Can be typical to receive numeric values in IfcText fields. While purist view may be that the datatype should be fixed
+			// it's beneficial to be able to very the contents numerically. E.g. ReplacementCost must be > 0.0
+			var constraint = new ValueConstraint(NetTypeName.Double);
+			var exact = new RangeConstraint("0", true, null, true);
+			constraint.AddAccepted(exact);
+
+			constraint.IsSatisfiedBy(value).Should().Be(expected, $"{value} >= 0");
 		}
 
 

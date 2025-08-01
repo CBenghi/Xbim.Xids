@@ -24,7 +24,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 
 		[Theory]
 		[MemberData(nameof(GetValidConstraints))]
-		void Can_tell_valid_constrains(ValueConstraint constraint)
+		public void Can_tell_valid_constrains(ValueConstraint constraint)
 		{
 			constraint.IsValid().Should().BeTrue();
 		}

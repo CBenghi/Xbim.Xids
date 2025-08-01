@@ -73,8 +73,14 @@ namespace Xbim.InformationSpecifications
 		{
 			if (candidateValue is null)
 				return false;
-			if (BaseType != NetTypeName.Undefined && !IsCompatible(ResolvedType(BaseType), candidateValue.GetType()))
-				return false;
+			if (BaseType != NetTypeName.Undefined)
+			{
+				if (
+					!IsCompatible(ResolvedType(BaseType), candidateValue.GetType()) &&
+					!IsConvertible(BaseType, candidateValue))
+					return false;
+
+			}
 			// if there are no constraints it's satisfied by default // todo: should this be revised?
 			if (AcceptedValues == null || !AcceptedValues.Any())
 				return true;
@@ -111,6 +117,27 @@ namespace Xbim.InformationSpecifications
 		public bool IsSatisfiedIgnoringCaseBy([NotNullWhen(true)] object? candidateValue, ILogger? logger = null)
 		{
 			return IsSatisfiedBy(candidateValue, true, logger);
+		}
+
+		private static bool IsConvertible(NetTypeName typename, object candidateValue)
+		{
+			try
+			{
+				var val = ConvertObject(candidateValue, typename);
+				return val != null;
+			}
+			catch (FormatException)
+			{
+				return false;
+			}
+			catch (InvalidCastException)
+			{
+				return false;
+			}
+			catch (OverflowException)
+			{
+				return false;
+			}
 		}
 
 		static private bool IsCompatible([NotNullWhen(true)] Type? destType, Type passedType)
@@ -172,6 +199,7 @@ namespace Xbim.InformationSpecifications
 				return true;
 			if (destType == typeof(string))
 				return true; // we can always convert to string
+
 			return false;
 		}
 
