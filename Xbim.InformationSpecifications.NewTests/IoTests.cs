@@ -358,6 +358,7 @@ namespace Xbim.InformationSpecifications.Tests
 			using var archive = new ZipArchive(ms, ZipArchiveMode.Read, false);
 			archive.Entries.Should().HaveCount(2);
 			archive.Entries.Should().AllSatisfy(e => e.Name.Should().EndWith(".ids", "IDS file extension expected"));
+			archive.Entries.Should().AllSatisfy(e => e.Name.Should().MatchRegex(@"\d{3}", "IDS file extension expected"));
 			archive.Entries.Should().AllSatisfy(e => e.Length.Should().BeGreaterThan(0, "Content expected"));
 
 			// entries are valid
@@ -369,6 +370,30 @@ namespace Xbim.InformationSpecifications.Tests
 				SchemaProvider = new IdsLib.SchemaProviders.FixedVersionSchemaProvider(IdsFacts.DefaultIdsVersion)
 			};
 			archive.Entries.Should().AllSatisfy(e => Audit.Run(e.Open(), opt, xlogger).Should().Be(Audit.Status.Ok));
+
+		}
+
+		[Fact]
+		public void ZippedIDSSpecsMayHavePrefixes()
+		{
+			var settings = Xids.Settings;
+			try
+			{
+				Xids.Settings.ApplyPrefixToSpecGroupFileNames = false;
+				Xids? x = BuildMultiSpecGroupIDS();
+				using var ms = new MemoryStream();
+				x.ExportBuildingSmartIDS(ms);
+
+				// Check Contains IDS files & content
+				using var archive = new ZipArchive(ms, ZipArchiveMode.Read, false);
+				archive.Entries.Should().HaveCount(2);
+				archive.Entries[0].Name.Should().StartWith("Entities");
+				archive.Entries[1].Name.Should().StartWith("002.");
+			}
+			finally
+			{
+				Xids.Settings.ApplyPrefixToSpecGroupFileNames = settings.ApplyPrefixToSpecGroupFileNames;
+			}
 
 		}
 

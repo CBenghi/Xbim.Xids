@@ -105,10 +105,14 @@ namespace Xbim.InformationSpecifications
 			int i = 0;
 			foreach (var specGroup in SpecificationsGroups)
 			{
-
-				var name = (string.IsNullOrEmpty(specGroup.Name))
-					? $"{++i}.ids"
-					: $"{++i} - {specGroup.Name!.MakeSafeFileName()}.ids";
+				i++;
+				var prefix = string.IsNullOrEmpty(specGroup.Name) || Settings.ApplyPrefixToSpecGroupFileNames ? $"{i:000}" : "";
+				var groupName = specGroup.Name?.MakeSafeFileName() ?? "";
+				if (!string.IsNullOrEmpty(groupName) && !string.IsNullOrEmpty(prefix))
+				{
+					prefix += "-";
+				}
+				var name = $"{prefix}{groupName}.ids";
 				var file = zipArchive.CreateEntry(name);
 				using var str = file.Open();
 				using XmlWriter writer = XmlWriter.Create(str, WriteSettings);

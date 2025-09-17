@@ -15,5 +15,11 @@
 		/// </summary>
 		/// <remarks>Can be used to limit the description of facets with ValueConstraints comprised of very long enumeration lists</remarks>
 		public int MaximumConstraintEnumsToDescribe { get; set; } = 10;
+
+		/// <summary>
+		/// Determines whether numeric prefixs should be applied to IDS filenames when exporting multiple <see cref="SpecificationsGroup"/>s
+		/// </summary>
+		/// <remarks>Numeric prefixes are always used when a group has no name</remarks>
+		public bool ApplyPrefixToSpecGroupFileNames { get; set; } = true;
 	}
 }
