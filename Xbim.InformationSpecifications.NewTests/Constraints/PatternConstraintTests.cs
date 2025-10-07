@@ -26,19 +26,19 @@ namespace Xbim.InformationSpecifications.Tests
 		{
 			yield return new object[]
 			{
-				"(RAL)*",
+				"(RAL).*",
 				new string[] {"RAL"}, // true
 				new string[] {"noRAL"}, // false
 			};
 			yield return new object[]
 			{
-				"3[1-2].[0-9][0-9]",
+				@"3[1-2]\.[0-9][0-9]",
 				new string[] {"31.12"}, // true
 				new string[] {"31.12RAL"}, // false
 			};
 			yield return new object[]
 			{
-				"*(glas)*",
+				".*(glas).*",
 				new string[] {"glass"}, // true
 				System.Array.Empty<string>(), // false
 			};
@@ -54,6 +54,21 @@ namespace Xbim.InformationSpecifications.Tests
 			vc.IsSatisfiedBy("a", loggerMock).Should().BeFalse();
 			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
 			errorAndWarnings.Should().NotBeEmpty("we are passing an invalid pattern");
+		}
+
+
+		[InlineData("123", true)]
+		[InlineData("n/a", true)]
+		[InlineData("BAD-123", false)]
+		[InlineData("B123", false)]
+		[InlineData("0001234A", false)]
+		[Theory]
+		public void PatternImplicitlyIncludesStartEndWhenUsingRegexOrTest(string input, bool expectedResult)
+		{
+			var vc = new ValueConstraint();
+			vc.AddAccepted(new PatternConstraint() { Pattern = @"n\/a|(\d)+" });
+
+			vc.IsSatisfiedBy(input).Should().Be(expectedResult);
 		}
 
 
