@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Xbim.InformationSpecifications.Helpers;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.Facets
@@ -31,7 +32,7 @@ namespace Xbim.InformationSpecifications.Tests.Facets
 		{
 			var f = new PartOfFacet()
 			{
-				EntityRelation = relation.ToString().ToUpperInvariant()
+				EntityRelation = EnumHelper.ToXmlEnumString(relation)
 			};
 
 			f.GetRelation().Should().Be(relation);

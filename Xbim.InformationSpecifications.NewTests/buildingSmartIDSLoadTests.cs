@@ -74,6 +74,45 @@ namespace Xbim.InformationSpecifications.Tests
 			}
 		}
 
+		[Theory]
+		[InlineData("bsFiles/IDS_door_in_wall.ids")]
+		public void CanLoadRelVoidsFillsFacet(string fileName)
+		{
+			var outputFile = Path.Combine(Path.GetTempPath(), "out.ids");
+			outputFile = Path.GetTempFileName();
+			try
+			{
+				DirectoryInfo d = new(".");
+				Debug.WriteLine(d.FullName);
+				ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
+				CheckSchema(fileName, logg);
+				var loggerMock = Substitute.For<ILogger<BuildingSmartIDSLoadTests>>();
+				var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+				loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock); // we load again with the moq to check for logging events
+				Assert.NotNull(loaded);
+
+				var partOf = loaded!.SpecificationsGroups!.Single()!.Specifications!.First()!.Requirement!.Facets.First() as PartOfFacet;
+				partOf!.GetRelation().Should().Be(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement, "it's the expected relation");
+
+				var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
+				errorAndWarnings.Count().Should().Be(0, "mismatch with expected value");
+
+				partOf.SetRelation(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement);
+				loaded.ExportBuildingSmartIDS(outputFile);
+				CheckSchema(outputFile, logg);
+				var reloaded = Xids.LoadBuildingSmartIDS(outputFile);
+				Assert.NotNull(reloaded);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+			finally
+			{
+				File.Delete(outputFile);
+			}
+		}
+
 		private static void CheckSchema(string tmpFile, ILogger<BuildingSmartIDSLoadTests>? logg = null)
 		{
 			using var tmpStream = File.OpenRead(tmpFile);

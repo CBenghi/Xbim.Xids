@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using Xbim.InformationSpecifications.Facets.buildingSMART;
+using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
 {
@@ -22,27 +24,28 @@ namespace Xbim.InformationSpecifications
 			/// <summary>
 			/// A relation of type IfcRelAggregates
 			/// </summary>
+			[XmlEnum("IFCRELAGGREGATES")]
 			IfcRelAggregates,
 			/// <summary>
 			/// A relation of type IfcRelAssignsToGroup or IfcRelAssignsToGroupByFactor
 			/// </summary>
+			[XmlEnum("IFCRELASSIGNSTOGROUP")]
 			IfcRelAssignsToGroup,
 			/// <summary>
 			/// A relation of type IfcRelContainedInSpatialStructure
 			/// </summary>
+			[XmlEnum("IFCRELCONTAINEDINSPATIALSTRUCTURE")]
 			IfcRelContainedInSpatialStructure,
 			/// <summary>
 			/// A relation of type IfcRelNests
 			/// </summary>
+			[XmlEnum("IFCRELNESTS")]
 			IfcRelNests,
 			/// <summary>
-			/// A relation of type IfcRelVoidsElement
+			/// A relation of type IfcRelVoidsElement IfcRelFillsElement
 			/// </summary>
-			IfcRelVoidsElement,
-			/// <summary>
-			/// A relation of type IfcRelFillsElement
-			/// </summary>
-			IfcRelFillsElement
+			[XmlEnum("IFCRELVOIDSELEMENT IFCRELFILLSELEMENT")]
+			IfcRelVoidsFillsElement,
 		}
 
 		/// <summary>
@@ -188,7 +191,7 @@ namespace Xbim.InformationSpecifications
 		/// <returns></returns>
 		public PartOfRelation GetRelation()
 		{
-			if (Enum.TryParse<PartOfRelation>(EntityRelation, true, out var loc))
+			if (EnumHelper.TryParseFromXmlEnum<PartOfRelation>(EntityRelation, out var loc))
 			{
 				return loc;
 			}
@@ -203,7 +206,7 @@ namespace Xbim.InformationSpecifications
 			if (value == PartOfRelation.Undefined)
 				EntityRelation = string.Empty;
 			else
-				EntityRelation = value.ToString();
+				EntityRelation = EnumHelper.ToXmlEnumString(value);
 		}
 
 		/// <summary>

@@ -333,7 +333,7 @@ namespace Xbim.InformationSpecifications
 					xmlWriter.WriteStartElement("partOf", IdsNamespace);
 					WriteFacetBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
 					if (pof.GetRelation() != PartOfFacet.PartOfRelation.Undefined)
-						xmlWriter.WriteAttributeString("relation", pof.GetRelation().ToString().ToUpperInvariant());
+						xmlWriter.WriteAttributeString("relation", pof.EntityRelation);
 					if (pof.EntityType is not null)
 					{
 						// forRequirement is false, because the minMax Occurs does not apply at this level.
