@@ -20,7 +20,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-	<PackageReference Include="Xbim.Essentials" Version="6.0.521" />
+	<PackageReference Include="Xbim.Essentials" Version="6.0.578" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -99,8 +99,8 @@ namespace Xbim.InformationSpecifications.Generator.Measures
             (new Regex("cubic (\\w+)\\b"), "$1 3"), // $1 is the group, 3 is the cube, the space will be removed later
         ];
 
-		private static char[] multiplicationSplitters = [' ', '\t', '·', '*', '×', '⋅', '⁎', '∗'];
-		private static char[] divisionSplitters = ['/', ':'];
+		private static readonly char[] multiplicationSplitters = [' ', '\t', '·', '*', '×', '⋅', '⁎', '∗'];
+		private static readonly char[] divisionSplitters = ['/', ':'];
 
 		/// <summary>
 		/// tries to break down a complex string of multiple unitFactors

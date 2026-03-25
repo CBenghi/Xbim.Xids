@@ -159,7 +159,7 @@ namespace Xbim.InformationSpecifications
 			var temp = parent.GetConsumers();
 			if (temp != null)
 				return temp;
-			return Enumerable.Empty<string>();
+			return [];
 		}
 
 		/// <inheritdoc />

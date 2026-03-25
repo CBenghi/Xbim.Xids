@@ -91,7 +91,7 @@ namespace Xbim.InformationSpecifications
 			{
 				desc.Add($"has a predefined type value of '{PredefinedType}'");
 			}
-			var tmp = string.Join(" and ", desc.ToArray()) + ".";
+			var tmp = string.Join(" and ", [.. desc]) + ".";
 			return tmp.FirstCharToUpper();
 		}
 

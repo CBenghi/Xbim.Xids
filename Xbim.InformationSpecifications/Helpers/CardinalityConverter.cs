@@ -37,7 +37,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			else if (reader.TokenType == JsonTokenType.StartObject)
 			{
 				// it has got to be a MinMaxCardinality
-				var item = JsonSerializer.Deserialize(ref reader, typeof(MinMaxCardinality), options) as MinMaxCardinality;
+				var item = JsonSerializer.Deserialize<MinMaxCardinality>(ref reader, options);
 				if (item is null)
 				{
 					logger?.LogError("Invalid object values when trying to parse MinMaxCardinality.");

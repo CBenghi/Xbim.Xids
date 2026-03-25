@@ -7,18 +7,17 @@ using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Helpers;
 using Xunit;
 
-namespace Xbim.InformationSpecifications.Tests.Helpers
+namespace Xbim.InformationSpecifications.Tests.Helpers;
+
+public class StringHelpersTests
 {
-	public class StringHelpersTests
+	[Fact]
+	public void CapitalisationHelpersWorkAsExpected()
 	{
-		[Fact]
-		public void CapitalisationHelpersWorkAsExpected()
-		{
-			StringExtensions.FirstCharToUpper("some").Should().Be("Some");
-			StringExtensions.FirstCharToUpper("Some").Should().Be("Some");
-			StringExtensions.FirstCharToUpper("o").Should().Be("O");
-			StringExtensions.FirstCharToUpper("").Should().Be("");
-			Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null));
-		}
+		StringExtensions.FirstCharToUpper("some").Should().Be("Some");
+		StringExtensions.FirstCharToUpper("Some").Should().Be("Some");
+		StringExtensions.FirstCharToUpper("o").Should().Be("O");
+		StringExtensions.FirstCharToUpper("").Should().Be("");
+		Assert.Throws<ArgumentNullException>(() => StringExtensions.FirstCharToUpper(null));
 	}
 }

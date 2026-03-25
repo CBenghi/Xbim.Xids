@@ -35,9 +35,9 @@ namespace Xbim.InformationSpecifications
 			RelatedFacetCardinality = requiredValue;
 		}
 
-		private static IList<Cardinality> AllOptions = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited, Cardinality.Optional };
-		private static IList<Cardinality> NoOptional = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited };
-		private static IList<Cardinality> ExpectedOnly = new List<Cardinality>() { Cardinality.Expected };
+		private static readonly IList<Cardinality> AllOptions = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited, Cardinality.Optional };
+		private static readonly IList<Cardinality> NoOptional = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited };
+		private static readonly IList<Cardinality> ExpectedOnly = new List<Cardinality>() { Cardinality.Expected };
 
 		/// <summary>
 		/// Depending on the Type of <see cref="RelatedFacet"/>, the valid options for cardinaly might be affected

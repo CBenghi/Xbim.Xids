@@ -68,7 +68,7 @@ namespace Xbim.InformationSpecifications
 			{
 				desc.Add($"identification {Identification.Short()}");
 			}
-			var tmp = string.Join(" and ", desc.ToArray()) + ".";
+			var tmp = string.Join(" and ", [.. desc]) + ".";
 			return tmp.FirstCharToUpper();
 		}
 

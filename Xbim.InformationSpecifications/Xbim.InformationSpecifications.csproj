@@ -46,7 +46,7 @@
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ids-lib" Version="1.0.102" />
+		<PackageReference Include="ids-lib" Version="1.0.107" />
 		<PackageReference Include="Nullable" Version="1.3.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

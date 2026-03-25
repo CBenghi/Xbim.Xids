@@ -88,13 +88,13 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			var match = measures.Where(x => x.Exponents.Equals(exp)).ToList();
 			if (match.Count == 1)
 				return match.First();
-			match = match.Where(x => DimensionalExponents.UnitMeasures.Contains(x.IfcMeasure)).ToList();
+			match = [.. match.Where(x => DimensionalExponents.UnitMeasures.Contains(x.IfcMeasure))];
 			if (match.Count == 1)
 				return match.First();
 			return null;
 		}
 
-		private static List<(string alias, string existing)> _conversionAliases = [
+		private static readonly List<(string alias, string existing)> _conversionAliases = [
 			("lb", "pound"),
 			("ft", "foot"),
 			("feet", "foot"),
@@ -107,7 +107,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			("mi", "mile"),
 			("gal", "gallon US"),
 			];
-		private static IfcConversionUnitInformation[] _extraConversions = [
+		private static readonly IfcConversionUnitInformation[] _extraConversions = [
             // modified from the ids repository
             new IfcConversionUnitInformation("foot", "IFCLENGTHMEASURE", 304.8, "mm"),
 			new IfcConversionUnitInformation("US survey foot", "IFCLENGTHMEASURE", 304.80060960122, "mm"),

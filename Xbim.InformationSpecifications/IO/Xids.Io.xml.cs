@@ -852,7 +852,7 @@ namespace Xbim.InformationSpecifications
 			return ret;
 		}
 
-		private static IFacet GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+		private static MaterialFacet GetMaterial(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
 		{
 			MaterialFacet? ret = new(); // material is always initialized, because it's meaningful even if empty
 			foreach (var sub in elem.Elements())
@@ -896,7 +896,7 @@ namespace Xbim.InformationSpecifications
 			return ret;
 		}
 
-		private static IFacet? GetPartOf(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger, out RequirementCardinalityOptions? opt)
+		private static PartOfFacet? GetPartOf(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger, out RequirementCardinalityOptions? opt)
 		{
 			PartOfFacet? ret = null;
 			foreach (var sub in elem.Elements())
@@ -952,7 +952,7 @@ namespace Xbim.InformationSpecifications
 			return ret;
 		}
 
-		private static IFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
+		private static IfcPropertyFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
 		{
 			IfcPropertyFacet? ret = null;
 			foreach (var sub in elem.Elements())
@@ -1225,7 +1225,7 @@ namespace Xbim.InformationSpecifications
 			return fs;
 		}
 
-		private static IFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
+		private static AttributeFacet? GetAttribute(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
 		{
 			AttributeFacet? ret = null;
 			foreach (var sub in elem.Elements())
@@ -1304,7 +1304,7 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
-		private static IFacet GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
+		private static IfcClassificationFacet GetClassification(XElement elem, ILogger? logger, out RequirementCardinalityOptions opt)
 		{
 			IfcClassificationFacet? ret = new(); // classification is always initialized, because it's meaningful even if empty
 			foreach (var sub in elem.Elements())
@@ -1401,7 +1401,7 @@ namespace Xbim.InformationSpecifications
 
 		private const bool defaultSubTypeInclusion = false;
 
-		private static IFacet? GetEntity(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger)
+		private static IfcTypeFacet? GetEntity(XElement elem, IfcSchemaVersions schemaVersions, ILogger? logger)
 		{
 			IfcTypeFacet? ret = null;
 			foreach (var sub in elem.Elements())

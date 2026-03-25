@@ -22,9 +22,9 @@ namespace Xbim.InformationSpecifications.Helpers
 				"" => "",
 				_ => input.First().ToString().ToUpper() + input.Substring(1)
 #else
-                null => throw new ArgumentNullException(nameof(input)),
-                "" => "",
-                _ => input.First().ToString().ToUpper() + input[1..]
+				null => throw new ArgumentNullException(nameof(input)),
+				"" => "",
+				_ => input.First().ToString().ToUpper() + input[1..]
 #endif
 			};
 
