@@ -100,6 +100,23 @@ namespace Xbim.InformationSpecifications.Tests
 			propFacet.PropertyValue!.AcceptedValues.Should().HaveCount(2, "Expected to load TWO patterns");
 		}
 
+		[Fact]
+		public void CanRoundTripRequirementsDescription
+			()
+		{
+			var xids = XidsTestHelpers.GetSimpleXids();
+			var spec = xids.AllSpecifications().FirstOrDefault();
+			Assert.NotNull(spec);
+			spec.Requirement?.Description = "This is a requirement description";
+			var filename = Path.ChangeExtension(Path.GetTempFileName(), "ids");
+			xids.ExportBuildingSmartIDS(filename);
+			var newXids = Xids.LoadBuildingSmartIDS(filename);
+			var newSpec = newXids!.AllSpecifications().FirstOrDefault();
+			Assert.NotNull(newSpec);
+			newSpec.Requirement?.Description.Should().Be("This is a requirement description");
+		}
+
+
 		private static IfcPropertyFacet GetFirstPropertyFacet(Xids xids)
 		{
 			var spec = xids.AllSpecifications().FirstOrDefault();

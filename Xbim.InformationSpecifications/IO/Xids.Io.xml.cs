@@ -226,7 +226,9 @@ namespace Xbim.InformationSpecifications
 
 			// requirements
 			xmlWriter.WriteStartElement("requirements", IdsNamespace);
-			if (spec.Requirement is not null)
+			if (spec?.Requirement?.Description is not null)
+				xmlWriter.WriteAttributeString("description", spec.Requirement.Description);
+			if (spec?.Requirement is not null)
 			{
 				var opts = spec.Requirement.RequirementOptions;
 				for (int i = 0; i < spec.Requirement.Facets.Count; i++)
@@ -806,6 +808,7 @@ namespace Xbim.InformationSpecifications
 						}
 					case "requirements":
 						{
+							var description = sub.Attribute("description")?.Value;
 							var fs = GetFacets(sub, logger, schemaVersions, out var options);
 							if (fs.Any())
 							{
@@ -829,6 +832,9 @@ namespace Xbim.InformationSpecifications
 								}
 								ret.SetExpectations(fs);
 								ret.Requirement!.RequirementOptions = tmp;
+								if (description != null)
+									ret.Requirement.Description = description;
+
 							}
 							break;
 						}
