@@ -9,7 +9,6 @@ namespace Xbim.InformationSpecifications
 	/// </summary>
 	public class RequirementCardinalityOptions
 	{
-
 		/// <summary>
 		/// The default valud of the cardinality if not speciried.
 		/// </summary>

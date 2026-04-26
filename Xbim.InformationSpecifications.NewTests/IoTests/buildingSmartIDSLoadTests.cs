@@ -9,9 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Xunit;
-using Xunit.Abstractions;
 
-namespace Xbim.InformationSpecifications.Tests;
+namespace Xbim.InformationSpecifications.Tests.IoTests;
 
 public class BuildingSmartIDSLoadTests
 {

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Xbim.InformationSpecifications.Helpers;
 
 namespace Xbim.InformationSpecifications
@@ -9,7 +11,7 @@ namespace Xbim.InformationSpecifications
 	/// <summary>
 	/// Constrain model parts on the ground of their class and predefined type.
 	/// </summary>
-	public partial class IfcTypeFacet : FacetBase, IEquatable<IfcTypeFacet>, IFacet
+	public partial class IfcTypeFacet : FacetBase, IEquatable<IfcTypeFacet>, IFacet, IFacetCleanup
 	{
 		/// <summary>
 		/// Required 
@@ -34,7 +36,6 @@ namespace Xbim.InformationSpecifications
 				var predefined = IsNullOrEmpty(PredefinedType) ? Any : PrettifyPredefinedType(PredefinedType.Short());
 				var ifcTypes = IsNullOrEmpty(IfcType) ? Any : PrettifyIfcType(IfcType.Short());
 				return $"of entity {ifcTypes} and of predefined type {predefined}";
-
 			}
 		}
 
@@ -49,14 +50,15 @@ namespace Xbim.InformationSpecifications
 			}
 		}
 
+		private static readonly Regex reReplaceIFC = new Regex(@"\bIFC", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
 		private static string PrettifyIfcType(string ifcText)
 		{
 			var words = ifcText.Split(' ');
 			var sb = new StringBuilder();
 			foreach (var word in words)
 			{
-
-				var cleaned = word.Replace("IFC", "");
+				string cleaned = reReplaceIFC.Replace(word, "");
 				if (cleaned != word)
 				{
 					sb.Append(cleaned.ToLowerInvariant().FirstCharToUpper());
@@ -131,6 +133,31 @@ namespace Xbim.InformationSpecifications
 		{
 			return FacetBase.IsValidAndNotEmpty(IfcType)
 				&& FacetBase.IsValidOrNull(PredefinedType);
+		}
+
+		/// <summary>
+		/// Tries to reconduct IFC class names to CamelCase
+		/// </summary>
+		public void Cleanup()
+		{
+			if (IfcType is not null && IfcType.HasAnyAcceptedValue())
+			{
+				int iCanRemoveSubtypes = 0;
+				foreach (var item in IfcType.AcceptedValues.OfType<ExactConstraint>())
+				{
+					if (IfcSchemaHelper.TryGetExactClassInfo(item.Value, out var className, out var hasSubtypes))
+					{
+						item.Value = className;
+						if (!hasSubtypes)
+							iCanRemoveSubtypes++;
+					}
+				}
+				// we must check if all the accepted values are of a single class
+				if (IncludeSubtypes && iCanRemoveSubtypes == IfcType.AcceptedValues.Count())
+				{
+					IncludeSubtypes = false;
+				}
+			}
 		}
 	}
 }

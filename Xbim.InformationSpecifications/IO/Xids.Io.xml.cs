@@ -92,9 +92,9 @@ namespace Xbim.InformationSpecifications
 		/// <returns>An enum determining if XML or ZIP files were written</returns>
 		public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger? logger = null)
 		{
+			Cleanup();
 			if (SpecificationsGroups.Count == 1)
 			{
-
 				using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
 				ExportBuildingSmartIDS(SpecificationsGroups.First(), writer, logger);
 				writer.Close();
@@ -656,7 +656,7 @@ namespace Xbim.InformationSpecifications
 						LogUnexpected(sub, main, logger);
 					}
 				}
-				return ret;
+				return Finalize(ret);
 			}
 			else
 			{
@@ -676,28 +676,28 @@ namespace Xbim.InformationSpecifications
 				switch (name)
 				{
 					case "title":
-						grp.Name = elem.Value;
+						grp.Name = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "copyright":
-						grp.Copyright = elem.Value;
+						grp.Copyright = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "version":
-						grp.Version = elem.Value;
+						grp.Version = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "description":
-						grp.Description = elem.Value;
+						grp.Description = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "author":
-						grp.Author = elem.Value;
+						grp.Author = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "date":
 						grp.Date = ReadDate(elem, logger);
 						break;
 					case "purpose":
-						grp.Purpose = elem.Value;
+						grp.Purpose = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					case "milestone":
-						grp.Milestone = elem.Value;
+						grp.Milestone = string.IsNullOrEmpty(elem.Value) ? null : elem.Value;
 						break;
 					default:
 						LogUnexpected(elem, info, logger);
@@ -771,17 +771,17 @@ namespace Xbim.InformationSpecifications
 				switch (attName)
 				{
 					case "name":
-						ret.Name = attribute.Value;
+						ret.Name = string.IsNullOrEmpty(attribute.Value) ? null : attribute.Value;
 						break;
 					case "description":
-						ret.Description = attribute.Value;
+						ret.Description = string.IsNullOrEmpty(attribute.Value) ? null : attribute.Value;
 						break;
 					case "ifcversion":
 						schemaVersions = attribute.Value.ParseXmlSchemasFromAttribute();
 						ret.IfcVersion = ToXidsVersion(schemaVersions);
 						break;
 					case "instructions":
-						ret.Instructions = attribute.Value;
+						ret.Instructions = string.IsNullOrEmpty(attribute.Value) ? null : attribute.Value;
 						break;
 					case "identifier":
 						ret.Guid = attribute.Value;
@@ -1427,7 +1427,7 @@ namespace Xbim.InformationSpecifications
 						break;
 				}
 			}
-			if (ret is not null && ret.IfcType is not null && TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out var type, out bool includeSubtypes))
+			if (ret is not null && ret.IfcType is not null && IfcSchemaHelper.TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out var type, out bool includeSubtypes))
 			{
 				ret.IfcType = type; // directly assigning a string is persisted more concisely
 				ret.IncludeSubtypes = includeSubtypes;
@@ -1443,26 +1443,6 @@ namespace Xbim.InformationSpecifications
 					LogUnexpected(attribute, elem, logger);
 			}
 			return ret;
-		}
-
-		private static bool TryOptimizeTypeConstraint(ValueConstraint ifcType, IfcSchemaVersions schemaVersions, [NotNullWhen(true)] out string? type, out bool includeSubtypes)
-		{
-			if (ifcType.HasAnyAcceptedValue())
-			{
-				var exacts = ifcType.AcceptedValues.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
-				if (exacts.Length > 1 && exacts.Length == ifcType.AcceptedValues.Count)
-				{
-					if (SchemaInfo.TrySearchTopClass(exacts, schemaVersions, out var top))
-					{
-						type = top;
-						includeSubtypes = true;
-						return true;
-					}
-				}
-			}
-			includeSubtypes = false;
-			type = null;
-			return false;
 		}
 
 		private static string GetFirstString(XElement sub)

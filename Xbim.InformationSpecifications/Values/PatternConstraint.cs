@@ -20,7 +20,6 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		public PatternConstraint()
 		{
-
 		}
 
 		/// <summary>

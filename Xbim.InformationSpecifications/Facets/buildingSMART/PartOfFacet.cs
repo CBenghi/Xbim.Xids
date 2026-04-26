@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Xml.Serialization;
 using Xbim.InformationSpecifications.Facets.buildingSMART;
@@ -10,7 +11,7 @@ namespace Xbim.InformationSpecifications
 	/// <summary>
 	/// Constrain model parts on the ground of their belonging to a collection defined by the container enum.
 	/// </summary>
-	public class PartOfFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<PartOfFacet>
+	public class PartOfFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<PartOfFacet>, IFacetCleanup
 	{
 		/// <summary>
 		/// The type of relation defining the filtering criteria
@@ -156,12 +157,23 @@ namespace Xbim.InformationSpecifications
 			IfcZone
 		}
 
+		private string entityRelation = string.Empty;
 		/// <summary>
 		/// Constraints the containing entity type to one of <see cref="Container"/> enum.
 		/// This is a string value, to get/set the enum values use <see cref="GetRelation"/> and <see cref="SetRelation(PartOfRelation)"/>.
+		/// When this string is parsed as the Undefined value of the enum, it is set to empty string, to avoid confusion with an actual relation type.
 		/// </summary>
-		public string EntityRelation { get; set; } = string.Empty;
-
+		public string EntityRelation
+		{
+			get => entityRelation;
+			set
+			{
+				if (EnumHelper.TryParseFromXmlEnum<PartOfRelation>(value, out var loc) && loc == PartOfRelation.Undefined)
+					entityRelation = string.Empty;
+				else
+					entityRelation = value;
+			}
+		}
 		/// <summary>
 		/// Filter on the type of the collecting entity.
 		/// </summary>
@@ -222,7 +234,6 @@ namespace Xbim.InformationSpecifications
 			}
 			EntityType ??= new IfcTypeFacet();
 			EntityType.IfcType = c;
-
 		}
 
 		/// <summary>
@@ -282,5 +293,14 @@ namespace Xbim.InformationSpecifications
 		/// <inheritdoc />
 		public override int GetHashCode() => 23 + 31 * (EntityRelation, true).GetHashCode() + 31 * base.GetHashCode();
 
+		/// <summary>
+		/// Tries to reconduct IFC class names to CamelCase
+		/// </summary>
+		public void Cleanup()
+		{
+			if (EntityType is not null) {
+				EntityType.Cleanup();
+			}
+		}
 	}
 }

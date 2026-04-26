@@ -75,7 +75,7 @@ public class AttributeFacetTests
 	}
 
 	[Fact]
-	void ValidityTests()
+	public void ValidityTests()
 	{
 		var t = new AttributeFacet
 		{

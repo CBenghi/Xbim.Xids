@@ -52,9 +52,29 @@ namespace Xbim.InformationSpecifications
 		public string? Description { get; set; }
 
 		/// <summary>
-		/// Determines options associated with the collection of facets, when used as a requirement
+		/// Determines options associated with the collection of facets, when used as a requirement.
+		/// To get the value of the option for a facet, use the <see cref="GetRequirementCardinalityOption(IFacet, out RequirementCardinalityOptions.Cardinality?)"/> method.
 		/// </summary>
 		public ObservableCollection<RequirementCardinalityOptions>? RequirementOptions { get; set; }
+
+		/// <summary>
+		/// Gets the requirement cardinality option for a facet, if defined, otherwise returns the default cardinality.
+		/// </summary>
+		public bool GetRequirementCardinalityOption(IFacet facet,
+			[NotNullWhen(true)]
+			out RequirementCardinalityOptions.Cardinality? cardinality)
+		{
+			if (facet is null)
+			{
+				cardinality = null;
+				return false;
+			}
+			var options = RequirementOptions?.FirstOrDefault(x => x.RelatedFacet == facet);
+			cardinality = options is null
+				? RequirementCardinalityOptions.DefaultCardinality
+				: options.RelatedFacetCardinality;
+			return true;
+		}
 
 		/// <summary>
 		/// Collection of the facets defined in the group.
@@ -216,8 +236,5 @@ namespace Xbim.InformationSpecifications
 				return Description;
 			return Undefined;
 		}
-
-
-
 	}
 }

@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Xbim.InformationSpecifications.Tests.Constraints;
 

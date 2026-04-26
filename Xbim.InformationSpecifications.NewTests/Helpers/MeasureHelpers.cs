@@ -11,7 +11,6 @@ using Xbim.InformationSpecifications.Generator.Measures;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Helpers.Measures;
 using Xunit;
-using Xunit.Abstractions;
 using SchemaInfo = IdsLib.IfcSchema.SchemaInfo;
 
 namespace Xbim.InformationSpecifications.Tests.Helpers;

@@ -67,7 +67,9 @@ namespace Xbim.InformationSpecifications.Helpers
 		/// </summary>
 		public override void Write(Utf8JsonWriter writer, ValueConstraint value, JsonSerializerOptions options)
 		{
-			if (value.IsSingleUndefinedExact(out var exact))
+			if (value.IsSingleExact<string>(out var exact) && 
+				(value.BaseType == NetTypeName.Undefined || value.BaseType == NetTypeName.String)
+				)
 			{
 				writer.WriteStringValue(exact);
 			}

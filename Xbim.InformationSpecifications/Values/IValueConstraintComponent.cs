@@ -29,7 +29,5 @@ namespace Xbim.InformationSpecifications
 		/// <param name="context">The value constraint in which the validity is checked</param>
 		/// <returns>True if valid, false if invalid.</returns>
 		bool IsValid(ValueConstraint context);
-
-
 	}
 }

@@ -63,7 +63,6 @@ namespace Xbim.InformationSpecifications
 		Uri,
 	}
 
-
 	public partial class ValueConstraint
 	{
 		/// <summary>
@@ -123,7 +122,6 @@ namespace Xbim.InformationSpecifications
 				_ => null,
 			};
 		}
-
 
 		/// <summary>
 		/// Gets the .NET type enum from the XSD string value

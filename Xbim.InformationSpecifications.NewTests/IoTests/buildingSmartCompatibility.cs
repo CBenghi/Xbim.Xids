@@ -15,10 +15,9 @@ using System.Text;
 using System.Xml.Linq;
 using Xbim.Ifc4.Interfaces;
 using Xunit;
-using Xunit.Abstractions;
 using static Xbim.InformationSpecifications.Xids;
 
-namespace Xbim.InformationSpecifications.Tests;
+namespace Xbim.InformationSpecifications.Tests.IoTests;
 
 public class BuildingSmartCompatibilityTests
 {

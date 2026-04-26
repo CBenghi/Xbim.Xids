@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Xbim.InformationSpecifications.IO;
@@ -120,5 +122,67 @@ namespace Xbim.InformationSpecifications
 				return false;
 			}
 		}
+
+		private void Cleanup()
+		{
+			foreach (var facetGroup in FacetRepository.Collection)
+			{
+				foreach (var facet in facetGroup.Facets.OfType<IFacetCleanup>())
+				{
+					facet.Cleanup();
+				}
+			}
+		}
+
+		private static Xids? Finalize(Xids? unpersisted)
+		{
+			if (unpersisted == null)
+				return null;
+			foreach (var specG in unpersisted.SpecificationsGroups)
+			{
+				specG.SetParent(unpersisted);
+			}
+			foreach (var facetGroup in unpersisted.FacetRepository.Collection)
+			{
+				foreach (var facet in facetGroup.Facets)
+				{
+					if (facet is IRepositoryRef repref)
+					{
+						repref.SetContextIds(unpersisted);
+					}
+				}
+			}
+			foreach (var spec in unpersisted.AllSpecifications())
+			{
+				if (spec.Requirement is null)
+					continue;
+
+				if (spec.Requirement.RequirementOptions is null)
+					spec.Requirement.RequirementOptions = new ObservableCollection<RequirementCardinalityOptions>();
+				for (int i = 0; i < spec.Requirement.Facets.Count; i++)
+				{
+					IFacet? facet = spec.Requirement.Facets[i];
+					if (facet == null)
+						continue;
+					if (spec.Requirement.RequirementOptions.Count <= i)
+					{
+						spec.Requirement.RequirementOptions.Add(new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality));
+						continue;
+					}
+					if (spec.Requirement.RequirementOptions[i] is null)
+					{
+						spec.Requirement.RequirementOptions[i] = new RequirementCardinalityOptions(facet, RequirementCardinalityOptions.DefaultCardinality);
+						continue;
+					}
+					spec.Requirement.RequirementOptions[i].RelatedFacet = facet;
+				}
+				// if requirementOptions are all default then remove them
+				if (spec.Requirement.RequirementOptions.All(x => x.RelatedFacetCardinality == RequirementCardinalityOptions.DefaultCardinality))
+					spec.Requirement.RequirementOptions = null;
+
+			}
+			return unpersisted;
+		}
+
 	}
 }

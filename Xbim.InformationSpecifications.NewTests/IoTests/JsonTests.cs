@@ -7,7 +7,7 @@ using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
 
-namespace Xbim.InformationSpecifications.Tests;
+namespace Xbim.InformationSpecifications.Tests.IoTests;
 
 public class JsonTests
 {
@@ -157,6 +157,21 @@ public class JsonTests
 
 		File.Delete(tmpFile);
 	}
+
+	[Fact]
+	public void CanSerializeEntityWithParsimoniousSubtyping()
+	{
+		var x = new Xids();
+		var fg = new FacetGroup(x.FacetRepository);
+		fg.Facets.Add(new IfcTypeFacet() { IfcType = "IfcWallStandardCase", IncludeSubtypes = true });
+
+		var tmpFile = Path.GetTempFileName();
+		x.SaveAsJson(tmpFile);
+		var allContent = File.ReadAllText(tmpFile);
+
+		File.Delete(tmpFile);
+	}
+
 
 	[Fact]
 	public void FileVersionWorks()
