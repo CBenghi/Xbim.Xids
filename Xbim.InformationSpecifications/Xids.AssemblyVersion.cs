@@ -10,3 +10,4 @@
 		public static string AssemblyVersion => "1.0.19";
 	}
 }
+
