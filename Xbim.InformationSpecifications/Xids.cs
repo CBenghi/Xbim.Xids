@@ -35,7 +35,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		/// <param name="xidsToTest">the instance to check</param>
 		/// <returns>True if there's any data in the model</returns>
-		public static bool HasData(Xids xidsToTest)
+		public static bool HasData(Xids? xidsToTest)
 		{
 			if (xidsToTest == null)
 				return false;
