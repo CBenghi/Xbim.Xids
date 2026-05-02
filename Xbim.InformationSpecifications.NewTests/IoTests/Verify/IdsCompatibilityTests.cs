@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,12 +11,22 @@ using System.Threading.Tasks;
 using VerifyTests;
 using VerifyXunit;
 using Xbim.Ifc4x3.ProductExtension;
+using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests.Verify;
 
 public class IdsCompatibilityTests
 {
+
+	public IdsCompatibilityTests(ITestOutputHelper outputHelper)
+	{
+		OutputHelper = outputHelper;
+		log = LoggingTestHelper.GetXunitLogger<IdsCompatibilityTests>(OutputHelper);
+	}
+	private ITestOutputHelper OutputHelper { get; }
+	private readonly ILogger<IdsCompatibilityTests> log;
+
 	[Theory(DisplayName = "Test IDS roundtrip")]
 	[MemberData(nameof(GetSimpleXids))]
 	public async Task TestIdsPersistenceAsync(string originalFileName)
@@ -24,6 +35,19 @@ public class IdsCompatibilityTests
 
 		var idsfile = originalFileName.Replace(".1.json", ".ids");
 		x.ExportBuildingSmartIDS(idsfile);
+
+		// ensure that the exported file is valid ids
+		var opts = new IdsLib.SingleAuditOptions() {
+			XmlWarningAction = IdsLib.AuditProcessOptions.XmlWarningBehaviour.ReportAsError,
+			OmitIdsContentAudit = true
+		};
+
+		using (var reader = File.OpenRead(idsfile))
+		{
+			var auditResult = IdsLib.Audit.Run(reader, opts, log);
+			auditResult.Should().Be(IdsLib.Audit.Status.Ok);
+		}
+
 		var reloaded = Xids.LoadBuildingSmartIDS(idsfile)!;
 		var reloadedName = originalFileName.Replace(".1.json", ".2.json");
 		reloaded.SaveAsJson(reloadedName);

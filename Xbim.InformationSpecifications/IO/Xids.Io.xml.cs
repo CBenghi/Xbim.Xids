@@ -335,7 +335,7 @@ namespace Xbim.InformationSpecifications
 					xmlWriter.WriteStartElement("partOf", IdsNamespace);
 					WriteFacetBaseAttributes(pof, xmlWriter, logger, forRequirement, requirementOption);
 					if (pof.GetRelation() != PartOfFacet.PartOfRelation.Undefined)
-						xmlWriter.WriteAttributeString("relation", pof.EntityRelation);
+						xmlWriter.WriteAttributeString("relation", EnumHelper.ToXmlEnumString(pof.GetRelation()));
 					if (pof.EntityType is not null)
 					{
 						// forRequirement is false, because the minMax Occurs does not apply at this level.
@@ -941,9 +941,18 @@ namespace Xbim.InformationSpecifications
 					switch (locName)
 					{
 						case "relation":
-							ret ??= new PartOfFacet();
-							ret.EntityRelation = attribute.Value;
-							break;
+							{
+								if (EnumHelper.TryParseFromXmlEnum<PartOfFacet.PartOfRelation>(attribute.Value, out var relation))
+								{
+									ret ??= new PartOfFacet();
+									ret.SetRelation(relation);
+								}
+								else
+								{
+									LogUnexpectedValue(attribute, elem, logger);
+								}
+								break;
+							}
 						default:
 							LogUnexpected(attribute, elem, logger);
 							break;

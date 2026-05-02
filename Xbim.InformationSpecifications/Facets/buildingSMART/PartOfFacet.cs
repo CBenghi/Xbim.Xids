@@ -218,7 +218,7 @@ namespace Xbim.InformationSpecifications
 			if (value == PartOfRelation.Undefined)
 				EntityRelation = string.Empty;
 			else
-				EntityRelation = EnumHelper.ToXmlEnumString(value);
+				EntityRelation = value.ToString();
 		}
 
 		/// <summary>
