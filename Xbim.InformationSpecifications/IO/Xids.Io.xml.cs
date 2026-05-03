@@ -1436,9 +1436,12 @@ namespace Xbim.InformationSpecifications
 						break;
 				}
 			}
-			if (ret is not null && ret.IfcType is not null && IfcSchemaHelper.TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out var type, out bool includeSubtypes))
+			if (ret is not null && ret.IfcType is not null && IfcSchemaHelper.TryOptimizeTypeConstraint(ret.IfcType, schemaVersions, out var types, out bool includeSubtypes))
 			{
-				ret.IfcType = type; // directly assigning a string is persisted more concisely
+				if (types.Count() > 1)
+					ret.IfcType = new ValueConstraint(types); // directly assigning a string is persisted more concisely
+				else
+					ret.IfcType = types.First(); // directly assigning a string is persisted more concisely
 				ret.IncludeSubtypes = includeSubtypes;
 			}
 			foreach (var attribute in elem.Attributes())

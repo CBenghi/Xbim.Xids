@@ -34,8 +34,6 @@ public class JsonTests
 		Assert.NotNull(x2);
 	}
 
-
-
 	[Fact]
 	public void CanSerializeRicherFormat()
 	{
@@ -171,7 +169,6 @@ public class JsonTests
 
 		File.Delete(tmpFile);
 	}
-
 
 	[Fact]
 	public void FileVersionWorks()

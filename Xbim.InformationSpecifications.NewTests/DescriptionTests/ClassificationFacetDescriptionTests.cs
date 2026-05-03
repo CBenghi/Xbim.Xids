@@ -13,7 +13,7 @@ public class ClassificationFacetDescriptionTests : BaseDescriptionTests
 
 	[InlineData("SS_20", null, "a classification SS_20 from system <any>")]
 	[InlineData("EF_25,EF_26", "Uniclass 2015", "a classification 'EF_25' or 'EF_26' from system Uniclass 2015")]
-	[InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "a classification 'EF_25' or 'EF_26' from system 'Uniclass 2015' or 'UniClass'")]
+	[InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "a classification 'EF_25' or 'EF_26' from system 'UniClass' or 'Uniclass 2015'")]
 	[Theory]
 	public void ClassificationFacetsRequirementsDescribed(string identifiers, string? systems, string expected,
 		ConstraintType identifierConstraint = ConstraintType.Exact, ConstraintType systemConstraint = ConstraintType.Exact)
@@ -34,17 +34,13 @@ public class ClassificationFacetDescriptionTests : BaseDescriptionTests
 
 	[InlineData("SS_20", null, "with classification SS_20 from system <any>")]
 	[InlineData("EF_25,EF_26", "Uniclass 2015", "with classification 'EF_25' or 'EF_26' from system Uniclass 2015")]
-	[InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "with classification 'EF_25' or 'EF_26' from system 'Uniclass 2015' or 'UniClass'")]
-	[Theory]
+	[InlineData("EF_25,EF_26", "Uniclass 2015,UniClass", "with classification 'EF_25' or 'EF_26' from system 'UniClass' or 'Uniclass 2015'")]
+	[Theory(DisplayName = nameof(ClassificationFacetsApplicabilityDescribed))]
 	public void ClassificationFacetsApplicabilityDescribed(string identifiers, string? systems, string expected,
 		ConstraintType identifierConstraint = ConstraintType.Exact, ConstraintType systemConstraint = ConstraintType.Exact)
 	{
 		IfcClassificationFacet facet;
-
-
 		facet = BuildFacetFromInputs(identifiers, systems ?? "", identifierConstraint, systemConstraint);
-
-
 		facet.ApplicabilityDescription.Should().Be(expected);
 	}
 

@@ -90,7 +90,6 @@ public class BuildingSmartCompatibilityTests
 		var logger = GetXunitLogger();
 		var x = new Xids();
 		// at least one specification is needed
-		// at least one specification is needed
 		//
 		var t = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
 		t.Requirement!.Facets.Add(new IfcTypeFacet() { IfcType = "IFCWALL" /* IncludeSubtypes defaults True */});

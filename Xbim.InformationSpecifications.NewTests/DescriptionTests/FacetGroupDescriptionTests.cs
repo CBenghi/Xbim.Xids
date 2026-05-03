@@ -7,9 +7,9 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests;
 public class FacetGroupDescriptionTests
 {
 	[InlineData(null,
-		"All elements of entity Door and of predefined type Door AND with attribute Name with value D001")]
+		"All elements of entity Door or any of its subtypes and of predefined type Door AND with attribute Name with value D001")]
 	[InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Expected },
-		"All elements of entity Door and of predefined type Door AND with attribute Name with value D001")]
+		"All elements of entity Door or any of its subtypes and of predefined type Door AND with attribute Name with value D001")]
 	//[InlineData(new[] { RequirementCardinalityOptions.Cardinality.Expected, RequirementCardinalityOptions.Cardinality.Prohibited },
 	//    "All elements of entity IfcDoor and of predefined type Door AND NOT with attribute Name with value D001")]
 	//[InlineData(new[] { RequirementCardinalityOptions.Cardinality.Prohibited, RequirementCardinalityOptions.Cardinality.Optional },

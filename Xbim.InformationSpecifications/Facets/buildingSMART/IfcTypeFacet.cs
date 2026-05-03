@@ -35,6 +35,16 @@ namespace Xbim.InformationSpecifications
 			{
 				var predefined = IsNullOrEmpty(PredefinedType) ? Any : PrettifyPredefinedType(PredefinedType.Short());
 				var ifcTypes = IsNullOrEmpty(IfcType) ? Any : PrettifyIfcType(IfcType.Short());
+				if (!IsNullOrEmpty(IfcType) && IncludeSubtypes)
+				{
+					if (IfcType.AcceptedValues is not null)
+					{
+						if (IfcType.AcceptedValues.Count == 1)
+							ifcTypes += " or any of its subtypes";
+						else
+							ifcTypes += " or any of their subtypes";
+					}
+				}
 				return $"of entity {ifcTypes} and of predefined type {predefined}";
 			}
 		}

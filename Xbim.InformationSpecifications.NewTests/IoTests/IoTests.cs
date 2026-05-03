@@ -634,6 +634,7 @@ public partial class IoTests
 		x.SpecificationsGroups.Add(specGroup);
 
 		var newSpec = x.PrepareSpecification(specGroup, IfcSchemaVersion.IFC4);
+		newSpec.Cardinality = new SimpleCardinality(CardinalityEnum.Required);
 		newSpec.Applicability.Facets.Add(new IfcTypeFacet() { IfcType = "IfcDoor" });
 
 		x!.AllSpecifications().Should().HaveCount(2);

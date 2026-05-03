@@ -6,30 +6,24 @@ namespace Xbim.InformationSpecifications.Tests.DescriptionTests;
 public class MaterialFacetDescriptionTests : BaseDescriptionTests
 {
 	[InlineData("Concrete", "a material Concrete")]
-	[InlineData("Concrete,Aggregate", "a material 'Concrete' or 'Aggregate'")]
+	[InlineData("Concrete,Aggregate", "a material 'Aggregate' or 'Concrete'")]
 	[InlineData("Concrete.*", "a material matching 'Concrete.*'", ConstraintType.Pattern)]
 	[Theory]
 	public void MaterialFacetsRequirementsDescribed(string materialName, string expected, ConstraintType valueConstraint = ConstraintType.Exact)
 	{
 		MaterialFacet facet;
-
 		facet = BuildFacetFromInputs(materialName, valueConstraint);
-
-
 		facet.RequirementDescription.Should().Be(expected);
 	}
 
 	[InlineData("Concrete", "of material Concrete")]
-	[InlineData("Concrete,Aggregate", "of material 'Concrete' or 'Aggregate'")]
+	[InlineData("Concrete,Aggregate", "of material 'Aggregate' or 'Concrete'")]
 	[InlineData("Concrete.*", "of material matching 'Concrete.*'", ConstraintType.Pattern)]
 	[Theory]
 	public void MaterialFacetsApplicabilityDescribed(string materialName, string expected, ConstraintType valueConstraint = ConstraintType.Exact)
 	{
 		MaterialFacet facet;
-
 		facet = BuildFacetFromInputs(materialName, valueConstraint);
-
-
 		facet.ApplicabilityDescription.Should().Be(expected);
 	}
 

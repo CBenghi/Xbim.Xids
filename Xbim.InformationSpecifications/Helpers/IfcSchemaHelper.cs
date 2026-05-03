@@ -32,23 +32,23 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		}
 
-		internal static bool TryOptimizeTypeConstraint(ValueConstraint ifcType, IfcSchemaVersions schemaVersions, [NotNullWhen(true)] out string? type, out bool includeSubtypes)
+		internal static bool TryOptimizeTypeConstraint(ValueConstraint ifcType, IfcSchemaVersions schemaVersions, [NotNullWhen(true)] out IEnumerable<string> type, out bool includeSubtypes)
 		{
 			if (ifcType.HasAnyAcceptedValue())
 			{
 				var exacts = ifcType.AcceptedValues.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
 				if (exacts.Length > 1 && exacts.Length == ifcType.AcceptedValues.Count)
 				{
-					if (SchemaInfo.TrySearchTopClass(exacts, schemaVersions, out var top))
+					if (SchemaInfo.TrySimplifyTopClasses(exacts, schemaVersions, out var top))
 					{
-						type = top;
+						type = top.ToList();
 						includeSubtypes = true;
 						return true;
 					}
 				}
 			}
 			includeSubtypes = false;
-			type = null;
+			type = [];
 			return false;
 		}
 	}

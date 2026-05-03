@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Helpers;
 
@@ -51,8 +52,32 @@ namespace Xbim.InformationSpecifications
 		{
 			var options = new JsonSerializerOptions()
 			{
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+				// DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
 			};
+			var t = true;
+			if (t)
+			{
+				options.TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+				{
+					Modifiers =
+					{
+						static typeInfo =>
+						{
+							foreach (var prop in typeInfo.Properties)
+							{
+								if (prop.PropertyType == typeof(string))
+								{
+									var existing = prop.ShouldSerialize;
+									prop.ShouldSerialize = existing is null
+										? (_, val) => val is string s && !string.IsNullOrEmpty(s)
+										: (obj, val) => existing(obj, val) && val is string s && !string.IsNullOrEmpty(s);
+								}
+							}
+						}
+					}
+				};
+			}
+
 			var facetConverter = new HeterogenousListConverter<IFacet, ObservableCollection<IFacet>>(
 				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
 				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
@@ -101,7 +126,6 @@ namespace Xbim.InformationSpecifications
 			var t = await JsonSerializer.DeserializeAsync(sourceStream, typeof(Xids), options) as Xids;
 			return Finalize(t);
 		}
-
 
 	}
 }

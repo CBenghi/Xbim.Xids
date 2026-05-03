@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdsLib.IfcSchema;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
@@ -9,7 +10,14 @@ namespace Xbim.InformationSpecifications
 	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
 	/// <summary>
-	/// type names in the .NET framework
+	/// Type names in the .NET framework. 
+	/// 
+	/// These can be converted from the underlying XSD types via the 
+	/// <see cref="ValueConstraint.GetNamedTypeFromXsd(string?)"/> method.
+	/// 
+	/// These can also be obtained from the IFC measure name via the 
+	/// <see cref="ValueConstraint.TryGetNetType(string?, out NetTypeName)"/> method, 
+	/// which attempts to resolve an IFC data type name to the underlying .NET type name.
 	/// </summary>
 	public enum NetTypeName
 	{
@@ -124,11 +132,33 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// Gets the default value for a .NET type from the enum value
+		/// </summary>
+		/// <returns>null if <see cref="NetTypeName.Undefined"/> is specified or other unexpected scenario.</returns>
+		public static object? GetDefaultValue(NetTypeName baseType) => baseType switch
+		{
+			NetTypeName.Integer => (int)0,
+			NetTypeName.String => (string)string.Empty,
+			NetTypeName.Boolean => (bool)false,
+			NetTypeName.Floating => (float)0,
+			NetTypeName.Double => (double)0,
+			NetTypeName.Decimal => (decimal)0,
+			NetTypeName.Date => (DateTime)DateTime.Now.Date,
+			NetTypeName.DateTime => (DateTime)DateTime.Now,
+			NetTypeName.Time or NetTypeName.Duration => (TimeSpan)TimeSpan.Zero,
+			NetTypeName.Uri => new UriBuilder().Uri,
+			NetTypeName.Undefined => null,
+			_ => null,
+		};
+
+		/// <summary>
 		/// Gets the .NET type enum from the XSD string value
 		/// </summary>
 		/// <returns>Undefined if not found</returns>
-		public static NetTypeName GetNamedTypeFromXsd(string tval)
+		public static NetTypeName GetNamedTypeFromXsd(string? tval)
 		{
+			if (tval == null)
+				return NetTypeName.Undefined;
 			return tval switch
 			{
 				"xs:string" => NetTypeName.String,
@@ -202,15 +232,29 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Converts the passed <paramref name="value"/> to the provided <paramref name="typeName"/>
+		/// Attempts to resolve the specified IFC data type name to a corresponding .NET type name.
 		/// </summary>
-		/// <param name="value">the value to try to convert</param>
-		/// <param name="typeName">the destination type</param>
-		/// <returns>Null when conversion is not successful</returns>
-		[Obsolete("Prefer ConvertObject()")]
-		public static object? GetObject(object value, NetTypeName typeName)
+		/// <remarks>If the specified data type is not recognized, the method returns false and sets <paramref
+		/// name="found"/> to <see cref="NetTypeName.Undefined"/>. The method does not throw exceptions for unrecognized or
+		/// unsupported data type names.</remarks>
+		/// <param name="ifcDataTypeName">The name of the IFC data type (aka measure) to resolve. This should be a recognized schema type name.</param>
+		/// <param name="found">When this method returns, contains the resolved .NET type name if the operation succeeds; otherwise, contains <see
+		/// cref="NetTypeName.Undefined"/>. This parameter is passed uninitialized.</param>
+		/// <returns>true if the data type name was successfully resolved to a .NET type name; otherwise, false.</returns>
+		public static bool TryGetNetType(string? ifcDataTypeName, out NetTypeName found)
 		{
-			return ConvertObject(value, typeName);
+			if (ifcDataTypeName is null || string.IsNullOrWhiteSpace(ifcDataTypeName))
+			{
+				found = NetTypeName.Undefined;
+				return false;
+			}
+			if (!SchemaInfo.TryParseIfcDataType(ifcDataTypeName, out var resolved, false))
+			{
+				found = NetTypeName.Undefined;
+				return false;
+			}
+			found = GetNamedTypeFromXsd(resolved.BackingType);
+			return found != NetTypeName.Undefined;
 		}
 
 		/// <summary>
@@ -221,45 +265,51 @@ namespace Xbim.InformationSpecifications
 		/// <returns>Null when conversion is not successful</returns>
 		public static object? ConvertObject(object value, NetTypeName typeName)
 		{
-			switch (typeName) // if undefined type just return the value, unaltered.
+			try
 			{
-				case NetTypeName.Undefined:
-					return value;
-				case NetTypeName.Integer:
-					return Convert.ToInt32(value, CultureHelper.SystemCulture);
-				case NetTypeName.Decimal:
-					return Convert.ToDecimal(value, CultureHelper.SystemCulture);
-				case NetTypeName.Double:
-					return Convert.ToDouble(value, CultureHelper.SystemCulture);
-				case NetTypeName.Floating:
-					return Convert.ToSingle(value, CultureHelper.SystemCulture);
-				case NetTypeName.Date:
-				case NetTypeName.DateTime:
-					return Convert.ToDateTime(value, CultureHelper.SystemCulture);
-				case NetTypeName.Boolean:
-					return Convert.ToBoolean(value);
-				case NetTypeName.Time:
-					{
-						var tmp = Convert.ToDateTime(value, CultureHelper.SystemCulture);
-						return tmp.TimeOfDay;
-					}
-
-				case NetTypeName.Uri:
-					{
-						if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
-							return val;
+				switch (typeName) // if undefined type just return the value, unaltered.
+				{
+					case NetTypeName.Undefined:
+						return value;
+					case NetTypeName.Integer:
+						return Convert.ToInt32(value, CultureHelper.SystemCulture);
+					case NetTypeName.Decimal:
+						return Convert.ToDecimal(value, CultureHelper.SystemCulture);
+					case NetTypeName.Double:
+						return Convert.ToDouble(value, CultureHelper.SystemCulture);
+					case NetTypeName.Floating:
+						return Convert.ToSingle(value, CultureHelper.SystemCulture);
+					case NetTypeName.Date:
+					case NetTypeName.DateTime:
+						return Convert.ToDateTime(value, CultureHelper.SystemCulture);
+					case NetTypeName.Boolean:
+						return Convert.ToBoolean(value);
+					case NetTypeName.Time:
+						{
+							var tmp = Convert.ToDateTime(value, CultureHelper.SystemCulture);
+							return tmp.TimeOfDay;
+						}
+					case NetTypeName.Uri:
+						{
+							if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
+								return val;
+							return null;
+						}
+					case NetTypeName.Duration:
+						if (TimeSpan.TryParse(value.ToString(), CultureInfo.InvariantCulture, out var duration))
+							return duration;
 						return null;
-					}
-				case NetTypeName.Duration:
-					if (TimeSpan.TryParse(value.ToString(), CultureInfo.InvariantCulture, out var duration))
-						return duration;
-					return null;
 
-				case NetTypeName.String:
-					return value.ToString();
+					case NetTypeName.String:
+						return value.ToString();
 
-				default:
-					return value;
+					default:
+						return value;
+				}
+			}
+			catch (Exception)
+			{
+				return null;
 			}
 		}
 

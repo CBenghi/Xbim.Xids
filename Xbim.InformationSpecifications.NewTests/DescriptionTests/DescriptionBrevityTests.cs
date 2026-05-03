@@ -35,16 +35,14 @@ public class DescriptionBrevityTests
 	public void CanTruncateLongEnumerableListsInApplicability()
 	{
 		var fileName = "bsFiles/IDS_demo_BIM-basis-ILS.ids";
-
 		var loaded = Xids.LoadBuildingSmartIDS(fileName);
-
 		var spec = loaded!.AllSpecifications().Skip(2).First();
-
-		var facet = spec!.Applicability!.Facets[0];   // A long Applicability enumeration
-
-		var description = facet.ApplicabilityDescription;
-		description.Should().StartWith("of entity 'actuator' or 'airterminal' or ");
-		description.Length.Should().BeLessThan(250);
-		description.Should().EndWith("or 117 others and of predefined type <any>");
+		var facet = spec!.Applicability!.Facets[0] as IfcTypeFacet;   // A long Applicability enumeration
+		facet.Should().NotBeNull();
+		var description = facet!.ApplicabilityDescription;
+		description.Should().StartWith("of entity 'distributionelement' or 'buildingelement' or 'elementcomponent'");
+		description.Length.Should().BeLessThan(300);
+		description.Should().Contain("or 1 others");
+		description.Should().EndWith("and of predefined type <any>");
 	}
 }

@@ -86,7 +86,7 @@ public class IdsCompatibilityTests
 			if (prev != null)
 			{
 				var x = new Xids();
-				var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC2X3);
+				var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC4X3);
 				newspec.Applicability.Facets.Add(prev);
 				newspec.Requirement!.Facets.Add(item);
 				string displayName = $"{index++:D4}_{GetName(prev)}_{GetName(item)}.1.json";
@@ -129,9 +129,10 @@ public class IdsCompatibilityTests
 
 	internal static IEnumerable<IfcTypeFacet> IdsCompatibleTypeFacets()
 	{
-		yield return new IfcTypeFacet() { IfcType = "IFCWALL", IncludeSubtypes = true, PredefinedType = "PARAPET" };
-		// yield return new IfcTypeFacet() { IfcType = new ValueConstraint(["IFCWALL", "IFCWINDOW"]), IncludeSubtypes = true };
-		yield return new IfcTypeFacet() { IfcType = new ValueConstraint(["IFCWALL", "IFCWINDOW"]), IncludeSubtypes = false };
+		yield return new IfcTypeFacet() { IfcType = "IFCDEEPFOUNDATION", IncludeSubtypes = true };
+		yield return new IfcTypeFacet() { IfcType = new ValueConstraint(["IFCWALL", "IFCROOF"]), IncludeSubtypes = true };
+		yield return new IfcTypeFacet() { IfcType = new ValueConstraint(["IFCWALL", "IFCROOF"]), IncludeSubtypes = false };
+		yield return new IfcTypeFacet() { IfcType = new ValueConstraint("IFCWINDOW"), PredefinedType = "WINDOW", IncludeSubtypes = true }; // has no sublcasses
 		yield return new IfcTypeFacet() { IfcType = PartOfFacet.Container.IfcGroup.ToString() };
 		yield return new IfcTypeFacet() { IfcType = PartOfFacet.Container.IfcElementAssembly.ToString() };
 	}

@@ -181,7 +181,6 @@ namespace Xbim.InformationSpecifications
 		public string? Instructions { get; set; }
 
 		private string? guid;
-
 		/// <summary>
 		/// Unique identification of the Specification
 		/// </summary>

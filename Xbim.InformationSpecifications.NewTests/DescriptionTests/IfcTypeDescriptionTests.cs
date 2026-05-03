@@ -32,9 +32,6 @@ public class IfcTypeDescriptionTests : BaseDescriptionTests
 		ConstraintType typeConstraint = ConstraintType.Exact)
 	{
 		var facet = BuildFacetFromInputs(ifcType, predefined, typeConstraint: typeConstraint);
-
-
-
 		facet.RequirementDescription.Should().Be(expected);
 	}
 
@@ -64,6 +61,7 @@ public class IfcTypeDescriptionTests : BaseDescriptionTests
 		{
 			IfcType = new ValueConstraint(NetTypeName.String),
 			PredefinedType = new ValueConstraint(NetTypeName.String),
+			IncludeSubtypes = false
 		};
 		if (ifcTypeInputs != null)
 		{
@@ -89,6 +87,7 @@ public class IfcTypeDescriptionTests : BaseDescriptionTests
 		{
 			AddConstraint(facet.PredefinedType, predefinedConstraint, val);
 		}
+		
 		return facet;
 	}
 

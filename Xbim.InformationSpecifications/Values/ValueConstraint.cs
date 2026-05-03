@@ -123,7 +123,7 @@ namespace Xbim.InformationSpecifications
 		{
 			try
 			{
-				var val = ConvertObject(candidateValue, typename);
+				var val = ConvertObject(candidateValue, typename); // IsConvertible
 				return val != null;
 			}
 			catch (FormatException)
@@ -452,7 +452,7 @@ namespace Xbim.InformationSpecifications
 				{
 					if (AcceptedValues.All(v => v is ExactConstraint))
 					{
-						return "'" + string.Join("' or '", AcceptedValues.Select(x => x.Short()).ToArray()) + "'";
+						return "'" + string.Join("' or '", AcceptedValues.OfType<ExactConstraint>().OrderBy(x => x.Value).Select(x => x.Short()).ToArray()) + "'";
 					}
 					else
 					{
@@ -577,7 +577,7 @@ namespace Xbim.InformationSpecifications
 				return false;
 			if (val is null)
 				return false;
-			var vbt = ConvertObject(val, BaseType);
+			var vbt = ConvertObject(val, BaseType); // from IsSingleExact 
 			if (vbt is RequiredType exactAs)
 			{
 				exact = exactAs;

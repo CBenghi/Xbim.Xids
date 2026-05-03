@@ -118,8 +118,6 @@ namespace Xbim.InformationSpecifications
 			return true;
 		}
 
-
-
 		internal static bool FormalEquals(object expectedValue, object? candidateValue)
 		{
 			// special casts for ifcTypes
