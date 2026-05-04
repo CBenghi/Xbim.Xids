@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using IdsLib.IdsSchema.XsNodes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,12 +8,48 @@ using System.Linq;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Tests.Helpers;
 using Xunit;
+using static IdsLib.IdsSchema.XsNodes.XsTypes;
 
 namespace Xbim.InformationSpecifications.Tests;
 
 
 public class HelpersTests
 {
+	public static IEnumerable<object[]> XsdFacetTestData => Enum.GetValues<IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets>().Select(v => new object[] { v }).ToArray();
+
+	[Theory]
+	[MemberData(nameof(XsdFacetTestData))]
+	public void XsdFacetTestDataTests(XsdAllowedFacets value)
+	{
+		var some = ValueConstraint.ConstraintFromIds(value);
+		some.Should().NotBeNull();
+		var back = ValueConstraint.ConstraintToIds(some!.Value);
+		back.Should().Be(value);
+	}
+
+
+	public static IEnumerable<object[]> ToIdsTypeConversionTestData => Enum.GetValues<NetTypeName>().Select(v => new object[] { v }).ToArray();
+
+	[Theory]
+	[MemberData(nameof(ToIdsTypeConversionTestData))]
+	public void ToIdsTypeConversionTests(NetTypeName value)
+	{
+		var some = ValueConstraint.ConvertToXsType(value);
+		some.Should().NotBe(BaseTypes.Invalid);
+		var back = ValueConstraint.ConvertFromXsType(some);
+		back.Should().Be(value);
+	}
+
+	public static IEnumerable<object[]> FromIdsTypeConversionTestData => XsTypes.GetValidBaseTypes().Select(v => new object[] { v }).ToArray();
+
+	[Theory]
+	[MemberData(nameof(FromIdsTypeConversionTestData))]
+	public void FromIdsTypeConversionTests(BaseTypes value)
+	{
+		var some = ValueConstraint.ConvertFromXsType(value);
+		var back = ValueConstraint.ConvertToXsType(some);
+		back.Should().Be(value);
+	}
 
 	[Fact]
 	public void FacetGroupUse()

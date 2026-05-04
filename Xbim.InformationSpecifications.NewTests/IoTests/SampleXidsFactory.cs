@@ -376,6 +376,23 @@ public static class SampleXidsFactory
 			fracDigi is not null ||
 			totDigi is not null)
 		{
+			if (lenCon.HasValue && (minLenCon.HasValue || maxLenCon.HasValue))
+			{
+				var choice = Faker.Random.Double(0, 1);
+				if (choice < 0.3)
+					lenCon = null; // drop length constraint to avoid conflict with min/max
+				else if (choice < 0.6)
+				{
+					minLenCon = null;
+					maxLenCon = null;
+				}
+				else
+				{
+					minLenCon = lenCon;
+					maxLenCon = lenCon;
+				}
+			}
+
 			var tmp = new StructureConstraint()
 			{
 				Length = lenCon,

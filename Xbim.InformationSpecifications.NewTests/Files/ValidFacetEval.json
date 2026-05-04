@@ -1,0 +1,1044 @@
+{
+  "ContentType": "XIDS",
+  "Version": "1.0.22",
+  "Project": {},
+  "FacetRepository": {
+    "Collection": [
+      {
+        "Guid": "e333bd97-46a2-44ee-90e9-2c630a874583",
+        "Name": "Referenced building unit",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcBuilding",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Building and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Building and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Wooden",
+              "PropertyName": "bus",
+              "DataType": "IfcLabel",
+              "PropertyValue": "repudiandae",
+              "RequirementDescription": "a property bus in the property set Custom_Pset_Wooden with IfcLabel value repudiandae",
+              "ApplicabilityDescription": "with property bus in the property set Custom_Pset_Wooden with IfcLabel value repudiandae"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "4bdd4833-2fd6-4d0c-ab07-5b588c32ea5a",
+        "Name": "multi-byte wooden",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcBeam",
+              "PredefinedType": "HATSTONE",
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Beam and of predefined type Hatstone",
+              "RequirementDescription": "an entity Beam and of predefined type Hatstone"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Frozen",
+              "PropertyName": "matrix",
+              "DataType": "IfcLabel",
+              "PropertyValue": "ad",
+              "RequirementDescription": "a property matrix in the property set Custom_Pset_Frozen with IfcLabel value ad",
+              "ApplicabilityDescription": "with property matrix in the property set Custom_Pset_Frozen with IfcLabel value ad"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "1c48ee74-aa56-4347-9e32-512966f2c417",
+        "Name": "input primary",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "Uniclass 2015",
+              "Identification": "Ss_20_20_75_70",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification Ss_20_20_75_70 from system Uniclass 2015",
+              "ApplicabilityDescription": "with classification Ss_20_20_75_70 from system Uniclass 2015"
+            }
+          },
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "Uniclass 2015",
+              "Identification": "Ss_20_20_75_30",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification Ss_20_20_75_30 from system Uniclass 2015",
+              "ApplicabilityDescription": "with classification Ss_20_20_75_30 from system Uniclass 2015"
+            }
+          },
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps concrete",
+              "RequirementDescription": "a material Perhaps concrete",
+              "ApplicabilityDescription": "of material Perhaps concrete"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "b8b65430-12e8-4a7c-bfa3-475d974a1500",
+        "Name": "solid state wooden",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcSlab",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Slab and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Slab and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Frozen",
+              "PropertyName": "protocol",
+              "PropertyValue": null,
+              "RequirementDescription": "a property protocol in the property set Custom_Pset_Frozen with value \u003Cany\u003E",
+              "ApplicabilityDescription": "with property protocol in the property set Custom_Pset_Frozen with value \u003Cany\u003E"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "643f850a-0d73-417c-b45b-dbf3fad99eda",
+        "Name": "back up haptic",
+        "RequirementOptions": [
+          {
+            "RelatedFacetCardinality": "expected"
+          },
+          {
+            "RelatedFacetCardinality": "expected"
+          },
+          {
+            "RelatedFacetCardinality": "expected"
+          }
+        ],
+        "Facets": [
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Pset_PrecastConcreteElementGeneral",
+              "PropertyName": "TypeDesignation",
+              "DataType": "IfcLabel",
+              "PropertyValue": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "numquam"
+                    }
+                  },
+                  {
+                    "ExactConstraint": {
+                      "Value": "aut"
+                    }
+                  },
+                  {
+                    "StructureConstraint": {
+                      "TotalDigits": null,
+                      "FractionDigits": null,
+                      "Length": null,
+                      "MinLength": 2,
+                      "MaxLength": 9
+                    }
+                  }
+                ],
+                "BaseType": "string"
+              },
+              "RequirementDescription": "a property TypeDesignation in the property set Pset_PrecastConcreteElementGeneral with IfcLabel value numquam or aut or 7 characters and minimum 2 characters and maximum 9 characters",
+              "ApplicabilityDescription": "with property TypeDesignation in the property set Pset_PrecastConcreteElementGeneral with IfcLabel value numquam or aut or 7 characters and minimum 2 characters and maximum 9 characters"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Frozen",
+              "PropertyName": "firewall",
+              "DataType": "IfcLabel",
+              "PropertyValue": "veniam",
+              "RequirementDescription": "a property firewall in the property set Custom_Pset_Frozen with IfcLabel value veniam",
+              "ApplicabilityDescription": "with property firewall in the property set Custom_Pset_Frozen with IfcLabel value veniam"
+            }
+          },
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps brick",
+              "RequirementDescription": "a material Perhaps brick",
+              "ApplicabilityDescription": "of material Perhaps brick"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "40f3cf33-5ebc-43e2-a14e-62ad12d3ba5e",
+        "Name": "primary granite",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcWall",
+              "PredefinedType": "STANDARD",
+              "IncludeSubtypes": true,
+              "ApplicabilityDescription": "of entity Wall or any of its subtypes and of predefined type Standard",
+              "RequirementDescription": "an entity Wall and of predefined type Standard"
+            }
+          },
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "Uniclass 2015",
+              "Identification": "EF_25_30",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification EF_25_30 from system Uniclass 2015",
+              "ApplicabilityDescription": "with classification EF_25_30 from system Uniclass 2015"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "6aeba8ff-28de-4ad0-9f78-441bc97b3704",
+        "Name": "input wireless",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "PartOfFacet": {
+              "EntityRelation": "IfcRelAssignsToGroup",
+              "EntityType": {
+                "IfcType": "IfcSlab",
+                "PredefinedType": null,
+                "IncludeSubtypes": false,
+                "ApplicabilityDescription": "of entity Slab and of predefined type \u003Cany\u003E",
+                "RequirementDescription": "an entity Slab and of predefined type \u003Cany\u003E"
+              },
+              "RequirementDescription": "a part of a Is of type IfcSlab. via IfcRelAssignsToGroup relationship",
+              "ApplicabilityDescription": "where a part of a Is of type IfcSlab. via IfcRelAssignsToGroup relationship"
+            }
+          },
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps brick",
+              "RequirementDescription": "a material Perhaps brick",
+              "ApplicabilityDescription": "of material Perhaps brick"
+            }
+          },
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "OmniClass",
+              "Identification": "21-01 10 10 10",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification 21-01 10 10 10 from system OmniClass",
+              "ApplicabilityDescription": "with classification 21-01 10 10 10 from system OmniClass"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "361698ff-16bd-4049-85e1-58712e51f8dd",
+        "Name": "mobile fresh",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcSlab",
+              "PredefinedType": "FLOOR",
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Slab and of predefined type Floor",
+              "RequirementDescription": "an entity Slab and of predefined type Floor"
+            }
+          },
+          {
+            "DocumentFacet": {
+              "DocId": "TXT",
+              "DocName": "Unbranded Soft Shoes",
+              "DocLocation": "http://myrtis.org",
+              "DocPurpose": "Satisfy Stehr, Bruen and Grady documentation requirements.",
+              "DocIntendedUse": "Autem quia maiores adipisci.",
+              "RequirementDescription": "TXT-Unbranded Soft Shoes-http://myrtis.org-Satisfy Stehr, Bruen and Grady documentation requirements.-Autem quia maiores adipisci.--",
+              "ApplicabilityDescription": "TXT-Unbranded Soft Shoes-http://myrtis.org-Satisfy Stehr, Bruen and Grady documentation requirements.-Autem quia maiores adipisci.--"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "f466f2db-6680-486a-8c73-983528007d9a",
+        "Name": "hack online",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "AttributeFacet": {
+              "AttributeName": "Name",
+              "AttributeValue": "et",
+              "RequirementDescription": "an attribute Name with value et",
+              "ApplicabilityDescription": "with attribute Name with value et"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Pset_ReinforcementBarPitchOfSlab",
+              "PropertyName": "ShortInsideEndLowerBarPitch",
+              "DataType": "IfcPositiveLengthMeasure",
+              "PropertyValue": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "39.30"
+                    }
+                  }
+                ],
+                "BaseType": "double"
+              },
+              "RequirementDescription": "a property ShortInsideEndLowerBarPitch in the property set Pset_ReinforcementBarPitchOfSlab with IfcPositiveLengthMeasure value 39.30",
+              "ApplicabilityDescription": "with property ShortInsideEndLowerBarPitch in the property set Pset_ReinforcementBarPitchOfSlab with IfcPositiveLengthMeasure value 39.30"
+            }
+          },
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "NRM1 (RICS)",
+              "Identification": "2.4",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification 2.4 from system NRM1 (RICS)",
+              "ApplicabilityDescription": "with classification 2.4 from system NRM1 (RICS)"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "cbd5f55b-40f0-4293-a63f-5461261f1cb9",
+        "Name": "auxiliary cotton",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcColumn",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Column and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Column and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Pset_PrecastConcreteElementGeneral",
+              "PropertyName": "ManufacturingToleranceClass",
+              "DataType": "IfcLabel",
+              "PropertyValue": {
+                "AcceptedValues": [
+                  {
+                    "PatternConstraint": {
+                      "Pattern": "[ABC]{3}"
+                    }
+                  },
+                  {
+                    "StructureConstraint": {
+                      "TotalDigits": null,
+                      "FractionDigits": null,
+                      "Length": 7,
+                      "MinLength": 7,
+                      "MaxLength": 7
+                    }
+                  }
+                ],
+                "BaseType": "string"
+              },
+              "RequirementDescription": "a property ManufacturingToleranceClass in the property set Pset_PrecastConcreteElementGeneral with IfcLabel value matching \u0027[ABC]{3}\u0027 or 7 characters and minimum 0 characters and maximum 8 characters",
+              "ApplicabilityDescription": "with property ManufacturingToleranceClass in the property set Pset_PrecastConcreteElementGeneral with IfcLabel value matching \u0027[ABC]{3}\u0027 or 7 characters and minimum 0 characters and maximum 8 characters"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "06b49d42-6a30-47eb-a34e-8a7f25525580",
+        "Name": "calculate primary",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps steel",
+              "RequirementDescription": "a material Perhaps steel",
+              "ApplicabilityDescription": "of material Perhaps steel"
+            }
+          },
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Cotton",
+              "PropertyName": "card",
+              "DataType": "IfcLabel",
+              "PropertyValue": "facilis",
+              "RequirementDescription": "a property card in the property set Custom_Pset_Cotton with IfcLabel value facilis",
+              "ApplicabilityDescription": "with property card in the property set Custom_Pset_Cotton with IfcLabel value facilis"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "28602064-005d-4c79-9185-7eb047fbe94d",
+        "Name": "wireless plastic",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcWall",
+              "PredefinedType": null,
+              "IncludeSubtypes": true,
+              "ApplicabilityDescription": "of entity Wall or any of its subtypes and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Wall and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "PartOfFacet": {
+              "EntityRelation": "IfcRelNests",
+              "EntityType": {
+                "IfcType": "IfcWall",
+                "PredefinedType": null,
+                "IncludeSubtypes": true,
+                "ApplicabilityDescription": "of entity Wall or any of its subtypes and of predefined type \u003Cany\u003E",
+                "RequirementDescription": "an entity Wall and of predefined type \u003Cany\u003E"
+              },
+              "RequirementDescription": "a part of a Is of type IfcWall or one of its subtypes. via IfcRelNests relationship",
+              "ApplicabilityDescription": "where a part of a Is of type IfcWall or one of its subtypes. via IfcRelNests relationship"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "321d5bf5-510a-4e91-9099-836c58f33159",
+        "Name": "back up open-source",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "DocumentFacet": {
+              "DocId": "DOCX",
+              "DocName": "Ergonomic Soft Chair",
+              "DocLocation": "http://jacinthe.info",
+              "DocPurpose": "Satisfy O\u0027Keefe - Hahn documentation requirements.",
+              "DocIntendedUse": "Repellat et facilis maiores sed ipsa odio.",
+              "RequirementDescription": "DOCX-Ergonomic Soft Chair-http://jacinthe.info-Satisfy O\u0027Keefe - Hahn documentation requirements.-Repellat et facilis maiores sed ipsa odio.--",
+              "ApplicabilityDescription": "DOCX-Ergonomic Soft Chair-http://jacinthe.info-Satisfy O\u0027Keefe - Hahn documentation requirements.-Repellat et facilis maiores sed ipsa odio.--"
+            }
+          },
+          {
+            "DocumentFacet": {
+              "DocId": "DOCX",
+              "DocName": "Sleek Fresh Sausages",
+              "DocLocation": "http://christopher.org",
+              "DocPurpose": "Satisfy Keebler - Muller documentation requirements.",
+              "DocIntendedUse": "Rerum dolorem dicta consectetur maiores ut unde perspiciatis eum.",
+              "RequirementDescription": "DOCX-Sleek Fresh Sausages-http://christopher.org-Satisfy Keebler - Muller documentation requirements.-Rerum dolorem dicta consectetur maiores ut unde perspiciatis eum.--",
+              "ApplicabilityDescription": "DOCX-Sleek Fresh Sausages-http://christopher.org-Satisfy Keebler - Muller documentation requirements.-Rerum dolorem dicta consectetur maiores ut unde perspiciatis eum.--"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Cotton",
+              "PropertyName": "driver",
+              "PropertyValue": null,
+              "RequirementDescription": "a property driver in the property set Custom_Pset_Cotton with value \u003Cany\u003E",
+              "ApplicabilityDescription": "with property driver in the property set Custom_Pset_Cotton with value \u003Cany\u003E"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "59808909-2881-4977-a2b3-1e0af6931330",
+        "Name": "online cotton",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcSlab",
+              "PredefinedType": "USERDEFINED",
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Slab and of predefined type Userdefined",
+              "RequirementDescription": "an entity Slab and of predefined type Userdefined"
+            }
+          },
+          {
+            "DocumentFacet": {
+              "DocId": "PDF",
+              "DocName": "Awesome Metal Ball",
+              "DocLocation": "https://garrick.net",
+              "DocPurpose": "Satisfy Beer, Rolfson and Lehner documentation requirements.",
+              "DocIntendedUse": "Culpa commodi placeat voluptates et error assumenda.",
+              "RequirementDescription": "PDF-Awesome Metal Ball-https://garrick.net-Satisfy Beer, Rolfson and Lehner documentation requirements.-Culpa commodi placeat voluptates et error assumenda.--",
+              "ApplicabilityDescription": "PDF-Awesome Metal Ball-https://garrick.net-Satisfy Beer, Rolfson and Lehner documentation requirements.-Culpa commodi placeat voluptates et error assumenda.--"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "8a67e4f8-ed4d-41c8-b0b4-c0ddf5db9a71",
+        "Name": "hack bluetooth",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          },
+          {
+            "DocumentFacet": {
+              "DocId": "IFC",
+              "DocName": "Rustic Soft Cheese",
+              "DocLocation": "https://paul.org",
+              "DocPurpose": "Satisfy Harris - Weber documentation requirements.",
+              "DocIntendedUse": "Velit nesciunt consequatur excepturi ut sunt eius officiis.",
+              "RequirementDescription": "IFC-Rustic Soft Cheese-https://paul.org-Satisfy Harris - Weber documentation requirements.-Velit nesciunt consequatur excepturi ut sunt eius officiis.--",
+              "ApplicabilityDescription": "IFC-Rustic Soft Cheese-https://paul.org-Satisfy Harris - Weber documentation requirements.-Velit nesciunt consequatur excepturi ut sunt eius officiis.--"
+            }
+          },
+          {
+            "AttributeFacet": {
+              "AttributeName": "Tag",
+              "AttributeValue": "tempore",
+              "RequirementDescription": "an attribute Tag with value tempore",
+              "ApplicabilityDescription": "with attribute Tag with value tempore"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "497da24c-417e-45cc-bc35-3e38a98eb8dc",
+        "Name": "bluetooth steel",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcBeam",
+              "PredefinedType": "NOTDEFINED",
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Beam and of predefined type Notdefined",
+              "RequirementDescription": "an entity Beam and of predefined type Notdefined"
+            }
+          },
+          {
+            "AttributeFacet": {
+              "AttributeName": "ObjectType",
+              "AttributeValue": "sed",
+              "RequirementDescription": "an attribute ObjectType with value sed",
+              "ApplicabilityDescription": "with attribute ObjectType with value sed"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "b4c3bcd2-96d8-43c8-8baa-7fb4f2dedfe6",
+        "Name": "back up auxiliary",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps glass",
+              "RequirementDescription": "a material Perhaps glass",
+              "ApplicabilityDescription": "of material Perhaps glass"
+            }
+          },
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Qto_BeamBaseQuantities",
+              "PropertyName": "NetSurfaceArea",
+              "DataType": "IfcAreaMeasure",
+              "PropertyValue": {
+                "AcceptedValues": [
+                  {
+                    "ExactConstraint": {
+                      "Value": "25.37"
+                    }
+                  }
+                ],
+                "BaseType": "double"
+              },
+              "RequirementDescription": "a property NetSurfaceArea in the property set Qto_BeamBaseQuantities with IfcAreaMeasure value 25.37",
+              "ApplicabilityDescription": "with property NetSurfaceArea in the property set Qto_BeamBaseQuantities with IfcAreaMeasure value 25.37"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "3bd6245f-46c5-459c-951e-010dfd0fea37",
+        "Name": "1080p concrete",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcBeam",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Beam and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Beam and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcClassificationFacet": {
+              "ClassificationSystem": "OmniClass",
+              "Identification": "21-02 10 10 10",
+              "IncludeSubClasses": false,
+              "RequirementDescription": "a classification 21-02 10 10 10 from system OmniClass",
+              "ApplicabilityDescription": "with classification 21-02 10 10 10 from system OmniClass"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "2f286ca0-0287-46bc-a8b8-f07992065091",
+        "Name": "navigate mobile",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "AttributeFacet": {
+              "AttributeName": "Description",
+              "AttributeValue": "quia",
+              "RequirementDescription": "an attribute Description with value quia",
+              "ApplicabilityDescription": "with attribute Description with value quia"
+            }
+          },
+          {
+            "DocumentFacet": {
+              "DocId": "XLSX",
+              "DocName": "Rustic Wooden Gloves",
+              "DocLocation": "https://jordy.org",
+              "DocPurpose": "Satisfy Gusikowski and Sons documentation requirements.",
+              "DocIntendedUse": "Odio fuga eos expedita nostrum officia eum temporibus aspernatur.",
+              "RequirementDescription": "XLSX-Rustic Wooden Gloves-https://jordy.org-Satisfy Gusikowski and Sons documentation requirements.-Odio fuga eos expedita nostrum officia eum temporibus aspernatur.--",
+              "ApplicabilityDescription": "XLSX-Rustic Wooden Gloves-https://jordy.org-Satisfy Gusikowski and Sons documentation requirements.-Odio fuga eos expedita nostrum officia eum temporibus aspernatur.--"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Granite",
+              "PropertyName": "sensor",
+              "DataType": "IfcLabel",
+              "PropertyValue": "occaecati",
+              "RequirementDescription": "a property sensor in the property set Custom_Pset_Granite with IfcLabel value occaecati",
+              "ApplicabilityDescription": "with property sensor in the property set Custom_Pset_Granite with IfcLabel value occaecati"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "e049e52f-03f7-4e6a-a603-ec143452ee59",
+        "Name": "cross-platform plastic",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcDoor",
+              "PredefinedType": "GATE",
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Door and of predefined type Gate",
+              "RequirementDescription": "an entity Door and of predefined type Gate"
+            }
+          },
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "de821406-c8d6-49ff-a2eb-6413ed7ace4d",
+        "Name": "copy multi-byte",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Steel",
+              "PropertyName": "bandwidth",
+              "PropertyValue": null,
+              "RequirementDescription": "a property bandwidth in the property set Custom_Pset_Steel with value \u003Cany\u003E",
+              "ApplicabilityDescription": "with property bandwidth in the property set Custom_Pset_Steel with value \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          },
+          {
+            "PartOfFacet": {
+              "EntityType": {
+                "IfcType": "IfcBeam",
+                "PredefinedType": null,
+                "IncludeSubtypes": false,
+                "ApplicabilityDescription": "of entity Beam and of predefined type \u003Cany\u003E",
+                "RequirementDescription": "an entity Beam and of predefined type \u003Cany\u003E"
+              },
+              "RequirementDescription": "a part of a Is of type IfcBeam. via  relationship",
+              "ApplicabilityDescription": "where a part of a Is of type IfcBeam. via  relationship"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "e0a69cd7-330c-4e19-913a-47bb0c75a6f9",
+        "Name": "open-source fresh",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcSlab",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Slab and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Slab and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcRelationFacet": {
+              "Source": "e333bd97-46a2-44ee-90e9-2c630a874583",
+              "Relation": "ContainedElements",
+              "RequirementDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--",
+              "ApplicabilityDescription": "e333bd97-46a2-44ee-90e9-2c630a874583-ContainedElements--"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "bba03a53-393c-4417-aa39-feb8a68aa8fe",
+        "Name": "compress optical",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "AttributeFacet": {
+              "AttributeName": "ObjectType",
+              "AttributeValue": "tempore",
+              "RequirementDescription": "an attribute ObjectType with value tempore",
+              "ApplicabilityDescription": "with attribute ObjectType with value tempore"
+            }
+          },
+          {
+            "PartOfFacet": {
+              "EntityRelation": "IfcRelAggregates",
+              "EntityType": {
+                "IfcType": "IfcColumn",
+                "PredefinedType": null,
+                "IncludeSubtypes": false,
+                "ApplicabilityDescription": "of entity Column and of predefined type \u003Cany\u003E",
+                "RequirementDescription": "an entity Column and of predefined type \u003Cany\u003E"
+              },
+              "RequirementDescription": "a part of a Is of type IfcColumn. via IfcRelAggregates relationship",
+              "ApplicabilityDescription": "where a part of a Is of type IfcColumn. via IfcRelAggregates relationship"
+            }
+          },
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps steel",
+              "RequirementDescription": "a material Perhaps steel",
+              "ApplicabilityDescription": "of material Perhaps steel"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "7c879cec-514f-4257-9316-c2661c488d5d",
+        "Name": "digital plastic",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "IfcTypeFacet": {
+              "IfcType": "IfcBeam",
+              "PredefinedType": null,
+              "IncludeSubtypes": false,
+              "ApplicabilityDescription": "of entity Beam and of predefined type \u003Cany\u003E",
+              "RequirementDescription": "an entity Beam and of predefined type \u003Cany\u003E"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Metal",
+              "PropertyName": "array",
+              "DataType": "IfcLabel",
+              "PropertyValue": "eligendi",
+              "RequirementDescription": "a property array in the property set Custom_Pset_Metal with IfcLabel value eligendi",
+              "ApplicabilityDescription": "with property array in the property set Custom_Pset_Metal with IfcLabel value eligendi"
+            }
+          }
+        ]
+      },
+      {
+        "Guid": "9333c121-5682-4b23-8f67-6e8ba89b962f",
+        "Name": "parse auxiliary",
+        "RequirementOptions": null,
+        "Facets": [
+          {
+            "MaterialFacet": {
+              "Value": "Perhaps steel",
+              "RequirementDescription": "a material Perhaps steel",
+              "ApplicabilityDescription": "of material Perhaps steel"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Pset_ConcreteElementGeneral",
+              "PropertyName": "LifeCycleEnvironmentalLoad",
+              "DataType": "IfcText",
+              "PropertyValue": {
+                "AcceptedValues": [
+                  {
+                    "PatternConstraint": {
+                      "Pattern": "[ABC]{3}"
+                    }
+                  },
+                  {
+                    "StructureConstraint": {
+                      "TotalDigits": null,
+                      "FractionDigits": null,
+                      "Length": null,
+                      "MinLength": 1,
+                      "MaxLength": 8
+                    }
+                  }
+                ],
+                "BaseType": "string"
+              },
+              "RequirementDescription": "a property LifeCycleEnvironmentalLoad in the property set Pset_ConcreteElementGeneral with IfcText value matching \u0027[ABC]{3}\u0027 or 7 characters and minimum 1 characters and maximum 8 characters",
+              "ApplicabilityDescription": "with property LifeCycleEnvironmentalLoad in the property set Pset_ConcreteElementGeneral with IfcText value matching \u0027[ABC]{3}\u0027 or 7 characters and minimum 1 characters and maximum 8 characters"
+            }
+          },
+          {
+            "IfcPropertyFacet": {
+              "PropertySetName": "Custom_Pset_Steel",
+              "PropertyName": "matrix",
+              "DataType": "IfcLabel",
+              "PropertyValue": "beatae",
+              "RequirementDescription": "a property matrix in the property set Custom_Pset_Steel with IfcLabel value beatae",
+              "ApplicabilityDescription": "with property matrix in the property set Custom_Pset_Steel with IfcLabel value beatae"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "SpecificationsGroups": [
+    {
+      "Name": "Baby \u0026 Grocery",
+      "Date": null,
+      "Consumers": null,
+      "Stages": null,
+      "Specifications": [
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "input wooden #1",
+          "Description": "Omnis cum est amet nihil tempora aut nostrum maxime fuga.",
+          "Applicability": "4bdd4833-2fd6-4d0c-ab07-5b588c32ea5a",
+          "Requirement": "1c48ee74-aa56-4347-9e32-512966f2c417",
+          "Instructions": "Animi nihil modi voluptas tempore possimus.",
+          "Guid": "3c5738c4-c0ad-4553-a130-8670c4aaf9a4",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "back up wooden #2",
+          "Description": "Vero et amet itaque sit consectetur consequuntur debitis.",
+          "Applicability": "b8b65430-12e8-4a7c-bfa3-475d974a1500",
+          "Requirement": "643f850a-0d73-417c-b45b-dbf3fad99eda",
+          "Instructions": "Laborum doloribus ut cumque.",
+          "Guid": "59aaec12-d7d1-431b-ac38-0ed21a02b576",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "input granite #3",
+          "Description": "Cumque aut sit molestiae.",
+          "Applicability": "40f3cf33-5ebc-43e2-a14e-62ad12d3ba5e",
+          "Requirement": "6aeba8ff-28de-4ad0-9f78-441bc97b3704",
+          "Instructions": "In repudiandae adipisci sit.",
+          "Guid": "02215e4a-7ac0-4501-bfe9-661331500744",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC2X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "hack fresh #4",
+          "Description": "Placeat natus et aut alias.",
+          "Applicability": "361698ff-16bd-4049-85e1-58712e51f8dd",
+          "Requirement": "f466f2db-6680-486a-8c73-983528007d9a",
+          "Instructions": "Ex asperiores hic veritatis id voluptatem rem similique.",
+          "Guid": "d023c781-d449-4d01-9fa6-cbbed7608440",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "calculate cotton #5",
+          "Description": "Esse velit dignissimos eum inventore sit.",
+          "Applicability": "cbd5f55b-40f0-4293-a63f-5461261f1cb9",
+          "Requirement": "06b49d42-6a30-47eb-a34e-8a7f25525580",
+          "Instructions": "Id sapiente omnis repellat quidem ex officiis quia ratione.",
+          "Guid": "f9589d59-1b77-4892-9cc9-8381c408e3f8",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC2X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "back up plastic #6",
+          "Description": "Nisi sed perspiciatis ea pariatur praesentium qui dolores corrupti.",
+          "Applicability": "28602064-005d-4c79-9185-7eb047fbe94d",
+          "Requirement": "321d5bf5-510a-4e91-9099-836c58f33159",
+          "Instructions": "Aperiam delectus debitis non possimus nobis omnis.",
+          "Guid": "3d005287-2467-4b91-805b-68c40cb439c6",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC2X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "hack cotton #7",
+          "Description": "Quis ex repellendus voluptate voluptatem cumque.",
+          "Applicability": "59808909-2881-4977-a2b3-1e0af6931330",
+          "Requirement": "8a67e4f8-ed4d-41c8-b0b4-c0ddf5db9a71",
+          "Instructions": "Aut rerum ut.",
+          "Guid": "67cb825e-c463-4d03-b5d2-84df8d989818",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "back up steel #8",
+          "Description": "Repellendus voluptatum est corporis quibusdam ut.",
+          "Applicability": "497da24c-417e-45cc-bc35-3e38a98eb8dc",
+          "Requirement": "b4c3bcd2-96d8-43c8-8baa-7fb4f2dedfe6",
+          "Instructions": "Aperiam blanditiis sapiente voluptatibus harum voluptatibus.",
+          "Guid": "c0c7334e-ad3a-495f-8f81-9617cb685a4f",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "navigate concrete #9",
+          "Description": "Quia nobis unde eos quisquam nulla.",
+          "Applicability": "3bd6245f-46c5-459c-951e-010dfd0fea37",
+          "Requirement": "2f286ca0-0287-46bc-a8b8-f07992065091",
+          "Instructions": "Suscipit fugit optio id dolores voluptatibus.",
+          "Guid": "9650b863-7ee1-419f-b246-ea43ddc91281",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "copy plastic #10",
+          "Description": "Officia rem qui voluptas veniam quibusdam doloremque quam delectus.",
+          "Applicability": "e049e52f-03f7-4e6a-a603-ec143452ee59",
+          "Requirement": "de821406-c8d6-49ff-a2eb-6413ed7ace4d",
+          "Instructions": "Ipsa porro repellat sed.",
+          "Guid": "5e858884-e178-411d-93c6-1799de7211da",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC4X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "compress fresh #11",
+          "Description": "Praesentium est molestiae ratione quia voluptas vero qui facilis.",
+          "Applicability": "e0a69cd7-330c-4e19-913a-47bb0c75a6f9",
+          "Requirement": "bba03a53-393c-4417-aa39-feb8a68aa8fe",
+          "Instructions": "Voluptatum sit minima omnis necessitatibus repudiandae.",
+          "Guid": "a59fa72d-2cc5-49b7-ad8b-a795133c522a",
+          "Level": "singleSpecification"
+        },
+        {
+          "Cardinality": "Optional",
+          "IfcVersion": [
+            "ifC2X3"
+          ],
+          "Consumers": null,
+          "Stages": null,
+          "Name": "parse plastic #12",
+          "Description": "Vero odio id reiciendis est dolorum iusto.",
+          "Applicability": "7c879cec-514f-4257-9316-c2661c488d5d",
+          "Requirement": "9333c121-5682-4b23-8f67-6e8ba89b962f",
+          "Instructions": "Et veritatis et minus.",
+          "Guid": "46a51f24-0ced-42c2-9a7c-3f8fc89f2b5e",
+          "Level": "singleSpecification"
+        }
+      ],
+      "Guid": "05f5e535-a365-4071-b7c2-37ee5df1ac61",
+      "Level": "specificationGroup"
+    }
+  ],
+  "Guid": "78079056-07ec-4a36-b48f-0415115a34ea",
+  "Name": "Ergonomic Plastic Chair",
+  "Consumers": null,
+  "Stages": null,
+  "Level": "specificationRepository"
+}

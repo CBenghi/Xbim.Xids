@@ -7,6 +7,32 @@ namespace Xbim.InformationSpecifications.Tests.Facets;
 
 public class ValidityTests
 {
+	public ValidityTests(ITestOutputHelper helper)
+	{
+		outputHelper = helper;
+	}
+	ITestOutputHelper outputHelper;
+
+	[Fact]
+	public void LoadedFileFacetsAreValid()
+	{
+		var loaded = Xids.LoadFromJson("Files/ValidFacetEval.json");
+		Assert.NotNull(loaded);
+		foreach (var facetG in loaded.FacetGroups(FacetGroup.FacetUse.All))
+		{
+			outputHelper.WriteLine($"Testing facet group {facetG.Name}");
+			foreach (var facet in facetG.Facets)
+			{
+				outputHelper.WriteLine($"Testing facet {facet.GetType()}");
+				var verified = facet.IsValid();
+				if (!verified)
+				{ 
+				}
+				verified.Should().BeTrue($"{facet.GetType()} should be valid");
+			}
+		}
+	}
+
 	[Theory]
 	[MemberData(nameof(GetValidFacets))]
 	public void EmptyValidityTests(IFacet facet)

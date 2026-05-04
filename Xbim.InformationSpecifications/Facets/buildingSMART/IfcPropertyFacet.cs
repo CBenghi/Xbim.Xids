@@ -115,10 +115,21 @@ namespace Xbim.InformationSpecifications
 		[MemberNotNullWhen(true, nameof(PropertyName))]
 		public bool IsValid()
 		{
+			var t1 = FacetBase.IsValidAndNotEmpty(PropertySetName);
+			var t2 = FacetBase.IsValidAndNotEmpty(PropertyName);
+			var t3 = string.IsNullOrEmpty(DataType);
+			var t4 = FacetBase.IsNullOrEmpty(PropertyValue);
+			var t5 = FacetBase.IsValidOrNull(PropertyValue);
+
 			return
 				FacetBase.IsValidAndNotEmpty(PropertySetName)
 				&& FacetBase.IsValidAndNotEmpty(PropertyName)
-				&& FacetBase.IsValidOrNull(PropertyValue);
+				&&
+				(
+					(string.IsNullOrEmpty(DataType) && FacetBase.IsNullOrEmpty(PropertyValue))
+					||
+					FacetBase.IsValidOrNull(PropertyValue)
+				);
 		}
 
 		private string MeasureLabel => !string.IsNullOrWhiteSpace(DataType) ? $"{DataType} " : "";

@@ -1,6 +1,7 @@
 ﻿using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
 
@@ -73,6 +74,51 @@ namespace Xbim.InformationSpecifications
 
 	public partial class ValueConstraint
 	{
+		/// <summary>
+		/// Convert from Xbim NetType Enum to idslib Xsd type
+		/// </summary>
+		public static IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes ConvertToXsType(NetTypeName type)
+		{
+			return type switch
+			{
+				NetTypeName.Boolean => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsBoolean,
+				NetTypeName.String => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsString,
+				NetTypeName.Floating => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsFloat,
+				NetTypeName.Double => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDouble,
+				NetTypeName.Decimal => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDecimal,
+				NetTypeName.Date => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDate,
+				NetTypeName.Time => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsTime,
+				NetTypeName.DateTime => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDateTime,
+				NetTypeName.Duration => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDuration,
+				NetTypeName.Uri => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyUri,
+				NetTypeName.Integer => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsInteger,
+				NetTypeName.Undefined => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.Undefined,
+				_ => throw new NotImplementedException(),
+			};
+		}
+
+		/// <summary>
+		/// Convert from idslib Xsd type to Xbim NetType Enum
+		/// </summary>
+		public static NetTypeName ConvertFromXsType(IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes type)
+		{
+			return type switch
+			{
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsBoolean => NetTypeName.Boolean,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsString => NetTypeName.String,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsFloat => NetTypeName.Floating,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDouble => NetTypeName.Double,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDecimal => NetTypeName.Decimal,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDate => NetTypeName.Date,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsTime => NetTypeName.Time,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDateTime => NetTypeName.DateTime,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDuration => NetTypeName.Duration,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyUri => NetTypeName.Uri,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsInteger=> NetTypeName.Integer,
+				_ => NetTypeName.Undefined,
+			};
+		}
+
 		/// <summary>
 		/// gets the relevant XSD type string from a C# type enum
 		/// </summary>
@@ -177,7 +223,58 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Enumeration of all possible XSD constraint types
+		/// Converts from Xbim <see cref="Constraints"/> enum to the corresponding idslib XSD facet enumeration.
+		/// </summary>
+		/// <returns>null if the constraint has no corresponding idslib facet value.</returns>
+		public static IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets? ConstraintToIds(Constraints constraint)
+		{
+			return constraint switch
+			{
+				Constraints.length => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Length,
+				Constraints.minLength => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinLength,
+				Constraints.maxLength => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxLength,
+				Constraints.pattern => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Pattern,
+				Constraints.enumeration => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Enumeration,
+				Constraints.totalDigits => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.TotalDigits,
+				Constraints.fractionDigits => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.FractionDigits,
+				Constraints.minExclusive => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinExclusive,
+				Constraints.minInclusive => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinInclusive,
+				Constraints.maxExclusive => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxExclusive,
+				Constraints.maxInclusive => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxInclusive,
+				Constraints.annotation => IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Annotation,
+				_ => null,
+			};
+		}
+
+
+		/// <summary>
+		/// Converts from idslib XSD facet enumeration to Xbim <see cref="Constraints"/> enum.
+		/// </summary>
+		/// <returns>null if the facet has no corresponding <see cref="Constraints"/> value.</returns>
+		public static Constraints? ConstraintFromIds(IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets facet)
+		{
+			return facet switch
+			{
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Length => Constraints.length,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinLength => Constraints.minLength,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxLength => Constraints.maxLength,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Pattern => Constraints.pattern,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Enumeration => Constraints.enumeration,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.TotalDigits => Constraints.totalDigits,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.FractionDigits => Constraints.fractionDigits,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinExclusive => Constraints.minExclusive,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MinInclusive => Constraints.minInclusive,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxExclusive => Constraints.maxExclusive,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.MaxInclusive => Constraints.maxInclusive,
+				IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets.Annotation => Constraints.annotation,
+				_ => null,
+			};
+		}
+
+		/// <summary>
+		/// Enumeration of all possible XSD constraint types in the Xbim context.
+		/// See <see cref="ConstraintToIds"/> for conversion to the corresponding idslib XSD facet enumeration, and 
+		/// <see cref="ConstraintFromIds(IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets)"/> for the reverse conversion.
 		/// </summary>
 		public enum Constraints
 		{
@@ -229,6 +326,10 @@ namespace Xbim.InformationSpecifications
 			/// the minimum boundary of an element, valid for the interval
 			/// </summary>
 			maxInclusive,
+			/// <summary>
+			/// Represents an annotation or metadata associated with the element, does not affect the element's value constraints.
+			/// </summary>
+			annotation
 		}
 
 		/// <summary>
