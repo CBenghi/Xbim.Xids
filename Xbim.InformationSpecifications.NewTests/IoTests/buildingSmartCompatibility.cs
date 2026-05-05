@@ -1,5 +1,5 @@
 ﻿#pragma warning disable xUnit1042
-using FluentAssertions;
+using AwesomeAssertions;
 using IdsLib;
 using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;

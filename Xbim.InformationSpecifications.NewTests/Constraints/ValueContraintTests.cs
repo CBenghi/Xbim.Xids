@@ -1,5 +1,5 @@
 ﻿#pragma warning disable IDE0017, IDE0090
-using FluentAssertions;
+using AwesomeAssertions;
 using System;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;

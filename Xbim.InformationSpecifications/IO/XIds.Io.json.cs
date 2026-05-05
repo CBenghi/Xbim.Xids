@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -48,7 +49,15 @@ namespace Xbim.InformationSpecifications
 			JsonSerializer.Serialize(t, this, options);
 		}
 
-		internal static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
+		/// <summary>
+		/// The options for the json serializer. 
+		/// This is useful for both serialization and deserialization, so that they are consistent. 
+		/// It also contains some custom converters to handle the specific needs of the XIDS model, 
+		/// such as the heterogenous list of facets and the value constraints.
+		/// </summary>
+		/// <param name="logger">The logging context to be notified.</param>
+		/// <returns>The configured JsonSerializerOptions.</returns>
+		public static JsonSerializerOptions GetJsonSerializerOptions(ILogger? logger)
 		{
 			var options = new JsonSerializerOptions()
 			{
@@ -78,7 +87,7 @@ namespace Xbim.InformationSpecifications
 				};
 			}
 
-			var facetConverter = new HeterogenousListConverter<IFacet, ObservableCollection<IFacet>>(
+			var iFacetListConverter = new HeterogenousListConverter<IFacet, IList<IFacet>>(
 				(nameof(IfcClassificationFacet), typeof(IfcClassificationFacet)),
 				(nameof(IfcTypeFacet), typeof(IfcTypeFacet)),
 				(nameof(IfcPropertyFacet), typeof(IfcPropertyFacet)),
@@ -88,7 +97,7 @@ namespace Xbim.InformationSpecifications
 				(nameof(PartOfFacet), typeof(PartOfFacet)),
 				(nameof(AttributeFacet), typeof(AttributeFacet))
 			);
-			options.Converters.Add(facetConverter);
+			options.Converters.Add(iFacetListConverter);
 			options.Converters.Add(new ValueConstraintConverter(logger));
 			options.Converters.Add(new CardinalityConverter(logger));
 			options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));

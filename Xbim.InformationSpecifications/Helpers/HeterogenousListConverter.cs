@@ -18,7 +18,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
 	public class HeterogenousListConverter<TItem, TList> : JsonConverter<TList>
 
-	where TList : IList<TItem>, new()
+	where TList : class, IList<TItem>
 	where TItem : class
 	{
 		public HeterogenousListConverter(params (string key, Type type)[] mappings)
@@ -31,7 +31,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
 		public override bool CanConvert(Type typeToConvert)
 		{
-			var can = typeof(TList).IsAssignableFrom(typeToConvert);
+			var can = typeof(IList<TItem>).IsAssignableFrom(typeToConvert);
 			if (!can)
 			{
 				Debug.WriteLine($"Cannot convert {typeToConvert.FullName}");
@@ -54,7 +54,7 @@ namespace Xbim.InformationSpecifications.Helpers
 
 			validateToken(reader, JsonTokenType.StartArray);
 
-			var results = new TList();
+			var results = (TList)(Activator.CreateInstance(typeToConvert) ?? new List<TItem>());
 
 			reader.Read(); // Advance to the first object after the StartArray token. This should be either a StartObject token, or the EndArray token. Anything else is invalid.
 

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using IdsLib.IdsSchema.XsNodes;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
 using NSubstitute.Core;
