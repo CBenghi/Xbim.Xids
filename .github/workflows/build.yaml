@@ -5,7 +5,7 @@ name: build
 on:
   workflow_dispatch: # Allow running the workflow manually from the GitHub UI
   push:
-    branches: [ "main" ] # Run the workflow when pushing to the main branch
+    branches: [ "main", "preview" ] # Run the workflow when pushing to the main or preview branch
   pull_request:
     branches: [ "*" ] # Run the workflow for all pull requests
 
@@ -32,5 +32,5 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' ## only if main and not a PR
+      if: (github.ref == 'refs/heads/main' || (github.ref == 'refs/heads/preview' && github.event_name == 'workflow_dispatch')) && github.event_name != 'pull_request' ## only on main, or manual dispatch on preview
       run: dotnet nuget push **\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --force-english-output
