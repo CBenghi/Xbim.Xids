@@ -1,9 +1,10 @@
-﻿using IdsLib.IfcSchema;
+﻿using IdsLib.IdsSchema.XsNodes;
+using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
+using Xbim.InformationSpecifications.Values;
 
 namespace Xbim.InformationSpecifications
 {
@@ -11,7 +12,9 @@ namespace Xbim.InformationSpecifications
 	// see https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
 	/// <summary>
-	/// Type names in the .NET framework. 
+	/// Type names enumeration for the value types as defined in the .NET framework. 
+	/// 
+	/// The underlying .NET type can be identified via <see cref="ValueConstraint.GetNetType(NetTypeName)"/> from the enumeration.
 	/// 
 	/// These can be converted from the underlying XSD types via the 
 	/// <see cref="ValueConstraint.GetNamedTypeFromXsd(string?)"/> method.
@@ -90,7 +93,7 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Time => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsTime,
 				NetTypeName.DateTime => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDateTime,
 				NetTypeName.Duration => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDuration,
-				NetTypeName.Uri => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyUri,
+				NetTypeName.Uri => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyURI,
 				NetTypeName.Integer => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsInteger,
 				NetTypeName.Undefined => IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.Undefined,
 				_ => throw new NotImplementedException(),
@@ -113,8 +116,8 @@ namespace Xbim.InformationSpecifications
 				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsTime => NetTypeName.Time,
 				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDateTime => NetTypeName.DateTime,
 				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsDuration => NetTypeName.Duration,
-				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyUri => NetTypeName.Uri,
-				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsInteger=> NetTypeName.Integer,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsAnyURI => NetTypeName.Uri,
+				IdsLib.IdsSchema.XsNodes.XsTypes.BaseTypes.XsInteger => NetTypeName.Integer,
 				_ => NetTypeName.Undefined,
 			};
 		}
@@ -169,8 +172,9 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Floating => typeof(float),
 				NetTypeName.Double => typeof(double),
 				NetTypeName.Decimal => typeof(decimal),
+				NetTypeName.Time => typeof(TimeOfDay),
 				NetTypeName.Date or NetTypeName.DateTime => typeof(DateTime),
-				NetTypeName.Time or NetTypeName.Duration => typeof(TimeSpan),
+				NetTypeName.Duration => typeof(TimeSpan),
 				NetTypeName.Uri => typeof(Uri),
 				NetTypeName.Undefined => null,
 				_ => null,
@@ -359,53 +363,57 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Converts the passed <paramref name="value"/> to the provided <paramref name="typeName"/>
+		/// Converts the passed <paramref name="valueToConvert"/> to the provided <paramref name="typeName"/>.
+		/// WARNINIGN: When staring from a string value, prefer the use of <see cref="ParseValue(string?, NetTypeName)"/>
 		/// </summary>
-		/// <param name="value">the value to try to convert</param>
+		/// <param name="valueToConvert">the value to try to convert</param>
 		/// <param name="typeName">the destination type</param>
 		/// <returns>Null when conversion is not successful</returns>
-		public static object? ConvertObject(object value, NetTypeName typeName)
+		public static object? ConvertObject(object valueToConvert, NetTypeName typeName)
 		{
 			try
 			{
 				switch (typeName) // if undefined type just return the value, unaltered.
 				{
 					case NetTypeName.Undefined:
-						return value;
+						return valueToConvert;
 					case NetTypeName.Integer:
-						return Convert.ToInt32(value, CultureHelper.SystemCulture);
+						return Convert.ToInt32(valueToConvert, CultureHelper.SystemCulture);
 					case NetTypeName.Decimal:
-						return Convert.ToDecimal(value, CultureHelper.SystemCulture);
+						return Convert.ToDecimal(valueToConvert, CultureHelper.SystemCulture);
 					case NetTypeName.Double:
-						return Convert.ToDouble(value, CultureHelper.SystemCulture);
+						return Convert.ToDouble(valueToConvert, CultureHelper.SystemCulture);
 					case NetTypeName.Floating:
-						return Convert.ToSingle(value, CultureHelper.SystemCulture);
+						return Convert.ToSingle(valueToConvert, CultureHelper.SystemCulture);
 					case NetTypeName.Date:
+						return Convert.ToDateTime(valueToConvert, CultureHelper.SystemCulture).Date;
 					case NetTypeName.DateTime:
-						return Convert.ToDateTime(value, CultureHelper.SystemCulture);
+						return Convert.ToDateTime(valueToConvert, CultureHelper.SystemCulture);
 					case NetTypeName.Boolean:
-						return Convert.ToBoolean(value);
+						return Convert.ToBoolean(valueToConvert);
 					case NetTypeName.Time:
 						{
-							var tmp = Convert.ToDateTime(value, CultureHelper.SystemCulture);
-							return tmp.TimeOfDay;
+							if (valueToConvert is TimeOfDay timeOfDayVal)
+								return timeOfDayVal;
+							if (valueToConvert is DateTime dateValue)
+								return new TimeOfDay(dateValue.TimeOfDay);
+							var tmp = Convert.ToDateTime(valueToConvert, CultureHelper.SystemCulture);
+							return new TimeOfDay(tmp.TimeOfDay);
 						}
 					case NetTypeName.Uri:
 						{
-							if (Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out var val))
+							if (Uri.TryCreate(valueToConvert.ToString(), UriKind.RelativeOrAbsolute, out var val))
 								return val;
 							return null;
 						}
 					case NetTypeName.Duration:
-						if (TimeSpan.TryParse(value.ToString(), CultureInfo.InvariantCulture, out var duration))
+						if (TimeSpan.TryParse(valueToConvert.ToString(), CultureInfo.InvariantCulture, out var duration))
 							return duration;
 						return null;
-
 					case NetTypeName.String:
-						return value.ToString();
-
+						return valueToConvert.ToString();
 					default:
-						return value;
+						return valueToConvert;
 				}
 			}
 			catch (Exception)
@@ -427,7 +435,9 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
-		/// Parse the constraint value into a form suitable for the target type
+		/// Parse the constraint value into a form suitable for the target type; 
+		/// WARNING: prefer <see cref="ParseValue(string?, NetTypeName)"/> when possible, 
+		/// to avoid conflation of types.
 		/// </summary>
 		/// <param name="value">The value to cast</param>
 		/// <param name="targetType">An object used to determine the type to parse to</param>
@@ -442,9 +452,11 @@ namespace Xbim.InformationSpecifications
 				short => ParseValue(value, NetTypeName.Integer),
 				int => ParseValue(value, NetTypeName.Integer),
 				long => ParseValue(value, NetTypeName.Integer),
-				DateTime => ParseValue(value, NetTypeName.DateTime),
+				DateTime => ParseValue(value, NetTypeName.DateTime), // this is where the risk of conflation is (date or a datetime)
 				TimeSpan => ParseValue(value, NetTypeName.Duration),
 				bool => ParseValue(value, NetTypeName.Boolean),
+				TimeOfDay => ParseValue(value, NetTypeName.Time),
+				Uri => ParseValue(value, NetTypeName.Uri),
 				_ => value,
 			};
 		}
@@ -462,6 +474,31 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// Persist the value into a string representation suitable for the constraints, 
+		/// according to the provided type name.
+		/// </summary>
+		public static string? PersistValue(object? value, NetTypeName typeName)
+		{
+			if (value is null)
+				return null;
+			try
+			{
+				return typeName switch
+				{
+					NetTypeName.Date => Convert.ToDateTime(value).Date.ToString("O"),
+					NetTypeName.DateTime => Convert.ToDateTime(value).ToString("O"),
+					NetTypeName.Time => value.ToString(), // this returns xml persisted
+					NetTypeName.Duration when value is TimeSpan ts => ts.ToString("c", CultureInfo.InvariantCulture),
+					_ => value.ToString(),
+				};
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// Attempt to Parse the passed string <paramref name="value"/> to the provided <paramref name="typeName"/>
 		/// </summary>
 		/// <param name="value">The value to parse</param>
@@ -470,18 +507,25 @@ namespace Xbim.InformationSpecifications
 		public static object? ParseValue(string? value, NetTypeName typeName)
 		{
 			var culture = CultureHelper.SystemCulture;
-			if (string.IsNullOrEmpty(value))
+			if (value is null)
+				return null;
+			if (string.IsNullOrEmpty(value) &&
+				(typeName != NetTypeName.String && typeName != NetTypeName.Undefined)
+				)
 				return null;
 			switch (typeName)
 			{
 				case NetTypeName.Undefined:
 					return value;
 				case NetTypeName.Boolean:
-					return value switch
+					return value switch // this is complicated, because the boolean values are tipical of the xml representation,
+										// not the True/False values normally serialised by .NET
 					{
 						"true" => true,
+						"True" => true,
 						"1" => true,
 						"false" => false,
+						"False" => false,
 						"0" => false,
 						_ => null
 					};
@@ -504,15 +548,25 @@ namespace Xbim.InformationSpecifications
 					if (decimal.TryParse(value, NumberStyles.Number, culture, out var dval))
 						return dval;
 					return null;
-				case NetTypeName.Date:
 				case NetTypeName.DateTime:
-					if (DateTime.TryParse(value, culture, DateTimeStyles.AssumeUniversal, out var dateval))
+					if (DateTime.TryParse(value, culture, DateTimeStyles.RoundtripKind, out var dateTimeVal))
+						return dateTimeVal;
+					return null;
+				case NetTypeName.Date:
+					if (DateTime.TryParse(value, culture, DateTimeStyles.RoundtripKind, out var dateval))
 						return dateval.Date;
 					return null;
 				case NetTypeName.Time:
+					// todo: we need to check what could have been a previous value type
+					if (TimeOfDay.TryParseXml(value, out var timeOfDayVal))
+						return timeOfDayVal;
+					return null;
 				case NetTypeName.Duration:
 					if (TimeSpan.TryParse(value, culture, out var timeval))
 						return timeval;
+					// we also try to parse durations in xml format for backwards compatibility
+					if (TryParseXsdValue(value, NetTypeName.Duration, out var xsdDurationVal))
+						return xsdDurationVal;
 					return null;
 				case NetTypeName.Uri:
 					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
@@ -522,7 +576,6 @@ namespace Xbim.InformationSpecifications
 					return value;
 			}
 		}
-
 
 		/// <summary>
 		/// returns a set of the valid constraint types given a base types 

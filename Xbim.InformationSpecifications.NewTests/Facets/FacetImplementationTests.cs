@@ -11,6 +11,12 @@ namespace Xbim.InformationSpecifications.Tests;
 
 public partial class FacetImplementationTests
 {
+	public FacetImplementationTests(ITestOutputHelper outputHelper)
+	{
+		OutputHelper = outputHelper;
+	}
+	private ITestOutputHelper OutputHelper { get; }
+
 	private static readonly Dictionary<string, string> guaranteedStructures = new()
 	{
 		{ "AttributeFacet","ValueConstraint AttributeName,ValueConstraint AttributeValue,String Uri,String Instructions" },
@@ -22,12 +28,13 @@ public partial class FacetImplementationTests
 		{ "DocumentFacet","ValueConstraint DocId,ValueConstraint DocName,ValueConstraint DocLocation,ValueConstraint DocPurpose,ValueConstraint DocIntendedUse,String Uri,String Instructions" },
 		{ "IfcRelationFacet","String SourceId,FacetGroup Source,String Relation,String Uri,String Instructions" },
 		{ "ExactConstraint","String Value" },
-		{ "PatternConstraint","String Pattern,Boolean IsValidPattern,String PatternError" },
+		{ "PatternConstraint","String Pattern" },
 		{ "RangeConstraint","String MinValue,Boolean MinInclusive,String MaxValue,Boolean MaxInclusive" },
 		{ "StructureConstraint","Int32? TotalDigits,Int32? FractionDigits,Int32? Length,Int32? MinLength,Int32? MaxLength" },
 		{ "ValueConstraint","List<Xbim.InformationSpecifications.IValueConstraintComponent> AcceptedValues,NetTypeName BaseType" },
 		{ "PartOfFacet","String EntityRelation,IfcTypeFacet EntityType,String Uri,String Instructions" },
 		{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
+		{ "TimeOfDay","" }, // this is a struct, so it has no properties, but it should still be equatable
 		// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 	};
 
@@ -40,18 +47,21 @@ public partial class FacetImplementationTests
 		}
 	}
 
-	[Theory]
+	[Theory(DisplayName = nameof(CheckEquatableImplementation))]
 	[MemberData(nameof(EquatableTypes))]
-	public void Check(Type? oneEquatable)
+	public void CheckEquatableImplementation(Type? oneEquatable)
 	{
 		if (oneEquatable is null)
 			return;
+		OutputHelper.WriteLine($"Checking {oneEquatable.FullName} for correct equatable implementation");
+
 		var foundInDictionary = guaranteedStructures.TryGetValue(oneEquatable.Name, out var expected);
 		foundInDictionary.Should().BeTrue($"'{oneEquatable.Name}' should be a guaranteed equatable");
 		if (expected == "<skip>")
 			return;
 
-		var verifiedAttributesList = string.Join(",", [.. oneEquatable.GetProperties().Select(x => SmartName(x)).Where(t => t != "")]);
+		var verifiedAttributesList = string.Join(",", [.. oneEquatable.GetProperties().Where(prop=>prop.CanWrite == true).Select(x => SmartName(x)).Where(t => t != "")]);
+		OutputHelper.WriteLine($"'{oneEquatable.Name}' has properties: {verifiedAttributesList}");
 		verifiedAttributesList.Should().Be(expected, $"{oneEquatable.Name} must not have different properties to the ones guaranteed equatable");
 	}
 
@@ -226,7 +236,6 @@ public partial class FacetImplementationTests
 			var t = ValueConstraint.GetXsdTypeString(tName);
 			var back = ValueConstraint.GetNamedTypeFromXsd(t);
 			back.Should().Be(tName);
-
 
 			var newT = ValueConstraint.GetNetType(tName);
 			var defval = ValueConstraint.GetDefault(tName, null);

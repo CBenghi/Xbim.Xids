@@ -12,10 +12,13 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Xbim.InformationSpecifications.Cardinality;
 using Xbim.InformationSpecifications.Tests.Collections;
 using Xbim.InformationSpecifications.Tests.Helpers;
+using Xbim.InformationSpecifications.Values;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests;
@@ -606,7 +609,7 @@ public partial class IoTests
 
 			// Act
 			spec.Description = "Shorter now";
-			x.SaveAsJson(filename); // resave over original, which _should_ truncate
+		 x.SaveAsJson(filename); // resave over original, which _should_ truncate
 
 			// Assert
 			var latest = new FileInfo(filename);
@@ -639,6 +642,75 @@ public partial class IoTests
 
 		x!.AllSpecifications().Should().HaveCount(2);
 		return x;
+	}
+
+	public static IEnumerable<object[]> GetTypeParsingTestData()
+	{
+		yield return ["true", NetTypeName.Boolean, true];
+		yield return ["false", NetTypeName.Boolean, false];
+		yield return ["1", NetTypeName.Boolean, true];
+		yield return ["0", NetTypeName.Boolean, false];
+		yield return ["hello world", NetTypeName.String, "hello world"];
+		yield return ["123", NetTypeName.Integer, 123];
+		yield return ["123.45", NetTypeName.Double, 123.45];
+		yield return ["123.45", NetTypeName.Floating, 123.45f];
+		yield return ["123.45", NetTypeName.Decimal, 123.45m];
+		yield return ["P1D", NetTypeName.Duration, TimeSpan.FromDays(1)];
+		yield return ["2023-01-01", NetTypeName.Date, new DateTime(2023, 1, 1)];
+		yield return ["2023-01-01T12:00:00", NetTypeName.DateTime, new DateTime(2023, 1, 1, 12, 0, 0)];
+		yield return ["12:00:00", NetTypeName.Time, new TimeOfDay(12, 0)];
+		yield return ["14:30:00", NetTypeName.Time, new TimeOfDay(14, 30)];
+		yield return ["09:15:30.500Z", NetTypeName.Time, new TimeOfDay(new TimeSpan(0, 9, 15, 30, 500), new TimeSpan(0, 0, 0))];
+		yield return ["23:59:59-05:00", NetTypeName.Time, new TimeOfDay(23, 59, 59, new TimeSpan(-5, 0, 0))];
+		yield return ["00:00:00", NetTypeName.Time, new TimeOfDay(0, 0, 0)];
+		yield return ["12:00:00+14:00", NetTypeName.Time, new TimeOfDay(12, 0, 0, new TimeSpan(14, 0, 0))];
+		yield return ["12:00:00.123", NetTypeName.Time, new TimeOfDay(new TimeSpan(0, 12, 0, 0, 123))];
+		yield return ["12:00:00+00:00", NetTypeName.Time, new TimeOfDay(12, 0, 0, new TimeSpan(0, 0, 0))];
+		yield return ["http://example.com", NetTypeName.Uri, new Uri("http://example.com")];
+	}
+
+	[Theory]
+	[MemberData(nameof(GetTypeParsingTestData))]
+	public void XmlTypePersistenceTest(string raw, NetTypeName typeName, object? expected = null)
+	{
+		// I want to enumerate the different value types and make sure they persist through a save/load cycle,
+		// as there are some special cases that need to be handled in a specific way in the XML.
+		OutputHelper.WriteLine($"Testing parsing of '{raw}' as {typeName}, and expecting {expected}");
+		var getsIt = ValueConstraint.TryParseXsdValue(raw, typeName, out var result);
+		getsIt.Should().BeTrue($"we are expected to be able to parse '{raw}' as {typeName}");
+		if (expected is not null)
+		{
+			result.Should().Be(expected);
+			// we want to check that the underlying type is respected
+			// (this is to test the underlying type method as well as the parsing)
+			var expectedType = ValueConstraint.GetNetType(typeName);
+			result.GetType().Should().Be(expectedType, $"{typeName} should be mapped like that.");
+		}
+		else if (result is not null)
+		{
+			OutputHelper.WriteLine($"{result.GetType().FullName}");
+			var expectedType = ValueConstraint.GetNetType(typeName);
+			result.GetType().Should().Be(expectedType, $"{typeName} should be mapped like that.");
+			Assert.Skip($"We can parse '{raw}' as {typeName}, and it returns {result}, but we don't have an expected value to compare it to, so skipping assertion");
+		}
+		OutputHelper.WriteLine($"Parsed '{raw}' as {typeName} successfully, got '{result}'");
+	}
+
+	[Theory]
+	[InlineData("True", NetTypeName.Boolean)] // wrong case
+	[InlineData("-1", NetTypeName.Boolean)] // only 0 and 1 are valid for boolean in XML Schema
+	[InlineData("25:00:00", NetTypeName.Time)] // hour out of range.
+	[InlineData("12:00:00+15:00", NetTypeName.Time)] //offset beyond the ±14:00 limit.
+	[InlineData("12:00", NetTypeName.Time)] //missing seconds.
+	[InlineData("12:00:00Z+01:00", NetTypeName.Time)] //both Z and a signed offset.
+	[InlineData("", NetTypeName.Time)]
+	public void XmlTypeInvalidPersistenceTest(string raw, NetTypeName typeName)
+	{
+		// I want to enumerate the different value types and make sure they persist through a save/load cycle,
+		// as there are some special cases that need to be handled in a specific way in the XML.
+
+		var getsIt = ValueConstraint.TryParseXsdValue(raw, typeName, out var result);
+		getsIt.Should().BeFalse($"we are not expected to be able to parse '{raw}' as {typeName}");
 	}
 
 	[GeneratedRegex("<xs:pattern")]

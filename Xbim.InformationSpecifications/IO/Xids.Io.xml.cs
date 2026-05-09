@@ -1,4 +1,5 @@
 ﻿#pragma warning disable IDE0028
+using IdsLib.IdsSchema.XsNodes;
 using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
 using System;
@@ -1039,13 +1040,17 @@ namespace Xbim.InformationSpecifications
 				var tc = ValueConstraint.SingleUndefinedExact(content);
 				return tc;
 			}
-			NetTypeName t = NetTypeName.Undefined;
-			var bse = restriction.Attribute("base");
-			if (bse != null && bse.Value != null)
+			NetTypeName constraintType = NetTypeName.Undefined;
 			{
-				var tval = bse.Value;
-				t = ValueConstraint.GetNamedTypeFromXsd(tval);
+				// scoped to drop node allocation
+				var bse = restriction.Attribute("base");
+				if (bse != null && bse.Value != null)
+				{
+					var tval = bse.Value;
+					constraintType = ValueConstraint.GetNamedTypeFromXsd(tval);
+				}
 			}
+
 
 			// we prepare the different possible scenarios, but then check in the end that the 
 			// xml encountered is solid.
@@ -1059,11 +1064,10 @@ namespace Xbim.InformationSpecifications
 			{
 				if (sub.Name.LocalName == "enumeration")
 				{
-					var val = sub.Attribute("value");
-					if (val != null)
+					if (TryGetAttributeValue(sub, constraintType, out var xbimFormattedValue, logger))
 					{
 						enumeration ??= new List<string>();
-						enumeration.Add(val.Value);
+						enumeration.Add(xbimFormattedValue);
 					}
 				}
 				else if (
@@ -1072,11 +1076,10 @@ namespace Xbim.InformationSpecifications
 					sub.Name.LocalName == "minExclusive"
 					)
 				{
-					var val = sub.Attribute("value")?.Value;
-					if (val != null)
+					if (TryGetAttributeValue(sub, constraintType, out var xbimFormattedValue, logger))
 					{
 						range ??= new RangeConstraint();
-						range.MinValue = val;
+						range.MinValue = xbimFormattedValue;
 						range.MinInclusive = sub.Name.LocalName == "minInclusive";
 					}
 				}
@@ -1086,11 +1089,10 @@ namespace Xbim.InformationSpecifications
 					sub.Name.LocalName == "maxExclusive"
 					)
 				{
-					var val = sub.Attribute("value")?.Value;
-					if (val != null)
+					if (TryGetAttributeValue(sub, constraintType, out var xbimFormattedValue, logger))
 					{
 						range ??= new RangeConstraint();
-						range.MaxValue = val;
+						range.MaxValue = xbimFormattedValue;
 						range.MaxInclusive = sub.Name.LocalName == "maxInclusive";
 					}
 				}
@@ -1172,7 +1174,7 @@ namespace Xbim.InformationSpecifications
 				return null;
 			}
 			// initialize return value
-			var ret = new ValueConstraint(t)
+			var ret = new ValueConstraint(constraintType)
 			{
 				AcceptedValues = new List<IValueConstraintComponent>()
 			};
@@ -1482,5 +1484,43 @@ namespace Xbim.InformationSpecifications
 			}
 			return "";
 		}
+
+		/// <summary>
+		/// allows to have the correct formatting of xml valid values to consistent xbim representation
+		/// </summary>
+		private static bool TryGetAttributeValue(XElement sub, NetTypeName constraintType, [NotNullWhen(true)] out string? parsedValue, ILogger? logger)
+		{
+			var val = sub.Attribute("value")?.Value;
+			if (val is null)
+			{
+				parsedValue = null;
+				return false;
+			}
+			if (constraintType == NetTypeName.Undefined || constraintType == NetTypeName.String)
+			{
+				// if the constraint type is not defined, we assume it's a string, and we take the value as is.
+				parsedValue = val;
+				return true;
+			}
+			if (ValueConstraint.TryParseXsdValue(val, constraintType, out var parsed))
+			{
+				// parsed is object, but we want to return a string that is consistent with xbim parsing, so we convert it back to string using the same logic as xbim 
+				parsedValue = ValueConstraint.PersistValue(parsed, constraintType);
+				if (parsedValue is null)
+				{
+					parsedValue = null;
+					logger?.LogError("Error converting '{value}' to '{type}' in element '{elementName}'.", val, constraintType, sub.Name.LocalName);
+					return false;
+				}
+				return true;
+			}
+			else
+			{
+				logger?.LogWarning("Value '{value}' is not valid for type '{type}' in element '{elementName}'.", val, constraintType, sub.Name.LocalName);
+			}
+			parsedValue = null;
+			return false;
+		}
+
 	}
 }

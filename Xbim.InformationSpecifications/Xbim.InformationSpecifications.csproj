@@ -18,10 +18,13 @@
 		<AssemblyName>Xbim.InformationSpecifications</AssemblyName>
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<AssemblyVersion>1.0.24</AssemblyVersion>
+		<vPre>1.1.0</vPre>
+		<vPost>1</vPost>
+		<vDesc>-preview</vDesc>
+		<AssemblyVersion>$(vPre).$(vPost)</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
-		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<Version>$(AssemblyVersion)</Version>
+		<FileVersion>$(vPre).$(vPost)</FileVersion>
+		<Version>$(vPre)$(vDesc).$(vPost)</Version>
 		<RepositoryUrl>https://github.com/CBenghi/Xbim.Xids</RepositoryUrl>
 		<SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
 		<GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
@@ -46,7 +49,7 @@
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ids-lib" Version="1.0.112" />
+		<PackageReference Include="ids-lib" Version="1.0.113" />
 		<PackageReference Include="Nullable" Version="1.3.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

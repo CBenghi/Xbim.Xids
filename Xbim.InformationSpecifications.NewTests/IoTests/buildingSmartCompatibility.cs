@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Linq;
 using Xbim.Ifc4.Interfaces;
@@ -37,8 +38,7 @@ public class BuildingSmartCompatibilityTests
 		Assert.NotNull(logg);
 		return logg;
 	}
-
-
+	
 	[Fact]
 	public void InheritanceTypeIdsIoTest()
 	{

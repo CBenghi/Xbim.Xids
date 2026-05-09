@@ -10,13 +10,12 @@ namespace Xbim.InformationSpecifications.Tests.Constraints;
 
 public class ValueContraintTests
 {
-	private readonly ITestOutputHelper output;
-
 	public ValueContraintTests(ITestOutputHelper output)
 	{
 		this.output = output;
 		//CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("it");  // Formats strings as 98.765,43
 	}
+	private readonly ITestOutputHelper output;
 
 	[Fact]
 	public void XbimIfcElementsHandled()
@@ -696,7 +695,6 @@ public class ValueContraintTests
 
 		constraint.IsSatisfiedBy(value).Should().Be(expected, $"{value} >= 0");
 	}
-
 
 	[Fact]
 	public void RealTolerancesAnalysis()

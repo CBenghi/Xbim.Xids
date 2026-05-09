@@ -56,7 +56,6 @@ namespace Xbim.InformationSpecifications
 			{
 				return Value.Equals(candidateValue.ToString());
 			}
-
 		}
 
 		private bool IsUndefinedTypeSatisfied(object candidateValue)

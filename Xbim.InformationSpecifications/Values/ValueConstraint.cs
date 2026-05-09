@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using IdsLib.IdsSchema.XsNodes;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Xml;
 using Xbim.InformationSpecifications.Helpers;
+using Xbim.InformationSpecifications.Values;
 
 namespace Xbim.InformationSpecifications
 {
@@ -220,9 +224,9 @@ namespace Xbim.InformationSpecifications
 		/// <summary>
 		/// Constructor by type enumeration
 		/// </summary>
-		public ValueConstraint(NetTypeName value)
+		public ValueConstraint(NetTypeName valueType)
 		{
-			BaseType = value;
+			BaseType = valueType;
 			AcceptedValues = new List<IValueConstraintComponent>();
 		}
 
@@ -363,13 +367,71 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Integer => typeof(long),
 				NetTypeName.Decimal => typeof(decimal),
 				NetTypeName.Date or NetTypeName.DateTime => typeof(DateTime),
-				NetTypeName.Time or NetTypeName.Duration => typeof(TimeSpan),
+				NetTypeName.Duration => typeof(TimeSpan),
+				NetTypeName.Time => typeof(TimeOfDay),
 				NetTypeName.String => typeof(string),
 				NetTypeName.Boolean => typeof(bool),
 				NetTypeName.Uri => typeof(Uri),
 				NetTypeName.Undefined => null,
 				_ => typeof(string),
 			};
+		}
+
+		/// <summary>
+		/// Attempts to parse a string value according to the specified XML Schema (XSD) type name.
+		/// </summary>
+		/// <remarks>If the input string is not valid for the specified XSD type, or if the type is undefined, the
+		/// method returns false and sets returnValue to null. For NetTypeName.Integer, the value is limited to Int32, which
+		/// may differ from the unbounded integer type in XML Schema.</remarks>
+		/// <param name="raw">The string representation of the value to parse.</param>
+		/// <param name="xsdTypeName">The XSD type to use for parsing the value.</param>
+		/// <param name="returnValue">When this method returns, contains the parsed value if the conversion succeeded; otherwise, null. The type of the
+		/// value corresponds to the specified XSD type.</param>
+		/// <returns>TRUE if the value was successfully parsed according to the specified XSD type; otherwise, FALSE.</returns>
+		public static bool TryParseXsdValue(string? raw, NetTypeName xsdTypeName, [NotNullWhen(true)] out object? returnValue)
+		{
+			var baseTypeAsString = XsTypes.GetBaseFrom(GetXsdTypeString(xsdTypeName));
+			if (string.IsNullOrEmpty(raw) || xsdTypeName == NetTypeName.Undefined)
+			{
+				returnValue = null;
+				return false;
+			}
+			if (!XsTypes.IsValid(raw!, baseTypeAsString)) // we defer the check to the ids-lib
+			{
+				returnValue = null;
+				return false;
+			}
+			returnValue = xsdTypeName switch
+			{
+				NetTypeName.String => raw,
+				NetTypeName.Boolean => XmlConvert.ToBoolean(raw),
+				NetTypeName.Integer => XmlConvert.ToInt32(raw), // todo: in xml it is unbounded, here we limit to int32, should we revise this?
+				NetTypeName.Double => XmlConvert.ToDouble(raw),
+				NetTypeName.Floating => XmlConvert.ToSingle(raw),
+				NetTypeName.Decimal => XmlConvert.ToDecimal(raw),
+				NetTypeName.Duration => XmlConvert.ToTimeSpan(raw),
+				NetTypeName.DateTime => XmlConvert.ToDateTime(raw, XmlDateTimeSerializationMode.RoundtripKind),
+				NetTypeName.Date => XmlConvert.ToDateTime(raw, XmlDateTimeSerializationMode.RoundtripKind),
+				NetTypeName.Time => FixTime(raw), // encapsulated becase of possible exceptions, even with regex
+				NetTypeName.Uri => new Uri(raw, UriKind.RelativeOrAbsolute),
+				_ => null
+			};
+			return returnValue != null;
+		}
+
+		private static object? FixTime(string? raw)
+		{
+			if (raw is null)
+				return null;
+			try
+			{
+				// this can throw because correct regex structure could be above allowed numbers, eg. 25 hours.
+				return new TimeOfDay(raw);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -547,6 +609,52 @@ namespace Xbim.InformationSpecifications
 			}
 			exact = unique.Value;
 			return true;
+		}
+
+		/// <summary>
+		/// Determines whether the current value constraint represents a single, exact value of a specific type, and provides the relevant value and type information if so.
+		/// </summary>
+		/// <param name="exact">On success, contains the exact value represented by the constraint</param>
+		/// <param name="tp">On success, contains the .NET type of the exact value</param>
+		/// <returns>TRUE if the constraint represents a single, exact value of a specific type; otherwise, FALSE.</returns>
+		public bool IsSingleExactTyped([NotNullWhen(true)] out object? exact, out NetTypeName tp)
+		{
+			return ValueConstraint.IsSingleExactTyped(this, out exact, out tp);
+		}
+
+		/// <summary>
+		/// Determines whether the specified value constraint represents a single exact value of a specific type,
+		/// and provides the relevant value and type information if so.
+		/// </summary>
+		/// <remarks>Use this method to extract a single, strongly-typed value from a value constraint when it is
+		/// known to represent exactly one value. If the constraint does not represent a single exact value, the output
+		/// parameters are set to their default values.</remarks>
+		/// <param name="value">The value constraint to evaluate. Must not be null.</param>
+		/// <param name="exact">On success, contains the exact value represented by the constraint</param>
+		/// <param name="tp">On success, contains the .NET type of the exact value</param>
+		/// <returns>TRUE if the constraint represents a single, exact value of a specific type; otherwise, FALSE.</returns>
+		public static bool IsSingleExactTyped(
+			[NotNullWhen(true)] ValueConstraint? value,
+			[NotNullWhen(true)] out object? exact,
+			out NetTypeName tp)
+		{
+			tp = NetTypeName.Undefined;
+			exact = null;
+			if (value is null)
+			{
+				return false;
+			}
+			if (value.AcceptedValues == null || value.AcceptedValues.Count != 1)
+			{
+				return false;
+			}
+			if (value.AcceptedValues.FirstOrDefault() is not ExactConstraint unique)
+			{
+				return false;
+			}
+			tp = value.BaseType;
+			exact = ParseValue(unique.Value, value.BaseType);
+			return exact is not null;
 		}
 
 		/// <summary>

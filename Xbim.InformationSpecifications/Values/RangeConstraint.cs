@@ -73,10 +73,10 @@ namespace Xbim.InformationSpecifications
 		public override string ToString()
 		{
 			var minV = MinValue ?? "undefined";
-			var min = MinInclusive ? "<=" : "<";
+			var min = MinInclusive ? "included" : "excluded";
 			var maxV = MaxValue ?? "undefined";
-			var max = MaxInclusive ? "<=" : "<";
-			return $"Range: {minV} {min} .. {max} {maxV}";
+			var max = MaxInclusive ? "included" : "excluded";
+			return $"Range: {minV} {min} to {maxV} {max}";
 		}
 
 		/// <inheritdoc />
