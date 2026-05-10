@@ -357,7 +357,6 @@ public partial class IoTests
 	public void CanSaveXmlAsZip()
 	{
 		Xids? x = BuildMultiSpecGroupIDS();
-
 		using var ms = new MemoryStream();
 
 		x.ExportBuildingSmartIDS(ms);

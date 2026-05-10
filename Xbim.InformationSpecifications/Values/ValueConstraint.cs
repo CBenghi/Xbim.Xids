@@ -254,6 +254,27 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// Constructor by type enumeration and object value
+		/// </summary>
+		/// <param name="valueType">type</param>
+		/// <param name="value">The value will be parsed and tested for compatibility with the <paramref name="valueType"/></param>
+		/// <returns>NULL if any checks between the object and the type fail</returns>
+		public static ValueConstraint? FromObject(NetTypeName valueType, object? value)
+		{
+			if (valueType == NetTypeName.Undefined || value is null)
+				return null;
+			var stringValue = PersistValue(value, valueType);
+			if (stringValue == null)
+				return null;
+			var t = new ValueConstraint()
+			{
+				BaseType = valueType,
+				AcceptedValues = new List<IValueConstraintComponent> { new ExactConstraint(stringValue) }
+			};
+			return t;
+		}
+
+		/// <summary>
 		/// Initializes a constraint on int exact value, and int <see cref="BaseType"/>
 		/// </summary>
 		/// <param name="value">The value to set as exact int constraint</param>

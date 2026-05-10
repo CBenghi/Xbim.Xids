@@ -31,6 +31,40 @@ public class BuildingSmartIDSLoadTests
 	}
 
 	[Theory]
+	[InlineData("bsFiles/IDS_ArcDox.ids")]
+	[InlineData("bsFiles/IDS_random_example.ids")]
+	[InlineData("bsFiles/IDS_SimpleBIM_examples.ids")]
+	[InlineData("bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids")]
+	[InlineData("bsFiles/IDS_wooden-windows.ids")]
+	[InlineData("bsFiles/IDS_demo_BIM-basis-ILS.ids")]
+	public void CanExportSingleSpecification(string fileName)
+	{
+		ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
+		CheckSchema(fileName, logg);
+		var loggerMock = Substitute.For<ILogger<BuildingSmartIDSLoadTests>>();
+		var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+		loaded.Should().NotBeNull();
+		if (loaded.AllSpecifications().Count() > 1)
+		{
+			var secondSpec = loaded.AllSpecifications().Skip(1).First();
+			secondSpec.Should().NotBeNull();
+			using var ms = new MemoryStream();
+			Xids.ExportBuildingSmartIDS(secondSpec, ms, logg);
+			ms.Position = 0;
+			using var reader = new StreamReader(ms);
+			string serialized = reader.ReadToEnd();
+			OutputHelper.WriteLine("Serialized single specification:");
+			OutputHelper.WriteLine("```");
+			OutputHelper.WriteLine(serialized);
+			OutputHelper.WriteLine("```");
+			serialized.Should().Contain("<ids:specification ", "the output should contain the expected root element");
+			//counting the number of specifications in the output, should be 1 
+			int specCount = serialized.Split("<ids:specification ").Length - 1;
+			specCount.Should().Be(1);
+		}
+	}
+
+	[Theory]
 	[InlineData("bsFiles/IDS_aachen_example.ids", 1, 2, 0)]
 	[InlineData("bsFiles/IDS_Aedes_example.ids", 1, 2, 0)]
 	[InlineData("bsFiles/IDS_ArcDox.ids", 5, 21, 0)]
@@ -73,44 +107,44 @@ public class BuildingSmartIDSLoadTests
 		}
 	}
 
-		[Theory]
-		[InlineData("bsFiles/IDS_door_in_wall.ids")]
-		public void CanLoadRelVoidsFillsFacet(string fileName)
+	[Theory]
+	[InlineData("bsFiles/IDS_door_in_wall.ids")]
+	public void CanLoadRelVoidsFillsFacet(string fileName)
+	{
+		var outputFile = Path.Combine(Path.GetTempPath(), "out.ids");
+		outputFile = Path.GetTempFileName();
+		try
 		{
-			var outputFile = Path.Combine(Path.GetTempPath(), "out.ids");
-			outputFile = Path.GetTempFileName();
-			try
-			{
-				DirectoryInfo d = new(".");
-				Debug.WriteLine(d.FullName);
-				ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
-				CheckSchema(fileName, logg);
-				var loggerMock = Substitute.For<ILogger<BuildingSmartIDSLoadTests>>();
-				var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
-				loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock); // we load again with the moq to check for logging events
-				Assert.NotNull(loaded);
+			DirectoryInfo d = new(".");
+			Debug.WriteLine(d.FullName);
+			ILogger<BuildingSmartIDSLoadTests> logg = GetXunitLogger();
+			CheckSchema(fileName, logg);
+			var loggerMock = Substitute.For<ILogger<BuildingSmartIDSLoadTests>>();
+			var loaded = Xids.LoadBuildingSmartIDS(fileName, logg); // this sends the log to xunit context, for debug purposes.
+			loaded = Xids.LoadBuildingSmartIDS(fileName, loggerMock); // we load again with the moq to check for logging events
+			Assert.NotNull(loaded);
 
-				var partOf = loaded!.SpecificationsGroups!.Single()!.Specifications!.First()!.Requirement!.Facets.First() as PartOfFacet;
-				partOf!.GetRelation().Should().Be(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement, "it's the expected relation");
+			var partOf = loaded!.SpecificationsGroups!.Single()!.Specifications!.First()!.Requirement!.Facets.First() as PartOfFacet;
+			partOf!.GetRelation().Should().Be(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement, "it's the expected relation");
 
-				var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
-				errorAndWarnings.Count().Should().Be(0, "mismatch with expected value");
+			var errorAndWarnings = loggerMock.ReceivedCalls().Where(call => call.IsErrorType(true, true, false));
+			errorAndWarnings.Count().Should().Be(0, "mismatch with expected value");
 
-				partOf.SetRelation(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement);
-				loaded.ExportBuildingSmartIDS(outputFile);
-				CheckSchema(outputFile, logg);
-				var reloaded = Xids.LoadBuildingSmartIDS(outputFile);
-				Assert.NotNull(reloaded);
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-			finally
-			{
-				File.Delete(outputFile);
-			}
+			partOf.SetRelation(PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement);
+			loaded.ExportBuildingSmartIDS(outputFile);
+			CheckSchema(outputFile, logg);
+			var reloaded = Xids.LoadBuildingSmartIDS(outputFile);
+			Assert.NotNull(reloaded);
 		}
+		catch (Exception)
+		{
+			throw;
+		}
+		finally
+		{
+			File.Delete(outputFile);
+		}
+	}
 
 	private static void CheckSchema(string tmpFile, ILogger<BuildingSmartIDSLoadTests>? logg = null)
 	{

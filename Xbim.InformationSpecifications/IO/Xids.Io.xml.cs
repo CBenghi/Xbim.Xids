@@ -123,9 +123,24 @@ namespace Xbim.InformationSpecifications
 			return ExportedFormat.ZIP;
 		}
 
+		/// <summary>
+		/// Exports a single buildingSMART IDS specification to the provided stream in XML format.
+		/// </summary>
+		/// <remarks>The caller is responsible for managing the lifetime of the provided stream. The method writes the
+		/// XML representation of the provided specification, including information from its parent specification group, to the stream. 
+		/// context.</remarks>
+		/// <param name="spec">The specification to export. Must not be null.</param>
+		/// <param name="destinationStream">The stream to which the XML output will be written. Must be writable and remain open for the duration of the
+		/// operation.</param>
+		/// <param name="logger">An optional logger for recording informational or error messages during the export process. May be null.</param>
+		public static void ExportBuildingSmartIDS(Specification spec, Stream destinationStream, ILogger? logger = null)
+		{
+			using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
+			ExportBuildingSmartIDS(spec.Parent, writer, logger, (x => x == spec));
+			writer.Close();
+		}
 
-
-		private static void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger)
+		private static void ExportBuildingSmartIDS(SpecificationsGroup specGroup, XmlWriter xmlWriter, ILogger? logger, Func<Specification, bool>? specificationFilter = null)
 		{
 			xmlWriter.WriteStartElement("ids", "ids", @"http://standards.buildingsmart.org/IDS");
 			// writer.WriteAttributeString("xsi", "xmlns", @"http://www.w3.org/2001/XMLSchema-instance");
@@ -140,7 +155,10 @@ namespace Xbim.InformationSpecifications
 			xmlWriter.WriteStartElement("specifications", IdsNamespace);
 			foreach (var spec in specGroup.Specifications)
 			{
-				ExportBuildingSmartIDS(spec, xmlWriter, logger);
+				if (specificationFilter == null || specificationFilter(spec))
+				{
+					ExportBuildingSmartIDS(spec, xmlWriter, logger);
+				}
 			}
 			xmlWriter.WriteEndElement();
 
@@ -204,8 +222,6 @@ namespace Xbim.InformationSpecifications
 			// identifier
 			if (spec.Guid != null)
 				xmlWriter.WriteAttributeString("identifier", spec.Guid);
-
-
 
 			// applicability
 			xmlWriter.WriteStartElement("applicability", IdsNamespace);
