@@ -595,6 +595,8 @@ namespace Xbim.InformationSpecifications
 
 		/// <summary>
 		/// Helps UI creation for the cases where a ValueConstraint is specified by a single value (the UI can be compressed).
+		/// WARNING: the returned value is always a string, even if the BaseType is defined, so it needs to be converted by the consumer according to the BaseType, if needed. 
+		/// Use <see cref="IsSingleExactTyped(ValueConstraint?, out object?, out NetTypeName)"/> for typed support.
 		/// </summary>
 		/// <param name="value">the constraint to evaluate</param>
 		/// <param name="exact">returns the single exact constraint value as an object, if the return value is true</param>
@@ -610,6 +612,8 @@ namespace Xbim.InformationSpecifications
 
 		/// <summary>
 		/// Tests that there'a single exactConstraint in the accepted values, and provides it for consumption.
+		/// WARNING: the returned value is always a string, even if the BaseType is defined, so it needs to be converted by the consumer according to the BaseType, if needed. 
+		/// Use <see cref="IsSingleExactTyped(out object?, out NetTypeName)"/> for typed support.
 		/// </summary>
 		/// <param name="exact">
 		/// The single exact constraint value defining the constraint, null if the test is not passed and return value is false.

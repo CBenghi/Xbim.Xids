@@ -31,6 +31,11 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 		public bool IsValid { get; private set; } = true;
 
 		/// <summary>
+		/// Gets the string representation of the unit associated with this converter.
+		/// </summary>
+		public string UnitRepresentation { get; }
+
+		/// <summary>
 		/// Constructor requiring a valid unit string.
 		/// </summary>
 		/// <param name="unitString">the unit to evaluate conversion for, e.g. "lb/m2"</param>
@@ -40,9 +45,10 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			Exponent = new DimensionalExponents();
 			if (unitString == "1")
 				unitString = "";
-			foreach (var item in UnitFactor.SymbolBreakDown(unitString))
+			UnitRepresentation = unitString;
+			foreach (var partialSymbol in UnitFactor.SymbolBreakDown(unitString))
 			{
-				if (item.TryGetDimensionalExponents(out var exp, out var ratio, out var off))
+				if (partialSymbol.TryGetDimensionalExponents(out var exp, out var ratio, out var off))
 				{
 					Offset = off;
 					Exponent = Exponent.Multiply(exp);
@@ -50,7 +56,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 				}
 				else
 				{
-					logger?.LogWarning("Unit {symbol} not found in conversion table", item.UnitSymbol);
+					logger?.LogWarning("Unit {symbol} not found in conversion table", partialSymbol.UnitSymbol);
 					IsValid = false;
 				}
 			}

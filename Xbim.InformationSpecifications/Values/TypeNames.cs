@@ -2,6 +2,7 @@
 using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Values;
@@ -346,7 +347,7 @@ namespace Xbim.InformationSpecifications
 		/// <param name="found">When this method returns, contains the resolved .NET type name if the operation succeeds; otherwise, contains <see
 		/// cref="NetTypeName.Undefined"/>. This parameter is passed uninitialized.</param>
 		/// <returns>true if the data type name was successfully resolved to a .NET type name; otherwise, false.</returns>
-		public static bool TryGetNetType(string? ifcDataTypeName, out NetTypeName found)
+		public static bool TryGetNetType([NotNullWhen(true)] string? ifcDataTypeName, out NetTypeName found)
 		{
 			if (ifcDataTypeName is null || string.IsNullOrWhiteSpace(ifcDataTypeName))
 			{
@@ -364,7 +365,7 @@ namespace Xbim.InformationSpecifications
 
 		/// <summary>
 		/// Converts the passed <paramref name="valueToConvert"/> to the provided <paramref name="typeName"/>.
-		/// WARNINIGN: When staring from a string value, prefer the use of <see cref="ParseValue(string?, NetTypeName)"/>
+		/// WARNING: When staring from a string value, prefer the use of <see cref="ParseValue(string?, NetTypeName)"/>
 		/// </summary>
 		/// <param name="valueToConvert">the value to try to convert</param>
 		/// <param name="typeName">the destination type</param>
