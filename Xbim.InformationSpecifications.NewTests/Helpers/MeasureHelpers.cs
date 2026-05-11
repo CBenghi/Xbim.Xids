@@ -58,14 +58,23 @@ public partial class MeasureHelpers
 		}
 	}
 
-	[Fact]
-	public void Can_discriminate_valid_and_invalid_units()
+	[Theory(DisplayName = nameof(Can_discriminate_valid_and_invalid_units))]
+	[InlineData(null, true, false)]
+	[InlineData("lb/m2", true, true)]
+	[InlineData("lb/m3", true, false)]
+	[InlineData("lb/pizza2", false, false)]
+	[InlineData("", true, false)]
+	[InlineData(" ", true, false)]
+	[InlineData("//", false, false)]
+	[InlineData("*", false, false)]
+	public void Can_discriminate_valid_and_invalid_units(string? unit, bool expectedIsValid, bool expectedCreation)
 	{
-		var unit1 = new MeasureUnit("lb/m2");
-		unit1.IsValid.Should().BeTrue();
+		var unit1 = new MeasureUnit(unit!);
+		unit1.IsValid.Should().Be(expectedIsValid);
 
-		var unit2 = new MeasureUnit("lb/pizza2");
-		unit2.IsValid.Should().BeFalse();
+		var t = DimensionalExponents.FromString("-2,1,0,0,0,0,0")!;
+		var created = MeasureUnit.TryGetMeasureUnit(unit!, t, null, out var unit2);
+		created.Should().Be(expectedCreation);
 	}
 
 	[Theory]

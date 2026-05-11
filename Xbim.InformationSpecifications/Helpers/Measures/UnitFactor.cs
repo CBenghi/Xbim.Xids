@@ -118,7 +118,7 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			unitSymbol = t;
 
 			var fraction = unitSymbol.Split(divisionSplitters, StringSplitOptions.RemoveEmptyEntries);
-			var num = fraction[0].Trim();
+			var num = fraction.Length > 0 ? fraction[0].Trim() : "";
 			var den = fraction.Length == 2 ? fraction[1].Trim() : "";
 
 			var numUnits = num.Split(multiplicationSplitters, StringSplitOptions.RemoveEmptyEntries);

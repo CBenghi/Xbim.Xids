@@ -1,5 +1,6 @@
 ﻿using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
+using System;
 using Xbim.InformationSpecifications.Generator.Measures;
 
 namespace Xbim.InformationSpecifications.Helpers.Measures
@@ -36,18 +37,70 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 		public string UnitRepresentation { get; }
 
 		/// <summary>
-		/// Constructor requiring a valid unit string.
+		/// Attempts to retrieve a measure unit corresponding to the specified unit string and required measure information.
 		/// </summary>
-		/// <param name="unitString">the unit to evaluate conversion for, e.g. "lb/m2"</param>
-		/// <param name="logger">Optional logging provider</param>
-		public MeasureUnit(string unitString, ILogger? logger = null)
+		/// <param name="unitString">The string representation of the unit to convert to.</param>
+		/// <param name="requiredMeasure">The required measure information that defines the expected exponents for the unit.</param>
+		/// <param name="logger">An optional logger used to record parsing or matching issues. May be null.</param>
+		/// <param name="measureUnit">When this method returns, contains the matched measure unit if the operation succeeds; otherwise, null. This
+		/// parameter is passed uninitialized.</param>
+		/// <returns>true if a matching measure unit is found; otherwise, false.</returns>
+		public static bool TryGetMeasureUnit(string unitString, IfcMeasureInformation requiredMeasure, ILogger? logger, out MeasureUnit? measureUnit)
 		{
+			return TryGetMeasureUnit(unitString, requiredMeasure.Exponents, logger, out measureUnit);
+		}
+
+		/// <summary>
+		/// Attempts to create a measure unit from the specified unit string and verifies that its dimensional exponents match
+		/// the required exponents.
+		/// </summary>
+		/// <remarks>If parsing fails or the exponents do not match, the method logs an error (if a logger is
+		/// provided) and returns false. No exception is thrown for invalid input.</remarks>
+		/// <param name="unitString">The string representation of the unit to convert to.</param>
+		/// <param name="requiredExponents">The dimensional exponents that the resulting measure unit must match.</param>
+		/// <param name="logger">An optional logger used to record errors encountered during parsing. May be null.</param>
+		/// <param name="measureUnit">When this method returns, contains the resulting MeasureUnit if parsing and validation succeed; otherwise it would be null.</param>
+		/// <returns>true if the unit string is successfully parsed into a valid MeasureUnit with matching exponents; otherwise, false.</returns>
+		public static bool TryGetMeasureUnit(string unitString, DimensionalExponents requiredExponents, ILogger? logger, out MeasureUnit? measureUnit)
+		{
+			try
+			{
+				measureUnit = new MeasureUnit(unitString, logger);
+				if (measureUnit.IsValid && (requiredExponents == measureUnit.Exponent))
+					return true;
+				measureUnit = null;
+				return false;
+			}
+			catch (Exception ex)
+			{
+				logger?.LogError(ex, "Error while creating MeasureUnit for `{unitString}`", unitString);
+				measureUnit = null;
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Constructor requiring a valid unit string.
+		/// 
+		/// If concerned with type compatibility, check that the <see cref="Exponent"/> property matches the required dimensional exponents 
+		/// or use the static methods <see cref="TryGetMeasureUnit(string, DimensionalExponents, ILogger, out MeasureUnit?)"/> or 
+		/// <see cref="TryGetMeasureUnit(string, IfcMeasureInformation, ILogger, out MeasureUnit?)"/> to ensure both validity and compatibility.
+		/// </summary>
+		/// <param name="unitString">The string representation of the unit to convert to, e.g. "lb/m2"; passing an unknown unit will mark the instance as invalid;
+		/// an empty or null string will be treated as a dimensionless unit, but it will still be valid. 
+		/// </param>
+		/// <param name="logger">Optional logging provider</param>
+		public MeasureUnit(string? unitString, ILogger? logger = null)
+		{
+			unitString = unitString?.Trim() ?? "";
 			Exponent = new DimensionalExponents();
 			if (unitString == "1")
 				unitString = "";
 			UnitRepresentation = unitString;
+			bool hasComponents = false;
 			foreach (var partialSymbol in UnitFactor.SymbolBreakDown(unitString))
 			{
+				hasComponents = true;
 				if (partialSymbol.TryGetDimensionalExponents(out var exp, out var ratio, out var off))
 				{
 					Offset = off;
@@ -59,6 +112,10 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 					logger?.LogWarning("Unit {symbol} not found in conversion table", partialSymbol.UnitSymbol);
 					IsValid = false;
 				}
+			}
+			if (!hasComponents && !string.IsNullOrEmpty(unitString))
+			{
+				IsValid = false;
 			}
 			if (!Exponent.Equals(new DimensionalExponents(0, 0, 0, 0, 1, 0, 0)))
 				Offset = 0;
