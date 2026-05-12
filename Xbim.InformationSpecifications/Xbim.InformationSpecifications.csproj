@@ -19,7 +19,7 @@
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<vPre>1.1.0</vPre>
-		<vPost>4</vPost>
+		<vPost>5</vPost>
 		<vDesc>-preview</vDesc>
 		<AssemblyVersion>$(vPre).$(vPost)</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->

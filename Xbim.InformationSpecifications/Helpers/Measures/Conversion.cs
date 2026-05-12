@@ -13,53 +13,33 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 	{
 		private static Dictionary<string, IfcMeasureInformation>? _dicUnits;
 
-		internal static bool TryGetUnit(string unit, [NotNullWhen(true)] out IfcMeasureInformation? found)
+		private static Dictionary<string, IfcMeasureInformation> dicUnits => _dicUnits ??= PopulateUnitsFromAllMeasureInformation();
+
+		internal static bool TryGetUnit(string unit, [NotNullWhen(true)] out IfcMeasureInformation? found) => dicUnits.TryGetValue(unit, out found);
+
+		private static Dictionary<string, IfcMeasureInformation> PopulateUnitsFromAllMeasureInformation()
 		{
-			if (_dicUnits == null)
+			var ret = new Dictionary<string, IfcMeasureInformation>();
+			var measures = SchemaInfo.AllMeasureInformation;
+			foreach (var item in measures)
 			{
-				_dicUnits = new Dictionary<string, IfcMeasureInformation>();
-				var measures = IdsLib.IfcSchema.SchemaInfo.AllMeasureInformation;
-				foreach (var item in measures)
+				if (!string.IsNullOrWhiteSpace(item.UnitSymbol) && !ret.ContainsKey(item.UnitSymbol))
 				{
-					if (!string.IsNullOrWhiteSpace(item.UnitSymbol) && !_dicUnits.ContainsKey(item.UnitSymbol))
-					{
-						_dicUnits.Add(item.UnitSymbol, item);
-					}
-					if (!string.IsNullOrWhiteSpace(item.DefaultDisplay) && !_dicUnits.ContainsKey(item.DefaultDisplay))
-					{
-						_dicUnits.Add(item.DefaultDisplay, item);
-					}
+					ret.Add(item.UnitSymbol, item);
+				}
+				if (!string.IsNullOrWhiteSpace(item.DefaultDisplay) && !ret.ContainsKey(item.DefaultDisplay))
+				{
+					ret.Add(item.DefaultDisplay, item);
 				}
 			}
-			if (_dicUnits.ContainsKey(unit))
-			{
-				found = _dicUnits[unit];
-				return true;
-			}
-			found = null;
-			return false;
+			return ret;
 		}
 
-		private static Dictionary<string, IfcConversionUnitInformation>? _units = null;
-
-		internal static bool TryGetConversion(string unit, [NotNullWhen(true)] out IfcConversionUnitInformation? Conversion)
+		private static Dictionary<string, IfcConversionUnitInformation>? _unitConversions = null;
+		private static Dictionary<string, IfcConversionUnitInformation> unitConversions => _unitConversions ??= PopulateUnitConversions();
+		internal static bool TryGetStandardUnitConversion(string unit, [NotNullWhen(true)] out IfcConversionUnitInformation? Conversion)
 		{
-			if (_units is null)
-			{
-				_units = new Dictionary<string, IfcConversionUnitInformation>();
-				foreach (var item in UnitConversions)
-				{
-					foreach (var alias in item.ConversionUnitNames)
-					{
-						_units.Add(alias, item);
-					}
-				}
-				foreach (var pair in _conversionAliases)
-				{
-					_units.Add(pair.alias, _units[pair.existing]);
-				}
-			}
-			var existingFound = _units.TryGetValue(unit, out Conversion);
+			var existingFound = unitConversions.TryGetValue(unit, out Conversion);
 			// if not found we can try to find the unit breaking it down via SI prefixes
 			if (!existingFound && IfcMeasureInformation.TryGetSIUnitFromString(unit, out var exp, out var prefix, out var pow))
 			{
@@ -76,15 +56,32 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 					ratio *= Math.Pow(10, pow);
 				}
 				Conversion = new IfcConversionUnitInformation(unit, preferred.IfcMeasure, ratio, preferred.UnitSymbol);
-				_units.Add(unit, Conversion);
+				unitConversions.Add(unit, Conversion);
 				return true;
 			}
 			return existingFound;
 		}
 
+		private static Dictionary<string, IfcConversionUnitInformation> PopulateUnitConversions()
+		{
+			var ret = new Dictionary<string, IfcConversionUnitInformation>();
+			foreach (var item in UnitConversions)
+			{
+				foreach (var alias in item.ConversionUnitNames)
+				{
+					ret.Add(alias, item);
+				}
+			}
+			foreach (var pair in _conversionAliases)
+			{
+				ret.Add(pair.alias, ret[pair.existing]);
+			}
+			return ret;
+		}
+
 		private static IfcMeasureInformation? GetPreferredMeasure(DimensionalExponents exp)
 		{
-			var measures = IdsLib.IfcSchema.SchemaInfo.AllMeasureInformation;
+			var measures = SchemaInfo.AllMeasureInformation;
 			var match = measures.Where(x => x.Exponents.Equals(exp)).ToList();
 			if (match.Count == 1)
 				return match.First();
@@ -108,8 +105,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			("gal", "gallon US"),
 			];
 		private static readonly IfcConversionUnitInformation[] _extraConversions = [
-            // modified from the ids repository
-            new IfcConversionUnitInformation("foot", "IFCLENGTHMEASURE", 304.8, "mm"),
+			// modified from the ids repository
+			new IfcConversionUnitInformation("foot", "IFCLENGTHMEASURE", 304.8, "mm"),
 			new IfcConversionUnitInformation("US survey foot", "IFCLENGTHMEASURE", 304.80060960122, "mm"),
 			new IfcConversionUnitInformation("yard", "IFCLENGTHMEASURE", 914.4, "mm"),
 			new IfcConversionUnitInformation("mile", "IFCLENGTHMEASURE", 1609.344, "m"),
@@ -149,8 +146,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			new IfcConversionUnitInformation(["°R", "Rankine"], "IFCTHERMODYNAMICTEMPERATUREMEASURE", 0.5555555555555556, "°K", 0.0),
 			new IfcConversionUnitInformation(["K"], "IFCTHERMODYNAMICTEMPERATUREMEASURE", 1, "°K", 0.0),
 
-            // extras
-            new IfcConversionUnitInformation(["sec", "second"], "IFCTIMEMEASURE", 1, "s", 0),
+			// extras
+			new IfcConversionUnitInformation(["sec", "second"], "IFCTIMEMEASURE", 1, "s", 0),
 			new IfcConversionUnitInformation(["ch", "chain"], "IFCLENGTHMEASURE", 20.116, "m", 0),
 			new IfcConversionUnitInformation(["hectare", "ha"], "IFCAREAMEASURE", 10000, "m2", 0),
 			new IfcConversionUnitInformation(["mole"], "IFCAMOUNTOFSUBSTANCEMEASURE", 1, "mol", 0),
@@ -162,16 +159,16 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			];
 
 		/// <summary>
-		/// triggers the reloads the conversion units defined in <see cref="UnitConversions"/> upon the next <see cref="TryGetConversion"/>.
+		/// Triggers the reload of the conversion units cache, when needed in <see cref="UnitConversions"/> upon the next <see cref="TryGetStandardUnitConversion"/>.
 		/// </summary>
 		public static void ReloadConversion()
 		{
-			_units = null;
+			_unitConversions = null;
 		}
 
 		/// <summary>
 		/// Allows the specification of conversion factors between unit symbols. 
-		/// Any unit here must be added ahead of the first <see cref="TryGetConversion"/> attempt.
+		/// Any unit here must be added ahead of the first <see cref="TryGetStandardUnitConversion"/> attempt.
 		/// Otherwise the ReloadConversion
 		/// </summary>
 		public static List<IfcConversionUnitInformation> UnitConversions { get; } = new

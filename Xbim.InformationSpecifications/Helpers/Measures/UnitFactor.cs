@@ -72,19 +72,23 @@ namespace Xbim.InformationSpecifications.Generator.Measures
 			var smb = UnitSymbol;
 			ratio = 1.0d;
 			offset = 0;
-			while (Conversion.TryGetConversion(smb, out var cnv))
+			// we first try to see if we have a direct match
+			if (Conversion.TryGetUnit(smb, out var oDirect) && oDirect is IfcMeasureInformation mi && mi.Exponents is not null)
+			{
+				exp = DimensionalExponents.Elevated(mi.Exponents, Exponent);
+				return true;
+			}
+			// note: here is where the pH case gets resolved to pico Henry
+			while (Conversion.TryGetStandardUnitConversion(smb, out var cnv))
 			{
 				smb = cnv.BaseUnit;
 				offset = cnv.ConversionOffset ?? 0;
 				ratio *= Math.Pow(cnv.ConversionValue, Exponent);
 			}
-			if (Conversion.TryGetUnit(smb, out var oFnd))
+			if (Conversion.TryGetUnit(smb, out var oFnd) && oFnd is IfcMeasureInformation mi2 && mi2.Exponents is not null)
 			{
-				if (oFnd is IfcMeasureInformation mi && mi.Exponents is not null)
-				{
-					exp = DimensionalExponents.Elevated(mi.Exponents, Exponent);
-					return true;
-				}
+				exp = DimensionalExponents.Elevated(mi2.Exponents, Exponent);
+				return true;
 			}
 			exp = null;
 			return false;

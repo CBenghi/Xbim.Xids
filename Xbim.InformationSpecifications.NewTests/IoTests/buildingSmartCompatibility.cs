@@ -38,7 +38,7 @@ public class BuildingSmartCompatibilityTests
 		Assert.NotNull(logg);
 		return logg;
 	}
-	
+
 	[Fact]
 	public void InheritanceTypeIdsIoTest()
 	{

@@ -58,6 +58,46 @@ public partial class MeasureHelpers
 		}
 	}
 
+	[Theory(DisplayName = nameof(CanGetDefaultMeasureUnit))]
+	[MemberData(nameof(GetAllMeasures))]
+	public void CanGetDefaultMeasureUnit(string measureName)
+	{
+		log.LogInformation("Testing measure {measureName}", measureName);
+		var meas = SchemaInfo.AllMeasureInformation.FirstOrDefault(x => x.IfcMeasure.Equals(measureName, StringComparison.OrdinalIgnoreCase));
+		meas.Should().NotBeNull("library should be complete.");
+		var gottenUnit = MeasureUnit.TryGetMeasureUnit(meas.DefaultDisplay, meas, log, out var unit);
+
+		Assert.SkipWhen(
+			measureName.Equals("IfcIonConcentrationMeasure", StringComparison.OrdinalIgnoreCase),
+			"This is a special case that we need to fix in the documentation."
+			);
+
+		gottenUnit.Should().BeTrue($"should be able to get default unit for {measureName}");
+		unit.Should().NotBeNull($"should be able to get default unit for {measureName}");
+	}
+
+	[Theory(DisplayName = nameof(CanGetDefaultMeasureUnit))]
+	[MemberData(nameof(GetAllMeasures))]
+	public void RejectsInvalidMeasureUnit(string measureName)
+	{
+		log.LogInformation("Testing measure {measureName}", measureName);
+		var meas = SchemaInfo.AllMeasureInformation.FirstOrDefault(x => x.IfcMeasure.Equals(measureName, StringComparison.OrdinalIgnoreCase));
+		meas.Should().NotBeNull("library should be complete.");
+		var gotten = MeasureUnit.TryGetMeasureUnit("m " + meas.DefaultDisplay, meas, log, out var unit);
+		gotten.Should().BeFalse($"should not be valid for {measureName}");
+		unit.Should().BeNull($"on not gotten it should be empty for {measureName}");
+	}
+
+	public static IEnumerable<object[]> GetAllMeasures()
+	{
+		foreach (var item in SchemaInfo.AllMeasureInformation)
+		{
+			yield return new object[] { item.IfcMeasure };
+		}
+	}
+
+
+
 	[Theory(DisplayName = nameof(Can_discriminate_valid_and_invalid_units))]
 	[InlineData(null, true, false)]
 	[InlineData("lb/m2", true, true)]

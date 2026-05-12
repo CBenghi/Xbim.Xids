@@ -68,6 +68,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 				measureUnit = new MeasureUnit(unitString, logger);
 				if (measureUnit.IsValid && (requiredExponents == measureUnit.Exponent))
 					return true;
+				logger?.LogError("Unit `{unitString}` has incompatible dimensions or invalid conversion. Expected {expected}, got {actual}", unitString, requiredExponents, measureUnit.Exponent);
 				measureUnit = null;
 				return false;
 			}
@@ -101,6 +102,8 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			foreach (var partialSymbol in UnitFactor.SymbolBreakDown(unitString))
 			{
 				hasComponents = true;
+				if (partialSymbol.UnitSymbol == "1") // deals with cases such as 1/sec
+					continue; // nothing to do
 				if (partialSymbol.TryGetDimensionalExponents(out var exp, out var ratio, out var off))
 				{
 					Offset = off;
@@ -116,6 +119,7 @@ namespace Xbim.InformationSpecifications.Helpers.Measures
 			if (!hasComponents && !string.IsNullOrEmpty(unitString))
 			{
 				IsValid = false;
+				logger?.LogWarning("Unit `{unitString}` has no valid components in the string.", unitString);
 			}
 			if (!Exponent.Equals(new DimensionalExponents(0, 0, 0, 0, 1, 0, 0)))
 				Offset = 0;
