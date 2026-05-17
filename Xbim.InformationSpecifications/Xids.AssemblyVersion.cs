@@ -7,5 +7,5 @@ public partial class Xids
 	/// This is useful for environments that do not allow to load information from the DLL dynamically
 	/// (e.g. Blazor).
 	/// </summary>
-	public static string AssemblyVersion => "1.1.0.5";
+	public static string AssemblyVersion => "1.1.0.6";
 }

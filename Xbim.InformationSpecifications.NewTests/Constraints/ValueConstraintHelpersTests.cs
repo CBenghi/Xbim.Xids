@@ -47,6 +47,19 @@ public class ValueConstraintHelpersTests
 	}
 
 
+	/// <summary>
+	/// This test only converts in one direction from a variety ot tolerant string representations 
+	/// to the expected value, and checks that the value is recognised as an exact match for the 
+	/// type and value constraint. 
+	/// 
+	/// We want to be sure that we can recognise a variety of string representations as valid for a type, 
+	/// and that they are correctly converted to the expected value, and that the IsSingleExactTyped 
+	/// method works as expected.
+	/// 
+	/// THIS DOES NOT CHECK THAT THE ROUND TRIP IS EXACT
+	/// 
+	/// </summary>
+
 	[Theory(DisplayName = nameof(SingleExactTypedTest))]
 	[InlineData(NetTypeName.String, "", "")]
 	[InlineData(NetTypeName.String, "A", "A")]
@@ -54,9 +67,14 @@ public class ValueConstraintHelpersTests
 	[InlineData(NetTypeName.Boolean, "false", false)]
 	[InlineData(NetTypeName.Boolean, "True", true)] // xids is more tolerant than xml
 	[InlineData(NetTypeName.Boolean, "False", false)]
+	[InlineData(NetTypeName.Date, "2006-12-24", "2006-12-24")]
 	[MemberData(nameof(SingleExactTypedTestData))]
 	public void SingleExactTypedTest(NetTypeName tp, string? stringRepresentation, object? expectedValue = null)
 	{
+		if (tp == NetTypeName.Date && expectedValue is string strVal)
+		{
+			expectedValue = DateTime.Parse(strVal);
+		}
 		PerformSingleExactTypedTest(tp, stringRepresentation, expectedValue);
 	}
 
@@ -82,6 +100,7 @@ public class ValueConstraintHelpersTests
 		}
 		convertedBackWithParseValue.Should().NotBeNull();
 		outputHelper.WriteLine($"{nameof(convertedBackWithParseValue)} for `{tp}` is '{convertedBackWithParseValue}' {convertedBackWithParseValue.GetType().Name}");
+		outputHelper.WriteLine($"Repersisted is: {ValueConstraint.PersistValue(convertedBackWithParseValue, tp)}");
 
 		// we check the primitive first
 		convertedBackWithParseValue.Should().BeOfType(expectedValue.GetType());
@@ -110,7 +129,7 @@ public class ValueConstraintHelpersTests
 			];
 		foreach (DateTime dt in dates)
 		{
-			data.Add(NetTypeName.Date, ValueConstraint.PersistValue(dt, NetTypeName.Date), dt.Date);
+			data.Add(NetTypeName.Date,  ValueConstraint.PersistValue(dt, NetTypeName.Date), dt.Date);
 			data.Add(NetTypeName.DateTime, ValueConstraint.PersistValue(dt, NetTypeName.DateTime), dt);
 		}
 

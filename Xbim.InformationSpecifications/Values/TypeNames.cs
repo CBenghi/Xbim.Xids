@@ -486,8 +486,8 @@ namespace Xbim.InformationSpecifications
 			{
 				return typeName switch
 				{
-					NetTypeName.Date => Convert.ToDateTime(value).Date.ToString("O"),
-					NetTypeName.DateTime => Convert.ToDateTime(value).ToString("O"),
+					NetTypeName.Date => Convert.ToDateTime(value).ToString("yyyy-MM-dd"),
+					NetTypeName.DateTime => Convert.ToDateTime(value).ToString("o"),
 					NetTypeName.Time => value.ToString(), // this returns xml persisted
 					NetTypeName.Duration when value is TimeSpan ts => ts.ToString("c", CultureInfo.InvariantCulture),
 					_ => value.ToString(),
