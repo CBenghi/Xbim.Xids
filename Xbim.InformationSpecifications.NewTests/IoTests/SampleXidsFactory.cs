@@ -1,14 +1,15 @@
-using AutoBogus;
-using Bogus;
 using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using Xbim.InformationSpecifications;
 using Xbim.InformationSpecifications.Helpers;
+using Xbim.InformationSpecifications.Values;
 
-namespace XidsEditing.Xids;
+namespace XidsEditing.InformationSpecifications;
 
 /// <summary>
 /// Generates a reasonably complete sample Xids instance using AutoBogus for
@@ -19,21 +20,23 @@ public static class SampleXidsFactory
 {
 	private static readonly Faker Faker = new Faker();
 
-	public static Xbim.InformationSpecifications.Xids Create(int specificationCount = 3, bool retainBuildingSmartOnly = false)
+	public static Xids CreateDataTypes(IfcSchemaVersions schema, bool addMeasures = true, bool addIfcTypesValues = true)
 	{
-		var xids = new Xbim.InformationSpecifications.Xids();
-
-		// Metadata
-		xids.Name = Faker.Commerce.ProductName();
-		xids.Version = Faker.System.Version().ToString();
-		xids.Guid = Guid.NewGuid().ToString();
-
-		// One specifications group containing N specifications
-		var group = new SpecificationsGroup(xids)
+		Xids xids = PrepareBasicXids();
+		if (addMeasures)
 		{
-			Name = Faker.Commerce.Department()
-		};
-		xids.SpecificationsGroups.Add(group);
+			CreateMeasurePropertySpecifications(xids, schema);
+		}
+		if (addIfcTypesValues)
+		{
+			CreateIfcTypePropertySpecifications(xids, schema);
+		}
+		return xids;
+	}
+
+	public static Xids Create(int specificationCount = 3, bool retainBuildingSmartOnly = false)
+	{
+		Xids xids = PrepareBasicXids();
 
 		if (!retainBuildingSmartOnly)
 		{
@@ -47,7 +50,7 @@ public static class SampleXidsFactory
 				IfcType = "IfcBuilding",
 			};
 			referencedFacet.Facets.Add(typeFacet);
-			referencedFacet.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, SchemaInfo.SchemaIfc4)));
+			referencedFacet.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, SchemaInfo.SchemaIfc4).ToList()));
 			xids.FacetRepository.Add(referencedFacet);
 		}
 
@@ -56,37 +59,287 @@ public static class SampleXidsFactory
 		return xids;
 	}
 
+	private static Xids PrepareBasicXids()
+	{
+		var xids = new Xids();
+		// Metadata
+		xids.Name = $"My {Faker.Generic.ExcitingAdjective()} information specifications document";
+		xids.Version = $"{Faker.RandomInt(1, 3)}.{Faker.RandomInt(0, 9)}.{Faker.RandomInt(0, 9)}";
+		xids.Guid = Guid.NewGuid().ToString();
+
+		// One specifications group containing N specifications
+		var group = new SpecificationsGroup(xids)
+		{
+			Name = $"{Faker.Construction.RibaStage()} Specifications",
+			Author = $"claudio.benghi@gmail.com",
+			Description = "This is a demo Information Specification requirement, which has been randomly generated for demonstration purposes.",
+			Copyright = "© 2026 Claudio Benghi. This work is licensed under CC BY-SA 4.0 (attribution required, Share Alike). To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/",
+			Date = DateTime.Now.Date,
+			Provider = Faker.Construction.Role(),
+			Consumers = Enumerable.Range(0, 4).Select(_ => Faker.Construction.Role()).ToList()
+		};
+		xids.SpecificationsGroups.Add(group);
+		return xids;
+	}
+
 	private static FacetGroup? referencedFacet = null;
 
-	private static Specification CreateSpecification(Xbim.InformationSpecifications.Xids xids, int index, bool retainBuildingSmartOnly)
+	private static void CreateIfcTypePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
 	{
-		var schema = Faker.PickRandom(IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3);
+		var sInfo = SchemaInfo.GetSchemas(ids_schema).First();
+		// get all the types in the schema and create a spec for each
+		var doneInt = false;
+		var doneDouble = false;
+		foreach (var dataTypeInformation in SchemaInfo.AllDataTypes.Where(x => x.Measure is null))
+		{
+			if (dataTypeInformation.BackingType == "xs:string")
+				continue;
+
+			if (dataTypeInformation.BackingType == "xs:double" && doneDouble)
+				continue;
+			if (dataTypeInformation.BackingType == "xs:double")
+				doneDouble = true;
+
+			if (dataTypeInformation.BackingType == "xs:integer" && doneInt)
+				continue;
+			if (dataTypeInformation.BackingType == "xs:integer")
+				doneInt = true;
+
+			// check schema compliance
+			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
+				continue;
+			var spec = CreateSpecification(xids, dataTypeInformation, ids_schema);
+		}
+	}
+
+	private static void CreateMeasurePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
+	{
+		var sInfo = SchemaInfo.GetSchemas(ids_schema).First();
+		// get all the types in the schema and create a spec for each
+		foreach (var dataTypeInformation in SchemaInfo.AllDataTypes.Where(x => x.Measure is not null))
+		{
+			// check schema compliance
+			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
+				continue;
+			var spec = CreateSpecification(xids, dataTypeInformation.Measure!, ids_schema);
+		}
+	}
+
+	private static Specification CreateSpecification(Xids xids, IfcDataTypeInformation type, IfcSchemaVersions ids_schema)
+	{
+		var xids_schema = IfcSchemaVersionHelper.FromIds(ids_schema);
+		var spec = xids.PrepareSpecification(xids_schema);
+		spec.Name = $"{type.IfcDataTypeClassName} {Faker.Generic.ExampleSynonym()}";
+		spec.Description = $"Required for the {Faker.Construction.Role()} {Faker.Construction.RequestSynonym()}";
+		var istructions = new StringBuilder($"The property will be contain the information of the {type.IfcDataTypeClassName} for the related entity.");
+		spec.Instructions = istructions.ToString();
+
+		spec.Applicability ??= new FacetGroup(xids.FacetRepository);
+		spec.Applicability.Name = $"{type.IfcDataTypeClassName} {Faker.Generic.RequestSynonym()}";
+		spec.Applicability.Facets.Add(CreatePropertyFacet(type));
+
+		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
+		spec.Requirement.Name = $"has value compatible for {type.IfcDataTypeClassName}";
+		var thistype = ValueConstraint.GetNamedTypeFromXsd(type.BackingType);
+		foreach (var item in GetPropConstraints(thistype))
+		{
+			var facet = CreatePropertyFacet(type);
+			facet.PropertyValue = item;
+		}
+
+		return spec;
+	}
+
+	private static IEnumerable<ValueConstraint> GetPropConstraints(NetTypeName thistype)
+	{
+		if (thistype == NetTypeName.Boolean)
+		{
+			var t = new ValueConstraint(thistype);
+			t.AddAccepted(new PatternConstraint("true|false"));
+			yield return t;
+			yield break;
+		}
+		foreach (var item in GetValues(thistype))
+		{
+			var t = new ValueConstraint(thistype);
+			var asStr = ValueConstraint.PersistValue(item, thistype);
+			if (!string.IsNullOrEmpty(asStr))
+			{
+				if (Faker.RandomBool())
+					t.AddAccepted(new ExactConstraint(asStr));
+				else
+				{
+					if (Faker.RandomBool())
+					{
+						t.AddAccepted(new RangeConstraint(
+							asStr,
+							Faker.RandomBool(),
+							"",
+							Faker.RandomBool()
+							));
+					}
+					else
+					{
+						t.AddAccepted(new RangeConstraint(
+							"",
+							Faker.RandomBool(),
+							asStr,
+							Faker.RandomBool()
+							));
+					}
+				}
+			}
+			yield return t;
+		}
+	}
+
+	private static IfcPropertyFacet CreatePropertyFacet(IfcDataTypeInformation type)
+	{
+		var t = new IfcPropertyFacet
+		{
+			PropertySetName = Faker.Ifc.Pset(),
+			PropertyName = $"{Faker.Construction.Activity()} {Faker.Construction.Role()}",
+			DataType = type.IfcDataTypeClassName.ToUpper()
+		};
+		return t;
+	}
+
+	private static IEnumerable<object> GetValues(NetTypeName thistype)
+	{
+		if (thistype == NetTypeName.String)
+		{
+			yield return Faker.Lorem.Word();
+			yield return Faker.Lorem.Word();
+		}
+		else if (thistype == NetTypeName.Double)
+		{
+			yield return Faker.RandomDouble(12, 45);
+			yield return Faker.RandomDouble(12, 45);
+		}
+		else if (thistype == NetTypeName.Integer)
+		{
+			yield return Faker.RandomInt(12, 45)!;
+			yield return Faker.RandomInt(12, 45)!;
+		}
+		else if (thistype == NetTypeName.Boolean)
+		{
+			yield return true;
+			yield return false;
+		}
+		else if (thistype == NetTypeName.Date)
+		{
+			yield return new DateTime(2026, 12, 31);
+			yield return new DateTime(2026, 11, 1);
+			yield return new DateTime(2042, 3, 21);
+			yield return new DateTime(2052, 8, 11);
+			yield return new DateTime(1971, 9, 6);
+			yield return new DateTime(1975, 11, 15);
+		}
+		else if (thistype == NetTypeName.DateTime)
+		{
+			yield return new DateTime(2026, 12, 31, 7, 9, 11);
+			yield return new DateTime(2026, 11, 1, 9, 11, 7);
+			yield return new DateTime(2042, 3, 21, 7, 2, 55);
+			yield return new DateTime(2052, 8, 11, 3, 3, 33);
+			yield return new DateTime(1971, 9, 6, 14, 23, 45);
+			yield return new DateTime(1975, 11, 15, 14, 23, 45);
+		}
+		else if (thistype == NetTypeName.Duration)
+		{
+			yield return new TimeSpan(2, 30, 15);                  // 02:30:15
+			yield return new TimeSpan(1, 12, 0, 0);                // 1 day, 12 hours
+			yield return new TimeSpan(0, 0, 5, 30, 500);           // 5 min 30.5 sec
+			yield return TimeSpan.FromMinutes(90);                 // 01:30:00
+			yield return TimeSpan.FromTicks(10_000_000);           // exactly 1 second
+			yield return TimeSpan.Parse("3.04:15:30");
+		}
+		else if (thistype == NetTypeName.Time)
+		{
+			yield return new TimeOfDay(new TimeSpan(3, 6, 12));
+			yield return new TimeOfDay(new TimeSpan(3, 6, 12), new TimeSpan(1, 0, 0));
+			yield return new TimeOfDay(new TimeSpan(3, 6, 12), new TimeSpan(-1, 0, 0));
+
+			yield return new TimeOfDay(new TimeSpan(18, 6, 12));
+			yield return new TimeOfDay(new TimeSpan(18, 6, 12), new TimeSpan(1, 0, 0));
+			yield return new TimeOfDay(new TimeSpan(18, 6, 12), new TimeSpan(-1, 0, 0));
+			yield return new TimeOfDay(new TimeSpan(18, 6, 12), new TimeSpan(+4, 0, 0));
+		}
+		else if (thistype == NetTypeName.Uri)
+		{
+			new Uri(Faker.Internet.Url());
+			new Uri(Faker.Internet.Url());
+		}
+		else
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	private static Specification CreateSpecification(Xids xids, IfcMeasureInformation measure, IfcSchemaVersions ids_schema)
+	{
+		var xids_schema = IfcSchemaVersionHelper.FromIds(ids_schema);
+		var spec = xids.PrepareSpecification(xids_schema);
+		spec.Name = $"{measure.Description} {Faker.Generic.ExampleSynonym()}";
+		spec.Description = $"Required for the {Faker.Construction.Role()} {Faker.Construction.RequestSynonym()}";
+		var istructions = new StringBuilder($"The property will be contain the information of the {measure.DefaultDisplay} for the related entity.\r\n");
+		istructions.Append($"Its unit in the IDS exchange file is interpreted in {measure.DefaultDisplay}");
+		if (!string.IsNullOrEmpty(measure.Unit))
+		{
+			istructions.Append("(");
+			istructions.Append(measure.Unit);
+
+			if (!string.IsNullOrEmpty(measure.UnitSymbol) && measure.UnitSymbol != measure.DefaultDisplay)
+				istructions.Append("/ " + measure.Unit);
+			istructions.Append(")");
+		}
+		istructions.AppendLine();
+		istructions.AppendLine($"IFC models will have the property stored as {measure.UnitTypeEnum}");
+
+		spec.Instructions = istructions.ToString();
+
+		spec.Applicability ??= new FacetGroup(xids.FacetRepository);
+		spec.Applicability.Name = $"{measure.Description}";
+		spec.Applicability.Facets.Add(CreatePropertyFacet(measure, false));
+
+		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
+		spec.Requirement.Name = $"has value compatible with {measure.DefaultDisplay}";
+		spec.Requirement.Facets.Add(CreatePropertyFacet(measure, true));
+		return spec;
+	}
+
+	private static Specification CreateSpecification(Xids xids, int index, bool retainBuildingSmartOnly)
+	{
+		var schema = Faker.PickRandom([IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3]);
 		var spec = xids.PrepareSpecification(
 			new[] { schema }
 			);
 		var ts = IfcSchemaVersionHelper.ToIds(schema);
 		var sInfo = SchemaInfo.GetSchemas(ts).FirstOrDefault()!;
 
-		var mat = Faker.Commerce.ProductMaterial().ToLowerInvariant();
-		var verb = Faker.Hacker.Verb().ToLowerInvariant();
-		spec.Name = $"{verb} {mat} #{index + 1}";
-		spec.Description = Faker.Lorem.Sentence();
-		spec.Instructions = Faker.Lorem.Sentence();
+		spec.Name = $"{Faker.Generic.RequestSynonym().FirstCharToUpper()} of the {Faker.Construction.Role().ToLower()} at {Faker.Construction.RibaStage()} (#{index + 1})";
+		spec.Description = Faker.Construction.Sentence();
+		spec.Instructions = Faker.Construction.Sentence();
 
 		// Applicability — what the spec selects
 		spec.Applicability ??= new FacetGroup(xids.FacetRepository);
-		spec.Applicability.Name = $"{Faker.Hacker.Adjective()} {mat}";
+		spec.Applicability.Name = $"{Faker.Generic.Subset().FirstCharToUpper()} {Faker.Construction.BuildingPart()} with {Faker.Construction.EngineeringOrFunctionalNeeds()} {Faker.Generic.RequestSynonym()}";
 		var typeFacet = CreateTypeFacet(sInfo);
 		spec.Applicability.Facets.Add(typeFacet);
-		spec.Applicability.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo)));
+		spec.Applicability.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo).ToList()));
 
 		// Requirement — what must be true
 		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
-		spec.Requirement.Name = $"{verb} {Faker.Hacker.Adjective()}";
-		spec.Requirement.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo)));
-		spec.Requirement.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo)));
-		spec.Requirement.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo)));
-
+		spec.Requirement.Name = $"{Faker.Generic.ShouldSynonimExpression()} {Faker.Generic.SatisfyingSynonim()} {Faker.Generic.RequestSynonym()}";
+		for (int i = 0; i < 3; i++)
+		{
+			var temp = Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo).ToList());
+			if (temp is FacetBase fb)
+			{
+				fb.Instructions = Faker.Construction.Sentence();
+				fb.Uri = Faker.Ifc.BsddUri(temp.GetType().Name);
+			}
+			spec.Requirement.Facets.Add(temp);
+		}
 		return spec;
 	}
 
@@ -95,7 +348,7 @@ public static class SampleXidsFactory
 		yield return CreateClassificationFacet(ifcType);
 		yield return CreatePropertyFacet(ifcType, schema);
 		yield return CreatePropertyFacet(ifcType, schema); // double the chance to get property
-		yield return CreateAttributeFacet(ifcType,schema);
+		yield return CreateAttributeFacet(ifcType, schema);
 		yield return CreatePartOfFacet(schema);
 		yield return CreateMaterialFacet();
 		if (!retainBuildingSmartOnly)
@@ -105,14 +358,14 @@ public static class SampleXidsFactory
 		}
 	}
 
-	private static DocumentFacet CreateDocumentFacet()  =>
+	private static DocumentFacet CreateDocumentFacet() =>
 		new DocumentFacet
 		{
-			DocName = Faker.Commerce.ProductName(),
-			DocId = Faker.PickRandom("PDF", "DOCX", "XLSX", "TXT", "IFC"),
+			DocName = $"{Faker.Construction.Activity()} instructions",
+			DocId = Faker.PickRandom(["PDF", "DOCX", "XLSX", "TXT", "IFC"]),
 			DocLocation = Faker.Internet.Url(),
-			DocIntendedUse = Faker.Lorem.Sentence(),
-			DocPurpose = $"Satisfy {Faker.Company.CompanyName()} documentation requirements."  
+			DocIntendedUse = $"We need to ensure that the documentation is available online for the {Faker.Construction.Role()}.",
+			DocPurpose = $"Satisfy {Faker.Construction.Role()} documentation requirements as well."
 		};
 
 	private static IfcRelationFacet CreateRelationFacet() =>
@@ -125,11 +378,11 @@ public static class SampleXidsFactory
 	private static MaterialFacet CreateMaterialFacet() =>
 		new MaterialFacet
 		{
-			Value = Faker.PickRandom("Perhaps concrete", "Perhaps steel", "Perhaps wood", "Perhaps glass", "Perhaps brick")
+			Value = Faker.Construction.Material()
 		};
 
 	public static readonly (string IfcEntity, string System, string Code, string Description)[] KnownClassifications =
-		{
+	{
 			// ── IfcWall ──
 			("IfcWall", "Uniclass 2015", "EF_25_10", "External walls"),
 			("IfcWall", "Uniclass 2015", "EF_25_30", "Internal walls and partitions"),
@@ -223,8 +476,8 @@ public static class SampleXidsFactory
 	{
 		if (ifcType is not null && ifcType.IsSingleExact<string>(out var typeName))
 		{
-			var validClass = KnownClassifications.Where(x=>x.IfcEntity == typeName).ToArray();
-			if (validClass.Length > 0)
+			var validClass = KnownClassifications.Where(x => x.IfcEntity == typeName).ToList();
+			if (validClass.Count > 0)
 			{
 				var selected = Faker.PickRandom(validClass);
 				var t = new IfcClassificationFacet
@@ -238,41 +491,72 @@ public static class SampleXidsFactory
 		return new IfcClassificationFacet
 		{
 			ClassificationSystem = "DummyClassification",
-			Identification = Faker.PickRandom("DummyVal1", "DummyVal2", "")
+			Identification = Faker.PickRandom(["DummyVal1", "DummyVal2", ""])
 		};
 	}
 
 	private static IfcTypeFacet CreateTypeFacet(SchemaInfo schema)
 	{
-		var typeName = Faker.PickRandom("IfcWall", "IfcBeam", "IfcSlab", "IfcColumn", "IfcDoor");
+		var typeName = Faker.PickRandom(["IfcWall", "IfcBeam", "IfcSlab", "IfcColumn", "IfcDoor"]);
 		var t = new IfcTypeFacet
 		{
 			IfcType = typeName
 		};
-		var b = Faker.Random.Bool();
+		var b = Faker.RandomBool();
 		if (b)
 		{
 			var cls = schema[typeName]!.PredefinedTypeValues;
 			if (cls is not null && cls.Any())
-				t.PredefinedType = Faker.PickRandom(cls);
+				t.PredefinedType = Faker.PickRandom(cls.ToList());
 		}
 		return t;
 	}
 
+	private static IFacet CreatePropertyFacet(IfcMeasureInformation measure, bool addValue)
+	{
+		var t = new IfcPropertyFacet
+		{
+			PropertySetName = Faker.Ifc.Pset(),
+			PropertyName = $"{Faker.Construction.Activity()} {Faker.Construction.Role()}",
+			DataType = measure.IfcMeasure.ToUpper()
+		};
+		if (addValue)
+		{
+			if (Faker.RandomBool())
+				t.PropertyValue = Faker.RandomDouble(3, 13).ToString("N2", CultureInfo.InvariantCulture);
+			else
+				t.PropertyValue = CreateRandomRange();
+		}
+		return t;
+	}
+
+	private static ValueConstraint? CreateRandomRange()
+	{
+		var ret = new ValueConstraint(NetTypeName.Double);
+		ret.AddAccepted(new RangeConstraint(
+			Faker.RandomDouble(3, 13).ToString("N2", CultureInfo.InvariantCulture),
+			Faker.RandomBool(),
+			Faker.RandomDouble(15, 23).ToString("N2", CultureInfo.InvariantCulture),
+			Faker.RandomBool()
+			));
+		return ret;
+	}
+
 	private static IfcPropertyFacet CreatePropertyFacet(ValueConstraint? ifcType, SchemaInfo schema)
 	{
-		var standardProp = Faker.Random.Bool();
+		var standardProp = Faker.RandomBool();
 
 		// attempt relevant property
 		if (standardProp && ifcType is not null && ifcType.IsSingleExact<string>(out var typeName))
 		{
 			var psets = schema.PropertySets.Where(x => x.ApplicableClasses.Contains(typeName));
-			if (psets.Any()) {
-				var pset = Faker.PickRandom(psets);
+			if (psets.Any())
+			{
+				var pset = Faker.PickRandom(psets.ToList());
 				var props = pset.Properties.OfType<SingleValuePropertyType>();
 				if (props.Any())
 				{
-					var prop = Faker.PickRandom(props);
+					var prop = Faker.PickRandom(props.ToList());
 					return new IfcPropertyFacet
 					{
 						PropertySetName = pset.Name,
@@ -286,13 +570,13 @@ public static class SampleXidsFactory
 		// any random property
 		var t = new IfcPropertyFacet
 		{
-			PropertySetName = Faker.PickRandom($"Custom_Pset_{Faker.Commerce.ProductMaterial()}", $"Custom_Pset_{Faker.Commerce.ProductMaterial()}", $"Custom_Pset_{Faker.Commerce.ProductMaterial()}"),
-			PropertyName = Faker.Hacker.Noun(),
+			PropertySetName = Faker.Ifc.Pset(),
+			PropertyName = $"{Faker.Construction.Activity()} {Faker.Construction.Role()}",
 		};
-		if (Faker.Random.Bool())
+		if (Faker.RandomBool())
 		{
 			t.DataType = "IfcLabel";
-			t.PropertyValue = Faker.Lorem.Word();
+			t.PropertyValue = Faker.Lorem.Word().FirstCharToUpper();
 		}
 		return t;
 	}
@@ -308,7 +592,7 @@ public static class SampleXidsFactory
 		// see what's possible
 		var compatible = ValueConstraint.CompatibleConstraints(dt);
 		var retValue = new ValueConstraint(""); // this is a risk of crashing
-		var filterPercent = Faker.Random.Double();
+		var filterPercent = Faker.RandomDouble();
 
 		if (dt == NetTypeName.String)
 		{
@@ -343,33 +627,35 @@ public static class SampleXidsFactory
 				retValue = new ValueConstraint();
 				retValue.AddAccepted(new RangeConstraint()
 				{
-					MinValue = Faker.Random.Double(4, 10).ToString(format, CultureInfo.InvariantCulture),
-					MaxValue = Faker.Random.Double(13, 18).ToString(format, CultureInfo.InvariantCulture),
-					MinInclusive = Faker.Random.Bool(),
-					MaxInclusive = Faker.Random.Bool(),
+					MinValue = Faker.RandomDouble(4, 10).ToString(format, CultureInfo.InvariantCulture),
+					MaxValue = Faker.RandomDouble(13, 18).ToString(format, CultureInfo.InvariantCulture),
+					MinInclusive = Faker.RandomBool(),
+					MaxInclusive = Faker.RandomBool(),
 				});
 			}
 			else if (filterPercent < 0.5 && compatible.Contains(ValueConstraint.Constraints.enumeration))
 			{
 				retValue = new ValueConstraint();
-				retValue.AddAccepted(new ExactConstraint(Faker.Random.Double(12, 45).ToString(format, CultureInfo.InvariantCulture)));
-				retValue.AddAccepted(new ExactConstraint(Faker.Random.Double(12, 45).ToString(format, CultureInfo.InvariantCulture)));
+				retValue.AddAccepted(new ExactConstraint(Faker.RandomDouble(12, 45).ToString(format, CultureInfo.InvariantCulture)));
+				retValue.AddAccepted(new ExactConstraint(Faker.RandomDouble(12, 45).ToString(format, CultureInfo.InvariantCulture)));
 			}
 			else
-				retValue = Faker.Random.Double(12, 45).ToString(format, CultureInfo.InvariantCulture);
+				retValue = Faker.RandomDouble(12, 45).ToString(format, CultureInfo.InvariantCulture);
 		}
 		else
 		{
-			retValue = new ValueConstraint(ValueConstraint.GetDefaultValue(dt)?.ToString() ?? "");
+			// at this stage it should be safe to use the xml value, as xids is more tolerant of invalid values	
+			retValue = new ValueConstraint(IdsLib.IdsSchema.XsNodes.XsTypes.GetDefaultEmptyValue(ValueConstraint.ConvertToXsType(dt)));
+
 		}
 		retValue.BaseType = dt;
 
 		// structure constraint
-		int? lenCon = (compatible.Contains(ValueConstraint.Constraints.length)) ? Faker.Random.Int(6, 8) : null;
-		int? minLenCon = (compatible.Contains(ValueConstraint.Constraints.minLength)) ? Faker.Random.Int(0, 2) : null;
-		int? maxLenCon = (compatible.Contains(ValueConstraint.Constraints.maxLength)) ? Faker.Random.Int(8, 10) : null;
-		int? fracDigi = (compatible.Contains(ValueConstraint.Constraints.fractionDigits)) ? Faker.Random.Int(0, 3) : null;
-		int? totDigi = (compatible.Contains(ValueConstraint.Constraints.totalDigits)) ? Faker.Random.Int(8, 10) : null;
+		int? lenCon = (compatible.Contains(ValueConstraint.Constraints.length)) ? Faker.RandomInt(6, 8) : null;
+		int? minLenCon = (compatible.Contains(ValueConstraint.Constraints.minLength)) ? Faker.RandomInt(0, 2) : null;
+		int? maxLenCon = (compatible.Contains(ValueConstraint.Constraints.maxLength)) ? Faker.RandomInt(8, 10) : null;
+		int? fracDigi = (compatible.Contains(ValueConstraint.Constraints.fractionDigits)) ? Faker.RandomInt(0, 3) : null;
+		int? totDigi = (compatible.Contains(ValueConstraint.Constraints.totalDigits)) ? Faker.RandomInt(8, 10) : null;
 		if (lenCon is not null ||
 			minLenCon is not null ||
 			maxLenCon is not null ||
@@ -378,7 +664,7 @@ public static class SampleXidsFactory
 		{
 			if (lenCon.HasValue && (minLenCon.HasValue || maxLenCon.HasValue))
 			{
-				var choice = Faker.Random.Double(0, 1);
+				var choice = Faker.RandomDouble(0, 1);
 				if (choice < 0.3)
 					lenCon = null; // drop length constraint to avoid conflict with min/max
 				else if (choice < 0.6)
@@ -411,17 +697,19 @@ public static class SampleXidsFactory
 		var t =
 		new AttributeFacet
 		{
-			AttributeName = Faker.PickRandom("Name", "Description", "ObjectType", "Tag"),
+			AttributeName = Faker.PickRandom(["Name", "Description", "ObjectType", "Tag"]),
 			AttributeValue = Faker.Lorem.Word()
 		};
 		return t;
 	}
 
-	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema) =>
-		new PartOfFacet
-		{
-			EntityType = CreateTypeFacet(schema),
-			EntityRelation = Faker.PickRandom<PartOfFacet.PartOfRelation>().ToString()
-		};
+	private static IList<PartOfFacet.PartOfRelation> partOfRelations = Enum.GetValues(typeof(PartOfFacet.PartOfRelation)).Cast<PartOfFacet.PartOfRelation>().ToList();
+
+	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema) => new PartOfFacet
+	{
+		EntityType = CreateTypeFacet(schema),
+		EntityRelation = Faker.PickRandom(partOfRelations).ToString()
+	};
+
 
 }

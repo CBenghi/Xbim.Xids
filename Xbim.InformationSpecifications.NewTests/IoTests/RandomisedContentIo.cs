@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using XidsEditing.InformationSpecifications;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests;
@@ -32,7 +33,7 @@ public class RandomisedContentIo
 		return logg;
 	}
 
-	[Theory(DisplayName = "Random")]
+	[Theory(DisplayName = "RandomContent")]
 	[MemberData(nameof(GetTestData))]
 	public void CanSaveRandomContent(string fileName)
 	{
@@ -41,7 +42,7 @@ public class RandomisedContentIo
 		logger.LogInformation($"Published in {d.FullName}");
 
 		var fIds = fileName + ".ids";
-		var t = XidsEditing.Xids.SampleXidsFactory.Create(5);
+		var t = SampleXidsFactory.Create(5);
 
 		t.ExportBuildingSmartIDS(fIds, logger);
 		t.SaveAsJson(fileName, logger);
@@ -87,7 +88,8 @@ public class RandomisedContentIo
 	{
 		for (int i = 0; i < 50; i++)
 		{
-			yield return new object[] { $"RandomisedTest{i:D2}.json" };
+			yield return new object[] { $"RandomisedIdsTest{i:D2}.ids" };
 		}
 	}
+
 }

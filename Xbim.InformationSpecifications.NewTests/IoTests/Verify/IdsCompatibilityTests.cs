@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using VerifyTests;
 using VerifyXunit;
 using Xbim.Ifc4x3.ProductExtension;
 using Xbim.InformationSpecifications.Tests.Helpers;
+using XidsEditing.InformationSpecifications;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests.Verify;
@@ -31,43 +33,54 @@ public class IdsCompatibilityTests
 	[MemberData(nameof(GetSimpleXids))]
 	public async Task TestIdsPersistenceAsync(string originalFileName)
 	{
+		DirectoryInfo d = new DirectoryInfo(".");
+		log.LogInformation($"Testing IDS roundtrip for file `{originalFileName}` in directory {Environment.NewLine}`{d.FullName}`");
+
 		var x = Xids.LoadFromJson(originalFileName)!;
 
 		var idsfile = originalFileName.Replace(".1.json", ".ids");
 		x.ExportBuildingSmartIDS(idsfile);
 
 		// ensure that the exported file is valid ids
-		var opts = new IdsLib.SingleAuditOptions() {
+		var opts = new IdsLib.SingleAuditOptions()
+		{
 			XmlWarningAction = IdsLib.AuditProcessOptions.XmlWarningBehaviour.ReportAsError,
 			OmitIdsContentAudit = true
 		};
 
+		FileInfo f = new FileInfo(idsfile);
+		log.LogInformation($"Auditing IDS file `{f.FullName}`");
 		using (var reader = File.OpenRead(idsfile))
 		{
 			var auditResult = IdsLib.Audit.Run(reader, opts, log);
 			auditResult.Should().Be(IdsLib.Audit.Status.Ok);
 		}
 
-		var reloaded = Xids.LoadBuildingSmartIDS(idsfile)!;
+		var reloadedFromIds = Xids.LoadBuildingSmartIDS(idsfile)!;
 		var reloadedName = originalFileName.Replace(".1.json", ".2.json");
-		reloaded.SaveAsJson(reloadedName);
+		reloadedFromIds.SaveAsJson(reloadedName);
+
+		// facet group names are lost in the roundtrip to IDS
+		string[] ignoreNames = ["ApplicabilityDescription", "RequirementDescription", "Name", "Provider", "Consumers"];
 
 		var reloadedJson = File.ReadAllText(reloadedName);
-		var reloadedVerified = await Verifier.VerifyJson(reloadedJson)
+		var reloadedFromIdsVerified = await Verifier.VerifyJson(reloadedJson)
 			.UseFileName($"{originalFileName}_reloaded")
-			.IgnoreMembers("ApplicabilityDescription", "RequirementDescription")
+			.IgnoreMembers(ignoreNames)
 			.ScrubNumericIds()
+			.IgnoreTrailingZeros()
 			.AutoVerify();
 
 		var originalJson = File.ReadAllText(originalFileName);
 		var originalVerified = await Verifier.VerifyJson(originalJson)
 			.UseFileName($"{originalFileName}_original")
-			.IgnoreMembers("ApplicabilityDescription", "RequirementDescription")
+			.IgnoreMembers(ignoreNames)
 			.ScrubNumericIds()
+			.IgnoreTrailingZeros()
 			.AutoVerify();
-		reloadedVerified.Text.Should().BeEquivalentTo(originalVerified.Text, "The reloaded JSON should be equivalent to the original JSON");
+		reloadedFromIdsVerified.Text.Should().BeEquivalentTo(originalVerified.Text, "The reloaded JSON should be equivalent to the original JSON");
 
-		foreach (var item in reloadedVerified.Files)
+		foreach (var item in reloadedFromIdsVerified.Files)
 		{
 			File.Delete(item);
 		}
@@ -77,10 +90,17 @@ public class IdsCompatibilityTests
 		}
 	}
 
+	[Fact]
+	public void CanRandomiseXids()
+	{
+		var t = GetSimpleXids();
+		t.Should().NotBeEmpty("There should be some test XIDs to randomise");
+	}
+
 	public static IEnumerable<object[]> GetSimpleXids()
 	{
 		IFacet? prev = null;
-		int index = 0;
+		int idsIndex = 0;
 		foreach (var item in IdsCompatibleFacets())
 		{
 			if (prev != null)
@@ -89,11 +109,25 @@ public class IdsCompatibilityTests
 				var newspec = x.PrepareSpecification(IfcSchemaVersion.IFC4X3);
 				newspec.Applicability.Facets.Add(prev);
 				newspec.Requirement!.Facets.Add(item);
-				string displayName = $"{index++:D4}_{GetName(prev)}_{GetName(item)}.1.json";
+				string displayName = $"{idsIndex++:D4}_{GetName(prev)}_{GetName(item)}.1.json";
 				x.SaveAsJson(displayName);
 				yield return [displayName];
 			}
 			prev = item;
+		}
+		// also add some with measures and some with odd types
+		var schemas = new IfcSchemaVersions[] { IfcSchemaVersions.Ifc4x3, IfcSchemaVersions.Ifc2x3, IfcSchemaVersions.Ifc4 };
+		foreach (var version in schemas)
+		{
+			var opts = new bool[] { true, false };
+			foreach (var measuresOrDataTypes in opts)
+			{
+				var nm = measuresOrDataTypes ? "Measures" : "DataTypes";
+				var x = SampleXidsFactory.CreateDataTypes(version, measuresOrDataTypes, !measuresOrDataTypes);
+				string displayName = $"{idsIndex++:D4}_{nm}.1.json";
+				x.SaveAsJson(displayName);
+				yield return [displayName];
+			}
 		}
 	}
 

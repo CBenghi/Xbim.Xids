@@ -437,7 +437,7 @@ namespace Xbim.InformationSpecifications
 						}
 						if (rc.MaxValue != null)
 						{
-							var tp = rc.MinInclusive ? "maxInclusive" : "maxExclusive";
+							var tp = rc.MaxInclusive ? "maxInclusive" : "maxExclusive";
 							xmlWriter.WriteStartElement(tp, @"http://www.w3.org/2001/XMLSchema");
 							xmlWriter.WriteAttributeString("value", rc.MaxValue.ToString());
 							xmlWriter.WriteEndElement();
