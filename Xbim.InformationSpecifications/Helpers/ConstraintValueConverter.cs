@@ -28,7 +28,8 @@ namespace Xbim.InformationSpecifications.Helpers
 				options ??= new JsonSerializerOptions();
 				_options = new JsonSerializerOptions()
 				{
-					DefaultIgnoreCondition = options.DefaultIgnoreCondition
+					DefaultIgnoreCondition = options.DefaultIgnoreCondition,
+					TypeInfoResolver = options.TypeInfoResolver
 				};
 				var constraintConverter = new HeterogenousListConverter<IValueConstraintComponent, List<IValueConstraintComponent>>(
 					(nameof(ExactConstraint), typeof(ExactConstraint)),

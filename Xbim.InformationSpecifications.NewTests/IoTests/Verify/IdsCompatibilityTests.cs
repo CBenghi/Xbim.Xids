@@ -33,9 +33,8 @@ public class IdsCompatibilityTests
 	[MemberData(nameof(GetSimpleXids))]
 	public async Task TestIdsPersistenceAsync(string originalFileName)
 	{
-		DirectoryInfo d = new DirectoryInfo(".");
-		log.LogInformation($"Testing IDS roundtrip for file `{originalFileName}` in directory {Environment.NewLine}`{d.FullName}`");
-
+		var d = new DirectoryInfo(".");
+		log.LogInformation("Testing IDS roundtrip for file `{originalFileName}` in directory \r\n`{dFullName}`", originalFileName, d.FullName);
 		var x = Xids.LoadFromJson(originalFileName)!;
 
 		var idsfile = originalFileName.Replace(".1.json", ".ids");
@@ -48,8 +47,8 @@ public class IdsCompatibilityTests
 			OmitIdsContentAudit = true
 		};
 
-		FileInfo f = new FileInfo(idsfile);
-		log.LogInformation($"Auditing IDS file `{f.FullName}`");
+		var f = new FileInfo(idsfile);
+		log.LogInformation("Auditing IDS file `{fFullName}`", f.FullName);
 		using (var reader = File.OpenRead(idsfile))
 		{
 			var auditResult = IdsLib.Audit.Run(reader, opts, log);
@@ -91,14 +90,42 @@ public class IdsCompatibilityTests
 	}
 
 	[Fact]
-	public void CanRandomiseXids()
+	internal void SaveRichAttributeFile()
+	{
+		var d = new DirectoryInfo(".");
+		OutputHelper.WriteLine($"Saving rich file in directory \r\n`{d.FullName}`");
+		var version = IfcSchemaVersions.Ifc4x3;
+		var x = SampleXidsFactory.CreateAttributeSpecifications(version);
+		// x.SaveAsJson("RichFile.json");
+		x.ExportBuildingSmartIDS("RichFileAttribute.ids");
+	}
+
+	[Fact]
+	internal void SaveRichFile()
+	{
+		var d = new DirectoryInfo(".");
+		OutputHelper.WriteLine($"Saving rich file in directory \r\n`{d.FullName}`");
+		var version = IfcSchemaVersions.Ifc4x3;
+		var x = SampleXidsFactory.CreateDataTypes(version, true, true);
+		x.SaveAsJson("RichFile.json");
+		x.ExportBuildingSmartIDS("RichFile.ids");
+	}
+
+	// [Fact]
+	internal void CanRandomiseXids()
 	{
 		var t = GetSimpleXids();
 		t.Should().NotBeEmpty("There should be some test XIDs to randomise");
+		foreach (var item in t)
+		{
+			OutputHelper.WriteLine($"Randomising file `{item.Data}`");
+		}
 	}
 
-	public static IEnumerable<object[]> GetSimpleXids()
+	public static TheoryData<string> GetSimpleXids()
 	{
+		var theoryData = new TheoryData<string>();
+
 		IFacet? prev = null;
 		int idsIndex = 0;
 		foreach (var item in IdsCompatibleFacets())
@@ -111,7 +138,7 @@ public class IdsCompatibilityTests
 				newspec.Requirement!.Facets.Add(item);
 				string displayName = $"{idsIndex++:D4}_{GetName(prev)}_{GetName(item)}.1.json";
 				x.SaveAsJson(displayName);
-				yield return [displayName];
+				theoryData.Add(displayName);
 			}
 			prev = item;
 		}
@@ -126,9 +153,11 @@ public class IdsCompatibilityTests
 				var x = SampleXidsFactory.CreateDataTypes(version, measuresOrDataTypes, !measuresOrDataTypes);
 				string displayName = $"{idsIndex++:D4}_{nm}.1.json";
 				x.SaveAsJson(displayName);
-				yield return [displayName];
+				theoryData.Add(displayName);
 			}
 		}
+
+		return theoryData;
 	}
 
 	private static string GetName(PartOfFacet prev)

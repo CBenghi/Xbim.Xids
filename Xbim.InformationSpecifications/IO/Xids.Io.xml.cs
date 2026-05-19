@@ -283,7 +283,7 @@ namespace Xbim.InformationSpecifications
 						IEnumerable<IValueConstraintComponent> complexConstraints = new List<IValueConstraintComponent>();
 						if (values != null)
 						{
-							exactValues = values.OfType<ExactConstraint>().Select(x => x.Value).ToArray();
+							exactValues = [.. values.OfType<ExactConstraint>().Select(x => x.Value)];
 							complexConstraints = values.Except(values.OfType<ExactConstraint>());
 						}
 						if (exactValues.Any())
@@ -419,27 +419,35 @@ namespace Xbim.InformationSpecifications
 					}
 					else if (item is ExactConstraint ec)
 					{
-						xmlWriter.WriteStartElement("enumeration", @"http://www.w3.org/2001/XMLSchema");
-						if (forceUpperCase)
-							xmlWriter.WriteAttributeString("value", ec.Value.ToString().ToUpperInvariant());
-						else
-							xmlWriter.WriteAttributeString("value", ec.Value.ToString());
-						xmlWriter.WriteEndElement();
+						if (ValueConstraint.XidsIsValid(ec.Value, value.BaseType, out string? asIdsVal))
+						{
+							// boolean is one exception where the value needs to be expressed as a pattern,
+							// because XSD boolean does not allow an enumeration result
+							var nodename = value.BaseType == NetTypeName.Boolean
+								? "pattern"
+								: "enumeration";
+							xmlWriter.WriteStartElement(nodename, @"http://www.w3.org/2001/XMLSchema");
+							if (forceUpperCase)
+								xmlWriter.WriteAttributeString("value", asIdsVal.ToUpperInvariant());
+							else
+								xmlWriter.WriteAttributeString("value", asIdsVal);
+							xmlWriter.WriteEndElement();
+						}
 					}
 					else if (item is RangeConstraint rc)
 					{
-						if (rc.MinValue != null)
+						if (ValueConstraint.XidsIsValid(rc.MinValue, value.BaseType, out string? asIdsMin))
 						{
 							var tp = rc.MinInclusive ? "minInclusive" : "minExclusive";
 							xmlWriter.WriteStartElement(tp, @"http://www.w3.org/2001/XMLSchema");
-							xmlWriter.WriteAttributeString("value", rc.MinValue.ToString());
+							xmlWriter.WriteAttributeString("value", asIdsMin);
 							xmlWriter.WriteEndElement();
 						}
-						if (rc.MaxValue != null)
+						if (ValueConstraint.XidsIsValid(rc.MaxValue, value.BaseType, out string? asIdsMax))
 						{
 							var tp = rc.MaxInclusive ? "maxInclusive" : "maxExclusive";
 							xmlWriter.WriteStartElement(tp, @"http://www.w3.org/2001/XMLSchema");
-							xmlWriter.WriteAttributeString("value", rc.MaxValue.ToString());
+							xmlWriter.WriteAttributeString("value", asIdsMax);
 							xmlWriter.WriteEndElement();
 						}
 					}

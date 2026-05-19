@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using Xbim.InformationSpecifications.Helpers;
-
 
 namespace Xbim.InformationSpecifications
 {
@@ -80,6 +76,37 @@ namespace Xbim.InformationSpecifications
 									prop.ShouldSerialize = existing is null
 										? (_, val) => val is string s && !string.IsNullOrEmpty(s)
 										: (obj, val) => existing(obj, val) && val is string s && !string.IsNullOrEmpty(s);
+								}
+							}
+							// Special handling for RangeConstraint
+							if (typeInfo.Type == typeof(RangeConstraint))
+							{
+								foreach (var prop in typeInfo.Properties)
+								{
+									// Only serialize MinInclusive if MinValue is not null or empty
+									if (prop.Name == nameof(RangeConstraint.MinInclusive))
+									{
+										prop.ShouldSerialize = (obj, _) =>
+										{
+											if (obj is RangeConstraint range)
+											{
+												return !string.IsNullOrEmpty(range.MinValue);
+											}
+											return true;
+										};
+									}
+									// Only serialize MaxInclusive if MaxValue is not null or empty
+									else if (prop.Name == nameof(RangeConstraint.MaxInclusive))
+									{
+										prop.ShouldSerialize = (obj, _) =>
+										{
+											if (obj is RangeConstraint range)
+											{
+												return !string.IsNullOrEmpty(range.MaxValue);
+											}
+											return true;
+										};
+									}
 								}
 							}
 						}

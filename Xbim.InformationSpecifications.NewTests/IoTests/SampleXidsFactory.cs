@@ -18,7 +18,14 @@ namespace XidsEditing.InformationSpecifications;
 /// </summary>
 public static class SampleXidsFactory
 {
-	private static readonly Faker Faker = new Faker();
+	private static readonly Faker Faker = new();
+
+	public static Xids CreateAttributeSpecifications(IfcSchemaVersions schema)
+	{
+		Xids xids = PrepareBasicXids();
+		AddAttributeSpecifications(xids, schema);
+		return xids;
+	}
 
 	public static Xids CreateDataTypes(IfcSchemaVersions schema, bool addMeasures = true, bool addIfcTypesValues = true)
 	{
@@ -61,11 +68,13 @@ public static class SampleXidsFactory
 
 	private static Xids PrepareBasicXids()
 	{
-		var xids = new Xids();
-		// Metadata
-		xids.Name = $"My {Faker.Generic.ExcitingAdjective()} information specifications document";
-		xids.Version = $"{Faker.RandomInt(1, 3)}.{Faker.RandomInt(0, 9)}.{Faker.RandomInt(0, 9)}";
-		xids.Guid = Guid.NewGuid().ToString();
+		var xids = new Xids
+		{
+			// Metadata
+			Name = $"My {Faker.Generic.ExcitingAdjective()} information specifications document",
+			Version = $"{Faker.RandomInt(1, 3)}.{Faker.RandomInt(0, 9)}.{Faker.RandomInt(0, 9)}",
+			Guid = Guid.NewGuid().ToString()
+		};
 
 		// One specifications group containing N specifications
 		var group = new SpecificationsGroup(xids)
@@ -76,13 +85,53 @@ public static class SampleXidsFactory
 			Copyright = "© 2026 Claudio Benghi. This work is licensed under CC BY-SA 4.0 (attribution required, Share Alike). To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/",
 			Date = DateTime.Now.Date,
 			Provider = Faker.Construction.Role(),
-			Consumers = Enumerable.Range(0, 4).Select(_ => Faker.Construction.Role()).ToList()
+			Consumers = [.. Enumerable.Range(0, 4).Select(_ => Faker.Construction.Role())]
 		};
 		xids.SpecificationsGroups.Add(group);
 		return xids;
 	}
 
 	private static FacetGroup? referencedFacet = null;
+
+	private static void AddAttributeSpecifications(Xids xids, IfcSchemaVersions schemaRequest)
+	{
+		var schemas = SchemaInfo.GetSchemas(schemaRequest);
+		foreach (var schema in schemas)
+		{
+			var validtypeNames = SchemaInfo.AllDataTypes.Where(x => x.ValidSchemaVersions.HasFlag(schemaRequest)).Select(x => x.IfcDataTypeClassName).ToList();
+			var validPairs = GetAttributeAndBackingTypes(schema).ToList();
+			var filtered = validPairs
+				.Where(x => validtypeNames.Contains(x.backingIfc.ToUpperInvariant()))
+				.GroupBy(x => x.backingIfc)
+				.Select(g => g.First())
+				.ToList()
+				.Where(f => !f.backingIfc.EndsWith("enum", StringComparison.OrdinalIgnoreCase))
+				.ToList();
+
+			foreach (var item in filtered)
+			{
+				var _ = AddSpecification(xids, item.attributeName, item.backingIfc, schema);
+			}
+		}
+
+		//var atts = SchemaInfo.AllAttributes.Where(x => x.ValidSchemaVersions.HasFlag(schemaRequest));
+		//foreach (var att in atts)
+		//{
+		//	// att.
+		//}
+
+	}
+
+	private static IEnumerable<(string attributeName, string backingIfc)> GetAttributeAndBackingTypes(SchemaInfo schema)
+	{
+		foreach (var item in schema.GetAttributeNames())
+		{
+			var types = schema.GetAttributesIfcTypes([item]).ToList();
+			if (types.Count() != 1)
+				continue;
+			yield return (item, types[0]);
+		}
+	}
 
 	private static void CreateIfcTypePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
 	{
@@ -108,8 +157,47 @@ public static class SampleXidsFactory
 			// check schema compliance
 			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
 				continue;
-			var spec = CreateSpecification(xids, dataTypeInformation, ids_schema);
+			var _ = CreateSpecification(xids, dataTypeInformation, ids_schema);
 		}
+	}
+
+	private static Specification? AddSpecification(Xids xids, string attributeName, string backingIfc, SchemaInfo schema)
+	{
+		var att = schema.GetAttributesXsdTypes([attributeName]).FirstOrDefault();
+		if (att == null)
+			return null;
+		NetTypeName thistype = ValueConstraint.GetNamedTypeFromXsd(att);
+		var vals = GetTypeConstraints(thistype).ToList(); // just to check if we can generate some constraints for this type, otherwise skip
+		if (vals.Count == 0)
+			return null;
+
+		var xids_schema = IfcSchemaVersionHelper.FromIds(schema.Version);
+		var spec = xids.PrepareSpecification(xids_schema);
+		spec.Name = $"Attribute {attributeName} {Faker.Generic.ExampleSynonym()}";
+		spec.Description = $"Demonstrates an attribute constraints for the {backingIfc} type";
+
+		spec.Applicability ??= new FacetGroup(xids.FacetRepository);
+		spec.Applicability.Name = $"Att {attributeName} {Faker.Generic.RequestSynonym()}";
+		spec.Applicability.Facets.Add(CreateAttributeFacetFor(attributeName));
+
+		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
+		foreach (var item in vals)
+		{
+			var facet = CreateAttributeFacetFor(attributeName);
+			facet.AttributeValue ??= new ValueConstraint(thistype);
+			facet.AttributeValue?.AddAccepted(item);
+			spec.Requirement.Facets.Add(facet);
+		}
+		return spec;
+	}
+
+	private static AttributeFacet CreateAttributeFacetFor(string attributeName)
+	{
+		var t = new AttributeFacet
+		{
+			AttributeName = attributeName
+		};
+		return t;
 	}
 
 	private static void CreateMeasurePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
@@ -121,12 +209,16 @@ public static class SampleXidsFactory
 			// check schema compliance
 			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
 				continue;
+			if (dataTypeInformation.IfcDataTypeClassName == "IFCINTEGERCOUNTRATEMEASURE")
+				continue; // skip because change type across schemas
 			var spec = CreateSpecification(xids, dataTypeInformation.Measure!, ids_schema);
 		}
 	}
 
-	private static Specification CreateSpecification(Xids xids, IfcDataTypeInformation type, IfcSchemaVersions ids_schema)
+	private static Specification? CreateSpecification(Xids xids, IfcDataTypeInformation type, IfcSchemaVersions ids_schema)
 	{
+		if (type.IfcDataTypeClassName == "IFCBINARY")
+			return null;
 		var xids_schema = IfcSchemaVersionHelper.FromIds(ids_schema);
 		var spec = xids.PrepareSpecification(xids_schema);
 		spec.Name = $"{type.IfcDataTypeClassName} {Faker.Generic.ExampleSynonym()}";
@@ -141,55 +233,57 @@ public static class SampleXidsFactory
 		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
 		spec.Requirement.Name = $"has value compatible for {type.IfcDataTypeClassName}";
 		var thistype = ValueConstraint.GetNamedTypeFromXsd(type.BackingType);
-		foreach (var item in GetPropConstraints(thistype))
+
+		foreach (var item in GetTypeConstraints(thistype))
 		{
 			var facet = CreatePropertyFacet(type);
-			facet.PropertyValue = item;
+			facet.PropertyValue ??= new ValueConstraint(thistype);
+			facet.PropertyValue?.AddAccepted(item);
+			spec.Requirement.Facets.Add(facet);
 		}
 
 		return spec;
 	}
 
-	private static IEnumerable<ValueConstraint> GetPropConstraints(NetTypeName thistype)
+	private static IEnumerable<IValueConstraintComponent> GetTypeConstraints(NetTypeName thistype)
 	{
+		if (thistype == NetTypeName.Undefined)
+			yield break;
 		if (thistype == NetTypeName.Boolean)
 		{
-			var t = new ValueConstraint(thistype);
-			t.AddAccepted(new PatternConstraint("true|false"));
-			yield return t;
+			yield return new PatternConstraint("true|false");
 			yield break;
 		}
 		foreach (var item in GetValues(thistype))
 		{
-			var t = new ValueConstraint(thistype);
 			var asStr = ValueConstraint.PersistValue(item, thistype);
 			if (!string.IsNullOrEmpty(asStr))
 			{
-				if (Faker.RandomBool())
-					t.AddAccepted(new ExactConstraint(asStr));
+				if (thistype == NetTypeName.Uri
+					|| Faker.RandomBool())
+					yield return new ExactConstraint(asStr);
 				else
 				{
 					if (Faker.RandomBool())
 					{
-						t.AddAccepted(new RangeConstraint(
+						yield return new RangeConstraint(
 							asStr,
 							Faker.RandomBool(),
-							"",
+							null,
 							Faker.RandomBool()
-							));
+							);
 					}
 					else
 					{
-						t.AddAccepted(new RangeConstraint(
-							"",
+						yield return new RangeConstraint(
+							null,
 							Faker.RandomBool(),
 							asStr,
 							Faker.RandomBool()
-							));
+							);
 					}
 				}
 			}
-			yield return t;
 		}
 	}
 
@@ -223,8 +317,7 @@ public static class SampleXidsFactory
 		}
 		else if (thistype == NetTypeName.Boolean)
 		{
-			yield return true;
-			yield return false;
+			yield return Faker.RandomBool();
 		}
 		else if (thistype == NetTypeName.Date)
 		{
@@ -248,7 +341,7 @@ public static class SampleXidsFactory
 		{
 			yield return new TimeSpan(2, 30, 15);                  // 02:30:15
 			yield return new TimeSpan(1, 12, 0, 0);                // 1 day, 12 hours
-			yield return new TimeSpan(0, 0, 5, 30, 500);           // 5 min 30.5 sec
+			yield return new TimeSpan(0, 0, 5, 30, 000);           // 5 min 30 sec
 			yield return TimeSpan.FromMinutes(90);                 // 01:30:00
 			yield return TimeSpan.FromTicks(10_000_000);           // exactly 1 second
 			yield return TimeSpan.Parse("3.04:15:30");
@@ -266,12 +359,12 @@ public static class SampleXidsFactory
 		}
 		else if (thistype == NetTypeName.Uri)
 		{
-			new Uri(Faker.Internet.Url());
-			new Uri(Faker.Internet.Url());
+			yield return new Uri(Faker.Internet.Url());
+			yield return new Uri(Faker.Internet.Url());
 		}
 		else
 		{
-			throw new NotImplementedException();
+			// throw new NotImplementedException($"Handling for type {thistype} is not implemented.");
 		}
 	}
 
@@ -285,12 +378,12 @@ public static class SampleXidsFactory
 		istructions.Append($"Its unit in the IDS exchange file is interpreted in {measure.DefaultDisplay}");
 		if (!string.IsNullOrEmpty(measure.Unit))
 		{
-			istructions.Append("(");
+			istructions.Append('(');
 			istructions.Append(measure.Unit);
 
 			if (!string.IsNullOrEmpty(measure.UnitSymbol) && measure.UnitSymbol != measure.DefaultDisplay)
 				istructions.Append("/ " + measure.Unit);
-			istructions.Append(")");
+			istructions.Append(')');
 		}
 		istructions.AppendLine();
 		istructions.AppendLine($"IFC models will have the property stored as {measure.UnitTypeEnum}");
@@ -310,9 +403,7 @@ public static class SampleXidsFactory
 	private static Specification CreateSpecification(Xids xids, int index, bool retainBuildingSmartOnly)
 	{
 		var schema = Faker.PickRandom([IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3]);
-		var spec = xids.PrepareSpecification(
-			new[] { schema }
-			);
+		var spec = xids.PrepareSpecification([schema]);
 		var ts = IfcSchemaVersionHelper.ToIds(schema);
 		var sInfo = SchemaInfo.GetSchemas(ts).FirstOrDefault()!;
 
@@ -359,7 +450,7 @@ public static class SampleXidsFactory
 	}
 
 	private static DocumentFacet CreateDocumentFacet() =>
-		new DocumentFacet
+		new()
 		{
 			DocName = $"{Faker.Construction.Activity()} instructions",
 			DocId = Faker.PickRandom(["PDF", "DOCX", "XLSX", "TXT", "IFC"]),
@@ -369,108 +460,108 @@ public static class SampleXidsFactory
 		};
 
 	private static IfcRelationFacet CreateRelationFacet() =>
-		new IfcRelationFacet
+		new()
 		{
 			Source = referencedFacet,
 			Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
 		};
 
 	private static MaterialFacet CreateMaterialFacet() =>
-		new MaterialFacet
+		new()
 		{
 			Value = Faker.Construction.Material()
 		};
 
 	public static readonly (string IfcEntity, string System, string Code, string Description)[] KnownClassifications =
-	{
-			// ── IfcWall ──
-			("IfcWall", "Uniclass 2015", "EF_25_10", "External walls"),
-			("IfcWall", "Uniclass 2015", "EF_25_30", "Internal walls and partitions"),
-			("IfcWall", "OmniClass", "21-01 10 10 10", "Foundation walls"),
-			("IfcWall", "OmniClass", "21-02 20 10", "Exterior wall construction"),
-			("IfcWall", "OmniClass", "21-03 10 10", "Interior partitions"),
-			("IfcWall", "CI/SfB", "(21)", "External walls"),
-			("IfcWall", "CI/SfB", "(22)", "Internal walls and partitions"),
-			("IfcWall", "NRM1 (RICS)", "2.5", "External walls"),
-			("IfcWall", "NRM1 (RICS)", "2.7", "Internal walls and partitions"),
-			("IfcWall", "MasterFormat (CSI)", "04 20 00", "Unit masonry (including masonry walls)"),
-			("IfcWall", "MasterFormat (CSI)", "09 21 00", "Plaster and gypsum board assemblies"),
-			// ── IfcBeam ──
-			("IfcBeam", "Uniclass 2015", "Ss_20_20_75", "Structural beam systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_20_75_30", "Heavy steel beam systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_20_75_65", "Precast concrete beam systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_20_75_70", "Reinforced concrete beam systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_20_75_85", "Timber beam systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_05_15_71", "Reinforced concrete pilecap and ground beam foundation systems"),
-			("IfcBeam", "Uniclass 2015", "Ss_20_05_15_80", "Steel ground beam foundation systems"),
-			("IfcBeam", "Uniclass 2015", "EF_20_10", "Superstructure frame"),
-			("IfcBeam", "Uniclass 2015", "Pr_20_85_08_11", "Carbon steel beams"),
-			("IfcBeam", "OmniClass", "21-02 10 10", "Floor structural frame"),
-			("IfcBeam", "OmniClass", "21-02 10 10 10", "Floor structural columns and beams"),
-			("IfcBeam", "CI/SfB", "(16)", "Foundations (ground beams)"),
-			("IfcBeam", "CI/SfB", "(28)", "Structural frame members"),
-			("IfcBeam", "NRM1 (RICS)", "2.1", "Frame"),
-			("IfcBeam", "IFC", "IfcBeam", "Beam entity (general)"),
-			("IfcBeam", "IFC", "IfcBeamStandardCase", "Standard beam (extruded profile)"),
-			("IfcBeam", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (beams)"),
-			("IfcBeam", "MasterFormat (CSI)", "05 12 00", "Structural steel framing"),
-			("IfcBeam", "MasterFormat (CSI)", "06 17 00", "Shop-fabricated structural wood (glulam beams)"),
-			// ── IfcSlab ──
-			("IfcSlab", "Uniclass 2015", "Ss_30", "Roof, floor and paving systems"),
-			("IfcSlab", "Uniclass 2015", "Ss_30_12_05", "Beam and block floor systems"),
-			("IfcSlab", "Uniclass 2015", "Ss_30_12_15", "Concrete plank floor systems"),
-			("IfcSlab", "Uniclass 2015", "Ss_30_12_30_70", "Reinforced concrete floor slab systems"),
-			("IfcSlab", "Uniclass 2015", "Ss_30_12_30_65", "Precast concrete floor slab systems"),
-			("IfcSlab", "Uniclass 2015", "Ss_30_12_30_15", "Composite metal deck floor slab systems"),
-			("IfcSlab", "Uniclass 2015", "EF_30_20", "Floors"),
-			("IfcSlab", "Uniclass 2015", "EF_30_10", "Roof"),
-			("IfcSlab", "OmniClass", "21-02 20 20", "Roof construction"),
-			("IfcSlab", "OmniClass", "21-02 10 20", "Floor construction"),
-			("IfcSlab", "OmniClass", "21-01 10 20", "Foundation slab on grade"),
-			("IfcSlab", "CI/SfB", "(23)", "Floors and roof decks"),
-			("IfcSlab", "CI/SfB", "(27)", "Roofs"),
-			("IfcSlab", "NRM1 (RICS)", "2.3", "Upper floors"),
-			("IfcSlab", "NRM1 (RICS)", "2.4", "Roof"),
-			("IfcSlab", "NRM1 (RICS)", "1.1.3", "Lowest floor construction"),
-			("IfcSlab", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (slabs)"),
-			("IfcSlab", "MasterFormat (CSI)", "03 40 00", "Precast concrete"),
-			("IfcSlab", "MasterFormat (CSI)", "05 31 00", "Steel decking"),
-			// ── IfcColumn ──
-			("IfcColumn", "Uniclass 2015", "Ss_20_20", "Superstructure frame systems"),
-			("IfcColumn", "Uniclass 2015", "Ss_20_20_15_30", "Heavy steel frame systems"),
-			("IfcColumn", "Uniclass 2015", "Ss_20_20_15_70", "Reinforced concrete frame systems"),
-			("IfcColumn", "Uniclass 2015", "Ss_20_20_15_65", "Precast concrete frame systems"),
-			("IfcColumn", "Uniclass 2015", "Ss_20_20_15_85", "Timber frame systems"),
-			("IfcColumn", "Uniclass 2015", "EF_20_10", "Superstructure frame"),
-			("IfcColumn", "OmniClass", "21-02 10 10", "Floor structural frame"),
-			("IfcColumn", "OmniClass", "21-02 10 10 10", "Floor structural columns and beams"),
-			("IfcColumn", "CI/SfB", "(28)", "Structural frame members"),
-			("IfcColumn", "NRM1 (RICS)", "2.1", "Frame"),
-			("IfcColumn", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (columns)"),
-			("IfcColumn", "MasterFormat (CSI)", "05 12 00", "Structural steel framing"),
-			("IfcColumn", "MasterFormat (CSI)", "06 11 00", "Wood framing"),
-			// ── IfcDoor ──
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20", "Door, shutter and hatch systems"),
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20_25", "Doorset systems"),
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20_16", "Collapsible gate and grille doorset systems"),
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20_30", "Framed door panel systems"),
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20_75", "Roller shutter systems"),
-			("IfcDoor", "Uniclass 2015", "Ss_25_30_20_80", "Sectional overhead door systems"),
-			("IfcDoor", "Uniclass 2015", "EF_25_10", "External walls (external doors)"),
-			("IfcDoor", "Uniclass 2015", "EF_25_30", "Internal walls and partitions (internal doors)"),
-			("IfcDoor", "OmniClass", "21-02 20 30", "Exterior doors"),
-			("IfcDoor", "OmniClass", "21-03 10 30", "Interior doors"),
-			("IfcDoor", "OmniClass", "21-03 10 30 10", "Interior swinging doors"),
-			("IfcDoor", "OmniClass", "21-03 10 30 30", "Interior sliding doors"),
-			("IfcDoor", "CI/SfB", "(31)", "Windows and external doors"),
-			("IfcDoor", "CI/SfB", "(32)", "Internal doors"),
-			("IfcDoor", "NRM1 (RICS)", "2.6", "Windows and external doors"),
-			("IfcDoor", "NRM1 (RICS)", "2.7", "Internal walls and partitions (internal doors)"),
-			("IfcDoor", "MasterFormat (CSI)", "08 11 00", "Metal doors and frames"),
-			("IfcDoor", "MasterFormat (CSI)", "08 14 00", "Wood doors"),
-			("IfcDoor", "MasterFormat (CSI)", "08 31 00", "Access doors and panels"),
-			("IfcDoor", "MasterFormat (CSI)", "08 33 00", "Coiling doors and grilles"),
-		};
+	[
+		// ── IfcWall ──
+		("IfcWall", "Uniclass 2015", "EF_25_10", "External walls"),
+		("IfcWall", "Uniclass 2015", "EF_25_30", "Internal walls and partitions"),
+		("IfcWall", "OmniClass", "21-01 10 10 10", "Foundation walls"),
+		("IfcWall", "OmniClass", "21-02 20 10", "Exterior wall construction"),
+		("IfcWall", "OmniClass", "21-03 10 10", "Interior partitions"),
+		("IfcWall", "CI/SfB", "(21)", "External walls"),
+		("IfcWall", "CI/SfB", "(22)", "Internal walls and partitions"),
+		("IfcWall", "NRM1 (RICS)", "2.5", "External walls"),
+		("IfcWall", "NRM1 (RICS)", "2.7", "Internal walls and partitions"),
+		("IfcWall", "MasterFormat (CSI)", "04 20 00", "Unit masonry (including masonry walls)"),
+		("IfcWall", "MasterFormat (CSI)", "09 21 00", "Plaster and gypsum board assemblies"),
+		// ── IfcBeam ──
+		("IfcBeam", "Uniclass 2015", "Ss_20_20_75", "Structural beam systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_20_75_30", "Heavy steel beam systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_20_75_65", "Precast concrete beam systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_20_75_70", "Reinforced concrete beam systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_20_75_85", "Timber beam systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_05_15_71", "Reinforced concrete pilecap and ground beam foundation systems"),
+		("IfcBeam", "Uniclass 2015", "Ss_20_05_15_80", "Steel ground beam foundation systems"),
+		("IfcBeam", "Uniclass 2015", "EF_20_10", "Superstructure frame"),
+		("IfcBeam", "Uniclass 2015", "Pr_20_85_08_11", "Carbon steel beams"),
+		("IfcBeam", "OmniClass", "21-02 10 10", "Floor structural frame"),
+		("IfcBeam", "OmniClass", "21-02 10 10 10", "Floor structural columns and beams"),
+		("IfcBeam", "CI/SfB", "(16)", "Foundations (ground beams)"),
+		("IfcBeam", "CI/SfB", "(28)", "Structural frame members"),
+		("IfcBeam", "NRM1 (RICS)", "2.1", "Frame"),
+		("IfcBeam", "IFC", "IfcBeam", "Beam entity (general)"),
+		("IfcBeam", "IFC", "IfcBeamStandardCase", "Standard beam (extruded profile)"),
+		("IfcBeam", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (beams)"),
+		("IfcBeam", "MasterFormat (CSI)", "05 12 00", "Structural steel framing"),
+		("IfcBeam", "MasterFormat (CSI)", "06 17 00", "Shop-fabricated structural wood (glulam beams)"),
+		// ── IfcSlab ──
+		("IfcSlab", "Uniclass 2015", "Ss_30", "Roof, floor and paving systems"),
+		("IfcSlab", "Uniclass 2015", "Ss_30_12_05", "Beam and block floor systems"),
+		("IfcSlab", "Uniclass 2015", "Ss_30_12_15", "Concrete plank floor systems"),
+		("IfcSlab", "Uniclass 2015", "Ss_30_12_30_70", "Reinforced concrete floor slab systems"),
+		("IfcSlab", "Uniclass 2015", "Ss_30_12_30_65", "Precast concrete floor slab systems"),
+		("IfcSlab", "Uniclass 2015", "Ss_30_12_30_15", "Composite metal deck floor slab systems"),
+		("IfcSlab", "Uniclass 2015", "EF_30_20", "Floors"),
+		("IfcSlab", "Uniclass 2015", "EF_30_10", "Roof"),
+		("IfcSlab", "OmniClass", "21-02 20 20", "Roof construction"),
+		("IfcSlab", "OmniClass", "21-02 10 20", "Floor construction"),
+		("IfcSlab", "OmniClass", "21-01 10 20", "Foundation slab on grade"),
+		("IfcSlab", "CI/SfB", "(23)", "Floors and roof decks"),
+		("IfcSlab", "CI/SfB", "(27)", "Roofs"),
+		("IfcSlab", "NRM1 (RICS)", "2.3", "Upper floors"),
+		("IfcSlab", "NRM1 (RICS)", "2.4", "Roof"),
+		("IfcSlab", "NRM1 (RICS)", "1.1.3", "Lowest floor construction"),
+		("IfcSlab", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (slabs)"),
+		("IfcSlab", "MasterFormat (CSI)", "03 40 00", "Precast concrete"),
+		("IfcSlab", "MasterFormat (CSI)", "05 31 00", "Steel decking"),
+		// ── IfcColumn ──
+		("IfcColumn", "Uniclass 2015", "Ss_20_20", "Superstructure frame systems"),
+		("IfcColumn", "Uniclass 2015", "Ss_20_20_15_30", "Heavy steel frame systems"),
+		("IfcColumn", "Uniclass 2015", "Ss_20_20_15_70", "Reinforced concrete frame systems"),
+		("IfcColumn", "Uniclass 2015", "Ss_20_20_15_65", "Precast concrete frame systems"),
+		("IfcColumn", "Uniclass 2015", "Ss_20_20_15_85", "Timber frame systems"),
+		("IfcColumn", "Uniclass 2015", "EF_20_10", "Superstructure frame"),
+		("IfcColumn", "OmniClass", "21-02 10 10", "Floor structural frame"),
+		("IfcColumn", "OmniClass", "21-02 10 10 10", "Floor structural columns and beams"),
+		("IfcColumn", "CI/SfB", "(28)", "Structural frame members"),
+		("IfcColumn", "NRM1 (RICS)", "2.1", "Frame"),
+		("IfcColumn", "MasterFormat (CSI)", "03 30 00", "Cast-in-place concrete (columns)"),
+		("IfcColumn", "MasterFormat (CSI)", "05 12 00", "Structural steel framing"),
+		("IfcColumn", "MasterFormat (CSI)", "06 11 00", "Wood framing"),
+		// ── IfcDoor ──
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20", "Door, shutter and hatch systems"),
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20_25", "Doorset systems"),
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20_16", "Collapsible gate and grille doorset systems"),
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20_30", "Framed door panel systems"),
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20_75", "Roller shutter systems"),
+		("IfcDoor", "Uniclass 2015", "Ss_25_30_20_80", "Sectional overhead door systems"),
+		("IfcDoor", "Uniclass 2015", "EF_25_10", "External walls (external doors)"),
+		("IfcDoor", "Uniclass 2015", "EF_25_30", "Internal walls and partitions (internal doors)"),
+		("IfcDoor", "OmniClass", "21-02 20 30", "Exterior doors"),
+		("IfcDoor", "OmniClass", "21-03 10 30", "Interior doors"),
+		("IfcDoor", "OmniClass", "21-03 10 30 10", "Interior swinging doors"),
+		("IfcDoor", "OmniClass", "21-03 10 30 30", "Interior sliding doors"),
+		("IfcDoor", "CI/SfB", "(31)", "Windows and external doors"),
+		("IfcDoor", "CI/SfB", "(32)", "Internal doors"),
+		("IfcDoor", "NRM1 (RICS)", "2.6", "Windows and external doors"),
+		("IfcDoor", "NRM1 (RICS)", "2.7", "Internal walls and partitions (internal doors)"),
+		("IfcDoor", "MasterFormat (CSI)", "08 11 00", "Metal doors and frames"),
+		("IfcDoor", "MasterFormat (CSI)", "08 14 00", "Wood doors"),
+		("IfcDoor", "MasterFormat (CSI)", "08 31 00", "Access doors and panels"),
+		("IfcDoor", "MasterFormat (CSI)", "08 33 00", "Coiling doors and grilles"),
+	];
 
 	private static IfcClassificationFacet CreateClassificationFacet(ValueConstraint? ifcType)
 	{
@@ -512,7 +603,7 @@ public static class SampleXidsFactory
 		return t;
 	}
 
-	private static IFacet CreatePropertyFacet(IfcMeasureInformation measure, bool addValue)
+	private static IfcPropertyFacet CreatePropertyFacet(IfcMeasureInformation measure, bool addValue)
 	{
 		var t = new IfcPropertyFacet
 		{
@@ -591,7 +682,7 @@ public static class SampleXidsFactory
 
 		// see what's possible
 		var compatible = ValueConstraint.CompatibleConstraints(dt);
-		var retValue = new ValueConstraint(""); // this is a risk of crashing
+		ValueConstraint retValue;
 		var filterPercent = Faker.RandomDouble();
 
 		if (dt == NetTypeName.String)
@@ -703,13 +794,14 @@ public static class SampleXidsFactory
 		return t;
 	}
 
-	private static IList<PartOfFacet.PartOfRelation> partOfRelations = Enum.GetValues(typeof(PartOfFacet.PartOfRelation)).Cast<PartOfFacet.PartOfRelation>().ToList();
+	private static readonly IList<PartOfFacet.PartOfRelation> partOfRelations = [.. Enum.GetValues(typeof(PartOfFacet.PartOfRelation)).Cast<PartOfFacet.PartOfRelation>()];
 
-	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema) => new PartOfFacet
-	{
-		EntityType = CreateTypeFacet(schema),
-		EntityRelation = Faker.PickRandom(partOfRelations).ToString()
-	};
+	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema) =>
+		new()
+		{
+			EntityType = CreateTypeFacet(schema),
+			EntityRelation = Faker.PickRandom(partOfRelations).ToString()
+		};
 
 
 }

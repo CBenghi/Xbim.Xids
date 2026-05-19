@@ -135,7 +135,9 @@ namespace Xbim.InformationSpecifications.Values
 			return _value.CompareTo(other._value);
 		}
 
-		/// <inheritdoc />
+		/// <summary>
+		/// Returns a string that represents the current object in XML xs:time format, including the time zone offset if present.
+		/// </summary>
 		public override string ToString()
 		{
 			// todo: microseconds is not defined in netstandard2.0 - for the time being, we will only support milliseconds
@@ -150,13 +152,13 @@ namespace Xbim.InformationSpecifications.Values
 		/// Determines whether two specified TimeOfDay instances represent the same time of day retaining their structure.
 		/// </summary>
 		/// <returns>TRUE if the two TimeOfDay instances are equal both for time and time offset; otherwise, FALSE.</returns>
-		public static bool operator == (TimeOfDay left, TimeOfDay right) => left.Equals(right);
+		public static bool operator ==(TimeOfDay left, TimeOfDay right) => left.Equals(right);
 
 		/// <summary>
 		/// Determines whether two specified TimeOfDay instances represent different time of day retaining their structure.
 		/// </summary>
 		/// <returns>TRUE if the two TimeOfDay instances are NOT EQUAL both for time and time offset; otherwise, FALSE.</returns>
-		public static bool operator != (TimeOfDay left, TimeOfDay right) => !left.Equals(right);
+		public static bool operator !=(TimeOfDay left, TimeOfDay right) => !left.Equals(right);
 
 		/// <summary>
 		/// explicit conversion that discards information structure: loses the offset
@@ -233,7 +235,7 @@ namespace Xbim.InformationSpecifications.Values
 
 			// Parse the time portion. xs:time allows optional fractional seconds.
 			string[] formats =
-			{
+			[
 				@"hh\:mm\:ss",
 				@"hh\:mm\:ss\.f",
 				@"hh\:mm\:ss\.ff",
@@ -242,7 +244,7 @@ namespace Xbim.InformationSpecifications.Values
 				@"hh\:mm\:ss\.fffff",
 				@"hh\:mm\:ss\.ffffff",
 				@"hh\:mm\:ss\.fffffff",
-			};
+			];
 
 			if (!TimeSpan.TryParseExact(timePart, formats, CultureInfo.InvariantCulture, out var time))
 				return false;
