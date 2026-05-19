@@ -167,8 +167,8 @@ public static class SampleXidsFactory
 		if (att == null)
 			return null;
 		NetTypeName thistype = ValueConstraint.GetNamedTypeFromXsd(att);
-		var vals = GetTypeConstraints(thistype).ToList(); // just to check if we can generate some constraints for this type, otherwise skip
-		if (vals.Count == 0)
+		var constraintVals = GetTypeConstraints(thistype).ToList(); // just to check if we can generate some constraints for this type, otherwise skip
+		if (constraintVals.Count == 0)
 			return null;
 
 		var xids_schema = IfcSchemaVersionHelper.FromIds(schema.Version);
@@ -181,11 +181,11 @@ public static class SampleXidsFactory
 		spec.Applicability.Facets.Add(CreateAttributeFacetFor(attributeName));
 
 		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
-		foreach (var item in vals)
+		foreach (var constraintValue in constraintVals)
 		{
 			var facet = CreateAttributeFacetFor(attributeName);
 			facet.AttributeValue ??= new ValueConstraint(thistype);
-			facet.AttributeValue?.AddAccepted(item);
+			facet.AttributeValue?.AddAccepted(constraintValue);
 			spec.Requirement.Facets.Add(facet);
 		}
 		return spec;
@@ -259,7 +259,8 @@ public static class SampleXidsFactory
 			var asStr = ValueConstraint.PersistValue(item, thistype);
 			if (!string.IsNullOrEmpty(asStr))
 			{
-				if (thistype == NetTypeName.Uri
+				if (thistype == NetTypeName.Uri // uri do not accept range
+					|| thistype == NetTypeName.String // strings also do not accept range
 					|| Faker.RandomBool())
 					yield return new ExactConstraint(asStr);
 				else

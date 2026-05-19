@@ -19,7 +19,7 @@
 		<RootNamespace>Xbim.InformationSpecifications</RootNamespace>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
 		<vPre>1.1.0</vPre>
-		<vPost>6</vPost>
+		<vPost>7</vPost>
 		<vDesc>-preview</vDesc>
 		<AssemblyVersion>$(vPre).$(vPost)</AssemblyVersion>
 		<!-- Remember to update the hardcoded AssemblyVersion property in XIDS-->
@@ -49,7 +49,7 @@
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ids-lib" Version="1.0.114" />
+		<PackageReference Include="ids-lib" Version="1.0.115" />
 		<PackageReference Include="Nullable" Version="1.3.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

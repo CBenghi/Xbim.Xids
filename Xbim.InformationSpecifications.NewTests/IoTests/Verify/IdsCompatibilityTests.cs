@@ -89,15 +89,17 @@ public class IdsCompatibilityTests
 		}
 	}
 
-	[Fact]
-	internal void SaveRichAttributeFile()
+	[Theory]
+	[InlineData(IfcSchemaVersions.Ifc4x3)]
+	[InlineData(IfcSchemaVersions.Ifc4)]
+	[InlineData(IfcSchemaVersions.Ifc2x3)]
+	internal void SaveRichAttributeFile(IfcSchemaVersions version)
 	{
 		var d = new DirectoryInfo(".");
 		OutputHelper.WriteLine($"Saving rich file in directory \r\n`{d.FullName}`");
-		var version = IfcSchemaVersions.Ifc4x3;
 		var x = SampleXidsFactory.CreateAttributeSpecifications(version);
 		// x.SaveAsJson("RichFile.json");
-		x.ExportBuildingSmartIDS("RichFileAttribute.ids");
+		x.ExportBuildingSmartIDS($"RichFileAttribute_{version}.ids");
 	}
 
 	[Fact]
