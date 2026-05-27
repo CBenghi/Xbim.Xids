@@ -6,28 +6,34 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Xbim.InformationSpecifications;
-using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Values;
 
-namespace XidsEditing.InformationSpecifications;
+namespace Xbim.InformationSpecifications.Helpers;
 
 /// <summary>
-/// Generates a reasonably complete sample Xids instance using AutoBogus for
-/// primitive values and manual wiring for the structural relationships that
-/// the domain model requires.
+/// Generates reasonably rich randomised sample Xids instances.
 /// </summary>
 public static class SampleXidsFactory
 {
-	private static readonly Faker Faker = new();
+	private static readonly XidsFaker Faker = new();
 
-	public static Xids CreateAttributeSpecifications(IfcSchemaVersions schema)
+	/// <summary>
+	/// Generates a Xids instance with specifications that demonstrate attribute constraints, which are generated based on the attributes defined in the IFC schema. 
+	/// The specifications will include constraints for attributes of types that are valid for the specified schema version. 
+	/// This allows for testing and demonstration of how attribute constraints can be represented in Xids based on the underlying IFC schema definitions.
+	/// </summary>
+	public static Xids CreateWithAttributeSpecifications(IfcSchemaVersions schema)
 	{
 		Xids xids = PrepareBasicXids();
 		AddAttributeSpecifications(xids, schema);
 		return xids;
 	}
 
-	public static Xids CreateDataTypes(IfcSchemaVersions schema, bool addMeasures = true, bool addIfcTypesValues = true)
+
+	/// <summary>
+	/// Generates a Xids instance with specifications that demonstrate measure property constraints, and type based constraints besed on the provided schemas.
+	/// </summary>
+	public static Xids CreateWithDataTypes(IfcSchemaVersions schema, bool addMeasures = true, bool addIfcTypesValues = true)
 	{
 		Xids xids = PrepareBasicXids();
 		if (addMeasures)
@@ -41,6 +47,13 @@ public static class SampleXidsFactory
 		return xids;
 	}
 
+	/// <summary>
+	/// Creates a configured Xids instance with the specified number of specifications.
+	/// </summary>
+	/// <param name="specificationCount">The number of specifications to create. Default is 3.</param>
+	/// <param name="retainBuildingSmartOnly">Indicates whether to exclude the referenced building unit facet and retain only BuildingSmart-compliant content.
+	/// Default is false.</param>
+	/// <returns>A configured Xids instance.</returns>
 	public static Xids Create(int specificationCount = 3, bool retainBuildingSmartOnly = false)
 	{
 		Xids xids = PrepareBasicXids();
@@ -80,7 +93,7 @@ public static class SampleXidsFactory
 		var group = new SpecificationsGroup(xids)
 		{
 			Name = $"{Faker.Construction.RibaStage()} Specifications",
-			Author = $"claudio.benghi@gmail.com",
+			Author = $"claudio.benghi@xbim.it",
 			Description = "This is a demo Information Specification requirement, which has been randomly generated for demonstration purposes.",
 			Copyright = "© 2026 Claudio Benghi. This work is licensed under CC BY-SA 4.0 (attribution required, Share Alike). To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/",
 			Date = DateTime.Now.Date,
@@ -262,7 +275,7 @@ public static class SampleXidsFactory
 				if (thistype == NetTypeName.Uri // uri do not accept range
 					|| thistype == NetTypeName.String // strings also do not accept range
 					|| Faker.RandomBool())
-					yield return new ExactConstraint(asStr);
+					yield return new ExactConstraint(asStr!); // bang is needed for netstandard20
 				else
 				{
 					if (Faker.RandomBool())
@@ -473,6 +486,9 @@ public static class SampleXidsFactory
 			Value = Faker.Construction.Material()
 		};
 
+	/// <summary>
+	/// Provides simplisitic mappings between a few IFC entity types and industry classification systems.
+	/// </summary>
 	public static readonly (string IfcEntity, string System, string Code, string Description)[] KnownClassifications =
 	[
 		// ── IfcWall ──
@@ -797,12 +813,23 @@ public static class SampleXidsFactory
 
 	private static readonly IList<PartOfFacet.PartOfRelation> partOfRelations = [.. Enum.GetValues(typeof(PartOfFacet.PartOfRelation)).Cast<PartOfFacet.PartOfRelation>()];
 
-	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema) =>
-		new()
+	private static PartOfFacet CreatePartOfFacet(SchemaInfo schema)
+	{
+		var rel = Faker.PickRandom(partOfRelations);
+		var t = rel switch
 		{
-			EntityType = CreateTypeFacet(schema),
-			EntityRelation = Faker.PickRandom(partOfRelations).ToString()
+			PartOfFacet.PartOfRelation.IfcRelAggregates => "IfcWall", // IfcObjectDefinition
+			PartOfFacet.PartOfRelation.IfcRelAssignsToGroup => "IfcSystem", // ifcGroup
+			PartOfFacet.PartOfRelation.IfcRelContainedInSpatialStructure => "IfcBuildingStorey", // IFCSPATIALSTRUCTUREELEMENT / IFCSPATIALELEMENT
+			PartOfFacet.PartOfRelation.IfcRelNests => "IfcWall", // IfcObjectDefinition
+			PartOfFacet.PartOfRelation.IfcRelVoidsFillsElement => "IfcWall", // ifcElement
+			_ => "IfcBuildingStorey"
 		};
 
-
+		return new PartOfFacet
+		{
+			EntityType = new IfcTypeFacet() { IfcType = t },
+			EntityRelation = rel.ToString(),
+		};
+	}
 }

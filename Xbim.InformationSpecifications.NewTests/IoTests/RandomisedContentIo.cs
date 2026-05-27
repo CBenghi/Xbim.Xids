@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using XidsEditing.InformationSpecifications;
+using Xbim.InformationSpecifications.Helpers;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests;

@@ -2,16 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Xbim.InformationSpecifications;
-using Xbim.InformationSpecifications.Helpers;
 
-namespace XidsEditing.InformationSpecifications
+namespace Xbim.InformationSpecifications.Helpers
 {
-	internal class Faker
+	internal class XidsFaker
 	{
 		Random r = new Random();
 		ConcurrentDictionary<string, FakerContainer> _containers = new();
 
-		private FakerContainer GetContainer(string name, Faker faker)
+		private FakerContainer GetContainer(string name, XidsFaker faker)
 		{
 			return _containers.GetOrAdd(name, key => new FakerContainer(key, faker));
 		}
@@ -47,8 +46,8 @@ namespace XidsEditing.InformationSpecifications
 	internal class FakerContainer
 	{
 		private string _containerType;
-		private Faker _parent;
-		public FakerContainer(string containerType, Faker faker)
+		private XidsFaker _parent;
+		public FakerContainer(string containerType, XidsFaker faker)
 		{
 			_containerType = containerType;
 			_parent = faker;
@@ -58,7 +57,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom(["Excavation", "Foundation", "Framing", "Finishing"]),
+				nameof(XidsFaker.Construction) => _parent.PickRandom(["Excavation", "Foundation", "Framing", "Finishing"]),
 				_ => throw new NotImplementedException()
 			};
 		}
@@ -80,7 +79,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom([
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
 					"structural support", "thermal insulation", "acoustic performance", "fire resistance", "aesthetic appeal",
 					"weatherproofing", "moisture control", "vapour barrier", "air tightness", "load bearing capacity",
 					"seismic resistance", "wind load resistance", "impact resistance", "durability", "corrosion resistance",
@@ -106,7 +105,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Ifc) => _parent.PickRandom(
+				nameof(XidsFaker.Ifc) => _parent.PickRandom(
 					[
 					$"Custom_{ExcitingAdjective().FirstCharToUpper()}_{BuildingPart().FirstCharToUpper()}Common",
 					$"Custom_{ExcitingAdjective().FirstCharToUpper()}_{BuildingPart().FirstCharToUpper()}Common",
@@ -123,7 +122,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom([
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
 					"Architect", "Engineer", "Contractor", "Builder", "Surveyor",
 					"Structural Engineer", "Electrical Subcontractor", "Employer", "Client", "Project Manager",
 					"Quantity Surveyor", "Building Surveyor", "Land Surveyor", "Civil Engineer", "Mechanical Engineer",
@@ -143,7 +142,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Generic) => _parent.PickRandom([
+				nameof(XidsFaker.Generic) => _parent.PickRandom([
 					$"satisfying", "fulfilling", "meeting", "achieving", "completing"
 					]),
 				_ => throw new NotImplementedException()
@@ -154,7 +153,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom([
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
 					"The structural steel delivery has been delayed by two weeks due to supplier issues.",
 					"All workers on site must wear hard hats, safety glasses, and high-visibility vests at all times.",
 					"The concrete pour for the foundation is scheduled for early Tuesday morning before temperatures rise.",
@@ -184,7 +183,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Generic) => _parent.PickRandom(["should be", "ought to be", "must be", "needs to be", "has to be", "is required to be", "better be"]),
+				nameof(XidsFaker.Generic) => _parent.PickRandom(["should be", "ought to be", "must be", "needs to be", "has to be", "is required to be", "better be"]),
 				_ => throw new NotImplementedException()
 			};
 		}
@@ -193,7 +192,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom([
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
 					"Handover", "Post-Handover", "Maintenance", "Demolition", "Design",
 					"Strategic Definition", "Preparation and Briefing", "Concept Design",
 					"Spatial Coordination", "Technical Design", "Manufacturing and Construction",
@@ -208,7 +207,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Internet) => _parent.PickRandom(["http://www.some.com", "https://example.org", "http://example.net"]),
+				nameof(XidsFaker.Internet) => _parent.PickRandom(["http://www.some.com", "https://example.org", "http://example.net"]),
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -217,7 +216,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Lorem) => _parent.PickRandom(["innovation", "efficiency", "sustainability", "collaboration", "resilience"]),
+				nameof(XidsFaker.Lorem) => _parent.PickRandom(["innovation", "efficiency", "sustainability", "collaboration", "resilience"]),
 				_ => throw new NotImplementedException()
 			};
 		}
@@ -226,7 +225,7 @@ namespace XidsEditing.InformationSpecifications
 		{
 			return _containerType switch
 			{
-				nameof(Faker.Construction) => _parent.PickRandom([
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
 					"concrete", "steel", "wood", "glass", "brick",
 					"stone", "aluminium", "copper", "plaster", "tile",
 					"asphalt", "gypsum", "mortar", "plywood", "drywall",

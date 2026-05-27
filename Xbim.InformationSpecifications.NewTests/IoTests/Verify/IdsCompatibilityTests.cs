@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using VerifyTests;
 using VerifyXunit;
 using Xbim.Ifc4x3.ProductExtension;
+using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Tests.Helpers;
-using XidsEditing.InformationSpecifications;
 using Xunit;
 
 namespace Xbim.InformationSpecifications.Tests.IoTests.Verify;
@@ -97,7 +97,7 @@ public class IdsCompatibilityTests
 	{
 		var d = new DirectoryInfo(".");
 		OutputHelper.WriteLine($"Saving rich file in directory \r\n`{d.FullName}`");
-		var x = SampleXidsFactory.CreateAttributeSpecifications(version);
+		var x = SampleXidsFactory.CreateWithAttributeSpecifications(version);
 		// x.SaveAsJson("RichFile.json");
 		x.ExportBuildingSmartIDS($"RichFileAttribute_{version}.ids");
 	}
@@ -108,7 +108,7 @@ public class IdsCompatibilityTests
 		var d = new DirectoryInfo(".");
 		OutputHelper.WriteLine($"Saving rich file in directory \r\n`{d.FullName}`");
 		var version = IfcSchemaVersions.Ifc4x3;
-		var x = SampleXidsFactory.CreateDataTypes(version, true, true);
+		var x = SampleXidsFactory.CreateWithDataTypes(version, true, true);
 		x.SaveAsJson("RichFile.json");
 		x.ExportBuildingSmartIDS("RichFile.ids");
 	}
@@ -152,7 +152,7 @@ public class IdsCompatibilityTests
 			foreach (var measuresOrDataTypes in opts)
 			{
 				var nm = measuresOrDataTypes ? "Measures" : "DataTypes";
-				var x = SampleXidsFactory.CreateDataTypes(version, measuresOrDataTypes, !measuresOrDataTypes);
+				var x = SampleXidsFactory.CreateWithDataTypes(version, measuresOrDataTypes, !measuresOrDataTypes);
 				string displayName = $"{idsIndex++:D4}_{nm}.1.json";
 				x.SaveAsJson(displayName);
 				theoryData.Add(displayName);
