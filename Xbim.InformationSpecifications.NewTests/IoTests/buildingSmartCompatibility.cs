@@ -83,6 +83,16 @@ public class BuildingSmartCompatibilityTests
 		File.Delete(tmpFile);
 	}
 
+	[Fact]
+	public void ShouldNotCrashOnEmptyXidsAudit()
+	{
+		var x = new Xids();
+		var tmpFile = Path.GetTempFileName();
+		x.ExportBuildingSmartIDS(tmpFile);
+		var c = Validate(tmpFile, GetXunitLogger());
+		c.Should().Be(Audit.Status.IdsStructureError);
+		File.Delete(tmpFile);
+	}
 
 	[Fact]
 	public void CanSaveExplictInheritance()

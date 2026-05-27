@@ -37,7 +37,7 @@ namespace Xbim.InformationSpecifications.Helpers
 			return r.NextDouble() * (to - from) + from;
 		}
 
-		internal int? RandomInt(int min, int max)
+		internal int RandomInt(int min, int max)
 		{
 			return r.Next(min, max + 1);
 		}
@@ -221,7 +221,29 @@ namespace Xbim.InformationSpecifications.Helpers
 			};
 		}
 
-		internal ValueConstraint Material()
+		internal string MaterialAdjective()
+		{
+			return _containerType switch
+			{
+				nameof(XidsFaker.Construction) => _parent.PickRandom([
+					"Durable", "Sturdy", "Robust", "Reinforced", "Weatherproof",
+					"Waterproof", "Fireproof", "Heat-resistant", "Corrosion-resistant", "Rust-resistant",
+					"Rot-resistant", "Impact-resistant", "Shatterproof", "Insulated", "Soundproof",
+					"Flexible", "Rigid", "Lightweight", "Heavy-duty", "Load-bearing",
+					"Structural", "Galvanized", "Treated", "Pressure-treated", "Laminated",
+					"Tempered", "Polished", "Smooth", "Textured", "Rough",
+					"Solid", "Hollow", "Pre-cast", "Pre-fabricated", "Modular",
+					"Recycled", "Sustainable", "Eco-friendly", "Non-toxic", "Seamless",
+					"Porous", "Non-porous", "Breathable", "Moisture-resistant", "UV-resistant",
+					"Stain-resistant", "Scratch-resistant", "Anti-slip", "Reflective", "Translucent",
+					"Opaque", "Dense", "Compressed", "Hardened", "Tensile",
+					"Malleable", "Composite", "Synthetic", "Natural", "Raw"
+					]),
+				_ => throw new NotImplementedException()
+			};
+		}
+
+		internal string Material()
 		{
 			return _containerType switch
 			{

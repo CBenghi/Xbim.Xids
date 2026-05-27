@@ -159,6 +159,20 @@ public class IdsCompatibilityTests
 			}
 		}
 
+		foreach (var schema in schemas)
+		{
+			var xids = SampleXidsFactory.CreateXids()
+			.WithDistinctAttributeTypeSpecifications(schema)
+			.WithPropertiesOfMeasures(schema)
+			.WithPropertiesOfIfcTypes(schema)
+			.WithRandomSpecifications(count: 20, true)
+			.Build();
+			string displayName = $"{idsIndex++:D4}_AlBsi_{schema}.1.json";
+			xids.SaveAsJson(displayName);
+			theoryData.Add(displayName);
+		}
+
+
 		return theoryData;
 	}
 

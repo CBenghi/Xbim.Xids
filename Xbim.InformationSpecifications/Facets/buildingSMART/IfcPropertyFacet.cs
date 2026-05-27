@@ -1,6 +1,7 @@
 using IdsLib.IfcSchema;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 using Xbim.InformationSpecifications.Facets.buildingSMART;
 using Xbim.InformationSpecifications.Helpers;
@@ -11,7 +12,7 @@ namespace Xbim.InformationSpecifications
 	/// Constrain model parts on the ground of properties (of type IfcSingleProperty) associated via PropertySets
 	/// Either directly or via a type relation.
 	/// </summary>
-	public partial class IfcPropertyFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<IfcPropertyFacet>
+	public partial class IfcPropertyFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<IfcPropertyFacet>, IFacetCleanup
 	{
 
 		/// <summary>
@@ -130,6 +131,19 @@ namespace Xbim.InformationSpecifications
 					||
 					FacetBase.IsValidOrNull(PropertyValue)
 				);
+		}
+
+		/// <inheritdoc />
+		public void Cleanup()
+		{
+			if (!string.IsNullOrWhiteSpace(DataType))
+			{
+				var fnd = SchemaInfo.AllDataTypes.FirstOrDefault(x => x.IfcDataTypeClassName.Equals(DataType, StringComparison.InvariantCultureIgnoreCase));
+				if (fnd != null)
+				{
+					DataType = fnd.IfcDataTypeClassName;
+				}
+			}
 		}
 
 		private string MeasureLabel => !string.IsNullOrWhiteSpace(DataType) ? $"{DataType} " : "";

@@ -94,6 +94,8 @@ namespace Xbim.InformationSpecifications
 		public ExportedFormat ExportBuildingSmartIDS(Stream destinationStream, ILogger? logger = null)
 		{
 			Cleanup();
+			if (SpecificationsGroups.Count == 0)
+				return ExportedFormat.XML;
 			if (SpecificationsGroups.Count == 1)
 			{
 				using XmlWriter writer = XmlWriter.Create(destinationStream, WriteSettings);
@@ -991,7 +993,7 @@ namespace Xbim.InformationSpecifications
 			return ret;
 		}
 
-		private static IfcPropertyFacet? GetProperty(XElement elem, ILogger? logger, out RequirementCardinalityOptions? opt)
+		private static IfcPropertyFacet? GetProperty(XElement elem, ILogger? logger, IfcSchemaVersions schemaVersions, out RequirementCardinalityOptions? opt)
 		{
 			IfcPropertyFacet? ret = null;
 			foreach (var sub in elem.Elements())
@@ -1048,6 +1050,20 @@ namespace Xbim.InformationSpecifications
 				opt = new RequirementCardinalityOptions(ret, minMax.Evaluate(elem, logger)); // from property
 			else
 				opt = null;
+
+			if (ret is not null && !string.IsNullOrEmpty(ret.DataType))
+			{
+				if (SchemaInfo.TrySimplifyTopClasses([ret.DataType!], schemaVersions, out var top))
+				{
+					if (top.Count() == 1 && top.FirstOrDefault() is string asString)
+					{
+						if (asString.Equals(ret.DataType, StringComparison.OrdinalIgnoreCase))
+						{
+							ret.DataType = asString;
+						}
+					}
+				}
+			}
 
 			return ret;
 		}
@@ -1240,7 +1256,7 @@ namespace Xbim.InformationSpecifications
 						tempFacet = GetClassification(sub, logger, out tempOption);
 						break;
 					case "property":
-						tempFacet = GetProperty(sub, logger, out tempOption);
+						tempFacet = GetProperty(sub, logger, schemaVersions, out tempOption);
 						break;
 					case "material":
 						tempFacet = GetMaterial(sub, logger, out tempOption);

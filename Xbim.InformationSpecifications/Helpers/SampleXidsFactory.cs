@@ -1,3 +1,4 @@
+using IdsLib.IdsSchema.XsNodes;
 using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ public static class SampleXidsFactory
 	public static Xids CreateWithAttributeSpecifications(IfcSchemaVersions schema)
 	{
 		Xids xids = PrepareBasicXids();
-		AddAttributeSpecifications(xids, schema);
+		AddDistinctBackingAttributeSpecifications(xids, schema); // from create with datatypes 
 		return xids;
 	}
 
@@ -38,11 +39,11 @@ public static class SampleXidsFactory
 		Xids xids = PrepareBasicXids();
 		if (addMeasures)
 		{
-			CreateMeasurePropertySpecifications(xids, schema);
+			AddAllMeasurePropertySpecifications(xids, schema); // from create with datatypes 
 		}
 		if (addIfcTypesValues)
 		{
-			CreateIfcTypePropertySpecifications(xids, schema);
+			AddAllIfcTypePropertySpecifications(xids, schema); // from create with datatypes 
 		}
 		return xids;
 	}
@@ -57,29 +58,40 @@ public static class SampleXidsFactory
 	public static Xids Create(int specificationCount = 3, bool retainBuildingSmartOnly = false)
 	{
 		Xids xids = PrepareBasicXids();
-
-		if (!retainBuildingSmartOnly)
-		{
-			referencedFacet = new FacetGroup(xids.FacetRepository)
-			{
-				Name = $"Referenced building unit",
-				Guid = Guid.NewGuid().ToString()
-			};
-			var typeFacet = new IfcTypeFacet
-			{
-				IfcType = "IfcBuilding",
-			};
-			referencedFacet.Facets.Add(typeFacet);
-			referencedFacet.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, SchemaInfo.SchemaIfc4).ToList()));
-			xids.FacetRepository.Add(referencedFacet);
-		}
-
 		for (int i = 0; i < specificationCount; i++)
-			CreateSpecification(xids, i, retainBuildingSmartOnly);
+			AddSpecification(xids, i, retainBuildingSmartOnly);
 		return xids;
 	}
 
-	private static Xids PrepareBasicXids()
+	private static Dictionary<IfcSchemaVersions, FacetGroup> referenceFacets = new();
+
+	private static FacetGroup GetOrMakeReferenceFacet(SchemaInfo schema, Xids xidsContext)
+	{
+		if (referenceFacets.TryGetValue(schema.Version, out var existing))
+			return existing;
+
+		var referencedFacet = new FacetGroup(xidsContext.FacetRepository)
+		{
+			Name = $"Referenced building unit for {schema.Version}",
+			Guid = Guid.NewGuid().ToString(),
+		};
+		var typeFacet = new IfcTypeFacet
+		{
+			IfcType = "IfcBuilding",
+		};
+		referencedFacet.Facets.Add(typeFacet);
+		xidsContext.FacetRepository.Add(referencedFacet);
+		referenceFacets[schema.Version] = referencedFacet;
+		return referencedFacet;
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="SampleXidsBuilderContext"/> that can be composed
+	/// using the fluent extension methods on <see cref="SampleXidsBuilderExtensions"/>.
+	/// </summary>
+	public static SampleXidsBuilderContext CreateXids() => new SampleXidsBuilderContext(PrepareBasicXids());
+
+	internal static Xids PrepareBasicXids()
 	{
 		var xids = new Xids
 		{
@@ -104,9 +116,7 @@ public static class SampleXidsFactory
 		return xids;
 	}
 
-	private static FacetGroup? referencedFacet = null;
-
-	private static void AddAttributeSpecifications(Xids xids, IfcSchemaVersions schemaRequest)
+	internal static void AddDistinctBackingAttributeSpecifications(Xids xids, IfcSchemaVersions schemaRequest)
 	{
 		var schemas = SchemaInfo.GetSchemas(schemaRequest);
 		foreach (var schema in schemas)
@@ -126,13 +136,6 @@ public static class SampleXidsFactory
 				var _ = AddSpecification(xids, item.attributeName, item.backingIfc, schema);
 			}
 		}
-
-		//var atts = SchemaInfo.AllAttributes.Where(x => x.ValidSchemaVersions.HasFlag(schemaRequest));
-		//foreach (var att in atts)
-		//{
-		//	// att.
-		//}
-
 	}
 
 	private static IEnumerable<(string attributeName, string backingIfc)> GetAttributeAndBackingTypes(SchemaInfo schema)
@@ -146,7 +149,7 @@ public static class SampleXidsFactory
 		}
 	}
 
-	private static void CreateIfcTypePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
+	internal static void AddAllIfcTypePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
 	{
 		var sInfo = SchemaInfo.GetSchemas(ids_schema).First();
 		// get all the types in the schema and create a spec for each
@@ -170,7 +173,7 @@ public static class SampleXidsFactory
 			// check schema compliance
 			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
 				continue;
-			var _ = CreateSpecification(xids, dataTypeInformation, ids_schema);
+			var _ = AddSpecification(xids, dataTypeInformation, ids_schema);
 		}
 	}
 
@@ -213,7 +216,7 @@ public static class SampleXidsFactory
 		return t;
 	}
 
-	private static void CreateMeasurePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
+	internal static void AddAllMeasurePropertySpecifications(Xids xids, IfcSchemaVersions ids_schema)
 	{
 		var sInfo = SchemaInfo.GetSchemas(ids_schema).First();
 		// get all the types in the schema and create a spec for each
@@ -224,11 +227,11 @@ public static class SampleXidsFactory
 				continue;
 			if (dataTypeInformation.IfcDataTypeClassName == "IFCINTEGERCOUNTRATEMEASURE")
 				continue; // skip because change type across schemas
-			var spec = CreateSpecification(xids, dataTypeInformation.Measure!, ids_schema);
+			var spec = AddSpecification(xids, dataTypeInformation.Measure!, ids_schema);
 		}
 	}
 
-	private static Specification? CreateSpecification(Xids xids, IfcDataTypeInformation type, IfcSchemaVersions ids_schema)
+	private static Specification? AddSpecification(Xids xids, IfcDataTypeInformation type, IfcSchemaVersions ids_schema)
 	{
 		if (type.IfcDataTypeClassName == "IFCBINARY")
 			return null;
@@ -382,7 +385,7 @@ public static class SampleXidsFactory
 		}
 	}
 
-	private static Specification CreateSpecification(Xids xids, IfcMeasureInformation measure, IfcSchemaVersions ids_schema)
+	private static Specification AddSpecification(Xids xids, IfcMeasureInformation measure, IfcSchemaVersions ids_schema)
 	{
 		var xids_schema = IfcSchemaVersionHelper.FromIds(ids_schema);
 		var spec = xids.PrepareSpecification(xids_schema);
@@ -414,7 +417,7 @@ public static class SampleXidsFactory
 		return spec;
 	}
 
-	private static Specification CreateSpecification(Xids xids, int index, bool retainBuildingSmartOnly)
+	internal static Specification AddSpecification(Xids xids, int index, bool retainBuildingSmartOnly)
 	{
 		var schema = Faker.PickRandom([IfcSchemaVersion.IFC2X3, IfcSchemaVersion.IFC4, IfcSchemaVersion.IFC4X3]);
 		var spec = xids.PrepareSpecification([schema]);
@@ -430,14 +433,14 @@ public static class SampleXidsFactory
 		spec.Applicability.Name = $"{Faker.Generic.Subset().FirstCharToUpper()} {Faker.Construction.BuildingPart()} with {Faker.Construction.EngineeringOrFunctionalNeeds()} {Faker.Generic.RequestSynonym()}";
 		var typeFacet = CreateTypeFacet(sInfo);
 		spec.Applicability.Facets.Add(typeFacet);
-		spec.Applicability.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo).ToList()));
+		spec.Applicability.Facets.Add(Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo, xids).ToList()));
 
 		// Requirement — what must be true
 		spec.Requirement ??= new FacetGroup(xids.FacetRepository);
 		spec.Requirement.Name = $"{Faker.Generic.ShouldSynonimExpression()} {Faker.Generic.SatisfyingSynonim()} {Faker.Generic.RequestSynonym()}";
 		for (int i = 0; i < 3; i++)
 		{
-			var temp = Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo).ToList());
+			var temp = Faker.PickRandom(GetFacetOptions(retainBuildingSmartOnly, typeFacet.IfcType, sInfo, xids).ToList());
 			if (temp is FacetBase fb)
 			{
 				fb.Instructions = Faker.Construction.Sentence();
@@ -448,7 +451,7 @@ public static class SampleXidsFactory
 		return spec;
 	}
 
-	private static IEnumerable<IFacet> GetFacetOptions(bool retainBuildingSmartOnly, ValueConstraint? ifcType, SchemaInfo schema)
+	private static IEnumerable<IFacet> GetFacetOptions(bool retainBuildingSmartOnly, ValueConstraint? ifcType, SchemaInfo schema, Xids xidsContext)
 	{
 		yield return CreateClassificationFacet(ifcType);
 		yield return CreatePropertyFacet(ifcType, schema);
@@ -458,7 +461,7 @@ public static class SampleXidsFactory
 		yield return CreateMaterialFacet();
 		if (!retainBuildingSmartOnly)
 		{
-			yield return CreateRelationFacet();
+			yield return CreateRelationFacet(schema, xidsContext);
 			yield return CreateDocumentFacet();
 		}
 	}
@@ -473,17 +476,19 @@ public static class SampleXidsFactory
 			DocPurpose = $"Satisfy {Faker.Construction.Role()} documentation requirements as well."
 		};
 
-	private static IfcRelationFacet CreateRelationFacet() =>
-		new()
+	private static IfcRelationFacet CreateRelationFacet(SchemaInfo schema, Xids xidsContext)
+	{
+		return new IfcRelationFacet
 		{
-			Source = referencedFacet,
+			Source = GetOrMakeReferenceFacet(schema, xidsContext),
 			Relation = IfcRelationFacet.RelationType.ContainedElements.ToString()
 		};
+	}
 
 	private static MaterialFacet CreateMaterialFacet() =>
 		new()
 		{
-			Value = Faker.Construction.Material()
+			Value = $"{Faker.Construction.MaterialAdjective()} {Faker.Construction.Material()} {DateTime.Now.Millisecond}"
 		};
 
 	/// <summary>
@@ -622,7 +627,7 @@ public static class SampleXidsFactory
 
 	private static IfcPropertyFacet CreatePropertyFacet(IfcMeasureInformation measure, bool addValue)
 	{
-		var t = new IfcPropertyFacet
+		var thisPropertyFacet = new IfcPropertyFacet
 		{
 			PropertySetName = Faker.Ifc.Pset(),
 			PropertyName = $"{Faker.Construction.Activity()} {Faker.Construction.Role()}",
@@ -631,11 +636,11 @@ public static class SampleXidsFactory
 		if (addValue)
 		{
 			if (Faker.RandomBool())
-				t.PropertyValue = Faker.RandomDouble(3, 13).ToString("N2", CultureInfo.InvariantCulture);
+				thisPropertyFacet.PropertyValue = new ValueConstraint(NetTypeName.Double, Faker.RandomDouble(3, 13).ToString("N2", CultureInfo.InvariantCulture));
 			else
-				t.PropertyValue = CreateRandomRange();
+				thisPropertyFacet.PropertyValue = CreateRandomRange();
 		}
-		return t;
+		return thisPropertyFacet;
 	}
 
 	private static ValueConstraint? CreateRandomRange()
@@ -665,6 +670,10 @@ public static class SampleXidsFactory
 				if (props.Any())
 				{
 					var prop = Faker.PickRandom(props.ToList());
+					//if (prop.DataType.Equals("IFCBOOLEAN", StringComparison.OrdinalIgnoreCase))
+					//{
+
+					//}
 					return new IfcPropertyFacet
 					{
 						PropertySetName = pset.Name,
@@ -750,11 +759,22 @@ public static class SampleXidsFactory
 			else
 				retValue = Faker.RandomDouble(12, 45).ToString(format, CultureInfo.InvariantCulture);
 		}
+		else if (dt == NetTypeName.Boolean)
+		{
+			retValue = new ValueConstraint(NetTypeName.Boolean);
+			retValue.AddAccepted(new PatternConstraint(ValueConstraint.PersistValue(Faker.RandomBool(), NetTypeName.Boolean) ?? "True"));
+		}
+		else if (dt == NetTypeName.Duration)
+		{
+			var timespan = new TimeSpan(Faker.RandomInt(0, 4),
+										Faker.RandomInt(0, 59),
+										Faker.RandomInt(0, 59));
+			retValue = new ValueConstraint(NetTypeName.Duration, ValueConstraint.PersistValue(timespan, NetTypeName.Duration) ?? "00:00:00");
+		}
 		else
 		{
 			// at this stage it should be safe to use the xml value, as xids is more tolerant of invalid values	
 			retValue = new ValueConstraint(IdsLib.IdsSchema.XsNodes.XsTypes.GetDefaultEmptyValue(ValueConstraint.ConvertToXsType(dt)));
-
 		}
 		retValue.BaseType = dt;
 
