@@ -38,18 +38,30 @@ namespace Xbim.InformationSpecifications
 		private static readonly IList<Cardinality> NoOptional = new List<Cardinality>() { Cardinality.Expected, Cardinality.Prohibited };
 		private static readonly IList<Cardinality> ExpectedOnly = new List<Cardinality>() { Cardinality.Expected };
 
+
+		/// <summary>
+		/// Determines the valid options for cardinaly of a given facet
+		/// </summary>
+		/// <returns>The list of valid options</returns>
+		public static IList<Cardinality> GetAllowedCardinality(IFacet relevantFacet)
+		{
+			return relevantFacet switch
+			{
+				IfcTypeFacet _ => ExpectedOnly,
+				IfcRelationFacet _ => ExpectedOnly, // custom xbim
+				PartOfFacet _ => NoOptional,
+				DocumentFacet _ => NoOptional, // custom xbim
+				_ => AllOptions
+			};
+		}
+
 		/// <summary>
 		/// Depending on the Type of <see cref="RelatedFacet"/>, the valid options for cardinaly might be affected
 		/// </summary>
 		/// <returns>The list of valid options</returns>
 		public IList<Cardinality> GetAllowedCardinality()
 		{
-			return RelatedFacet switch
-			{
-				IfcTypeFacet _ => ExpectedOnly,
-				PartOfFacet _ => NoOptional,
-				_ => AllOptions
-			};
+			return GetAllowedCardinality(RelatedFacet);
 		}
 
 		/// <summary>
@@ -59,12 +71,18 @@ namespace Xbim.InformationSpecifications
 		public IFacet RelatedFacet { get; set; }
 
 		/// <summary>
-		/// The Cardinality of the Facet
+		/// The Cardinality of the Facet. The possible value of the enumeration depends on the type of the related facet; 
+		/// for example, if the facet is an IfcTypeFacet, the only valid value is Expected, 
+		/// while if the facet is a PartOfFacet, the valid values are Expected and Prohibited.
+		/// Programmatic access cen be done using the one of the <see cref="GetAllowedCardinality()"/> methods, which returns the valid 
+		/// options for a facet.
 		/// </summary>
 		public Cardinality RelatedFacetCardinality { get; set; }
 
 		/// <summary>
-		/// The cardinality of a Facet
+		/// The cardinality of a Facet can be 
+		/// set via the <see cref="FacetGroup.SetRequirementCardinalityOption(IFacet, Cardinality)"/> method helper and gotten
+		/// via the <see cref="FacetGroup.GetRequirementCardinalityOption(IFacet, out Cardinality?)"/>.
 		/// </summary>
 		public enum Cardinality
 		{

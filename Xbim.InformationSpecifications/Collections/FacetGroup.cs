@@ -69,12 +69,44 @@ namespace Xbim.InformationSpecifications
 				cardinality = null;
 				return false;
 			}
+			// if the facet is not part of the group, we cannot have an option for it.
+			if (!Facets.Contains(facet))
+			{
+				cardinality = null;
+				return false;
+			}
 			var options = RequirementOptions?.FirstOrDefault(x => x.RelatedFacet == facet);
 			cardinality = options is null
 				? RequirementCardinalityOptions.DefaultCardinality
 				: options.RelatedFacetCardinality;
 			return true;
 		}
+
+		/// <summary>
+		/// Sets the requirement cardinality option for a facet, if the facet is part of the group and the cardinality is valid for the facet.	
+		/// </summary>
+		/// <returns>true if successful, false otherwise</returns>
+		public bool SetRequirementCardinalityOption(IFacet facet, RequirementCardinalityOptions.Cardinality cardinality)
+		{
+			// if the facet is not part of the group, we cannot have an option for it.
+			if (!Facets.Contains(facet))
+			{
+				return false;
+			}
+			var valid = RequirementCardinalityOptions.GetAllowedCardinality(facet).Contains(cardinality);
+			if (!valid)
+				return false;
+			var existingOption = RequirementOptions?.FirstOrDefault(x => x.RelatedFacet == facet);
+			if (existingOption is null)
+			{
+				RequirementOptions ??= new ObservableCollection<RequirementCardinalityOptions>();
+				RequirementOptions.Add(new RequirementCardinalityOptions(facet, cardinality));
+				return true;
+			}
+			existingOption.RelatedFacetCardinality = cardinality;
+			return true;
+		}
+
 
 		/// <summary>
 		/// Collection of the facets defined in the group.
@@ -236,5 +268,7 @@ namespace Xbim.InformationSpecifications
 				return Description;
 			return Undefined;
 		}
+
+	
 	}
 }

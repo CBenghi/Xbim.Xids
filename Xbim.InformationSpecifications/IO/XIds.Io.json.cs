@@ -78,6 +78,30 @@ namespace Xbim.InformationSpecifications
 										: (obj, val) => existing(obj, val) && val is string s && !string.IsNullOrEmpty(s);
 								}
 							}
+							// Special handling for FacetGroup: omit RequirementOptions when every
+							// entry carries the default cardinality (saves file size).
+							if (typeInfo.Type == typeof(FacetGroup))
+							{
+								foreach (var prop in typeInfo.Properties)
+								{
+									if (prop.Name == nameof(FacetGroup.RequirementOptions))
+									{
+										prop.ShouldSerialize = (obj, _) =>
+										{
+											if (obj is FacetGroup fg && fg.RequirementOptions is { } opts)
+											{
+												foreach (var o in opts)
+												{
+													if (o.RelatedFacetCardinality != RequirementCardinalityOptions.DefaultCardinality)
+														return true;
+												}
+												return false; // all default — skip the property
+											}
+											return false; // null collection — skip
+										};
+									}
+								}
+							}
 							// Special handling for RangeConstraint
 							if (typeInfo.Type == typeof(RangeConstraint))
 							{

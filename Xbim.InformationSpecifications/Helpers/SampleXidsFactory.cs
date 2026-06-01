@@ -153,27 +153,19 @@ public static class SampleXidsFactory
 	{
 		var sInfo = SchemaInfo.GetSchemas(ids_schema).First();
 		// get all the types in the schema and create a spec for each
-		var doneInt = false;
-		var doneDouble = false;
+
+		HashSet<string> alreadyDone = new();
 		foreach (var dataTypeInformation in SchemaInfo.AllDataTypes.Where(x => x.Measure is null))
 		{
-			if (dataTypeInformation.BackingType == "xs:string")
+			if (dataTypeInformation.BackingType is null)
 				continue;
-
-			if (dataTypeInformation.BackingType == "xs:double" && doneDouble)
+			if (alreadyDone.Contains(dataTypeInformation.BackingType))
 				continue;
-			if (dataTypeInformation.BackingType == "xs:double")
-				doneDouble = true;
-
-			if (dataTypeInformation.BackingType == "xs:integer" && doneInt)
-				continue;
-			if (dataTypeInformation.BackingType == "xs:integer")
-				doneInt = true;
-
 			// check schema compliance
 			if (!dataTypeInformation.ValidSchemaVersions.HasFlag(ids_schema))
 				continue;
 			var _ = AddSpecification(xids, dataTypeInformation, ids_schema);
+			alreadyDone.Add(dataTypeInformation.BackingType);
 		}
 	}
 
@@ -447,6 +439,11 @@ public static class SampleXidsFactory
 				fb.Uri = Faker.Ifc.BsddUri(temp.GetType().Name);
 			}
 			spec.Requirement.Facets.Add(temp);
+		}
+		foreach (var item in spec.Requirement.Facets)
+		{
+			var t = Faker.PickRandom(RequirementCardinalityOptions.GetAllowedCardinality(item));
+			spec.Requirement.SetRequirementCardinalityOption(item, t);
 		}
 		return spec;
 	}

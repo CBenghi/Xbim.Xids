@@ -1,5 +1,6 @@
 ﻿using AwesomeAssertions;
 using IdsLib.IdsSchema.XsNodes;
+using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,12 @@ namespace Xbim.InformationSpecifications.Tests;
 
 public class HelpersTests
 {
+	public HelpersTests(ITestOutputHelper hlp)
+	{
+		this.helper = hlp;
+	}
+	ITestOutputHelper helper;
+
 	public static IEnumerable<object[]> XsdFacetTestData => Enum.GetValues<IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets>().Select(v => new object[] { v }).ToArray();
 
 	[Theory]
@@ -50,6 +57,81 @@ public class HelpersTests
 		var back = ValueConstraint.ConvertToXsType(some);
 		back.Should().Be(value);
 	}
+
+
+	[Theory]
+	[InlineData(IfcSchemaVersions.Ifc2x3, 0, false, false, true, false, 77)]
+	[InlineData(IfcSchemaVersions.Ifc2x3, 0, false, true, false, false, 4)]
+	[InlineData(IfcSchemaVersions.Ifc2x3, 0, true, false, false, false, 77)]
+	[InlineData(IfcSchemaVersions.Ifc2x3, 5, false, false, false, false, 5)]
+
+	[InlineData(IfcSchemaVersions.Ifc4, 0, false, false, true, false, 82)]
+	[InlineData(IfcSchemaVersions.Ifc4, 0, false, true, false, false, 9)]
+	[InlineData(IfcSchemaVersions.Ifc4, 0, true, false, false, false, 54)]
+	[InlineData(IfcSchemaVersions.Ifc4, 5, false, false, false, false, 5)]
+
+	[InlineData(IfcSchemaVersions.Ifc4x3, 0, false, false, true, false, 82)]
+	[InlineData(IfcSchemaVersions.Ifc4x3, 0, false, true, false, false, 9)]
+	[InlineData(IfcSchemaVersions.Ifc4x3, 0, true, false, false, false, 57)]
+	[InlineData(IfcSchemaVersions.Ifc4x3, 5, false, false, false, false, 5)]
+	public void SampleCountIsOk(IfcSchemaVersions sv,
+		int makeSampleCount,
+		bool makeSampleAttributes,
+		bool makeDataTypes,
+		bool makeMeasures,
+		bool buildingSmartOnly,
+		int expected)
+	{
+		// makeSampleAttributes ifc2x3 - 77
+		// makeSampleAttributes ifc4 - 54
+		// makeSampleAttributes ifc4x3 - 54
+
+		var tm = new object[]
+		{
+				sv,
+				makeSampleCount,
+				makeSampleAttributes,
+				makeDataTypes,
+				makeMeasures,
+				buildingSmartOnly,
+				expected
+		};
+		var vals = tm.Select(x => x.ToString()).ToArray();
+
+		helper.WriteLine($"Testing with parameters: {string.Join(", ", vals)}");
+
+		var xds = SampleXidsFactory.CreateXids();
+		if (makeSampleCount > 0)
+		{
+			helper.WriteLine($"Generating WithRandomSpecifications sample specifications.");
+			xds = xds.WithRandomSpecifications(makeSampleCount, buildingSmartOnly);
+		}
+		if (makeSampleAttributes)
+		{
+			helper.WriteLine($"Generating WithDistinctAttributeTypeSpecifications sample specifications.");
+			xds = xds.WithDistinctAttributeTypeSpecifications(sv);
+		}
+		if (makeDataTypes)
+		{
+			helper.WriteLine($"Generating WithPropertiesOfIfcTypes sample specifications.");
+			xds = xds.WithPropertiesOfIfcTypes(sv);
+		}
+		if (makeMeasures)
+		{
+			helper.WriteLine($"Generating WithPropertiesOfMeasures sample specifications.");
+			xds = xds.WithPropertiesOfMeasures(sv);
+		}
+		var t = xds.Build();
+		var actual = t.AllSpecifications().Count();
+
+		foreach (var x in t.AllSpecifications())
+		{
+			helper.WriteLine($"Specification: {x.Name}");
+		}
+
+		actual.Should().Be(expected);
+	}
+
 
 	[Fact]
 	public void FacetGroupUse()

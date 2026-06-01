@@ -35,6 +35,8 @@ public class IdsCompatibilityTests
 	{
 		var d = new DirectoryInfo(".");
 		log.LogInformation("Testing IDS roundtrip for file `{originalFileName}` in directory \r\n`{dFullName}`", originalFileName, d.FullName);
+		var fileInfo = new FileInfo(originalFileName);
+		log.LogInformation("Exporting IDS file for `{originalFileName}`", fileInfo.FullName);
 		var x = Xids.LoadFromJson(originalFileName)!;
 
 		var idsfile = originalFileName.Replace(".1.json", ".ids");
