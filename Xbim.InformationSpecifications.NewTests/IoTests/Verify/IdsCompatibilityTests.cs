@@ -20,7 +20,6 @@ namespace Xbim.InformationSpecifications.Tests.IoTests.Verify;
 
 public class IdsCompatibilityTests
 {
-
 	public IdsCompatibilityTests(ITestOutputHelper outputHelper)
 	{
 		OutputHelper = outputHelper;
