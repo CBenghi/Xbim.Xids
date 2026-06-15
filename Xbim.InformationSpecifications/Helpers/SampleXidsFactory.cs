@@ -667,10 +667,6 @@ public static class SampleXidsFactory
 				if (props.Any())
 				{
 					var prop = Faker.PickRandom(props.ToList());
-					//if (prop.DataType.Equals("IFCBOOLEAN", StringComparison.OrdinalIgnoreCase))
-					//{
-
-					//}
 					return new IfcPropertyFacet
 					{
 						PropertySetName = pset.Name,

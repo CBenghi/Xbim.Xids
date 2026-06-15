@@ -14,7 +14,8 @@ namespace Xbim.InformationSpecifications
 	public class PartOfFacet : FacetBase, IBuilsingSmartCardinality, IFacet, IEquatable<PartOfFacet>, IFacetCleanup
 	{
 		/// <summary>
-		/// The type of relation defining the filtering criteria
+		/// The type of relation defining the filtering criteria. 
+		/// It can be converted to the underlying IDS string by <see cref="EnumHelper.ToXmlEnumString"/>.
 		/// </summary>
 		public enum PartOfRelation
 		{
