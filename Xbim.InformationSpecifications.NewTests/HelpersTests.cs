@@ -1,6 +1,8 @@
 ﻿using AwesomeAssertions;
 using IdsLib.IdsSchema.XsNodes;
 using IdsLib.IfcSchema;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +10,7 @@ using System.IO;
 using System.Linq;
 using Xbim.InformationSpecifications.Helpers;
 using Xbim.InformationSpecifications.Tests.Helpers;
+using Xbim.InformationSpecifications.Tests.IoTests;
 using Xunit;
 using static IdsLib.IdsSchema.XsNodes.XsTypes;
 
@@ -22,7 +25,38 @@ public class HelpersTests
 	}
 	ITestOutputHelper helper;
 
+	internal ILogger<HelpersTests> GetXunitLogger()
+	{
+		var services = new ServiceCollection()
+					.AddLogging((builder) => builder.AddXUnit(helper));
+		IServiceProvider provider = services.BuildServiceProvider();
+		var logg = provider.GetRequiredService<ILogger<HelpersTests>>();
+		Assert.NotNull(logg);
+		return logg;
+	}
+
 	public static IEnumerable<object[]> XsdFacetTestData => Enum.GetValues<IdsLib.IdsSchema.XsNodes.XsTypes.XsdAllowedFacets>().Select(v => new object[] { v }).ToArray();
+
+	[Fact]
+	public void RandomCreationPassesAudit()
+	{
+		var x = SampleXidsFactory.CreateXids()
+			.WithRandomSpecifications(100, true)
+			.Build();
+		using var memoryStream = new System.IO.MemoryStream();
+		x.ExportBuildingSmartIDS(memoryStream);
+		memoryStream.Seek(0, SeekOrigin.Begin);
+		var logger = GetXunitLogger();
+
+		// ensure that the exported file is valid ids
+		var opts = new IdsLib.SingleAuditOptions()
+		{
+			XmlWarningAction = IdsLib.AuditProcessOptions.XmlWarningBehaviour.ReportAsError,
+			OmitIdsContentAudit = false
+		};
+		var auditResult = IdsLib.Audit.Run(memoryStream, opts, logger);
+		auditResult.Should().Be(IdsLib.Audit.Status.Ok);
+	}
 
 	[Theory]
 	[MemberData(nameof(XsdFacetTestData))]
@@ -57,7 +91,6 @@ public class HelpersTests
 		var back = ValueConstraint.ConvertToXsType(some);
 		back.Should().Be(value);
 	}
-
 
 	[Theory]
 	[InlineData(IfcSchemaVersions.Ifc2x3, 0, false, false, true, false, 77)]
@@ -138,15 +171,15 @@ public class HelpersTests
 	{
 		var x = XidsTestHelpers.GetSimpleXids();
 
-		var usedForApplicability = x.FacetGroups(FacetGroup.FacetUse.Applicability);
+		var usedForApplicability = x.GetSelectorsBy(FacetGroup.FacetUse.Applicability);
 		usedForApplicability.Should().NotBeNull();
 		usedForApplicability.Should().ContainSingle();
 
-		var usedForRequirement = x.FacetGroups(FacetGroup.FacetUse.Requirement);
+		var usedForRequirement = x.GetSelectorsBy(FacetGroup.FacetUse.Requirement);
 		usedForRequirement.Should().NotBeNull();
 		usedForRequirement.Should().ContainSingle();
 
-		var all = x.FacetGroups(FacetGroup.FacetUse.All);
+		var all = x.GetSelectorsBy(FacetGroup.FacetUse.All);
 		all.Count().Should().Be(2);
 	}
 
@@ -162,7 +195,7 @@ public class HelpersTests
 		var tmpFile = Path.GetTempFileName();
 		tempXids.SaveAsJson(tmpFile);
 		// can select all elements
-		var all = tempXids.FacetGroups(FacetGroup.FacetUse.Applicability);
+		var all = tempXids.GetSelectorsBy(FacetGroup.FacetUse.Applicability);
 		all.Count().Should().BeGreaterThan(0);
 
 		File.Delete(tmpFile);

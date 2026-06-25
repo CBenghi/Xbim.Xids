@@ -143,7 +143,7 @@ public class StructureConstraintTests
 
 		var unpers = Xids.LoadBuildingSmartIDS(tfn);
 		unpers.Should().NotBeNull();
-		var fg = unpers!.FacetGroups(FacetGroup.FacetUse.All).First();
+		var fg = unpers!.GetSelectorsBy(FacetGroup.FacetUse.All).First();
 		var unpersF = fg.Facets.OfType<MaterialFacet>().First();
 		unpersF.Value.Should().NotBeNull();
 		return unpersF.Value!;

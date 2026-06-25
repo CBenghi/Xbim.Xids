@@ -18,7 +18,7 @@ public class ValidityTests
 	{
 		var loaded = Xids.LoadFromJson("Files/ValidFacetEval.json");
 		Assert.NotNull(loaded);
-		foreach (var facetG in loaded.FacetGroups(FacetGroup.FacetUse.All))
+		foreach (var facetG in loaded.GetSelectorsBy(FacetGroup.FacetUse.All))
 		{
 			outputHelper.WriteLine($"Testing facet group {facetG.Name}");
 			foreach (var facet in facetG.Facets)

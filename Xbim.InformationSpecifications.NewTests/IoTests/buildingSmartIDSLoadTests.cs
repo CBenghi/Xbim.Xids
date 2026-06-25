@@ -168,7 +168,7 @@ public class BuildingSmartIDSLoadTests
 		}
 		if (facetGroupsCount != -1)
 		{
-			var grps = xidsToVerify.FacetGroups(FacetGroup.FacetUse.All);
+			var grps = xidsToVerify.GetSelectorsBy(FacetGroup.FacetUse.All);
 			var tally = 0;
 			foreach (var item in grps)
 			{

@@ -607,7 +607,11 @@ namespace Xbim.InformationSpecifications
 			{
 				NetTypeName.String => [Constraints.length, Constraints.minLength, Constraints.maxLength, Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace],
 				NetTypeName.Boolean => [Constraints.pattern, Constraints.whiteSpace],
-				NetTypeName.Decimal or NetTypeName.Integer => [Constraints.totalDigits, Constraints.fractionDigits, Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive],
+				NetTypeName.Decimal => [Constraints.totalDigits, Constraints.fractionDigits, Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive],
+				// ids is stricter than XML
+				NetTypeName.Integer => [Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive],
+				// ids is stricter than XML
+				NetTypeName.Double => [Constraints.pattern, Constraints.whiteSpace, Constraints.enumeration, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive],
 				_ => [Constraints.pattern, Constraints.enumeration, Constraints.whiteSpace, Constraints.maxInclusive, Constraints.maxExclusive, Constraints.minInclusive, Constraints.minExclusive],
 			};
 		}

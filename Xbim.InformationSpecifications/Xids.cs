@@ -182,12 +182,18 @@ namespace Xbim.InformationSpecifications
 		}
 
 		/// <summary>
+		/// Obsolete, please use <see cref="GetSelectorsBy(FacetUse)"/>, which is functionally identical.
+		/// </summary>
+		[Obsolete("Method renamed to GetSelectorsBy, use that instead.")]
+		public IEnumerable<FacetGroup> FacetGroups(FacetUse use) => GetSelectorsBy(use);
+
+		/// <summary>
 		/// Enumerates all the <see cref="FacetGroup"/> that match the use enum.
 		/// Each instance is evaluated only once.
 		/// </summary>
 		/// <param name="use">limits the retuned collection to a specific usage of the <see cref="FacetGroup"/>.</param>
 		/// <returns>all facet groups matching the use</returns>
-		public IEnumerable<FacetGroup> FacetGroups(FacetUse use)
+		public IEnumerable<FacetGroup> GetSelectorsBy(FacetUse use)
 		{
 			foreach (var fg in FacetRepository.Collection.ToArray())
 			{
@@ -201,7 +207,7 @@ namespace Xbim.InformationSpecifications
 		/// </summary>
 		public void Purge()
 		{
-			var unusedFG = FacetRepository.Collection.Except(FacetGroups(FacetUse.All)).ToList();
+			var unusedFG = FacetRepository.Collection.Except(GetSelectorsBy(FacetUse.All)).ToList();
 			foreach (var unused in unusedFG)
 			{
 				FacetRepository.Remove(unused);

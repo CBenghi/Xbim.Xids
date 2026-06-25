@@ -442,8 +442,22 @@ public static class SampleXidsFactory
 		}
 		foreach (var item in spec.Requirement.Facets)
 		{
-			var t = Faker.PickRandom(RequirementCardinalityOptions.GetAllowedCardinality(item));
-			spec.Requirement.SetRequirementCardinalityOption(item, t);
+			var cardinality = Faker.PickRandom(RequirementCardinalityOptions.GetAllowedCardinality(item));
+			// if the cardinality is prohibited on a property, the datatype needs to be empty
+			if (item is IfcPropertyFacet prop)
+			{
+				if (cardinality == RequirementCardinalityOptions.Cardinality.Prohibited)
+				{
+					prop.DataType = string.Empty;
+					prop.PropertyValue = null;
+				}
+				else if (cardinality == RequirementCardinalityOptions.Cardinality.Optional && string.IsNullOrEmpty(prop.DataType))
+				{
+					// we must have a datatype, if we don't and it's difficult to create we just make it expected
+					cardinality = RequirementCardinalityOptions.Cardinality.Expected;
+				}
+			}
+			spec.Requirement.SetRequirementCardinalityOption(item, cardinality);
 		}
 		return spec;
 	}
@@ -767,7 +781,7 @@ public static class SampleXidsFactory
 		else
 		{
 			// at this stage it should be safe to use the xml value, as xids is more tolerant of invalid values	
-			retValue = new ValueConstraint(IdsLib.IdsSchema.XsNodes.XsTypes.GetDefaultEmptyValue(ValueConstraint.ConvertToXsType(dt)));
+			retValue = new ValueConstraint(XsTypes.GetDefaultEmptyValue(ValueConstraint.ConvertToXsType(dt)));
 		}
 		retValue.BaseType = dt;
 
@@ -777,6 +791,7 @@ public static class SampleXidsFactory
 		int? maxLenCon = (compatible.Contains(ValueConstraint.Constraints.maxLength)) ? Faker.RandomInt(8, 10) : null;
 		int? fracDigi = (compatible.Contains(ValueConstraint.Constraints.fractionDigits)) ? Faker.RandomInt(0, 3) : null;
 		int? totDigi = (compatible.Contains(ValueConstraint.Constraints.totalDigits)) ? Faker.RandomInt(8, 10) : null;
+
 		if (lenCon is not null ||
 			minLenCon is not null ||
 			maxLenCon is not null ||
