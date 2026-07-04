@@ -1,4 +1,4 @@
-﻿#pragma warning disable xUnit1042
+#pragma warning disable xUnit1042
 using AwesomeAssertions;
 using System;
 using System.Collections.Generic;
@@ -35,6 +35,7 @@ public partial class FacetImplementationTests
 		{ "PartOfFacet","String EntityRelation,IfcTypeFacet EntityType,String Uri,String Instructions" },
 		{ "DimensionalExponents","Int32 Length,Int32 Mass,Int32 Time,Int32 ElectricCurrent,Int32 Temperature,Int32 AmountOfSubstance,Int32 LuminousIntensity" },
 		{ "TimeOfDay","" }, // this is a struct, so it has no properties, but it should still be equatable
+		{ "Duration","" }, // this is a struct, so it has no properties, but it should still be equatable
 		// for rich ways of automating multiple configurations, see Memberdata usage in (e.g.) DocumentFacetTests
 	};
 

@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using IdsLib;
 using IdsLib.IdsSchema.IdsNodes;
 using Microsoft.Extensions.DependencyInjection;
@@ -654,7 +654,9 @@ public partial class IoTests
 		yield return ["123.45", NetTypeName.Double, 123.45];
 		yield return ["123.45", NetTypeName.Floating, 123.45f];
 		yield return ["123.45", NetTypeName.Decimal, 123.45m];
-		yield return ["P1D", NetTypeName.Duration, TimeSpan.FromDays(1)];
+		yield return ["P1D", NetTypeName.Duration, new Duration(false, 0, 0, 1)];
+		yield return ["P1Y2M3DT4H5M6S", NetTypeName.Duration, new Duration(false, 1, 2, 3, 4, 5, 6m)];
+		yield return ["-PT2S", NetTypeName.Duration, new Duration(true, 0, 0, 0, 0, 0, 2m)];
 		yield return ["2023-01-01", NetTypeName.Date, new DateTime(2023, 1, 1)];
 		yield return ["2023-01-01T12:00:00", NetTypeName.DateTime, new DateTime(2023, 1, 1, 12, 0, 0)];
 		yield return ["12:00:00", NetTypeName.Time, new TimeOfDay(12, 0)];

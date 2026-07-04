@@ -348,12 +348,12 @@ public static class SampleXidsFactory
 		}
 		else if (thistype == NetTypeName.Duration)
 		{
-			yield return new TimeSpan(2, 30, 15);                  // 02:30:15
-			yield return new TimeSpan(1, 12, 0, 0);                // 1 day, 12 hours
-			yield return new TimeSpan(0, 0, 5, 30, 000);           // 5 min 30 sec
-			yield return TimeSpan.FromMinutes(90);                 // 01:30:00
-			yield return TimeSpan.FromTicks(10_000_000);           // exactly 1 second
-			yield return TimeSpan.Parse("3.04:15:30");
+			yield return new Duration(false, 0, 0, 0, 2, 30, 15m); // 02:30:15
+			yield return new Duration(false, 0, 0, 1, 12, 0, 0m);  // 1 day, 12 hours
+			yield return new Duration(false, 0, 0, 0, 0, 5, 30m);  // 5 min 30 sec
+			yield return (Duration)TimeSpan.FromMinutes(90);       // 01:30:00
+			yield return (Duration)TimeSpan.FromTicks(10_000_000);  // exactly 1 second
+			yield return new Duration("P3DT4H15M30S");
 		}
 		else if (thistype == NetTypeName.Time)
 		{
@@ -773,10 +773,14 @@ public static class SampleXidsFactory
 		}
 		else if (dt == NetTypeName.Duration)
 		{
-			var timespan = new TimeSpan(Faker.RandomInt(0, 4),
-										Faker.RandomInt(0, 59),
-										Faker.RandomInt(0, 59));
-			retValue = new ValueConstraint(NetTypeName.Duration, ValueConstraint.PersistValue(timespan, NetTypeName.Duration) ?? "00:00:00");
+			var duration = new Duration(false,
+										Faker.RandomInt(0, 2),  // years
+										Faker.RandomInt(0, 11), // months
+										Faker.RandomInt(0, 30), // days
+										Faker.RandomInt(0, 23), // hours
+										Faker.RandomInt(0, 59), // minutes
+										(decimal)Faker.RandomInt(0, 59)); // seconds
+			retValue = new ValueConstraint(NetTypeName.Duration, ValueConstraint.PersistValue(duration, NetTypeName.Duration) ?? "P0D");
 		}
 		else
 		{

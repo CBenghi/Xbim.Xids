@@ -1,4 +1,4 @@
-﻿using IdsLib.IdsSchema.XsNodes;
+using IdsLib.IdsSchema.XsNodes;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -388,7 +388,7 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Integer => typeof(long),
 				NetTypeName.Decimal => typeof(decimal),
 				NetTypeName.Date or NetTypeName.DateTime => typeof(DateTime),
-				NetTypeName.Duration => typeof(TimeSpan),
+				NetTypeName.Duration => typeof(Duration),
 				NetTypeName.Time => typeof(TimeOfDay),
 				NetTypeName.String => typeof(string),
 				NetTypeName.Boolean => typeof(bool),
@@ -430,7 +430,7 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Double => XmlConvert.ToDouble(raw),
 				NetTypeName.Floating => XmlConvert.ToSingle(raw),
 				NetTypeName.Decimal => XmlConvert.ToDecimal(raw),
-				NetTypeName.Duration => XmlConvert.ToTimeSpan(raw),
+				NetTypeName.Duration => Duration.TryParse(raw, out var parsedDur) ? (object)parsedDur : null,
 				NetTypeName.DateTime => XmlConvert.ToDateTime(raw, XmlDateTimeSerializationMode.RoundtripKind),
 				NetTypeName.Date => XmlConvert.ToDateTime(raw, XmlDateTimeSerializationMode.RoundtripKind),
 				NetTypeName.Time => FixTime(raw), // encapsulated becase of possible exceptions, even with regex

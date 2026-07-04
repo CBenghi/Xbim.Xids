@@ -1,4 +1,4 @@
-﻿using IdsLib.IfcSchema;
+using IdsLib.IfcSchema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -111,7 +111,7 @@ namespace Xbim.InformationSpecifications
 				NetTypeName.Decimal => typeof(decimal),
 				NetTypeName.Time => typeof(TimeOfDay),
 				NetTypeName.Date or NetTypeName.DateTime => typeof(DateTime),
-				NetTypeName.Duration => typeof(TimeSpan),
+				NetTypeName.Duration => typeof(Duration),
 				NetTypeName.Uri => typeof(Uri),
 				NetTypeName.Undefined => null,
 				_ => null,
@@ -132,7 +132,8 @@ namespace Xbim.InformationSpecifications
 			NetTypeName.Decimal => (decimal)0,
 			NetTypeName.Date => (DateTime)DateTime.Now.Date,
 			NetTypeName.DateTime => (DateTime)DateTime.Now,
-			NetTypeName.Time or NetTypeName.Duration => (TimeSpan)TimeSpan.Zero,
+			NetTypeName.Time => default(TimeOfDay),
+			NetTypeName.Duration => default(Duration),
 			NetTypeName.Uri => new UriBuilder().Uri,
 			NetTypeName.Undefined => null,
 			_ => null,
@@ -344,8 +345,14 @@ namespace Xbim.InformationSpecifications
 							return null;
 						}
 					case NetTypeName.Duration:
-						if (TimeSpan.TryParse(valueToConvert.ToString(), CultureInfo.InvariantCulture, out var duration))
-							return duration;
+						if (valueToConvert is Duration dur)
+							return dur;
+						if (valueToConvert is TimeSpan ts)
+							return (Duration)ts;
+						if (Duration.TryParse(valueToConvert.ToString(), out var parsedDur))
+							return parsedDur;
+						if (TimeSpan.TryParse(valueToConvert.ToString(), CultureInfo.InvariantCulture, out var parsedTs))
+							return (Duration)parsedTs;
 						return null;
 					case NetTypeName.String:
 						return valueToConvert.ToString();
@@ -390,7 +397,8 @@ namespace Xbim.InformationSpecifications
 				int => ParseValue(value, NetTypeName.Integer),
 				long => ParseValue(value, NetTypeName.Integer),
 				DateTime => ParseValue(value, NetTypeName.DateTime), // this is where the risk of conflation is (date or a datetime)
-				TimeSpan => ParseValue(value, NetTypeName.Duration),
+				Duration => ParseValue(value, NetTypeName.Duration),
+				TimeSpan => ((Duration?)ParseValue(value, NetTypeName.Duration))?.ToTimeSpan(),
 				bool => ParseValue(value, NetTypeName.Boolean),
 				TimeOfDay => ParseValue(value, NetTypeName.Time),
 				Uri => ParseValue(value, NetTypeName.Uri),
@@ -425,6 +433,7 @@ namespace Xbim.InformationSpecifications
 					NetTypeName.Date => Convert.ToDateTime(value).ToString("yyyy-MM-dd"),
 					NetTypeName.DateTime => Convert.ToDateTime(value).ToString("o"),
 					NetTypeName.Time => value.ToString(), // this returns xml persisted
+					NetTypeName.Duration when value is Duration dur => dur.ToString(),
 					NetTypeName.Duration when value is TimeSpan ts => ts.ToString("c", CultureInfo.InvariantCulture),
 					_ => value.ToString(),
 				};
@@ -499,11 +508,10 @@ namespace Xbim.InformationSpecifications
 						return timeOfDayVal;
 					return null;
 				case NetTypeName.Duration:
+					if (Duration.TryParse(value, out var durationVal))
+						return durationVal;
 					if (TimeSpan.TryParse(value, culture, out var timeval))
-						return timeval;
-					// we also try to parse durations in xml format for backwards compatibility
-					if (TryParseXsdValue(value, NetTypeName.Duration, out var xsdDurationVal))
-						return xsdDurationVal;
+						return (Duration)timeval;
 					return null;
 				case NetTypeName.Uri:
 					if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var urival))
@@ -528,6 +536,7 @@ namespace Xbim.InformationSpecifications
 					NetTypeName.Date when value is DateTime justDate => justDate.ToString("yyyy-MM-ddK", CultureInfo.InvariantCulture),
 					NetTypeName.DateTime when value is DateTime dateAndTime => dateAndTime.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFFK", CultureInfo.InvariantCulture),
 					NetTypeName.Time when value is TimeOfDay tod => tod.ToString(), // this returns xml persisted
+					NetTypeName.Duration when value is Duration dur => dur.ToString(),
 					NetTypeName.Duration when value is TimeSpan ts => AsXsDurationString(ts),
 					_ => value.ToString(),
 				};

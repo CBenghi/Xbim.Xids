@@ -1,4 +1,4 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -173,10 +173,16 @@ public class ValueConstraintHelpersTests
 			data.Add(NetTypeName.Double, entry.pers, entry.val);
 		}
 
-		(string pers, TimeSpan val)[] durations = [
-			("0.0", TimeSpan.Zero),
-			("-3", TimeSpan.FromSeconds(-3)),
+		(string pers, Duration val)[] durations = [
+			("PT0S", new Duration(false, 0, 0, 0, 0, 0, 0m)),
+			("P0D", new Duration(false, 0, 0, 0, 0, 0, 0m)),
+			("-PT3S", new Duration(true, 0, 0, 0, 0, 0, 3m)),
+			("P1Y2M3DT4H5M6S", new Duration(false, 1, 2, 3, 4, 5, 6m)),
 			];
+		foreach (var entry in durations)
+		{
+			data.Add(NetTypeName.Duration, entry.pers, entry.val);
+		}
 
 		return data;
 	}
@@ -228,7 +234,5 @@ public class ValueConstraintHelpersTests
 		t = new ValueConstraint(NetTypeName.Undefined);
 		t.AddAccepted(new RangeConstraint());
 		t.IsSingleUndefinedExact(out var _).Should().BeFalse();
-
-
 	}
 }
